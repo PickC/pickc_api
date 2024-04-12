@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WeMk7XhHRS32/bMzGq5u6rkHucqSdYjLJ4Ifm7tIc/3dRhD42h2c2VDdaCDNUmJlBSRQeyk+n/pLZq8Ic2w8xw==",
+  "dgSpecHash": "GBy4PR/JzDsduO5kQie54oPDsv4R3/Fi/Ed8ecMoAbevAFDCeS7UFX2+t1CT79I/6DePl1qbJmTLcBfdvw6ULQ==",
   "success": true,
-  "projectFilePath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+  "projectFilePath": "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

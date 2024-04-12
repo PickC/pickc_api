@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "iiXsiDwibAzwDoAEQs9RXtVPWBlXre6JHlr1QlnqYSse64MQj3sjGDfeEr9PcqTfEhyCH/qpWki8L4hNkQukWQ==",
+  "dgSpecHash": "yb/jF6YvletApsL8JzLnp3KFCxVo2UFOPllJ6Dy+uQf0pwSE9Dg54FHDboru4sVRm5Si8Z2QL/QqkkBQhyEkew==",
   "success": true,
-  "projectFilePath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj",
+  "projectFilePath": "D:\\Project\\Appify.API\\appify.dbroutine\\appify.dbroutine.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
