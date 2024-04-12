@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "appify.Business.Contract/1.0.0": {
+        "dependencies": {
+          "appify.models": "1.0.0"
+        },
+        "runtime": {
+          "appify.Business.Contract.dll": {}
+        }
+      },
+      "appify.models/1.0.0": {
+        "runtime": {
+          "appify.models.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "appify.Business.Contract/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "appify.models/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

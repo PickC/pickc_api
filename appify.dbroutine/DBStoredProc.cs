@@ -1,0 +1,239 @@
+﻿using System.Reflection.Metadata;
+
+namespace appify.dbroutine
+{
+    public sealed class DBStoredProc
+    {
+
+        private DBStoredProc() { }
+
+
+        /// <summary>
+        /// [Operation].[Member]
+        /// </summary>
+
+        public const string SELECTMEMBER = "[Operation].[usp_MemberSelect]";
+        public const string LISTMEMBERS = "[Operation].[usp_MemberList]";
+        public const string PAGEVIEWMEMBER = "[Operation].[usp_MemberPageView]";
+        public const string RECORDCOUNTMEMBER = "[Operation].[usp_MemberRecordCount]";
+        public const string SAVEMEMBER = "[Operation].[usp_MemberSave]";
+        public const string DELETEMEMBER = "[Operation].[usp_MemberDelete]";
+        public const string DELETEMEMBERBYMOBILENO = "[Operation].[usp_MemberDeleteByMobileNo]";
+        public const string LISTMEMBERFORCOUNT = "[Operation].[usp_MemberListForCount]";
+        public const string CHECKMEMBER = "[Operation].[usp_MemberExist]";
+        public const string UPDATEPASSWORD = "[Operation].[usp_MemberUpdatePassword]";
+        public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
+        public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
+        public const string MEMBERONLINEPAYMENTSTATUS = "[Operation].[usp_MemberOnlinePaymentStatus]";
+
+
+
+        // Vendor Customer Details //
+
+        public const string PAGEVIEWCUSTOMERBYMEMBER = "[Operation].[usp_CustomerPageView]";
+        public const string PRODUCTSBYVENDOR = "[Operation].[usp_ProductsByVendor]";
+
+
+
+        /// <summary>
+        /// [Operation].[MemberReturnPolicy]
+        /// </summary>
+
+        public const string SELECTMEMBERRETURNPOLICY = "[Operation].[usp_MemberReturnPolicySelect]";
+        public const string LISTMEMBERRETURNPOLICY = "[Operation].[usp_MemberReturnPolicyList]";
+        public const string SAVEMEMBERRETURNPOLICY = "[Operation].[usp_MemberReturnPolicySave]";
+        public const string DELETEMEMBERRETURNPOLICY = "[Operation].[usp_MemberReturnPolicyDelete]";
+
+
+        /// <summary>
+        /// [Operation].[MemberAppSetting]
+        /// </summary>
+
+        public const string SELECTMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingSelect]";
+        public const string LISTMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingList]";
+        public const string SAVEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingSave]";
+        public const string DELETEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingDelete]";
+
+        /// <summary>
+        /// [Operation].[MemberKYC]
+        /// </summary>
+
+        public const string SELECTMEMBERKYC = "[Operation].[usp_MemberKYCSelect]";
+        public const string LISTMEMBERKYC = "[Operation].[usp_MemberKYCList]";
+        public const string SAVEMEMBERKYC = "[Operation].[usp_MemberKYCSave]";
+        public const string DELETEMEMBERKYC = "[Operation].[usp_MemberKYCDelete]";
+
+        /// <summary>
+        /// [Operation].[MemberContact]
+        /// </summary>
+
+        public const string SELECTMEMBERCONTACT = "[Operation].[usp_MemberContactSelect]";
+        public const string LISTMEMBERCONTACT = "[Operation].[usp_MemberContactList]";
+        public const string SAVEMEMBERCONTACT = "[Operation].[usp_MemberContactSave]";
+        public const string DELETEMEMBERCONTACT = "[Operation].[usp_MemberContactDelete]";
+
+
+        /// <summary>
+        /// [Operation].[Address]
+        /// </summary>
+
+        public const string SELECTADDRESS = "[Operation].[usp_AddressSelect]";
+        public const string SELECTDEFAULTADDRESS = "[Operation].[usp_GetDefaultAddress]";
+        public const string LISTADDRESS = "[Operation].[usp_AddressList]";
+        public const string SAVEADDRESS = "[Operation].[usp_AddressSave]";
+        public const string DELETEADDRESS = "[Operation].[usp_AddressDelete]";
+
+
+        /// <summary>
+        /// [Operation].[ProductMaster]
+        /// </summary>
+
+        public const string SELECTPRODUCTMASTER = "[Operation].[usp_ProductMasterSelect]";
+        public const string LISTPRODUCTMASTER = "[Operation].[usp_ProductMasterList]";
+        public const string LISTPRODUCTMASTERALL = "[Operation].[usp_ProductMasterListAll]";
+
+        public const string SAVEPRODUCTMASTER = "[Operation].[usp_ProductMasterSave]";
+        public const string DELETEPRODUCTMASTER = "[Operation].[usp_ProductMasterDelete]";
+        public const string LISTALLPRODUCT = "[Operation].[usp_ProductMasterListAll]";
+        public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
+
+
+        /// <summary>
+        /// [Operation].[ProductImage]
+        /// </summary>
+
+        public const string DELETEPRODUCTIMAGEALL = "[Operation].[usp_ProductImageDeleteAll]";
+        public const string SELECTPRODUCTIMAGE = "[Operation].[usp_ProductImageSelect]";
+        public const string LISTPRODUCTIMAGE = "[Operation].[usp_ProductImageList]";
+        public const string SAVEPRODUCTIMAGE = "[Operation].[usp_ProductImageSave]";
+        public const string DELETEPRODUCTIMAGE = "[Operation].[usp_ProductImageDelete]";
+
+        /// <summary>
+        /// [Operation].[ProductPrice]
+        /// </summary>
+
+        public const string SELECTPRODUCTPRICE = "[Operation].[usp_ProductPriceSelect]";
+        public const string LISTPRODUCTPRICE = "[Operation].[usp_ProductPriceList]";
+        public const string SAVEPRODUCTPRICE = "[Operation].[usp_ProductPriceSave]";
+        public const string DELETEPRODUCTPRICE = "[Operation].[usp_ProductPriceDelete]";
+
+        /// <summary>
+        /// [Config].[Lookup]
+        /// </summary>
+
+        public const string SELECTLOOKUP = "[Config].[usp_LookupSelect]";
+        public const string DELETELOOKUP = "[Config].[usp_LookupDelete]";
+        public const string SAVELOOKUP = "[Config].[usp_LookupSave]";
+        public const string LISTLOOKUPBYCATEGORY = "[Config].[usp_LookupListByCategory]";
+        public const string LISTLOOKUPBYMEMBERCATEGORY = "[Config].[usp_LookupListByMemberCategory]";
+        public const string LISTLOOKUP = "[Config].[usp_LookupList]";
+
+        /// <summary>
+        /// [Operation].[OrderHeader]
+        /// </summary>
+
+        public const string SELECTORDERHEADER = "[Operation].[usp_OrderHeaderSelect]";
+        public const string LISTORDERHEADER = "[Operation].[usp_OrderHeaderList]";
+        public const string PAGEVIEWORDERHEADER = "[Operation].[usp_OrderHeaderPageView]";
+        public const string RECORDCOUNTORDERHEADER = "[Operation].[usp_OrderHeaderRecordCount]";
+        public const string ORDERCOUNTBYCUSTOMER = "[Operation].[usp_OrderCountByCustomer]";
+
+        public const string SAVEORDERHEADER = "[Operation].[usp_OrderHeaderSave]";
+        public const string DELETEORDERHEADER = "[Operation].[usp_OrderHeaderDelete]";
+        public const string LISTORDERSUMMARYBYSELLER = "[Operation].[usp_OrderSummaryListBySeller]";
+        public const string LISTORDERHEADERBYSELLER = "[Operation].[usp_OrderHeaderListBySeller]";
+        public const string SELECTORDERHEADERBYORDERNO = "[Operation].[usp_OrderHeaderSelectByOrderNo]";
+        public const string ORDERSTATUSUPDATE = "[Operation].[usp_OrderStatusUpdate]";
+        public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
+        public const string UPDATEORDERPICKUP = "[Operation].[usp_UpdateOrderForPickup]";
+
+
+        public const string SELECTORDERHEADERBYORDERID = "[Operation].[usp_OrderHeaderItem]";
+
+
+
+        //DELIVERY
+
+        public const string ORDERDELIVERYHEADER = "[Operation].[usp_OrderHeaderDelivery]";
+        public const string ORDERDELIVERYDETAILS = "[Operation].[usp_OrderDetailDelivery]";
+        public const string ORDERUPDATEAWB = "[Operation].[usp_OrderUpdateAWB]";
+        public const string ORDERDELIVERYTRACKINGDETAILS = "[Operation].[usp_OrderDeliveryTrack]";
+
+        /// <summary>
+        /// [Operation].[OrderDetail]
+        /// </summary>
+
+        public const string SELECTORDERDETAIL = "[Operation].[usp_OrderDetailSelect]";
+        public const string LISTORDERDETAIL = "[Operation].[usp_OrderDetailList]";
+        public const string PAGEVIEWORDERDETAIL = "[Operation].[usp_OrderDetailPageView]";
+        public const string RECORDCOUNTORDERDETAIL = "[Operation].[usp_OrderDetailRecordCount]";
+        public const string SAVEORDERDETAIL = "[Operation].[usp_OrderDetailSave]";
+        public const string DELETEORDERDETAIL = "[Operation].[usp_OrderDetailDelete]";
+
+        public const string PRINTINVOICEHEADER = "[Report].[usp_InvoiceHeader]";
+        public const string PRINTINVOICEDETAIL = "[Report].[usp_InvoiceDetail]";
+
+
+
+
+
+        /// <summary>
+        /// [Master].[Theme]
+        /// </summary>
+
+        public const string SELECTTHEME = "[Master].[usp_ThemeSelect]";
+        public const string LISTTHEME = "[Master].[usp_ThemeList]";
+        public const string SAVETHEME = "[Master].[usp_ThemeSave]";
+        public const string DELETETHEME = "[Master].[usp_ThemeDelete]";
+
+
+        /// <summary>
+        /// [Billing].[InvoiceHeader]
+        /// </summary>
+        public const string SELECTINVOICEHEADER = "[Billing].[usp_InvoiceHeaderSelect]";
+        public const string LISTINVOICEHEADER = "[Billing].[usp_InvoiceHeaderList]";
+        public const string LISTINVOICEHEADERBYSELLER = "[Billing].[usp_InvoiceHeaderListBySeller]";
+        public const string LISTINVOICEHEADERBYMEMBER = "[Billing].[usp_InvoiceHeaderListByMember]";
+        public const string SAVEINVOICEHEADER = "[Billing].[usp_InvoiceHeaderSave]";
+        public const string DELETEINVOICEHEADER = "[Billing].[usp_InvoiceHeaderDelete]";
+
+        /// <summary>
+        /// [Billing].[InvoiceDetail]
+        /// </summary>
+
+        public const string SELECTINVOICEDETAIL = "[Billing].[usp_InvoiceDetailSelect]";
+        public const string LISTINVOICEDETAIL = "[Billing].[usp_InvoiceDetailList]";
+        public const string SAVEINVOICEDETAIL = "[Billing].[usp_InvoiceDetailSave]";
+        public const string DELETEINVOICEDETAIL = "[Billing].[usp_InvoiceDetailDelete]";
+
+
+        /// <summary>
+        /// [Config].[Lookup]
+        /// </summary>
+
+        public const string SELECTMEMBERTHEME = "[Operation].[usp_MemberThemeSelect]";
+        public const string DELETEMEMBERTHEME = "[Operation].[usp_MemberThemeDelete]";
+        public const string SAVEMEMBERTHEME = "[Operation].[usp_MemberThemeSave]";
+        public const string LISTMEMBERTHEME = "[Operation].[usp_MemberThemeList]";
+
+
+        /// <summary>
+        /// [Operation].[DiscountHeader]
+        /// </summary>
+
+        public const string DELETEDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderDelete]";
+        public const string SELECTDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderSelect]";
+        public const string SAVEDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderSave]";
+        public const string LISTDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderList]";
+        public const string LISTDISCOUNTBYVENDOR = "[Operation].[usp_DiscountHeaderListByVendor]";
+
+        ///<summary>
+        /// [Operation].[DiscountDetail]
+        /// </summary>
+        /// 
+        public const string DELETEDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailDelete]";
+        public const string LISTDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailList]";
+        public const string SAVEDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailSave]";
+        public const string SELECTDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailSelect]";
+    }
+}

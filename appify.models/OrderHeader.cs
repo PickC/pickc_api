@@ -1,0 +1,353 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+
+namespace appify.models
+{
+    public partial class OrderHeader
+    {
+        public Int64 OrderID { get; set; }
+
+        public string OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+
+        public Int16 OrderStatus { get; set; }
+
+        public Int64 AddressID { get; set; }
+
+        public decimal OrderAmount { get; set; }
+
+        public decimal DiscountAmount { get; set; }
+
+        public decimal TaxAmount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        public string Currency { get; set; }
+
+        public decimal PaidAmount { get; set; }
+
+        public bool IsCancel { get; set; }
+
+        public bool IsDelivered { get; set; }
+
+        public string Remarks { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime ModifiedOn { get; set; }
+
+        public Int64 CancelBy { get; set; }
+
+        public DateTime DeliveredOn { get; set; }
+
+        public DateTime PaymentConfirmedOn { get; set; }
+
+        public DateTime ClosedOn { get; set; }
+
+        public DateTime CanceledOn { get; set; }
+
+        public string DeliveryInstruction { get; set; }
+
+        public decimal DeliveryCost { get; set; }
+
+        public bool IsAssignPickup { get; set; }
+
+        public decimal TotalWeight { get; set; }
+        public decimal Length { get; set; }
+        public decimal Width { get; set; }
+        public decimal Height { get; set; }
+        public string CourierRefID { get; set; }
+        public string ShipmentID { get; set; }
+        public string AWB { get; set; }
+
+        public short PaymentType { get; set; }
+
+        public string? ReceiverName { get; set; }
+        public string? ReceiverMobileNo { get; set; }
+
+        public short? DeliveryChannel { get; set; }
+        public string? DeliveryChannelDescription { get;set; }
+
+
+
+    }
+
+    public class Order
+    {
+
+        public Int64 OrderID { get; set; }
+        public string? OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+
+        public string FirstName { get; set; }
+        public string EmailID { get; set; }
+        public string MobileNo { get; set; }
+
+        public Int64 AddressID { get; set; }
+
+        public decimal OrderAmount { get; set; }
+
+        public decimal DiscountAmount { get; set; }
+
+        public decimal TaxAmount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        public string? Currency { get; set; }
+
+        public decimal PaidAmount { get; set; }
+
+        public string? Remarks { get; set; }
+        public string? ReceiverName { get; set; }
+        public string? ReceiverMobileNo { get; set; }
+
+        public string? DeliveryInstruction { get; set; }
+        public decimal DeliveryCost { get; set; }
+
+        public short PaymentType { get; set; }
+
+        public bool IsSameState { get; set; }
+        public short? DeliveryChannel { get; set; }
+        public string? DeliveryChannelDescription { get; set; }
+        public string? DeviceToken { get; set; }
+        public List<OrderItem> items { get; set; }
+
+    }
+
+    public partial class VendorOrder
+    {
+        public VendorOrder()
+        {
+            items = new List<OrderDetail>();
+        }
+
+        public Int64 OrderID { get; set; }
+
+        public string OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+
+        public Int64? AddressID { get; set; }
+        public Int16 OrderStatus { get; set; }
+
+
+        public decimal OrderAmount { get; set; }
+
+        public decimal DiscountAmount { get; set; }
+
+        public decimal TaxAmount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        public bool IsCancel { get; set; }
+
+        public bool IsDelivered { get; set; }
+
+        public string Remarks { get; set; }
+
+        public string DeliveryInstruction { get; set; }
+
+        public decimal DeliveryCost { get; set; }
+
+        public string OrderStatusDescription { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public short PaymentType { get; set; }
+        public string PaymentTypeDescription { get; set; }
+
+        public DateTime? DeliveredOn { get; set; }
+
+        public string ShippingAddress { get; set; }
+
+        public string SettlementStatus { get; set; }
+        public string SettlementDescription { get; set; }
+
+        public DateTime? SettlementDate { get; set; }
+        public decimal? SettlementAmount { get; set; }
+        public string Reason { get; set; }
+
+        public short? DeliveryChannel { get; set; }
+
+        public string? DeliveryChannelDescription { get; set; }
+
+        public List<OrderDetail> items { get; set; }
+
+    }
+
+
+    public class OrderHeaderDelivery
+    {
+
+        public OrderHeaderDelivery()
+        {
+            order_items = new List<OrderDetailDelivery>();
+        }
+        public string order_id { get; set; }
+        public string order_date { get; set; }
+        public string pickup_location { get; set; }
+        public string pickup_address { get; set; }
+        
+        public string channel_id { get; set; }
+        public string comment { get; set; }
+        public string billing_customer_name { get; set; }
+        public string billing_last_name { get; set; }
+        public string billing_address { get; set; }
+        public string billing_address_2 { get; set; }
+        public string billing_city { get; set; }
+        public string billing_pincode { get; set; }
+        public string billing_state { get; set; }
+        public string billing_country { get; set; }
+        public string billing_email { get; set; }
+        public string billing_phone { get; set; }
+        public bool shipping_is_billing { get; set; }
+        public string shipping_customer_name { get; set; }
+        public string shipping_last_name { get; set; }
+        public string shipping_address { get; set; }
+        public string shipping_address_2 { get; set; }
+        public string shipping_city { get; set; }
+        public string shipping_pincode { get; set; }
+        public string shipping_country { get; set; }
+        public string shipping_state { get; set; }
+        public string shipping_email { get; set; }
+        public string shipping_phone { get; set; }
+        public string payment_method { get; set; }
+        public decimal shipping_charges { get; set; }
+        public decimal giftwrap_charges { get; set; }
+        public decimal transaction_charges { get; set; }
+        public decimal total_discount { get; set; }
+        public decimal sub_total { get; set; }
+        public decimal length { get; set; }
+        public decimal breadth { get; set; }
+        public decimal height { get; set; }
+        public decimal weight { get; set; }
+
+        public List<OrderDetailDelivery> order_items { get; set; }
+    }
+
+    public partial class OrderDetailDelivery
+    {
+
+        public string name { get; set; }
+        public string sku { get; set; }
+        public short units { get; set; }
+        public decimal selling_price { get; set; }
+        public decimal discount { get; set; }
+        public decimal tax { get; set; }
+        public string hsn { get; set; }
+
+
+
+    }
+
+
+    public partial class OrderTrackingDetails {
+
+        public Int64 OrderID { get; set; }
+        public string CourierRefID { get; set; }
+        public string ShipmentID { get; set; }
+        public string AWB { get; set; }
+
+    }
+
+
+    public partial class CustomerOrder {
+
+        public CustomerOrder()
+        {
+            items = new List<OrderDetail>();
+        }
+        public List<OrderDetail> items { get; set; }
+        public Int64 OrderID { get; set; }
+
+        public string OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+
+        public Int16 OrderStatus { get; set; }
+
+
+        //public decimal OrderAmount { get; set; }
+        public string OrderAmount { get; set; }
+
+        public decimal DiscountAmount { get; set; }
+
+        public decimal TaxAmount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        public bool IsCancel { get; set; }
+
+        public bool IsDelivered { get; set; }
+
+        public string Remarks { get; set; }
+
+        public string DeliveryInstruction { get; set; }
+
+        public decimal DeliveryCost { get; set; }
+
+        public string OrderStatusDescription { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public short PaymentType { get; set; }
+        public string PaymentTypeDescription { get; set; }
+
+
+        public long AddressID { get; set; }
+        public string MobileNo { get; set; }
+        public string ZipCode { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string Landmark { get; set; }
+        public string AlternateNo { get; set; }
+
+        public Int64 ProductID { get; set; }
+        public string ProductDescription { get; set; }
+        public short? DeliveryChannel { get; set; }
+        public string? DeliveryChannelDescription { get; set; }
+
+
+    }
+
+
+    public partial class CustomerOrderSummary
+    {
+
+        public CustomerOrderSummary()
+        {
+        }
+        public Int64 OrderID { get; set; }
+
+        public string OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        public Int16 OrderStatus { get; set; }
+
+
+        public decimal OrderAmount { get; set; }
+
+    }
+
+
+}

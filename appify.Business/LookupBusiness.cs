@@ -1,0 +1,57 @@
+﻿using appify.Business.Contract;
+using appify.DataAccess.Contract;
+using appify.models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace appify.Business
+{
+    public partial class LookupBusiness : ILookupBusiness
+    {
+        private ILookUpRepository repository;
+
+        public LookupBusiness(ILookUpRepository repository)
+        {
+            this.repository = repository;
+        }
+
+        public bool DeleteLookUp(short lookupID)
+        {
+            return repository.DeleteLookUp(lookupID);
+        }
+
+        public List<Lookup> GetAllList()
+        {
+            return repository.GetAllList();
+        }
+
+        public List<Lookup> GetList(string category)
+        {
+            return repository.GetList(category);
+        }
+
+        public List<Lookup> GetList(string category, string userID)
+        {
+            return repository.GetList(category,userID);
+        }
+
+        public Lookup GetLookUp(short lookupID)
+        {
+            return repository.GetLookUp(lookupID);
+        }
+
+        public bool HasLookUp(short lookupID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveLookUp(Lookup item)
+        {
+            return repository.SaveLookUp(item);
+
+        }
+    }
+}

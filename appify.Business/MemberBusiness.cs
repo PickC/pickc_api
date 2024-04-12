@@ -1,0 +1,77 @@
+﻿using appify.Business.Contract;
+using appify.DataAccess.Contract;
+using appify.models;
+
+namespace appify.Business
+{
+    public class MemberBusiness : IMemberBusiness
+    {
+        private IMemberRepository repository;
+        public MemberBusiness(IMemberRepository memberRepository)
+        {
+            this.repository = memberRepository;
+        }
+
+        public List<Member> GetAllMembers()
+        {
+            return repository.GetAllMembers();
+        }
+
+        public Member GetMember(long userID)
+        {
+            return (Member) repository.GetMember(userID);
+        }
+
+        public Member IsMemberExist(string emailID, string mobileNo, short memberType, Int64 parentID)
+        {
+            return repository.IsMemberExist(emailID, mobileNo,memberType,parentID);
+        }
+
+        public Member RegisterMember(Member member)
+        {
+            return repository.RegisterMember(member);
+        }
+
+        public bool RemoveMember(long userID)
+        {
+            return repository.RemoveMember(userID);
+        }
+
+        public bool ResetPassword(long userID, string password)
+        {
+            return repository.ResetPassword(userID, password);
+        }
+
+
+        public bool CheckMemberOnlinePaymentStatus(long userID) { 
+            return repository.CheckMemberOnlinePaymentStatus(userID);
+        
+        }
+
+
+        public Member MemberLogIn(string emailID, string mobileNo, string password, Int64 parentID) { 
+            return repository.MemberLogIn(emailID,mobileNo,password,parentID);
+        }
+        public object MemberLogOut(long userID) { 
+            return repository.MemberLogOut(userID);
+        }
+
+        public object MemberDashboard(long userID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Member> GetAllVendors(int pageNo, int rows)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool RemoveMemberByMobileNo(string mobileNo, string password) { 
+            return repository.RemoveMemberByMobileNo(mobileNo,password);
+        }
+
+        public Int32 MemberOrderCount(long userID) { 
+            return repository.MemberOrderCount(userID);
+        }
+    }
+}
