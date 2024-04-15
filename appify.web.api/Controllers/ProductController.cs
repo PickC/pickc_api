@@ -578,7 +578,7 @@ namespace appify.web.api.Controllers
                     // Create a StringContent with the image data and set the content type
                     // var content = new FormUrlEncodedContent(new[] {
                     //    new KeyValuePair<string, string>("",imagePath)
-                    //});
+                    //}); 
 
                     //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
                     ////**********************************************************************************///////
