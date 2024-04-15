@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TNqqu73VmEZuOxe4vI/fiGGqUAyJGPrAPjeIiTOFhg7uVWNf0x9Ue3+4qjAPOcN6/fwoeFmTSl6EX6lBj/DCOQ==",
+  "dgSpecHash": "G4YXlyhXoNX3jiSUw892GFfb3YcJeUymqQaOIcMjyo4X2S50roi+EQhLWhb3XP+t5YxNQ7i/udJSul12XRbL6Q==",
   "success": true,
-  "projectFilePath": "D:\\Project\\Appify.API\\appify.Business.Contract\\appify.Business.Contract.csproj",
+  "projectFilePath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

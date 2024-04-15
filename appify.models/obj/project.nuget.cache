@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UGoTIjsAtB+GzMj7aX3iaQzutwPrAf4JgUfEMxd3/D2EgKH1hJBJj33ejRw/rsj2Zi8KwUyGGsXwc4fEt/dxWw==",
+  "dgSpecHash": "7ygO6cRC/0n+p1tF+RGtkDN3LLzEcp9NJoFnNUNoA8PBWBlWo49vm6onCE1LLlFrFqckg63bBGdQsgCAtDZUJg==",
   "success": true,
-  "projectFilePath": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj",
+  "projectFilePath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

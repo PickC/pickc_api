@@ -5,6 +5,7 @@ using appify.utility;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Net;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -557,13 +558,31 @@ namespace appify.web.api.Controllers
                 try
                 {
 
+                    var content = new MultipartFormDataContent();
+
+                    using (WebClient webClient = new WebClient())
+                    {
+                        string url = string.Format(imagePath);
+                        var fileName = Path.GetFileName(url);
+                        var memoryStream = new MemoryStream(webClient.DownloadData(url));
+                        var fileContent = new StreamContent(memoryStream);
+                        fileContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("image/jpeg");
+
+                        content.Add(fileContent, "file", fileName);
+                        memoryStream.Flush();
+                    }
+
+                    ////**********************************************************************************///////
+                    // Previous Code Starts///
 
                     // Create a StringContent with the image data and set the content type
-                    var content = new FormUrlEncodedContent(new[] {
-                        new KeyValuePair<string, string>("",imagePath)
-                    });
+                    // var content = new FormUrlEncodedContent(new[] {
+                    //    new KeyValuePair<string, string>("",imagePath)
+                    //});
 
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
+                    //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
+                    ////**********************************************************************************///////
+                    // Previous Code Ends///
 
                     // Send the POST request
                     HttpResponseMessage response = await client.PostAsync(Common.IMAGECLASSIFIER_URL, content);
