@@ -54,4 +54,36 @@ namespace appify.models
         public Int64 ProductID { get; set; }
         public bool IsActive { get; set; }
     }
+
+
+    public partial class ProductDiscount {
+
+        public ProductDiscount()
+        {
+            ProductDiscountDateList = new List<ProductDiscountDates>();
+        }
+        public Int64 DiscountID { get; set; }
+        public Int64 ProductID { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public string Brand { get; set; }
+        public string EffectiveDate { get; set; }
+        public string ExpiryDate { get; set; }
+        public decimal? Price { get; set; }
+        public short DiscountType { get; set; }
+        public decimal? DiscountValue { get; set; }
+        public string DiscountTypeDescription { get; set; }
+
+        public List<ProductDiscountDates> ProductDiscountDateList { get; set; }
+
+
+    }
+
+    public partial class ProductDiscountDates {
+        public Int64 DiscountID { get; set; }
+        public Int64 ProductID { get; set; }
+        public string EffectiveDate { get; set; }
+        public string ExpiryDate { get; set; }
+
+    }
 }

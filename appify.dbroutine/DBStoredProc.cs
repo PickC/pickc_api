@@ -98,6 +98,10 @@ namespace appify.dbroutine
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
 
 
+        public const string PRODUCTMASTERISNEWSTATUS = "[Operation].[usp_ProductMasterIsNewStatus]";
+        public const string PRODUCTMASTERUPDATEISNEW = "[Operation].[usp_ProductMasterUpdateIsNew]";
+
+
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>
@@ -226,6 +230,10 @@ namespace appify.dbroutine
         public const string SAVEDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderSave]";
         public const string LISTDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderList]";
         public const string LISTDISCOUNTBYVENDOR = "[Operation].[usp_DiscountHeaderListByVendor]";
+        public const string LISTVENDORPRODUCTDISCOUNTS = "[Operation].[usp_ProductDiscountList]";
+        
+
+
 
         ///<summary>
         /// [Operation].[DiscountDetail]
