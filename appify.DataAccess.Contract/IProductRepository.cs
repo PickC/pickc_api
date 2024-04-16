@@ -21,5 +21,12 @@ namespace appify.DataAccess.Contract
 
         public bool UpdateProductImagePrice(long productID); 
 
+        public bool UpdateProductIsNewStatus(long productID, bool isNew);
+
+
+
+        public List<NewProduct> NewProducts(long sellerID);
+
+
     }
 }

@@ -100,6 +100,27 @@ namespace appify.Business
             return item;
         }
 
+
+        public bool UpdateProductIsNewStatus(List<NewProduct> products) {
+        
+            var result=false;
+            foreach (var item in products)
+            {
+                result = repository.UpdateProductIsNewStatus(item.ProductID, item.IsNew);
+            }
+
+            return result;
+
+        }
+
+
+
+
+        public List<NewProduct> NewProducts(long sellerID) {
+        
+             return repository.NewProducts(sellerID);
+        }
+
         
     }
 }
