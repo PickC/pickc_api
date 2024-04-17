@@ -2,6 +2,7 @@
 using appify.models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace appify.web.api.Controllers
@@ -23,7 +24,27 @@ namespace appify.web.api.Controllers
             this._discountDetailBusiness = discountDetailBusiness;
         }
 
+
+        /// <summary>
+        /// Adds a Product Discount.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /save product discount
+        ///     {
+        ///        "id": 1,
+        ///        "name": "Item1",
+        ///        "isComplete": true
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="discountHeader"></param>
+        /// <returns>ResponseMessageObject</returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="500">If the item is null</response> 
         [HttpPost, Route("Save")]
+        
         public IActionResult discountHeaderAdd(DiscountHeader discountHeader)
         {
             try
