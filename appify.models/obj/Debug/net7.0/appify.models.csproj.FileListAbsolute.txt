@@ -9,3 +9,15 @@ D:\Project\appify\appify.models\obj\Debug\net7.0\appify.models.dll
 D:\Project\appify\appify.models\obj\Debug\net7.0\refint\appify.models.dll
 D:\Project\appify\appify.models\obj\Debug\net7.0\appify.models.pdb
 D:\Project\appify\appify.models\obj\Debug\net7.0\ref\appify.models.dll
+D:\Projects\Dotnet\appify_20240401\appify.models\bin\Debug\net7.0\appify.models.deps.json
+D:\Projects\Dotnet\appify_20240401\appify.models\bin\Debug\net7.0\appify.models.dll
+D:\Projects\Dotnet\appify_20240401\appify.models\bin\Debug\net7.0\appify.models.pdb
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.AssemblyInfoInputs.cache
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.AssemblyInfo.cs
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.csproj.CoreCompileInputs.cache
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.sourcelink.json
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.dll
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\refint\appify.models.dll
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\appify.models.pdb
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Debug\net7.0\ref\appify.models.dll

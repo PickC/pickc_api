@@ -235,5 +235,12 @@ namespace appify.dbroutine
         public const string LISTDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailList]";
         public const string SAVEDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailSave]";
         public const string SELECTDISCOUNTDETAIL = "[Operation].[usp_DiscountDetailSelect]";
+
+        ///<summary>
+        /// [Operation].[ProductMaster]
+        /// </summary>
+        /// 
+        public const string LISTNEWPRODUCTS = "[Operation].[usp_ProductMasterIsNewStatus]";
+        public const string UPDATENEWPRODUCTS = "[Operation].[usp_ProductMasterUpdateIsNew]";
     }
 }

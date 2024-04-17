@@ -610,5 +610,71 @@ namespace appify.web.api.Controllers
                 return responseBody ;
             }
         }
+
+        [HttpPost, Route("NewProductsList")]
+        public IActionResult GetNewProductsList(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.GetNewProductsList(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "NEW PRODUCTS ARE GET SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("UpdateProductAsNew")]
+        public IActionResult UpdateNewProducts(ParamNewUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.UpdateNewProducts(itemData.ProductID, itemData.IsNew);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "NEW PRODUCT ARE UPDATED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
     }
 }

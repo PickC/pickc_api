@@ -186,5 +186,46 @@ namespace appify.DataAccess
 
             return productmaster;
         }
+
+        public List<ProductMaster> GetNewProductsList(long VendorID)
+        {
+            List<ProductMaster> items = new List<ProductMaster>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID);
+            items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
+
+            return items;
+        }
+
+        public bool UpdateNewProducts(long ProductID, int IsNew)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATENEWPRODUCTS))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
+                        cmd.Parameters.AddWithValue("@IsNew", IsNew);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
     }
 }
