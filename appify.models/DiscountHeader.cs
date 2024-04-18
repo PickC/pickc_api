@@ -60,7 +60,7 @@ namespace appify.models
 
         public ProductDiscount()
         {
-            ProductDiscountDateList = new List<ProductDiscountDates>();
+           // ProductDiscountDateList = new List<ProductDiscountDates>();
         }
         public Int64 DiscountID { get; set; }
         public Int64 ProductID { get; set; }
@@ -74,7 +74,11 @@ namespace appify.models
         public decimal? DiscountValue { get; set; }
         public string DiscountTypeDescription { get; set; }
 
-        public List<ProductDiscountDates> ProductDiscountDateList { get; set; }
+        public bool IsActive { get; set; }
+        public Int64 ImageID { get; set; }
+        public string ImageName { get; set; }
+
+        //public List<ProductDiscountDates> ProductDiscountDateList { get; set; }
 
 
     }

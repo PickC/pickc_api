@@ -13,7 +13,7 @@ namespace appify.DataAccess.Contract
         public DiscountHeader Get(Int64 DiscountID);
         public DiscountHeader Save(DiscountHeader item);
         public bool Remove(Int64 DiscountID, Int64 ModifiedBy);
-        public List<DiscountHeader> ListByVendor(long vendorID);
+        public List<ProductDiscount> ListByVendor(long vendorID);
 
 
     }
