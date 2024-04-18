@@ -26,25 +26,40 @@ namespace appify.web.api.Controllers
 
 
         /// <summary>
-        /// Adds a Product Discount.
+        /// Adds a Product's Discount.
         /// </summary>
         /// <remarks>
         /// Sample request:
-        ///
-        ///     POST /save product discount
+        /// NOTE : For a new Product Discount object, send the DiscountID = 0.
+        /// 
         ///     {
-        ///        "id": 1,
-        ///        "name": "Item1",
-        ///        "isComplete": true
+        ///         "DiscountID": 0,
+        ///         "VendorID": 1505,
+        ///         "DiscountType": 3001,
+        ///         "DiscountValue": 0.33,
+        ///         "EffectiveDate": "2024-04-11T15:55:06.807",
+        ///         "ExpiryDate": "2024-04-18T15:55:06.807",
+        ///         "IsCancel": false,
+        ///         "CreatedBy": 1505,
+        ///         "CreatedOn": "2024-04-11T18:20:59.953",
+        ///         "ModifiedBy": "",
+        ///         "ModifiedOn": "2024-04-11T18:21:53.250",
+        ///         "DiscountDetails": [
+        ///             {
+        ///                 "DiscountID": 1000,
+        ///                 "ProductID": 1005,
+        ///                 "IsActive": true
+        ///             }
+        ///          ]
         ///     }
-        ///
+        /// 
+        /// 
         /// </remarks>
         /// <param name="discountHeader"></param>
-        /// <returns>ResponseMessageObject</returns>
-        /// <response code="200">Returns the newly created item</response>
-        /// <response code="500">If the item is null</response> 
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
-        
         public IActionResult discountHeaderAdd(DiscountHeader discountHeader)
         {
             try
@@ -66,7 +81,7 @@ namespace appify.web.api.Controllers
                     rm.data = null;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
@@ -76,6 +91,23 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+        /// <summary>
+        /// removes Product's Discount Item
+        /// </summary>
+        /// <remarks>
+        /// Sample Data :
+        /// 
+        ///     {
+        ///         "DiscountID":1000,
+        ///         "ModifiedBy":1505
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Boolean Value </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("Remove")]
         public IActionResult discountHeaderRemove(ParamDiscountRemove itemData)
@@ -110,6 +142,52 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+
+
+        /// <summary>
+        /// gets Product's Discount Item
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "DiscountID":1000
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///         "DiscountID": 1000,
+        ///         "VendorID": 1505,
+        ///         "DiscountType": 3001,
+        ///         "DiscountValue": 0.33,
+        ///         "EffectiveDate": "2024-04-11T15:55:06.807",
+        ///         "ExpiryDate": "2024-04-18T15:55:06.807",
+        ///         "IsCancel": false,
+        ///         "CreatedBy": 1505,
+        ///         "CreatedOn": "2024-04-11T18:20:59.953",
+        ///         "ModifiedBy": "",
+        ///         "ModifiedOn": "2024-04-11T18:21:53.250",
+        ///         "DiscountDetails": [
+        ///             {
+        ///                 "DiscountID": 1000,
+        ///                 "ProductID": 1005,
+        ///                 "IsActive": true
+        ///             }
+        ///          ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="DiscountID"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+
+
         [HttpPost, Route("Get")]
         public IActionResult discountHeaderGet(ParamDiscount itemData)
         {
@@ -143,6 +221,39 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        /// <summary>
+        /// gets Product's Discount Items LIST (ONLY FOR TEST PURPOSE, NOT IMPLEMENTED IN THE APPS)
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///         "DiscountID": 1000,
+        ///         "VendorID": 1505,
+        ///         "DiscountType": 3001,
+        ///         "DiscountValue": 0.33,
+        ///         "EffectiveDate": "2024-04-11T15:55:06.807",
+        ///         "ExpiryDate": "2024-04-18T15:55:06.807",
+        ///         "IsCancel": false,
+        ///         "CreatedBy": 1505,
+        ///         "CreatedOn": "2024-04-11T18:20:59.953",
+        ///         "ModifiedBy": "",
+        ///         "ModifiedOn": "2024-04-11T18:21:53.250",
+        ///         "DiscountDetails": [
+        ///             {
+        ///                 "DiscountID": 1000,
+        ///                 "ProductID": 1005,
+        ///                 "IsActive": true
+        ///             }
+        ///          ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("List")]
         public IActionResult discountHeaderList(ParamDiscount itemData)
         {
@@ -175,6 +286,44 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+        
+
+
+        /// <summary>
+        /// gets Product's Discount items by vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "VendorID":1505
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     [
+        ///         {
+        ///             "DiscountID": 1000,
+        ///             "EffectiveDate": "2024-04-16T15:55:06.807",
+        ///             "ExpiryDate": "2024-04-18T15:55:06.807",
+        ///             "ProductID": 1005,
+        ///             "ProductName": "Tshirt",
+        ///             "Description": "boys and girls kids white tshirts",
+        ///             "Brand": "qikink kids ",
+        ///             "Price": 200.00,
+        ///             "DiscountType": 3003,
+        ///             "DiscountValue": 0.43,
+        ///             "DiscountTypeDescription": "",
+        ///             "IsActive": 1,
+        ///             "ImageID": 1014,
+        ///             "ImageName": "https:\/\/appifystorage.blob.core.windows.net\/appifystoragecontainer\/image_cropper_1694071692121.jpg"
+        ///         }
+        ///     ]    
+        /// </remarks>
+        /// <param name="VendorID"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Discounted Products List Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyvendor")]
         public IActionResult ListByVendor(ParamMemberUserID itemData)
         {
@@ -209,138 +358,140 @@ namespace appify.web.api.Controllers
         }
 
 
-        /////////// Discount Detail
-        
-        [HttpPost, Route("Detail/Save")]
-        public IActionResult discountDetailAdd(DiscountDetail discountDetail)
-        {
-            try
-            {
-                rm = new ResponseMessage();
-                var result = this._discountDetailBusiness.Save(discountDetail);
-                if (result != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "DISCOUNT DETAILED SAVED SUCCESSFULLY!";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-            }
+        #region "Discount Detail"
 
-            return Ok(rm);
-        }
+        //[HttpPost, Route("Detail/Save")]
+        //public IActionResult discountDetailAdd(DiscountDetail discountDetail)
+        //{
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        var result = this._discountDetailBusiness.Save(discountDetail);
+        //        if (result != null)
+        //        {
+        //            rm.statusCode = StatusCodes.OK;
+        //            rm.message = "DISCOUNT DETAILED SAVED SUCCESSFULLY!";
+        //            rm.name = StatusName.ok;
+        //            rm.data = result;
+        //        }
+        //        else
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "NO CONTENT";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+        //    }
 
-        [HttpPost, Route("Detail/Remove")]
-        public IActionResult discountDetailRemove(ParamDiscountDetail itemData)
-        {
-            try
-            {
-                rm = new ResponseMessage();
-                var result = this._discountDetailBusiness.Remove(itemData.DiscountID, itemData.productID);
-                if (result != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "DISCOUNT DETAILED REMOVED SUCCESSFULLY!";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-            }
+        //    return Ok(rm);
+        //}
 
-            return Ok(rm);
-        }
+        //[HttpPost, Route("Detail/Remove")]
+        //public IActionResult discountDetailRemove(ParamDiscountDetail itemData)
+        //{
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        var result = this._discountDetailBusiness.Remove(itemData.DiscountID, itemData.productID);
+        //        if (result != null)
+        //        {
+        //            rm.statusCode = StatusCodes.OK;
+        //            rm.message = "DISCOUNT DETAILED REMOVED SUCCESSFULLY!";
+        //            rm.name = StatusName.ok;
+        //            rm.data = result;
+        //        }
+        //        else
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "NO CONTENT";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+        //    }
 
-        [HttpPost, Route("Detail/Get")]
-        public IActionResult discountDetailGet(ParamDiscountDetail itemData)
-        {
-            try
-            {
-                rm = new ResponseMessage();
-                var result = this._discountDetailBusiness.Get(itemData.DiscountID, itemData.productID);
-                if (result != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH DISCOUNT DETAIL ITEM!";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-            }
+        //    return Ok(rm);
+        //}
 
-            return Ok(rm);
-        }
+        //[HttpPost, Route("Detail/Get")]
+        //public IActionResult discountDetailGet(ParamDiscountDetail itemData)
+        //{
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        var result = this._discountDetailBusiness.Get(itemData.DiscountID, itemData.productID);
+        //        if (result != null)
+        //        {
+        //            rm.statusCode = StatusCodes.OK;
+        //            rm.message = "FETCH DISCOUNT DETAIL ITEM!";
+        //            rm.name = StatusName.ok;
+        //            rm.data = result;
+        //        }
+        //        else
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "NO CONTENT";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+        //    }
 
-        [HttpPost, Route("Detail/List")]
-        public IActionResult discountDetailList(ParamDiscountDetail itemData)
-        {
-            try
-            {
-                rm = new ResponseMessage();
-                var result = this._discountDetailBusiness.GetAll(itemData.DiscountID, itemData.productID);
-                if (result != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH DISCOUNT DETAIL ITEM!";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-            }
+        //    return Ok(rm);
+        //}
 
-            return Ok(rm);
-        }
+        //[HttpPost, Route("Detail/List")]
+        //public IActionResult discountDetailList(ParamDiscountDetail itemData)
+        //{
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        var result = this._discountDetailBusiness.GetAll(itemData.DiscountID, itemData.productID);
+        //        if (result != null)
+        //        {
+        //            rm.statusCode = StatusCodes.OK;
+        //            rm.message = "FETCH DISCOUNT DETAIL ITEM!";
+        //            rm.name = StatusName.ok;
+        //            rm.data = result;
+        //        }
+        //        else
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "NO CONTENT";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = null;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+        //    }
+
+        //    return Ok(rm);
+        //}
+
+        #endregion
     }
 }

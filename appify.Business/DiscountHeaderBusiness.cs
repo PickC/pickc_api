@@ -12,37 +12,52 @@ namespace appify.Business
 {
     public partial class DiscountHeaderBusiness : IDiscountHeaderBusiness
     {
-        private IDiscountHeaderRepository _repository;
+        private IDiscountHeaderRepository repository;
+        private IDiscountDetailRepository repositoryDetail;
 
-        public DiscountHeaderBusiness(IDiscountHeaderRepository repository)
+        public DiscountHeaderBusiness(IDiscountHeaderRepository repository, IDiscountDetailRepository repositoryDetail)
         {
-            this._repository = repository;
+            this.repository = repository;
+            this.repositoryDetail = repositoryDetail;
         }
         public DiscountHeader Get(long DiscountID)
         {
-            return _repository.Get(DiscountID);
+
+            return repository.Get(DiscountID);
         }
 
         public List<DiscountHeader> GetAll(long DiscountID)
         {
-           return _repository.GetAll(DiscountID);
+           return repository.GetAll(DiscountID);
         }
 
-        public List<DiscountHeader> ListByVendor(long vendorID)
-            
+        public List<ProductDiscount> ListByVendor(long vendorID)
         {
-            return _repository.ListByVendor(vendorID);
+
+            return repository.ListByVendor(vendorID);
         }
 
 
         public bool Remove(long DiscountID, long ModifiedBy)
         {
-            return _repository.Remove(DiscountID, ModifiedBy);
+            return repository.Remove(DiscountID, ModifiedBy);
         }
 
         public DiscountHeader Save(DiscountHeader item)
         {
-            return _repository.Save(item);
+            DiscountHeader returnItem = repository.Save(item);
+
+            if (item.DiscountDetails?.Any()==true)
+            {
+                
+                foreach (var dt in item.DiscountDetails)
+                {
+                    dt.DiscountID = returnItem.DiscountID;
+                    var result = repositoryDetail.Save(dt);
+                }
+            }
+
+            return returnItem;
         }
     }
 }
