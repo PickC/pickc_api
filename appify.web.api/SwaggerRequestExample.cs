@@ -10,10 +10,10 @@ namespace appify.web.api
 
     }
 
-    public class ParamNewUserID
+    public class ParamNewProduct
     {
         public long ProductID { get; set; }
-        public int IsNew {  get; set; }
+        public bool IsNew {  get; set; }
 
     }
 

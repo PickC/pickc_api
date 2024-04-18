@@ -611,6 +611,22 @@ namespace appify.web.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get New Product List By Vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Get List of New Products
+        ///     {
+        ///         "VendorID": 1004
+        ///     }
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Response Message Object Type : ProductMaster</returns>
+        /// <response code="200">PRODUCTS LIST WITH NEW STATUS</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
         [HttpPost, Route("NewProductsList")]
         public IActionResult GetNewProductsList(ParamMemberUserID itemData)
         {
@@ -621,7 +637,7 @@ namespace appify.web.api.Controllers
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "NEW PRODUCTS ARE GET SUCCESSFULLY!";
+                    rm.message = "PRODUCTS LIST WITH NEW STATUS";
                     rm.name = StatusName.ok;
                     rm.data = result;
                 }
@@ -643,9 +659,26 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Update New Product By ProductID and IsNew.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "ProductID": 1004,
+        ///         "IsNew":true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("UpdateProductAsNew")]
-        public IActionResult UpdateNewProducts(ParamNewUserID itemData)
+        public IActionResult UpdateNewProducts(ParamNewProduct itemData)
         {
             try
             {
@@ -654,7 +687,7 @@ namespace appify.web.api.Controllers
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "NEW PRODUCT ARE UPDATED SUCCESSFULLY!";
+                    rm.message = "PRODUCT NEW STATUS UPDATED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
                     rm.data = result;
                 }

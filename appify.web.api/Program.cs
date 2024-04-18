@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 
 //Data Access services
 builder.Services.AddSingleton<IAddressRepository, AddressRepository>(); //
@@ -50,7 +50,7 @@ builder.Services.AddSingleton<IMemberContactBusiness, MemberContactBusiness>();/
 builder.Services.AddSingleton<IMemberKYCBusiness, MemberKYCBusiness>();//
 builder.Services.AddSingleton<IMemberReturnPolicyBusiness, MemberReturnPolicyBusiness>();//
 builder.Services.AddSingleton<IMemberThemeBusiness, MemberThemeBusiness>();//
-///builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
+//builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
 builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();//
 builder.Services.AddSingleton<IProductBusiness, ProductBusiness>();//
 builder.Services.AddSingleton<IProductImageBusiness, ProductImageBusiness>();//
@@ -73,7 +73,17 @@ builder.Services.AddSingleton<IThemeMasterBusiness, ThemeMasterBusiness>();//
 //    })
 //);
 
+builder.Services.AddSwaggerGen(sg=> {
+    sg.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Appify API Doc",
+        Version = "v1"
+    });
 
+    var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    var swaggerdocfilePath = Path.Combine(baseDirectory, "appify.web.api.xml");
+    sg.IncludeXmlComments(swaggerdocfilePath);
+} );
 
 var app = builder.Build();
 

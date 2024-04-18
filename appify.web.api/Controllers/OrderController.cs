@@ -42,7 +42,7 @@ namespace appify.web.api.Controllers
             _fcmNotificationSetting.SenderId = configuration["FcmNotification:SenderId"].ToString();
             //_notificationService = new NotificationService(_fcmNotificationSetting);
 
-            ///Email Notification
+            //Email Notification
             _emailnotifications = new Notifications();
         }
 
@@ -184,11 +184,11 @@ namespace appify.web.api.Controllers
 
                     /////FCM Notification --------
 
-                    ///_notificationModel.IsAndroiodDevice = true;
-                    /// _notificationModel.DeviceId = order.DeviceToken;
+                    ////_notificationModel.IsAndroiodDevice = true;
+                    //// _notificationModel.DeviceId = order.DeviceToken;
                     // _notificationModel.Title = "Hi " + firstName;
-                    /// _notificationModel.Body = NotificationConfig.ORDER_FCM_SUBJECT;
-                    /// _notificationService.SendNotification(_notificationModel);
+                    //// _notificationModel.Body = NotificationConfig.ORDER_FCM_SUBJECT;
+                    //// _notificationService.SendNotification(_notificationModel);
                     //using (NotificationService service = new NotificationService(_fcmNotificationSetting))
                     //{
                     //    _notificationModel.IsAndroiodDevice = true;

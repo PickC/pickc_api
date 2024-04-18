@@ -189,7 +189,7 @@ namespace appify.web.api.Controllers
 
 
         ///////////// Discount Detail
-        ///
+        
         //[HttpPost, Route("DiscountDetailSave")]
         //public IActionResult discountDetailAdd(DiscountDetail discountDetail)
         //{

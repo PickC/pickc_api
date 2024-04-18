@@ -105,7 +105,7 @@ namespace appify.Business
             return repository.GetNewProductsList(VendorID);
         }
 
-        public bool UpdateNewProducts(long ProductID, int IsNew)
+        public bool UpdateNewProducts(long ProductID, bool IsNew)
         {
             return repository.UpdateNewProducts(ProductID, IsNew);
         }

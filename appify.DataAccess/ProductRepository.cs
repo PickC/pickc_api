@@ -196,7 +196,7 @@ namespace appify.DataAccess
             return items;
         }
 
-        public bool UpdateNewProducts(long ProductID, int IsNew)
+        public bool UpdateNewProducts(long ProductID, bool IsNew)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
