@@ -18,7 +18,10 @@ namespace appify.web.api.Controllers
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
         private ResponseMessage rm;
-        public ProductController(IConfiguration configuration, IProductBusiness iResultData, IProductPriceBusiness priceBusiness,IProductImageBusiness imageBusiness)
+        public ProductController(IConfiguration configuration, 
+                        IProductBusiness iResultData, 
+                        IProductPriceBusiness priceBusiness,
+                        IProductImageBusiness imageBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
@@ -545,7 +548,6 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
 
         private static async Task<string> ImageClassifier(string imagePath)
         {

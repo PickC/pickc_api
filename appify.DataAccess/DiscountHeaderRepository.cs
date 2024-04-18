@@ -40,13 +40,13 @@ namespace appify.DataAccess
         }
 
 
-        public List<DiscountHeader> ListByVendor(long vendorID)
+        public List<ProductDiscount> ListByVendor(long vendorID)
         {
-            List<DiscountHeader> item = new List<DiscountHeader>();
+            List<ProductDiscount> items = new List<ProductDiscount>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTBYVENDOR, vendorID);
-            item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]);
+            items = DataTableHelper.ConvertDataTable<ProductDiscount>(ds.Tables[0]);
 
-            return item;
+            return items;
         }
 
         public bool Remove(long DiscountID, long ModifiedBy)

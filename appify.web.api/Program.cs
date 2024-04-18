@@ -2,6 +2,8 @@ using appify.Business;
 using appify.Business.Contract;
 using appify.DataAccess;
 using appify.DataAccess.Contract;
+using System.IO;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddNewtonsoftJson();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 
 //Data Access services
 builder.Services.AddSingleton<IAddressRepository, AddressRepository>(); //

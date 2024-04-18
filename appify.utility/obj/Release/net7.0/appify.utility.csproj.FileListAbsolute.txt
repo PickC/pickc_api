@@ -23,3 +23,15 @@ D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.util
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\refint\appify.utility.dll
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.utility.pdb
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\ref\appify.utility.dll
+D:\Project\Appify.API\appify.utility\bin\Release\net7.0\appify.utility.deps.json
+D:\Project\Appify.API\appify.utility\bin\Release\net7.0\appify.utility.dll
+D:\Project\Appify.API\appify.utility\bin\Release\net7.0\appify.utility.pdb
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.csproj.AssemblyReference.cache
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.AssemblyInfoInputs.cache
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.AssemblyInfo.cs
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.csproj.CoreCompileInputs.cache
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.dll
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\refint\appify.utility.dll
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\appify.utility.pdb
+D:\Project\Appify.API\appify.utility\obj\Release\net7.0\ref\appify.utility.dll

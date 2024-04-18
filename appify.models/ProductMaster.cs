@@ -50,14 +50,16 @@ namespace appify.models
     }
 
 
-    public partial class Product : ProductMaster {
+    public partial class Product : ProductMaster
+    {
 
         public List<ProductPrice>? prices { get; set; }
-        public List<ProductImage>? images { get; set; } 
+        public List<ProductImage>? images { get; set; }
 
     }
 
-    public partial class ProductWeb : ProductMaster {
+    public partial class ProductWeb : ProductMaster
+    {
 
         public string VendorName { get; set; }
         public string CategoryDescription { get; set; }
@@ -75,8 +77,22 @@ namespace appify.models
         public Int16? Category { get; set; }
 
         public string? Brand { get; set; }
-         public decimal? Price { get; set; }
+        public decimal? Price { get; set; }
         public string? ImageName { get; set; }
-        
+
+    }
+
+    public partial class NewProduct
+    {
+
+        public Int64 ProductID { get; set; }
+
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public string Brand { get; set; }
+        public decimal? Price { get; set; }
+        public bool IsNew { get; set; }
+
+
     }
 }
