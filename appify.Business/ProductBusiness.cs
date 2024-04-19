@@ -27,14 +27,15 @@ namespace appify.Business
             this.repository = repository;
             this.priceRepository = priceRepository;
             this.imageRepository = imageRepository;
-        
+
         }
         public bool DeleteProduct(long productId)
         {
-           return repository.DeleteProduct(productId);
+            return repository.DeleteProduct(productId);
         }
 
-        public bool UpdateProductImagePrice(long productID) {
+        public bool UpdateProductImagePrice(long productID)
+        {
 
             return repository.UpdateProductImagePrice(productID);
         }
@@ -55,7 +56,8 @@ namespace appify.Business
             return repository.GetAllProducts();
         }
 
-        public List<ProductWeb> ListAll() {
+        public List<ProductWeb> ListAll()
+        {
             return repository.ListAll();
         }
         public bool HasProduct(long productId)
@@ -64,7 +66,7 @@ namespace appify.Business
         }
 
 
-        
+
         public ProductMaster SaveProduct(ProductMaster product)
         {
             return repository.SaveProduct(product);
@@ -74,9 +76,9 @@ namespace appify.Business
         {
             var item = repository.SaveProduct(product);
             var result = false;
-            if (item!=null)
+            if (item != null)
             {
-                if (product.prices?.Any()==true)
+                if (product.prices?.Any() == true)
                 {
                     product.prices.ForEach(p => { p.ProductID = item.ProductID; });
 
@@ -87,7 +89,7 @@ namespace appify.Business
                 }
 
 
-                if (product.images?.Any()==true)
+                if (product.images?.Any() == true)
                 {
                     product.images.ForEach(p => { p.ProductID = item.ProductID; });
                     foreach (var productImage in product.images)
@@ -100,38 +102,14 @@ namespace appify.Business
             return item;
         }
 
-
-        public bool UpdateProductIsNewStatus(List<NewProduct> products) {
-        
-            var result=false;
-            foreach (var item in products)
-            {
-                result = repository.UpdateProductIsNewStatus(item.ProductID, item.IsNew);
-            }
-
-            return result;
-
-        }
-
-
-
-
-        public List<NewProduct> NewProducts(long sellerID) {
-        
-             return repository.NewProducts(sellerID);
-        }
-
-
         public List<ProductMaster> GetNewProductsList(long VendorID)
         {
             return repository.GetNewProductsList(VendorID);
         }
 
-        public bool UpdateNewProducts(long ProductID, int IsNew)
+        public bool UpdateNewProducts(long ProductID, bool IsNew)
         {
             return repository.UpdateNewProducts(ProductID, IsNew);
         }
-
-
     }
 }

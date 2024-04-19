@@ -15,21 +15,15 @@ namespace appify.DataAccess.Contract
 
         public ProductMaster GetProduct(long productId);
         public List<ProductMaster> GetProducts(long sellerID);
-        public List<ProductMaster> GetAllProducts(); 
+        public List<ProductMaster> GetAllProducts();
 
         public List<ProductWeb> ListAll();
 
-        public bool UpdateProductImagePrice(long productID); 
-
-        public bool UpdateProductIsNewStatus(long productID, bool isNew);
-
-
-
-        public List<NewProduct> NewProducts(long sellerID);
+        public bool UpdateProductImagePrice(long productID);
 
         public List<ProductMaster> GetNewProductsList(long VendorID);
 
-        public bool UpdateNewProducts(long ProductID, int IsNew);
+        public bool UpdateNewProducts(long ProductID, bool IsNew);
 
     }
 }

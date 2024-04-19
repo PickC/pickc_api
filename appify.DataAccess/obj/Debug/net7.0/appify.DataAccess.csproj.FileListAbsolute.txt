@@ -19,6 +19,11 @@ D:\Project\appify\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.dll
 D:\Project\appify\appify.DataAccess\obj\Debug\net7.0\refint\appify.DataAccess.dll
 D:\Project\appify\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.pdb
 D:\Project\appify\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.dll
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.pdb
@@ -41,3 +46,28 @@ D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\appify.Dat
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\refint\appify.DataAccess.dll
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.pdb
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
+<<<<<<< Updated upstream
+=======
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.deps.json
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.dll
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.pdb
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.Contract.dll
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.dbroutine.dll
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.models.dll
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.utility.dll
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.Contract.pdb
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.dbroutine.pdb
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.models.pdb
+D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.utility.pdb
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.csproj.AssemblyReference.cache
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.AssemblyInfoInputs.cache
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.AssemblyInfo.cs
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.csproj.CoreCompileInputs.cache
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.csproj.CopyComplete
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.dll
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\refint\appify.DataAccess.dll
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.pdb
+D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes

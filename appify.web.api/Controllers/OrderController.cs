@@ -19,31 +19,39 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly IOrderBusiness orderBusiness;
         private readonly IInvoiceBusinesss invoiceBusinesss;
-        //public NotificationService _notificationService;
-        private readonly FcmNotificationSetting? _fcmNotificationSetting;
-        private NotificationModel _notificationModel;
         private ResponseMessage rm;
-        private Notifications _emailnotifications;
-        private readonly INotificationBusiness notificationBusiness;
+
+        /*
+         * Modification History 
+         * Modified By  : sharma
+         * Modified On  : 19-04-2024
+         * Description  : notifications sections are commented
+         
+        */
+        //public NotificationService _notificationService;
+        //private readonly FcmNotificationSetting? _fcmNotificationSetting;
+        //private NotificationModel _notificationModel;
+        //private Notifications _emailnotifications;
+        //private readonly INotificationBusiness notificationBusiness;
         //private PushNotification notification;
-        public OrderController(IConfiguration configuration, IOrderBusiness orderBusiness, IInvoiceBusinesss invoiceBusinesss, INotificationBusiness IResultData)
+        public OrderController(IConfiguration configuration, IOrderBusiness orderBusiness, IInvoiceBusinesss invoiceBusinesss)
         {
             this.configuration = configuration;
             this.orderBusiness = orderBusiness;
             this.invoiceBusinesss = invoiceBusinesss;
-            this.notificationBusiness = IResultData;
+            //this.notificationBusiness = IResultData;
 
-            _fcmNotificationSetting = new FcmNotificationSetting();
+            //_fcmNotificationSetting = new FcmNotificationSetting();
 
             ///// FCM Notification
 
-            _notificationModel = new NotificationModel();
-            _fcmNotificationSetting.ServerKey = configuration["FcmNotification:ServerKey"].ToString();
-            _fcmNotificationSetting.SenderId = configuration["FcmNotification:SenderId"].ToString();
-            //_notificationService = new NotificationService(_fcmNotificationSetting);
+            //_notificationModel = new NotificationModel();
+            //_fcmNotificationSetting.ServerKey = configuration["FcmNotification:ServerKey"].ToString();
+            //_fcmNotificationSetting.SenderId = configuration["FcmNotification:SenderId"].ToString();
+            ////_notificationService = new NotificationService(_fcmNotificationSetting);
 
             ///Email Notification
-            _emailnotifications = new Notifications();
+            //_emailnotifications = new Notifications();
         }
 
         [HttpPost, Route("save")]
