@@ -119,6 +119,46 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// gets Product item information
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "ProductID": 1315
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///		{
+        ///		  "productID": 1315,
+        ///		  "vendorID": 1505,
+        ///		  "productName": "ELEGANT HOODY ",
+        ///		  "description": "Product details\nMaterial Composition - 100% Cotton\nSleeve Type - Long Sleeve\nMaterial Type - Cotton Blend\nFit Type - Regular\nLength - Standard Length\nStyle - Modern\nCountry of Origin India",
+        ///		  "category": 3713,
+        ///		  "brand": "Polo",
+        ///		  "size": "",
+        ///		  "color": "Navy Blue",
+        ///		  "uom": 3500,
+        ///		  "weight": 0,
+        ///		  "priceID": 4828,
+        ///		  "currency": "INR",
+        ///		  "imageID": 1464,
+        ///		  "isActive": true,
+        ///		  "isAvailable": true,
+        ///		  "stockQty": 0,
+        ///		  "createdOn": null,
+        ///		  "modifiedOn": "2024-01-04T23:05:49.29",
+        ///		  "hsnCode": null,
+        ///		  "imageName": null,
+        ///		  "isNew": false
+        ///		}
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the productID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost,Route("getitem")]
         public IActionResult GetProduct(ParamProduct itemData)
         {
@@ -156,6 +196,48 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// gets Product items information based on Vendor ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1505
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     [
+        ///		    {
+        ///		      "productID": 1315,
+        ///		      "vendorID": 1505,
+        ///		      "productName": "ELEGANT HOODY ",
+        ///		      "description": "Product details\nMaterial Composition - 100% Cotton\nSleeve Type - Long Sleeve\nMaterial Type - Cotton Blend\nFit Type - Regular\nLength - Standard Length\nStyle - Modern\nCountry of Origin India",
+        ///		      "category": 3713,
+        ///		      "brand": "Polo",
+        ///		      "size": "",
+        ///		      "color": "Navy Blue",
+        ///		      "uom": 3500,
+        ///		      "weight": 0,
+        ///		      "priceID": 4828,
+        ///		      "currency": "INR",
+        ///		      "imageID": 1464,
+        ///		      "isActive": true,
+        ///		      "isAvailable": true,
+        ///		      "stockQty": 0,
+        ///		      "createdOn": null,
+        ///		      "modifiedOn": "2024-01-04T23:05:49.29",
+        ///		      "hsnCode": null,
+        ///		      "imageName": null,
+        ///		      "isNew": false
+        ///		    }
+        ///		]
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost,Route("list")]
         public IActionResult List(ParamMemberUserID itemData)
         {
@@ -194,6 +276,44 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// gets All Product items information
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        ///    
+        /// Sample response JSON :
+        /// 
+        ///     [
+        ///		    {
+        ///		      "productID": 1315,
+        ///		      "vendorID": 1505,
+        ///		      "productName": "ELEGANT HOODY ",
+        ///		      "description": "Product details\nMaterial Composition - 100% Cotton\nSleeve Type - Long Sleeve\nMaterial Type - Cotton Blend\nFit Type - Regular\nLength - Standard Length\nStyle - Modern\nCountry of Origin India",
+        ///		      "category": 3713,
+        ///		      "brand": "Polo",
+        ///		      "size": "",
+        ///		      "color": "Navy Blue",
+        ///		      "uom": 3500,
+        ///		      "weight": 0,
+        ///		      "priceID": 4828,
+        ///		      "currency": "INR",
+        ///		      "imageID": 1464,
+        ///		      "isActive": true,
+        ///		      "isAvailable": true,
+        ///		      "stockQty": 0,
+        ///		      "createdOn": null,
+        ///		      "modifiedOn": "2024-01-04T23:05:49.29",
+        ///		      "hsnCode": null,
+        ///		      "imageName": null,
+        ///		      "isNew": false
+        ///		    }
+        ///		]
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns All Product Items </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("listall")]
         public IActionResult ListAll()
@@ -592,6 +712,73 @@ namespace appify.web.api.Controllers
 
                 return responseBody ;
             }
+        }
+
+
+        [HttpPost, Route("NewProductsList")]
+        public IActionResult GetNewProductsList(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.GetNewProductsList(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "NEW PRODUCTS ARE GET SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("UpdateProductAsNew")]
+        public IActionResult UpdateNewProducts(ParamNewUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.UpdateNewProducts(itemData.ProductID, itemData.IsNew);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "NEW PRODUCT ARE UPDATED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
         }
     }
 }

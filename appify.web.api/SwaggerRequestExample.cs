@@ -9,6 +9,12 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
+    public class ParamNewUserID
+    {
+        public long ProductID { get; set; }
+        public int IsNew { get; set; }
+
+    }
 
     public class ParamMemberResetPassword : ParamMemberUserID
     {

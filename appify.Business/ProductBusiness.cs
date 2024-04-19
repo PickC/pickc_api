@@ -121,6 +121,17 @@ namespace appify.Business
              return repository.NewProducts(sellerID);
         }
 
-        
+
+        public List<ProductMaster> GetNewProductsList(long VendorID)
+        {
+            return repository.GetNewProductsList(VendorID);
+        }
+
+        public bool UpdateNewProducts(long ProductID, int IsNew)
+        {
+            return repository.UpdateNewProducts(ProductID, IsNew);
+        }
+
+
     }
 }
