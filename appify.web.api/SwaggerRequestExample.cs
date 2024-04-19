@@ -10,6 +10,13 @@ namespace appify.web.api
 
     }
 
+    public class ParamNewProduct
+    {
+        public long ProductID { get; set; }
+        public bool IsNew { get; set; }
+
+    }
+
     public class ParamMemberResetPassword : ParamMemberUserID
     {
         public string password { get; set; }
@@ -17,7 +24,7 @@ namespace appify.web.api
     }
 
 
-    public class ParamDeactivateMember  
+    public class ParamDeactivateMember
     {
         public string mobileNo { get; set; }
         public string password { get; set; }
@@ -61,8 +68,9 @@ namespace appify.web.api
         public long imageID { get; set; }
     }
 
-    public class ParamAddress : ParamMemberUserID { 
-        public long addressID { get; set; } 
+    public class ParamAddress : ParamMemberUserID
+    {
+        public long addressID { get; set; }
     }
 
     public class ParamAppSetting : ParamMemberUserID
@@ -84,14 +92,15 @@ namespace appify.web.api
 
     public class ParamLookupByMember : ParamLookupCategory
     {
-        public string userID{ get; set; }
+        public string userID { get; set; }
 
     }
 
-    public class ParamOrderStatus {
+    public class ParamOrderStatus
+    {
         public Int64 OrderID { get; set; }
         public short OrderStatus { get; set; }
-        public string Remarks { get; set;}
+        public string Remarks { get; set; }
 
     }
 
@@ -122,7 +131,8 @@ namespace appify.web.api
     }
 
 
-    public class ParamMemberTheme {
+    public class ParamMemberTheme
+    {
 
         public Int64 MemberID { get; set; }
         public Int64 ThemeID { get; set; }
@@ -145,7 +155,7 @@ namespace appify.web.api
     public class ParamDiscountRemove
     {
         public long DiscountID { get; set; }
-        public long ModifiedBy {  get; set; }
+        public long ModifiedBy { get; set; }
 
     }
 

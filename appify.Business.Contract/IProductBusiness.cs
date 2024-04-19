@@ -22,10 +22,8 @@ namespace appify.Business.Contract
         public List<ProductWeb> ListAll();
 
         public bool UpdateProductImagePrice(long productID);
+        public List<ProductMaster> GetNewProductsList(long VendorID);
 
-        public bool UpdateProductIsNewStatus(List<NewProduct> newProducts);
-
-        public List<NewProduct> NewProducts(long sellerID);
-
+        public bool UpdateNewProducts(long ProductID, bool IsNew);
     }
 }

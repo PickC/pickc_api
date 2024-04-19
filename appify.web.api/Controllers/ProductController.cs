@@ -5,6 +5,7 @@ using appify.utility;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Net;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -17,27 +18,24 @@ namespace appify.web.api.Controllers
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
         private ResponseMessage rm;
-        public ProductController(IConfiguration configuration, 
-                        IProductBusiness iResultData, 
-                        IProductPriceBusiness priceBusiness,
-                        IProductImageBusiness imageBusiness)
+        public ProductController(IConfiguration configuration, IProductBusiness iResultData, IProductPriceBusiness priceBusiness, IProductImageBusiness imageBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
-             
+
         }
 
 
-        [HttpPost,Route("save")]
+        [HttpPost, Route("save")]
         public IActionResult Add(Product product)
         {
             try
             {
                 rm = new ResponseMessage();
                 var productMaster = this.productBusiness.SaveProduct(product);
-                if (productMaster !=null)
+                if (productMaster != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "PRODUCT SUCCESSFUL!";
@@ -51,7 +49,7 @@ namespace appify.web.api.Controllers
 
 
                     newproduct = this.productBusiness.GetProduct(product.ProductID);
-                    if (newproduct !=null)
+                    if (newproduct != null)
                     {
                         product.ProductID = newproduct.ProductID;
                         //product.ProductID=item.ProductID;
@@ -60,7 +58,7 @@ namespace appify.web.api.Controllers
                     }
 
                     rm.data = product;
-                
+
                 }
                 else
                 {
@@ -83,7 +81,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("remove")]
+        [HttpPost, Route("remove")]
         public IActionResult Remove(ParamProduct itemData)
         {
 
@@ -119,7 +117,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("getitem")]
+        [HttpPost, Route("getitem")]
         public IActionResult GetProduct(ParamProduct itemData)
         {
 
@@ -156,7 +154,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("list")]
+        [HttpPost, Route("list")]
         public IActionResult List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -278,9 +276,9 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID,itemData.size);
+                var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID, itemData.size);
 
-                if (item!=null)
+                if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH PRODUCT-PRICE";
@@ -351,7 +349,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID,itemData.size);
+                var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
 
                 if (result)
                 {
@@ -528,8 +526,9 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("image/verify")]
-        public IActionResult VerifyImage(string imagePath) {
-            
+        public IActionResult VerifyImage(string imagePath)
+        {
+
             try
             {
                 rm = new ResponseMessage();
@@ -548,9 +547,10 @@ namespace appify.web.api.Controllers
 
         }
 
+
         private static async Task<string> ImageClassifier(string imagePath)
         {
-             
+
 
             // Create an instance of HttpClient
             using (var client = new HttpClient())
@@ -559,13 +559,31 @@ namespace appify.web.api.Controllers
                 try
                 {
 
+                    var content = new MultipartFormDataContent();
+
+                    using (WebClient webClient = new WebClient())
+                    {
+                        string url = string.Format(imagePath);
+                        var fileName = Path.GetFileName(url);
+                        var memoryStream = new MemoryStream(webClient.DownloadData(url));
+                        var fileContent = new StreamContent(memoryStream);
+                        fileContent.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("image/jpeg");
+
+                        content.Add(fileContent, "file", fileName);
+                        memoryStream.Flush();
+                    }
+
+                    ////**********************************************************************************///////
+                    // Previous Code Starts///
 
                     // Create a StringContent with the image data and set the content type
-                    var content = new FormUrlEncodedContent(new[] {
-                        new KeyValuePair<string, string>("",imagePath)
-                    });
+                    // var content = new FormUrlEncodedContent(new[] {
+                    //    new KeyValuePair<string, string>("",imagePath)
+                    //}); 
 
-                    content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
+                    //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
+                    ////**********************************************************************************///////
+                    // Previous Code Ends///
 
                     // Send the POST request
                     HttpResponseMessage response = await client.PostAsync(Common.IMAGECLASSIFIER_URL, content);
@@ -575,23 +593,122 @@ namespace appify.web.api.Controllers
                     {
                         // Read the response content (if needed)
                         responseBody = await response.Content.ReadAsStringAsync();
-                         
+
                     }
                     else
                     {
                         responseBody = response.StatusCode.ToString();
                     }
 
-                     
+
                 }
                 catch (Exception ex)
                 {
-                     responseBody = ex.ToString();
+                    responseBody = ex.ToString();
 
                 }
 
-                return responseBody ;
+                return responseBody;
             }
+        }
+
+        /// <summary>
+        /// Get New Product List By Vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /Get List of New Products
+        ///     {
+        ///         "VendorID": 1004
+        ///     }
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Response Message Object Type : ProductMaster</returns>
+        /// <response code="200">PRODUCTS LIST WITH NEW STATUS</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("NewProductsList")]
+        public IActionResult GetNewProductsList(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.GetNewProductsList(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "PRODUCTS LIST WITH NEW STATUS";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Update New Product By ProductID and IsNew.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "ProductID": 1004,
+        ///         "IsNew":true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("UpdateProductAsNew")]
+        public IActionResult UpdateNewProducts(ParamNewProduct itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.productBusiness.UpdateNewProducts(itemData.ProductID, itemData.IsNew);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "PRODUCT NEW STATUS UPDATED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
         }
     }
 }

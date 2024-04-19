@@ -187,34 +187,33 @@ namespace appify.DataAccess
             return productmaster;
         }
 
-        public bool UpdateProductIsNewStatus(long productID, bool isNew) {
+        public List<ProductMaster> GetNewProductsList(long VendorID)
+        {
+            List<ProductMaster> items = new List<ProductMaster>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID);
+            items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
+
+            return items;
+        }
+
+        public bool UpdateNewProducts(long ProductID, bool IsNew)
+        {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
             try
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.PRODUCTMASTERUPDATEISNEW))
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATENEWPRODUCTS))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-
-                        cmd.Parameters.AddWithValue("@ProductID", productID);
-                        cmd.Parameters.AddWithValue("@IsNew", isNew);
-                        //cmd.Parameters.Add(new SqlParameter("@NewProductID",SqlDbType.BigInt).Direction = ParameterDirection.Output);
-
-
-                        //Add the output parameter to the command object
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@NewProductID";
-                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
-                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
+                        cmd.Parameters.AddWithValue("@IsNew", IsNew);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
-                        
                         con.Close();
                     }
 
@@ -224,23 +223,9 @@ namespace appify.DataAccess
             {
 
                 throw ex;
-                return result;
             }
 
             return result;
         }
-
-        public List<NewProduct> NewProducts(long sellerID) {
-            
-            List<NewProduct> items = new List<NewProduct>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTMASTERISNEWSTATUS);
-            items = DataTableHelper.ConvertDataTable<NewProduct>(ds.Tables[0]);
-
-            return items;
-
-        }
-
-
     }
-
 }
