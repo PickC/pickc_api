@@ -316,6 +316,102 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
-        
+        public MemberBanner memberBannerAdd(MemberBanner memberBanner)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEMEMBERBANNER))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@BannerID", memberBanner.BannerID);
+                        cmd.Parameters.AddWithValue("@MemberID", memberBanner.MemberID);
+                        cmd.Parameters.AddWithValue("@BannerName", memberBanner.BannerName);
+                        cmd.Parameters.AddWithValue("@ImageName", memberBanner.ImageName);
+                        cmd.Parameters.AddWithValue("@BannerType", memberBanner.BannerType);
+                        cmd.Parameters.AddWithValue("@StartDate", memberBanner.StartDate);
+                        cmd.Parameters.AddWithValue("@EndDate", memberBanner.EndDate);
+                        cmd.Parameters.AddWithValue("@IsCancel", memberBanner.IsCancel);
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewBannerID";
+                        outPutParameter.SqlDbType = SqlDbType.BigInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        memberBanner.BannerID = Convert.ToInt64(outPutParameter.Value);
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return memberBanner;
+        }
+
+        public MemberBanner memberBannerGet(long MemberID)
+        {
+            MemberBanner item = new MemberBanner();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERBANNER, MemberID);
+            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+
+        public List<MemberBanner> memberBannerList()
+        {
+            List<MemberBanner> item = new List<MemberBanner>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERBANNER);
+            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            return item;
+        }
+        public List<MemberBanner> memberBannerListByVendor(long VendorID)
+        {
+            List<MemberBanner> item = new List<MemberBanner>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERBANNERBYVENDOR, VendorID);
+            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            return item;
+        }
+        public bool memberBannerRemove(long MemberID)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.DELETEMEMBERBANNER))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@MemberID", MemberID);
+
+                        con.Open();
+
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
+
     }
 }

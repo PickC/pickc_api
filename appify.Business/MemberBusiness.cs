@@ -73,5 +73,29 @@ namespace appify.Business
         public Int32 MemberOrderCount(long userID) { 
             return repository.MemberOrderCount(userID);
         }
+
+        public MemberBanner memberBannerAdd(MemberBanner memberBanner)
+        {
+            return repository.memberBannerAdd(memberBanner);
+        }
+
+        public bool memberBannerRemove(long MemberID)
+        {
+            return repository.memberBannerRemove(MemberID);
+        }
+
+        public MemberBanner memberBannerGet(long MemberID)
+        {
+            return repository.memberBannerGet(MemberID);
+        }
+
+        public List<MemberBanner> memberBannerList()
+        {
+            return repository.memberBannerList();
+        }
+        public List<MemberBanner> memberBannerListByVendor(long VendorID)
+        {
+            return repository.memberBannerListByVendor(VendorID);
+        }
     }
 }

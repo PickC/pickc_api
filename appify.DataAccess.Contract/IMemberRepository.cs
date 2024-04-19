@@ -36,6 +36,10 @@ namespace appify.DataAccess.Contract
 
         public bool CheckMemberOnlinePaymentStatus(long userID);
 
-
+        public MemberBanner memberBannerAdd(MemberBanner memberBanner);
+        public bool memberBannerRemove(long MemberID);
+        public MemberBanner memberBannerGet(long MemberID);
+        public List<MemberBanner> memberBannerList();
+        public List<MemberBanner> memberBannerListByVendor(long VendorID);
     }
 }

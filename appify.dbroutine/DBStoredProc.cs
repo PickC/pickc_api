@@ -250,5 +250,16 @@ namespace appify.dbroutine
         /// 
         public const string LISTNEWPRODUCTS = "[Operation].[usp_ProductMasterIsNewStatus]";
         public const string UPDATENEWPRODUCTS = "[Operation].[usp_ProductMasterUpdateIsNew]";
+
+        ///<summary>
+        /// [Operation].[MemberBanner]
+        /// </summary>
+        /// 
+        public const string DELETEMEMBERBANNER = "[Operation].[usp_MemberBannerDelete]";
+        public const string LISTMEMBERBANNER = "[Operation].[usp_MemberBannerList]";
+        public const string LISTMEMBERBANNERBYVENDOR = "[Operation].[usp_MemberBannerListByVendor]";
+        public const string SAVEMEMBERBANNER = "[Operation].[usp_MemberBannerSave]";
+        public const string SELECTMEMBERBANNER = "[Operation].[usp_MemberBannerSelect]";
+
     }
 }

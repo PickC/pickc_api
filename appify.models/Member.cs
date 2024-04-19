@@ -178,4 +178,16 @@ namespace appify.models
 
     }
 
+    public partial class MemberBanner
+    {
+        public Int64 BannerID { get; set; }
+        public Int64 MemberID { get; set; }
+        public string BannerName { get; set; }
+        public string ImageName { get; set; }
+        public Int16 BannerType { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public bool IsCancel { get; set; }
+    }
+
 }
