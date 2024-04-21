@@ -358,9 +358,9 @@ namespace appify.web.api.Controllers
         }
 
 
-        #region "Discount Detail"
-
-        //[HttpPost, Route("Detail/Save")]
+        ///////////// Discount Detail
+        
+        //[HttpPost, Route("DiscountDetailSave")]
         //public IActionResult discountDetailAdd(DiscountDetail discountDetail)
         //{
         //    try
@@ -492,6 +492,6 @@ namespace appify.web.api.Controllers
         //    return Ok(rm);
         //}
 
-        #endregion
+        //#endregion
     }
 }

@@ -1140,8 +1140,314 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// Adds a Member Banner.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// NOTE : For a new Member Banner object, send the BannerID = 0.
+        /// 
+        ///      {
+        ///        "BannerID": 0,
+        ///        "memberID": 1003,
+        ///        "bannerName": "KIA Banner",
+        ///        "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+        ///        "bannerType": 2,
+        ///        "startDate": "2024-04-29 09:42:11.442Z",
+        ///        "endDate": "2024-05-19 09:42:11.442Z",
+        ///        "isCancel": false
+        ///      }
+        /// </remarks>
+        /// <param name="memberBanner"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Member Banner Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("BannerSave")]
+        public IActionResult memberBannerAdd(MemberBanner memberBanner)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberBannerAdd(memberBanner);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER BANNER SAVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// removes Member Banner by MemberID
+        /// </summary>
+        /// <remarks>
+        /// Sample Data :
+        /// 
+        ///     {
+        ///         "MemberID":1003
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Boolean Value </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("BannerRemove")]
+        public IActionResult memberBannerRemove(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberBannerRemove(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER BANNER REMOVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
 
 
+
+        /// <summary>
+        /// gets Member Banner by MemberID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "MemberID":1003
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///   {
+        ///        "statusCode": 200,
+        ///        "name": "SUCCESS_OK",
+        ///         "message": "FETCH MEMBER BANNER ITEM!",
+        ///         "data": {
+        ///           "bannerID": 1000,
+        ///           "memberID": 1003,
+        ///           "bannerName": "KIA Banner",
+        ///           "imageName": https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+        ///           "bannerType": 2,
+        ///           "startDate": "2024-04-29T09:42:11.443",
+        ///           "endDate": "2024-05-19T09:42:11.443",
+        ///          "isCancel": false
+        ///         }
+        ///       }
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns MemberBanner Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+
+
+        [HttpPost, Route("BannerGet")]
+        public IActionResult memberBannerGet(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberBannerGet(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH MEMBER BANNER ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// LIST of Member Banners
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "MemberID":1003
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
+        ///         "message": "FETCH MEMBER BANNER ITEM!",
+        ///         "data": [
+        ///           {
+        ///             "bannerID": 1000,
+        ///             "memberID": 1003,
+        ///             "bannerName": "KIA Banner",
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+        ///             "bannerType": 2,
+        ///             "startDate": "2024-04-29T09:42:11.443",
+        ///             "endDate": "2024-05-19T09:42:11.443",
+        ///             "isCancel": false
+        ///           }
+        ///         ]
+        ///    }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("BannerList")]
+        public IActionResult memberBannerList()
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberBannerList();
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH MEMBER BANNER ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// LIST of Member Banners By VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "MemberID":1003
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
+        ///         "message": "FETCH MEMBER BANNER ITEM!",
+        ///         "data": [
+        ///           {
+        ///             "bannerID": 1000,
+        ///             "memberID": 1003,
+        ///             "bannerName": "KIA Banner",
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+        ///             "bannerType": 2,
+        ///             "startDate": "2024-04-29T09:42:11.443",
+        ///             "endDate": "2024-05-19T09:42:11.443",
+        ///             "isCancel": false
+        ///           }
+        ///         ]
+        ///    }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("BannerListByVendor")]
+        public IActionResult memberBannerListByVendor(ParamMemberUserID itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberBannerListByVendor(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH BY VENDOR MEMBER BANNER ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
 
     }
 }
