@@ -13,9 +13,6 @@ D:\Project\appify\appify.utility\obj\Debug\net7.0\ref\appify.utility.dll
 <<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
 >>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Debug\net7.0\appify.utility.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Debug\net7.0\appify.utility.dll
@@ -30,8 +27,6 @@ D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Debug\net7.0\appify.utilit
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Debug\net7.0\refint\appify.utility.dll
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Debug\net7.0\appify.utility.pdb
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Debug\net7.0\ref\appify.utility.dll
-<<<<<<< Updated upstream
-=======
 D:\Project\Appify.API\appify.utility\bin\Debug\net7.0\appify.utility.deps.json
 D:\Project\Appify.API\appify.utility\bin\Debug\net7.0\appify.utility.dll
 D:\Project\Appify.API\appify.utility\bin\Debug\net7.0\appify.utility.pdb
@@ -44,6 +39,4 @@ D:\Project\Appify.API\appify.utility\obj\Debug\net7.0\appify.utility.dll
 D:\Project\Appify.API\appify.utility\obj\Debug\net7.0\refint\appify.utility.dll
 D:\Project\Appify.API\appify.utility\obj\Debug\net7.0\appify.utility.pdb
 D:\Project\Appify.API\appify.utility\obj\Debug\net7.0\ref\appify.utility.dll
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 >>>>>>> appifysharma

@@ -12,9 +12,6 @@ D:\Project\appify\appify.dbroutine\obj\Debug\net7.0\ref\appify.dbroutine.dll
 <<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
 >>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\bin\Debug\net7.0\appify.dbroutine.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\bin\Debug\net7.0\appify.dbroutine.dll
@@ -28,8 +25,6 @@ D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Debug\net7.0\appify.dbro
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Debug\net7.0\refint\appify.dbroutine.dll
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Debug\net7.0\appify.dbroutine.pdb
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Debug\net7.0\ref\appify.dbroutine.dll
-<<<<<<< Updated upstream
-=======
 D:\Project\Appify.API\appify.dbroutine\bin\Debug\net7.0\appify.dbroutine.deps.json
 D:\Project\Appify.API\appify.dbroutine\bin\Debug\net7.0\appify.dbroutine.dll
 D:\Project\Appify.API\appify.dbroutine\bin\Debug\net7.0\appify.dbroutine.pdb
@@ -41,6 +36,4 @@ D:\Project\Appify.API\appify.dbroutine\obj\Debug\net7.0\appify.dbroutine.dll
 D:\Project\Appify.API\appify.dbroutine\obj\Debug\net7.0\refint\appify.dbroutine.dll
 D:\Project\Appify.API\appify.dbroutine\obj\Debug\net7.0\appify.dbroutine.pdb
 D:\Project\Appify.API\appify.dbroutine\obj\Debug\net7.0\ref\appify.dbroutine.dll
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 >>>>>>> appifysharma

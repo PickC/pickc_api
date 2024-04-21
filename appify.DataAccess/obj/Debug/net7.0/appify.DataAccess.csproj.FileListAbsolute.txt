@@ -22,9 +22,6 @@ D:\Project\appify\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
 <<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
 >>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.dll
@@ -48,8 +45,6 @@ D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\appify.Dat
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\refint\appify.DataAccess.dll
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.pdb
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
-<<<<<<< Updated upstream
-=======
 D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.deps.json
 D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.dll
 D:\Project\Appify.API\appify.DataAccess\bin\Debug\net7.0\appify.DataAccess.pdb
@@ -71,6 +66,4 @@ D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.dll
 D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\refint\appify.DataAccess.dll
 D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\appify.DataAccess.pdb
 D:\Project\Appify.API\appify.DataAccess\obj\Debug\net7.0\ref\appify.DataAccess.dll
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 >>>>>>> appifysharma
