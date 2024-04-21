@@ -1197,7 +1197,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// removes Member Banner by @MemberID
+        /// removes Member Banner by MemberID
         /// </summary>
         /// <remarks>
         /// Sample Data :
@@ -1248,7 +1248,7 @@ namespace appify.web.api.Controllers
 
 
         /// <summary>
-        /// gets Member Banner by @MemberID
+        /// gets Member Banner by MemberID
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -1383,7 +1383,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// LIST of Member Banners
+        /// LIST of Member Banners By VendorID
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
