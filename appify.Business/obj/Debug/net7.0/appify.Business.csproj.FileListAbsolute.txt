@@ -17,11 +17,6 @@ D:\Project\appify\appify.Business\obj\Debug\net7.0\appify.Business.dll
 D:\Project\appify\appify.Business\obj\Debug\net7.0\refint\appify.Business.dll
 D:\Project\appify\appify.Business\obj\Debug\net7.0\appify.Business.pdb
 D:\Project\appify\appify.Business\obj\Debug\net7.0\ref\appify.Business.dll
-<<<<<<< Updated upstream
-=======
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.Business\bin\Debug\net7.0\appify.Business.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.Business\bin\Debug\net7.0\appify.Business.dll
 D:\Projects\Dotnet\appify_20240401\appify.Business\bin\Debug\net7.0\appify.Business.pdb
@@ -65,5 +60,4 @@ D:\Project\Appify.API\appify.Business\obj\Debug\net7.0\appify.Business.dll
 D:\Project\Appify.API\appify.Business\obj\Debug\net7.0\refint\appify.Business.dll
 D:\Project\Appify.API\appify.Business\obj\Debug\net7.0\appify.Business.pdb
 D:\Project\Appify.API\appify.Business\obj\Debug\net7.0\ref\appify.Business.dll
->>>>>>> appifysharma
->>>>>>> Stashed changes
+

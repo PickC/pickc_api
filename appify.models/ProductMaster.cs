@@ -47,6 +47,8 @@ namespace appify.models
         public string HSNCode { get; set; }
 
         public string? ImageName { get; set; }
+
+        public bool? IsNew { get; set; }
     }
 
 
@@ -79,6 +81,8 @@ namespace appify.models
         public string? Brand { get; set; }
         public decimal? Price { get; set; }
         public string? ImageName { get; set; }
+
+        public bool? IsNew { get; set;}
 
     }
 

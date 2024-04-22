@@ -15,7 +15,7 @@ namespace appify.DataAccess.Contract
 
         public ProductMaster GetProduct(long productId);
         public List<ProductMaster> GetProducts(long sellerID);
-        public List<ProductMaster> GetAllProducts(); 
+        public List<ProductMaster> GetAllProducts();
 
         public List<ProductWeb> ListAll();
 

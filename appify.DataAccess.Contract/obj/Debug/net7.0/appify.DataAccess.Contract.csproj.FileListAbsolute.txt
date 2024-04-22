@@ -13,11 +13,6 @@ D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAccess.
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\refint\appify.DataAccess.Contract.dll
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAccess.Contract.pdb
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\ref\appify.DataAccess.Contract.dll
-<<<<<<< Updated upstream
-=======
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess.Contract\bin\Debug\net7.0\appify.DataAccess.Contract.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess.Contract\bin\Debug\net7.0\appify.DataAccess.Contract.dll
 D:\Projects\Dotnet\appify_20240401\appify.DataAccess.Contract\bin\Debug\net7.0\appify.DataAccess.Contract.pdb
@@ -49,5 +44,4 @@ D:\Project\Appify.API\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAcc
 D:\Project\Appify.API\appify.DataAccess.Contract\obj\Debug\net7.0\refint\appify.DataAccess.Contract.dll
 D:\Project\Appify.API\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAccess.Contract.pdb
 D:\Project\Appify.API\appify.DataAccess.Contract\obj\Debug\net7.0\ref\appify.DataAccess.Contract.dll
->>>>>>> appifysharma
->>>>>>> Stashed changes
+

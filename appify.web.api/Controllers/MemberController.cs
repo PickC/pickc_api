@@ -1163,7 +1163,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Member Banner Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
 
-        [HttpPost, Route("BannerSave")]
+        [HttpPost, Route("banner/Save")]
         public IActionResult memberBannerAdd(MemberBanner memberBanner)
         {
             try
@@ -1212,7 +1212,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns Boolean Value </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
 
-        [HttpPost, Route("BannerRemove")]
+        [HttpPost, Route("banner/Remove")]
         public IActionResult memberBannerRemove(ParamMemberUserID itemData)
         {
             try
@@ -1259,9 +1259,9 @@ namespace appify.web.api.Controllers
         /// 
         /// Sample response JSON :
         /// 
-        ///   {
-        ///        "statusCode": 200,
-        ///        "name": "SUCCESS_OK",
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
         ///         "message": "FETCH MEMBER BANNER ITEM!",
         ///         "data": {
         ///           "bannerID": 1000,
@@ -1273,7 +1273,7 @@ namespace appify.web.api.Controllers
         ///           "endDate": "2024-05-19T09:42:11.443",
         ///          "isCancel": false
         ///         }
-        ///       }
+        ///     }
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>ResponseMessage Object</returns>
@@ -1282,7 +1282,7 @@ namespace appify.web.api.Controllers
 
 
 
-        [HttpPost, Route("BannerGet")]
+        [HttpPost, Route("banner/get")]
         public IActionResult memberBannerGet(ParamMemberUserID itemData)
         {
             try
@@ -1344,12 +1344,11 @@ namespace appify.web.api.Controllers
         ///           }
         ///         ]
         ///    }
-        /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost, Route("BannerList")]
+        [HttpPost, Route("banner/list")]
         public IActionResult memberBannerList()
         {
             try
@@ -1413,10 +1412,11 @@ namespace appify.web.api.Controllers
         ///    }
         /// 
         /// </remarks>
+        /// <param name="itemData"></param>
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost, Route("BannerListByVendor")]
+        [HttpPost, Route("banner/listbyvendor")]
         public IActionResult memberBannerListByVendor(ParamMemberUserID itemData)
         {
             try

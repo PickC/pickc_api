@@ -18,27 +18,24 @@ namespace appify.web.api.Controllers
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
         private ResponseMessage rm;
-        public ProductController(IConfiguration configuration, 
-                        IProductBusiness iResultData, 
-                        IProductPriceBusiness priceBusiness,
-                        IProductImageBusiness imageBusiness)
+        public ProductController(IConfiguration configuration, IProductBusiness iResultData, IProductPriceBusiness priceBusiness, IProductImageBusiness imageBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
-             
+
         }
 
 
-        [HttpPost,Route("save")]
+        [HttpPost, Route("save")]
         public IActionResult Add(Product product)
         {
             try
             {
                 rm = new ResponseMessage();
                 var productMaster = this.productBusiness.SaveProduct(product);
-                if (productMaster !=null)
+                if (productMaster != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "PRODUCT SUCCESSFUL!";
@@ -52,7 +49,7 @@ namespace appify.web.api.Controllers
 
 
                     newproduct = this.productBusiness.GetProduct(product.ProductID);
-                    if (newproduct !=null)
+                    if (newproduct != null)
                     {
                         product.ProductID = newproduct.ProductID;
                         //product.ProductID=item.ProductID;
@@ -61,7 +58,7 @@ namespace appify.web.api.Controllers
                     }
 
                     rm.data = product;
-                
+
                 }
                 else
                 {
@@ -84,7 +81,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("remove")]
+        [HttpPost, Route("remove")]
         public IActionResult Remove(ParamProduct itemData)
         {
 
@@ -120,7 +117,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("getitem")]
+        [HttpPost, Route("getitem")]
         public IActionResult GetProduct(ParamProduct itemData)
         {
 
@@ -157,7 +154,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("list")]
+        [HttpPost, Route("list")]
         public IActionResult List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -279,9 +276,9 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID,itemData.size);
+                var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID, itemData.size);
 
-                if (item!=null)
+                if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH PRODUCT-PRICE";
@@ -352,7 +349,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID,itemData.size);
+                var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
 
                 if (result)
                 {
@@ -529,8 +526,9 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("image/verify")]
-        public IActionResult VerifyImage(string imagePath) {
-            
+        public IActionResult VerifyImage(string imagePath)
+        {
+
             try
             {
                 rm = new ResponseMessage();
@@ -549,9 +547,10 @@ namespace appify.web.api.Controllers
 
         }
 
+
         private static async Task<string> ImageClassifier(string imagePath)
         {
-             
+
 
             // Create an instance of HttpClient
             using (var client = new HttpClient())
@@ -594,22 +593,22 @@ namespace appify.web.api.Controllers
                     {
                         // Read the response content (if needed)
                         responseBody = await response.Content.ReadAsStringAsync();
-                         
+
                     }
                     else
                     {
                         responseBody = response.StatusCode.ToString();
                     }
 
-                     
+
                 }
                 catch (Exception ex)
                 {
-                     responseBody = ex.ToString();
+                    responseBody = ex.ToString();
 
                 }
 
-                return responseBody ;
+                return responseBody;
             }
         }
 

@@ -228,5 +228,4 @@ namespace appify.DataAccess
             return result;
         }
     }
-
 }

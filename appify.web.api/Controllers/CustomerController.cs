@@ -24,6 +24,35 @@ namespace appify.web.api.Controllers
             this.customerBusiness = customerBusiness;
         }
 
+        /// <summary>
+        /// gets Product items information based on Vendor ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1505
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///	    [
+        ///		    {
+        ///          	"productID": 1315,
+        ///          	"vendorID": 0,
+        ///          	"productName": "ELEGANT HOODY ",
+        ///          	"category": 3713,
+        ///          	"brand": "Polo",
+        ///          	"price": 1429,
+        ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
+        ///          	"isNew": false
+        ///    	    }
+        ///	    ]
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("productlist")]
         public IActionResult GetMemberProducts(ParamMemberUserID itemData) {

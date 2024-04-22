@@ -98,10 +98,6 @@ namespace appify.dbroutine
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
 
 
-        public const string PRODUCTMASTERISNEWSTATUS = "[Operation].[usp_ProductMasterIsNewStatus]";
-        public const string PRODUCTMASTERUPDATEISNEW = "[Operation].[usp_ProductMasterUpdateIsNew]";
-
-
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>
