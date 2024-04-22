@@ -187,11 +187,11 @@ namespace appify.DataAccess
             return productmaster;
         }
 
-        public List<ProductMaster> GetNewProductsList(long VendorID)
+        public List<NewProduct> GetNewProductsList(long VendorID,bool IsNew=false)
         {
-            List<ProductMaster> items = new List<ProductMaster>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID);
-            items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
+            List<NewProduct> items = new List<NewProduct>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID,IsNew);
+            items = DataTableHelper.ConvertDataTable<NewProduct>(ds.Tables[0]);
 
             return items;
         }

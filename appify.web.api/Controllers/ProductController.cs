@@ -629,12 +629,12 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("NewProductsList")]
-        public IActionResult GetNewProductsList(ParamMemberUserID itemData)
+        public IActionResult GetNewProductsList(ParamNewProductsByMember itemData)
         {
             try
             {
                 rm = new ResponseMessage();
-                var result = this.productBusiness.GetNewProductsList(itemData.userID);
+                var result = this.productBusiness.GetNewProductsList(itemData.userID,itemData.IsNew );
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -679,12 +679,17 @@ namespace appify.web.api.Controllers
         /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("UpdateProductAsNew")]
-        public IActionResult UpdateNewProducts(ParamNewProduct itemData)
+        public IActionResult UpdateNewProducts(List<ParamNewProduct> itemData)
         {
+            bool result = false;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.productBusiness.UpdateNewProducts(itemData.ProductID, itemData.IsNew);
+                foreach (var item in itemData)
+                {
+                    result = this.productBusiness.UpdateNewProducts(item.ProductID, item.IsNew);
+                }
+                
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
