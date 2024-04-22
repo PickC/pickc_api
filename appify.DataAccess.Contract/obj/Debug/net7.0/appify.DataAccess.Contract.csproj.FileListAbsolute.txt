@@ -13,7 +13,6 @@ D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAccess.
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\refint\appify.DataAccess.Contract.dll
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\appify.DataAccess.Contract.pdb
 D:\Project\appify\appify.DataAccess.Contract\obj\Debug\net7.0\ref\appify.DataAccess.Contract.dll
-<<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
 >>>>>>> Stashed changes
