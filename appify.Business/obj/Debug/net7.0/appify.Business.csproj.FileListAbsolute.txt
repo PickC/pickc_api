@@ -17,7 +17,6 @@ D:\Project\appify\appify.Business\obj\Debug\net7.0\appify.Business.dll
 D:\Project\appify\appify.Business\obj\Debug\net7.0\refint\appify.Business.dll
 D:\Project\appify\appify.Business\obj\Debug\net7.0\appify.Business.pdb
 D:\Project\appify\appify.Business\obj\Debug\net7.0\ref\appify.Business.dll
-<<<<<<< HEAD
 =======
 <<<<<<< Updated upstream
 >>>>>>> Stashed changes
