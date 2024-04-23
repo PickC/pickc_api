@@ -60,13 +60,25 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Discount Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
-        public IActionResult discountHeaderAdd(DiscountHeader discountHeader)
+        public IActionResult discountHeaderAdd(List<DiscountHeader> discountHeader)
         {
+            var result = true;
             try
             {
+                DiscountHeader returnItem;
+
                 rm = new ResponseMessage();
-                var result = this._discountHeaderBusiness.Save(discountHeader);
-                if (result != null)
+                foreach(var item in discountHeader)
+                {
+                    returnItem = this._discountHeaderBusiness.Save(item);
+                    result = returnItem != null;
+                    if(!result)
+                    {
+                        break;
+                    }
+                }
+
+                if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "DISCOUNT SAVED SUCCESSFULLY!";
