@@ -10,10 +10,18 @@ namespace appify.web.api
 
     }
 
+    public class ParamBannerID
+    {
+        public long bannerID { get; set; }  
+    }
+
     public class ParamNewProductsByMember : ParamMemberUserID {
         public bool IsNew { get; set; }
     }
-
+    public class ParamEventID
+    {
+        public long EventID { get; set; }
+    }
     public class ParamNewProduct
     {
         public long ProductID { get; set; }

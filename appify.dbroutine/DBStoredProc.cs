@@ -257,5 +257,15 @@ namespace appify.dbroutine
         public const string SAVEMEMBERBANNER = "[Operation].[usp_MemberBannerSave]";
         public const string SELECTMEMBERBANNER = "[Operation].[usp_MemberBannerSelect]";
 
+        /// <summary>
+        /// [Audit].[EventLog]
+        /// </summary>
+
+        public const string DELETEEVENTLOG = "[Audit].[usp_EventLogDelete]";
+        public const string LISTEVENTLOG = "[Audit].[usp_EventLogList]";
+        public const string LISTEVENTLOGBYCUSTOMER = "[Audit].[usp_EventLogListByCustomer]";
+        public const string LISTEVENTLOGBYVENDOR = "[Audit].[usp_EventLogListByVendor]";
+        public const string SAVEEVENTLOG = "[Audit].[usp_EventLogSave]";
+        public const string SELECTEVENTLOG = "[Audit].[usp_EventLogSelect]";
     }
 }

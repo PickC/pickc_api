@@ -41,6 +41,7 @@
   <ItemGroup>
     <Folder Include="Keys\" />
     <Folder Include="wwwroot\EmailTemplates\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

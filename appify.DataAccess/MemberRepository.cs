@@ -385,7 +385,7 @@ namespace appify.DataAccess
             item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
             return item;
         }
-        public bool memberBannerRemove(long MemberID)
+        public bool memberBannerRemove(long BannerID)
         {
             var result = false;
             try
@@ -396,7 +396,7 @@ namespace appify.DataAccess
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@MemberID", MemberID);
+                        cmd.Parameters.AddWithValue("@BannerID", BannerID);
 
                         con.Open();
 
