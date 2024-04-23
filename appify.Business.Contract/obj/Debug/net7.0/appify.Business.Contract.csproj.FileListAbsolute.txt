@@ -44,4 +44,3 @@ D:\Project\Appify.API\appify.Business.Contract\obj\Debug\net7.0\appify.Business.
 D:\Project\Appify.API\appify.Business.Contract\obj\Debug\net7.0\refint\appify.Business.Contract.dll
 D:\Project\Appify.API\appify.Business.Contract\obj\Debug\net7.0\appify.Business.Contract.pdb
 D:\Project\Appify.API\appify.Business.Contract\obj\Debug\net7.0\ref\appify.Business.Contract.dll
->>>>>>> Stashed changes
