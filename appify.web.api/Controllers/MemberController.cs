@@ -1197,13 +1197,13 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// removes Member Banner by MemberID
+        /// removes Member Banner by BannerID
         /// </summary>
         /// <remarks>
         /// Sample Data :
         /// 
         ///     {
-        ///         "MemberID":1003
+        ///         "BannerID":1003
         ///     }
         /// 
         /// </remarks>
@@ -1213,12 +1213,12 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("banner/Remove")]
-        public IActionResult memberBannerRemove(ParamMemberUserID itemData)
+        public IActionResult memberBannerRemove(ParamBannerID itemData)
         {
             try
             {
                 rm = new ResponseMessage();
-                var result = this.memberBusiness.memberBannerRemove(itemData.userID);
+                var result = this.memberBusiness.memberBannerRemove(itemData.bannerID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

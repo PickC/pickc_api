@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IAddressRepository, AddressRepository>(); //
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();//
 builder.Services.AddSingleton<IDiscountDetailRepository, DiscountDetailRepository>();//
 builder.Services.AddSingleton<IDiscountHeaderRepository, DiscountHeaderRepository>();//
+builder.Services.AddSingleton<IEventLogRepository, EventLogRepository>();//
 builder.Services.AddSingleton<IInvoiceDetailRepository, InvoiceDetailRepository>();//
 builder.Services.AddSingleton<IInvoiceHeaderRepository, InvoiceHeaderRepository>();//
 builder.Services.AddSingleton<ILookUpRepository, LookUpRepository>();//
@@ -43,6 +44,7 @@ builder.Services.AddSingleton<IAddressBusiness, AddressBusiness>();//
 builder.Services.AddSingleton<ICustomerBusiness, CustomerBusiness>();//
 builder.Services.AddSingleton<IDiscountDetailBusiness, DiscountDetailBusiness>();//
 builder.Services.AddSingleton<IDiscountHeaderBusiness, DiscountHeaderBusiness>();//
+builder.Services.AddSingleton<IEventLogBusiness, EventLogBusiness>();//
 builder.Services.AddSingleton<IInvoiceBusinesss, InvoiceBusiness>();//
 builder.Services.AddSingleton<ILookupBusiness, LookupBusiness>();//
 builder.Services.AddSingleton<IMemberAppSettingBusiness, MemberAppSettingBusiness>();//

@@ -84,6 +84,9 @@ namespace appify.models
 
         public bool? IsNew { get; set;}
 
+        public Int16? DiscountType { get; set; }
+        public decimal? DiscountValue {  get; set; }
+
     }
 
     public partial class NewProduct

@@ -524,7 +524,9 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Verify Image Based On ImageURL
+        /// </summary>
         [HttpPost, Route("image/verify")]
         public IActionResult VerifyImage(string imagePath)
         {
@@ -532,7 +534,11 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                rm.data = ImageClassifier(imagePath);
+                // rm.data = ImageClassifier(imagePath);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCT-IMAGE VERIFIED";
+                rm.name = StatusName.ok;
+                rm.data = ImageClassifier(imagePath).Result;
             }
             catch (Exception ex)
             {
@@ -547,7 +553,50 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// Verify Image Based On IForm File
+        /// </summary>
+        [HttpPost, Route("image/verifyByIForm")]
+        public IActionResult VerifyImageByIForm([FromForm] IFormFile file)
+        {
+            try
+            {
+                if(file == null || file.Length == 0)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO FILE OR INVALID FILE FORMAT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    return Ok(rm);
+                }
 
+                //var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                //var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+
+                //using(var stream = new FileStream(savePath,FileMode.Create))
+                //{
+                //    file.CopyTo(stream);
+                //}
+
+                rm = new ResponseMessage();
+                // rm.data = ImageClassifier(imagePath);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCT-IMAGE VERIFIED";
+                rm.name = StatusName.ok;
+               /// rm.data = ImageClassifier(imagePath).Result;
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
         private static async Task<string> ImageClassifier(string imagePath)
         {
 

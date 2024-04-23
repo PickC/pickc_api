@@ -79,9 +79,9 @@ namespace appify.Business
             return repository.memberBannerAdd(memberBanner);
         }
 
-        public bool memberBannerRemove(long MemberID)
+        public bool memberBannerRemove(long BannerID)
         {
-            return repository.memberBannerRemove(MemberID);
+            return repository.memberBannerRemove(BannerID);
         }
 
         public MemberBanner memberBannerGet(long MemberID)
