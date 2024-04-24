@@ -49,6 +49,17 @@ namespace appify.DataAccess
             return items;
         }
 
+
+        public List<ProductDiscount> ListByProduct(long productID)
+        {
+            List<ProductDiscount> items = new List<ProductDiscount>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTVENDORPRODUCTDISCOUNTS, productID);
+            items = DataTableHelper.ConvertDataTable<ProductDiscount>(ds.Tables[0]);
+
+            return items;
+        }
+        
+
         public bool Remove(long DiscountID, long ModifiedBy)
         {
             var result = false;
