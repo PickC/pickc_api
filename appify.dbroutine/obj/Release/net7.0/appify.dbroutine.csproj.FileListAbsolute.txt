@@ -32,3 +32,14 @@ D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.db
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\refint\appify.dbroutine.dll
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.pdb
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\ref\appify.dbroutine.dll
+D:\Project\Appify.API\appify.api\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.deps.json
+D:\Project\Appify.API\appify.api\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.dll
+D:\Project\Appify.API\appify.api\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.pdb
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.AssemblyInfoInputs.cache
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.AssemblyInfo.cs
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.csproj.CoreCompileInputs.cache
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.dll
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\refint\appify.dbroutine.dll
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.pdb
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\ref\appify.dbroutine.dll

@@ -514,19 +514,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\gurje\\.nuget\\packages\\": {}
+    "C:\\Users\\sharma\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
       "projectName": "appify.utility",
-      "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj",
-      "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\obj\\",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
+      "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -546,11 +546,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -582,7 +577,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

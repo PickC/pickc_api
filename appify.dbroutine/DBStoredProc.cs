@@ -227,6 +227,7 @@ namespace appify.dbroutine
         public const string LISTDISCOUNTHEADER = "[Operation].[usp_DiscountHeaderList]";
         public const string LISTDISCOUNTBYVENDOR = "[Operation].[usp_DiscountHeaderListByVendor]";
         public const string LISTVENDORPRODUCTDISCOUNTS = "[Operation].[usp_ProductDiscountList]";
+        public const string LISTDISCOUNTBYPRODUCT = "[Operation].[usp_DiscountListByProduct]";
         
 
 
