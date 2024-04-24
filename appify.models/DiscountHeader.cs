@@ -67,8 +67,8 @@ namespace appify.models
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Brand { get; set; }
-        public string EffectiveDate { get; set; }
-        public string ExpiryDate { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
         public decimal? Price { get; set; }
         public short DiscountType { get; set; }
         public decimal? DiscountValue { get; set; }

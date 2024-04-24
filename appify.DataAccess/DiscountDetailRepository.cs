@@ -84,17 +84,17 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ProductID", item.ProductID);
                         cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
 
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@NewDiscountID";
-                        outPutParameter.SqlDbType = SqlDbType.BigInt;
-                        outPutParameter.Direction = ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
+                        //SqlParameter outPutParameter = new SqlParameter();
+                        //outPutParameter.ParameterName = "@NewDiscountID";
+                        //outPutParameter.SqlDbType = SqlDbType.BigInt;
+                        //outPutParameter.Direction = ParameterDirection.Output;
+                        //cmd.Parameters.Add(outPutParameter);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
 
-                        item.DiscountID = Convert.ToInt64(outPutParameter.Value);
+                        //item.DiscountID = Convert.ToInt64(outPutParameter.Value);
                         con.Close();
 
                     }

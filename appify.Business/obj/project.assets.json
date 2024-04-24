@@ -586,19 +586,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sharma\\.nuget\\packages\\": {}
+    "C:\\Users\\gurje\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\appify.Business.csproj",
+      "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business\\appify.Business.csproj",
       "projectName": "appify.Business",
-      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\appify.Business.csproj",
-      "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\obj\\",
+      "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business\\appify.Business.csproj",
+      "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+      "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -612,17 +612,17 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj"
+            "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj": {
+              "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
+            "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+              "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
+            "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
+              "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj"
+            "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj": {
+              "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj"
             }
           }
         }
@@ -631,6 +631,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -652,7 +657,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
       }
     }
   }
