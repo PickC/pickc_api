@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj": {}
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
         "projectName": "appify.DataAccess.Contract",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,8 +28,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
+              "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
+                "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
               }
             }
           }
@@ -38,6 +38,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -59,21 +64,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj",
         "projectName": "appify.DataAccess",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -87,17 +92,17 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
+              "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+                "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
               },
-              "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj"
+              "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj": {
+                "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj"
               },
-              "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
+              "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
+                "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
               },
-              "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj"
+              "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj": {
+                "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj"
               }
             }
           }
@@ -106,6 +111,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -137,21 +147,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj",
         "projectName": "appify.dbroutine",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -171,6 +181,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -192,21 +207,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj",
         "projectName": "appify.models",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -226,6 +241,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -247,21 +267,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj",
         "projectName": "appify.utility",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.utility\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -281,6 +301,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -312,7 +337,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

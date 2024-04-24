@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Text.Json.Nodes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -538,7 +540,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.OK;
                 rm.message = "PRODUCT-IMAGE VERIFIED";
                 rm.name = StatusName.ok;
-                rm.data = ImageClassifier(imagePath).Result;
+                JObject jObject = JObject.Parse(ImageClassifier(imagePath).Result);
+                rm.data = jObject["data"].Value<string>();
             }
             catch (Exception ex)
             {
@@ -557,8 +560,8 @@ namespace appify.web.api.Controllers
         /// Verify Image Based On IForm File
         /// </summary>
         [HttpPost, Route("image/verifyByIForm")]
-        public IActionResult VerifyImageByIForm([FromForm] IFormFile file)
-        {
+        public IActionResult VerifyImageByIForm(IFormFile file)
+        {/////[FromForm] IFormFile file
             try
             {
                 if(file == null || file.Length == 0)
@@ -570,21 +573,12 @@ namespace appify.web.api.Controllers
                     return Ok(rm);
                 }
 
-                //var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-
-                //var savePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-
-                //using(var stream = new FileStream(savePath,FileMode.Create))
-                //{
-                //    file.CopyTo(stream);
-                //}
-
                 rm = new ResponseMessage();
-                // rm.data = ImageClassifier(imagePath);
                 rm.statusCode = StatusCodes.OK;
                 rm.message = "PRODUCT-IMAGE VERIFIED";
                 rm.name = StatusName.ok;
-               /// rm.data = ImageClassifier(imagePath).Result;
+                JObject jObject = JObject.Parse(ImageClassifieryByIForm(file).Result);
+                rm.data = jObject["data"].Value<string>();
             }
             catch (Exception ex)
             {
@@ -597,7 +591,47 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-        private static async Task<string> ImageClassifier(string imagePath)
+
+        private static async Task<string> ImageClassifieryByIForm(IFormFile file)
+        {
+            // Create an instance of HttpClient
+            using (var client = new HttpClient())
+            {
+                string responseBody = "";
+                try
+                {
+                    byte[] data;
+                    using (var br = new BinaryReader(file.OpenReadStream()))
+                        data = br.ReadBytes((int)file.OpenReadStream().Length);
+
+                    ByteArrayContent bytes = new ByteArrayContent(data);
+                    MultipartFormDataContent multiContent = new MultipartFormDataContent();
+
+                    multiContent.Add(bytes, "file", file.FileName);
+                    HttpResponseMessage response = await client.PostAsync(Common.IMAGECLASSIFIER_URL, multiContent);
+
+                    // Check if the response is successful
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // Read the response content (if needed)
+                        responseBody = await response.Content.ReadAsStringAsync();
+
+                    }
+                    else
+                    {
+                        responseBody = response.StatusCode.ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    responseBody = ex.ToString();
+
+                }
+
+                return responseBody;
+            }
+        }
+    private static async Task<string> ImageClassifier(string imagePath)
         {
 
 
@@ -621,18 +655,6 @@ namespace appify.web.api.Controllers
                         content.Add(fileContent, "file", fileName);
                         memoryStream.Flush();
                     }
-
-                    ////**********************************************************************************///////
-                    // Previous Code Starts///
-
-                    // Create a StringContent with the image data and set the content type
-                    // var content = new FormUrlEncodedContent(new[] {
-                    //    new KeyValuePair<string, string>("",imagePath)
-                    //}); 
-
-                    //content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust content type as needed
-                    ////**********************************************************************************///////
-                    // Previous Code Ends///
 
                     // Send the POST request
                     HttpResponseMessage response = await client.PostAsync(Common.IMAGECLASSIFIER_URL, content);

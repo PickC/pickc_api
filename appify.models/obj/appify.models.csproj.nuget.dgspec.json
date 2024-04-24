@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {}
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+    "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
+        "projectUniqueName": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj",
         "projectName": "appify.models",
-        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
-        "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\obj\\",
+        "projectPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj",
+        "packagesPath": "C:\\Users\\gurje\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Dotnet\\appify_20240401\\appify.models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gurje\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -34,6 +34,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -55,7 +60,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

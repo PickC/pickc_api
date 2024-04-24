@@ -42,11 +42,11 @@ namespace appify.web.api.Controllers
         ///         "IsCancel": false,
         ///         "CreatedBy": 1505,
         ///         "CreatedOn": "2024-04-11T18:20:59.953",
-        ///         "ModifiedBy": "",
+        ///         "ModifiedBy": 1505,
         ///         "ModifiedOn": "2024-04-11T18:21:53.250",
         ///         "DiscountDetails": [
         ///             {
-        ///                 "DiscountID": 1000,
+        ///                 "DiscountID": 0,
         ///                 "ProductID": 1005,
         ///                 "IsActive": true
         ///             }
@@ -60,7 +60,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Discount Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
-        public IActionResult discountHeaderAdd(List<DiscountHeader> discountHeader)
+        public IActionResult discountHeaderAdd(DiscountHeader discountHeader)
         {
             var result = true;
             try
@@ -68,22 +68,16 @@ namespace appify.web.api.Controllers
                 DiscountHeader returnItem;
 
                 rm = new ResponseMessage();
-                foreach(var item in discountHeader)
-                {
-                    returnItem = this._discountHeaderBusiness.Save(item);
-                    result = returnItem != null;
-                    if(!result)
-                    {
-                        break;
-                    }
-                }
+
+                returnItem = this._discountHeaderBusiness.Save(discountHeader);
+
 
                 if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "DISCOUNT SAVED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
-                    rm.data = result;
+                    rm.data = returnItem;
                 }
                 else
                 {
@@ -298,7 +292,7 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-        
+
 
 
         /// <summary>
