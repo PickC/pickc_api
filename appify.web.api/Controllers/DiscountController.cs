@@ -60,13 +60,25 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Discount Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
-        public IActionResult discountHeaderAdd(DiscountHeader discountHeader)
+        public IActionResult discountHeaderAdd(List<DiscountHeader> discountHeader)
         {
+            var result = true;
             try
             {
+                DiscountHeader returnItem;
+
                 rm = new ResponseMessage();
-                var result = this._discountHeaderBusiness.Save(discountHeader);
-                if (result != null)
+                foreach(var item in discountHeader)
+                {
+                    returnItem = this._discountHeaderBusiness.Save(item);
+                    result = returnItem != null;
+                    if(!result)
+                    {
+                        break;
+                    }
+                }
+
+                if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "DISCOUNT SAVED SUCCESSFULLY!";
@@ -358,8 +370,80 @@ namespace appify.web.api.Controllers
         }
 
 
+
+
+        /// <summary>
+        /// gets Product's Discount items by vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "productID":1315
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     [
+        ///         {
+        ///             "DiscountID": 1000,
+        ///             "EffectiveDate": "2024-04-16T15:55:06.807",
+        ///             "ExpiryDate": "2024-04-18T15:55:06.807",
+        ///             "ProductID": 1005,
+        ///             "ProductName": "Tshirt",
+        ///             "Description": "boys and girls kids white tshirts",
+        ///             "Brand": "qikink kids ",
+        ///             "Price": 200.00,
+        ///             "DiscountType": 3003,
+        ///             "DiscountValue": 0.43,
+        ///             "DiscountTypeDescription": "",
+        ///             "IsActive": 1,
+        ///             "ImageID": 1014,
+        ///             "ImageName": "https:\/\/appifystorage.blob.core.windows.net\/appifystoragecontainer\/image_cropper_1694071692121.jpg"
+        ///         }
+        ///     ]    
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Discounted Products List Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("listbyproduct")]
+        public IActionResult ListByProduct(ParamProduct itemData)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this._discountHeaderBusiness.ListByVendor(itemData.productID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT DISCOUNTS";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
+
+
+
         ///////////// Discount Detail
-        
+
         //[HttpPost, Route("DiscountDetailSave")]
         //public IActionResult discountDetailAdd(DiscountDetail discountDetail)
         //{

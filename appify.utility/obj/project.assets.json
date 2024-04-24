@@ -519,11 +519,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.utility\\appify.utility.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
       "projectName": "appify.utility",
-      "projectPath": "D:\\Project\\Appify.API\\appify.utility\\appify.utility.csproj",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj",
       "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.utility\\obj\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",

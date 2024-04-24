@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
       "projectName": "appify.models",
-      "projectPath": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
       "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.models\\obj\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",

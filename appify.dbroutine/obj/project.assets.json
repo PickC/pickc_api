@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.dbroutine\\appify.dbroutine.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj",
       "projectName": "appify.dbroutine",
-      "projectPath": "D:\\Project\\Appify.API\\appify.dbroutine\\appify.dbroutine.csproj",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj",
       "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.dbroutine\\obj\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",

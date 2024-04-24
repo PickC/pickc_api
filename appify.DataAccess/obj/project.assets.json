@@ -2560,11 +2560,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.DataAccess\\appify.DataAccess.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj",
       "projectName": "appify.DataAccess",
-      "projectPath": "D:\\Project\\Appify.API\\appify.DataAccess\\appify.DataAccess.csproj",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\appify.DataAccess.csproj",
       "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.DataAccess\\obj\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2581,17 +2581,17 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
+            "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.dbroutine\\appify.dbroutine.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.dbroutine\\appify.dbroutine.csproj"
+            "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj": {
+              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.dbroutine\\appify.dbroutine.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj"
+            "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.utility\\appify.utility.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.utility\\appify.utility.csproj"
+            "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj": {
+              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj"
             }
           }
         }

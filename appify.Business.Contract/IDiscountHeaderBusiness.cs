@@ -15,5 +15,7 @@ namespace appify.Business.Contract
         public bool Remove(Int64 DiscountID, Int64 ModifiedBy);
 
         public List<ProductDiscount> ListByVendor(long vendorID);
+        public List<ProductDiscount> ListByProduct(long productID);
+
     }
 }

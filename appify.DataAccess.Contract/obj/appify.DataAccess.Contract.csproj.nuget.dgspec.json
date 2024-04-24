@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {}
+    "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+    "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
         "projectName": "appify.DataAccess.Contract",
-        "projectPath": "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
         "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.DataAccess.Contract\\obj\\",
+        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -28,8 +28,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj": {
-                "projectPath": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj"
+              "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
               }
             }
           }
@@ -63,14 +63,14 @@
         }
       }
     },
-    "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj": {
+    "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj",
+        "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
         "projectName": "appify.models",
-        "projectPath": "D:\\Project\\Appify.API\\appify.models\\appify.models.csproj",
+        "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj",
         "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Appify.API\\appify.models\\obj\\",
+        "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",

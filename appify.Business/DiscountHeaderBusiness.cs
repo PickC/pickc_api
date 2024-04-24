@@ -37,6 +37,11 @@ namespace appify.Business
             return repository.ListByVendor(vendorID);
         }
 
+        public List<ProductDiscount> ListByProduct(long productID) { 
+            return repository.ListByProduct(productID);
+        }
+
+
 
         public bool Remove(long DiscountID, long ModifiedBy)
         {
