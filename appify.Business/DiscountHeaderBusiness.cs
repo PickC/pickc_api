@@ -26,9 +26,9 @@ namespace appify.Business
             return repository.Get(DiscountID);
         }
 
-        public List<DiscountHeader> GetAll(long DiscountID)
+        public List<DiscountHeader> GetAll()
         {
-           return repository.GetAll(DiscountID);
+           return repository.GetAll();
         }
 
         public List<ProductDiscount> ListByVendor(long vendorID)
@@ -37,30 +37,30 @@ namespace appify.Business
             return repository.ListByVendor(vendorID);
         }
 
-        public List<ProductDiscount> ListByProduct(long productID) { 
+        public List<ProductDiscountList> ListByProduct(long productID) { 
             return repository.ListByProduct(productID);
         }
 
 
 
-        public bool Remove(long DiscountID, long ModifiedBy)
+        public bool Remove(long DiscountID, long ProductID)
         {
-            return repository.Remove(DiscountID, ModifiedBy);
+            return repository.Remove(DiscountID, ProductID);
         }
 
         public DiscountHeader Save(DiscountHeader item)
         {
             DiscountHeader returnItem = repository.Save(item);
 
-            if (item.DiscountDetails?.Any()==true)
-            {
+            //if (item.DiscountDetails?.Any()==true)
+            //{
                 
-                foreach (var dt in item.DiscountDetails)
-                {
-                    dt.DiscountID = returnItem.DiscountID;
-                    var result = repositoryDetail.Save(dt);
-                }
-            }
+            //    foreach (var dt in item.DiscountDetails)
+            //    {
+            //        dt.DiscountID = returnItem.DiscountID;
+            //        var result = repositoryDetail.Save(dt);
+            //    }
+            //}
 
             return returnItem;
         }

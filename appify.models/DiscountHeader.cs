@@ -9,17 +9,17 @@ namespace appify.models
     public partial class DiscountHeader
     {
         // Constructor 
-        public DiscountHeader() {
+        //public DiscountHeader() {
 
-            DiscountDetails = new List<DiscountDetail>();
+        //    DiscountDetails = new List<DiscountDetail>();
         
-        }
+        //}
 
         // Public Members 
 
 
         public Int64 DiscountID { get; set; }
-        public Int64 VendorID { get; set; }
+        public Int64 ProductID { get; set; }
 
         public Int16 DiscountType { get; set; }
 
@@ -38,7 +38,8 @@ namespace appify.models
 
         public DateTime ModifiedOn { get; set; }
 
-        public List<DiscountDetail>? DiscountDetails { get; set; }
+        public bool IsActive { get; set; }
+        ///public List<DiscountDetail>? DiscountDetails { get; set; }
 
 
     }
@@ -80,6 +81,21 @@ namespace appify.models
 
         //public List<ProductDiscountDates> ProductDiscountDateList { get; set; }
 
+
+    }
+
+    public partial class ProductDiscountList
+    {
+        public Int64 ProductID { get; set; }
+        public string ProductName { get; set; }
+        public string Description { get; set; }
+        public string Brand { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public decimal? Price { get; set; }
+        public short DiscountType { get; set; }
+        public decimal? DiscountValue { get; set; }
+        public string DiscountTypeDescription { get; set; }
 
     }
 

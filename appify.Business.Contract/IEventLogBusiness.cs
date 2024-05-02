@@ -9,7 +9,7 @@ namespace appify.Business.Contract
 {
     public interface IEventLogBusiness
     {
-        public EventLogs eventLogAdd(EventLogs eventLog);
+        public bool eventLogAdd(EventLogs eventLog);
         public bool eventLogRemove(long EventID);
         public EventLogs eventLogGet(long EventID);
         public List<EventLogs> eventLogList();

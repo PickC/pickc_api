@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace appify.models
 {
-    public partial class EventLogs
+    public class EventLogs
     {
         public Int64 EventID { get; set; }
-        public Int16 EventType { get; set; }
+        public string EventType { get; set; }
         public Int64 VendorID { get; set; }
         public Int64 CustomerID { get; set; }
         public string Source { get; set; }
@@ -17,6 +17,7 @@ namespace appify.models
         public string IPAddress { get; set; }
         public string EventLog { get; set; }
         public string InputJSON { get; set; }
+        public string OutputJSON { get; set; }
         public DateTime EventTime { get; set; }
         public string AppName { get; set; }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,6 +26,8 @@ namespace appify.utility
         }
 
         public static readonly string IMAGECLASSIFIER_URL = "https://appify-image-classifier.azurewebsites.net/classify-image/";
+
+        public static readonly int IMAGE_SIZE = 5 * 1024 * 1024; /// 5 MB
 
     }
 }

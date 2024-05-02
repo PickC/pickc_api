@@ -9,13 +9,13 @@ namespace appify.Business.Contract
 {
     public interface IDiscountHeaderBusiness
     {
-        public List<DiscountHeader> GetAll(Int64 DiscountID);
+        public List<DiscountHeader> GetAll();
         public DiscountHeader Get(Int64 DiscountID);
         public DiscountHeader Save(DiscountHeader item);
-        public bool Remove(Int64 DiscountID, Int64 ModifiedBy);
+        public bool Remove(Int64 DiscountID, Int64 ProductID);
 
         public List<ProductDiscount> ListByVendor(long vendorID);
-        public List<ProductDiscount> ListByProduct(long productID);
+        public List<ProductDiscountList> ListByProduct(long productID);
 
     }
 }
