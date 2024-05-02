@@ -20,7 +20,7 @@ namespace appify.Business
         {
             this.repository = repository;
         }
-        public EventLogs eventLogAdd(EventLogs eventLog)
+        public bool eventLogAdd(EventLogs eventLog)
         {
             return repository.eventLogAdd(eventLog);
         }

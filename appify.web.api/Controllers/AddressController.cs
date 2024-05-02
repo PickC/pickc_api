@@ -3,6 +3,8 @@ using appify.Business.Contract;
 using appify.models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Newtonsoft.Json.Linq;
@@ -15,20 +17,23 @@ namespace appify.web.api.Controllers
     [EnableCors("AllowOrigin")]
     public class AddressController : Controller
     {
+        public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly IAddressBusiness addressBusiness;
         private ResponseMessage rm;
 
-        public AddressController(IConfiguration configuration, IAddressBusiness iResultData)
+        public AddressController(IConfiguration configuration, IAddressBusiness iResultData, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.addressBusiness = iResultData;
-
+            this.eventLogBusiness = eventLogBusiness;       
         }
 
         [HttpPost, Route("save")]
         public IActionResult Add(Address item)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
@@ -39,6 +44,10 @@ namespace appify.web.api.Controllers
                     rm.message = "ADDRESS SAVED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
                     rm.data = result;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
                 else
                 {
@@ -46,6 +55,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
 
             }
@@ -56,6 +68,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 
@@ -66,6 +80,8 @@ namespace appify.web.api.Controllers
        
         public IActionResult Remove(ParamAddress itemData)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -77,6 +93,9 @@ namespace appify.web.api.Controllers
                     rm.message = "ADDRESS REMOVED";
                     rm.name = StatusName.ok;
                     rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
                 else
                 {
@@ -84,6 +103,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
             }
             catch (Exception ex)
@@ -93,6 +115,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 
@@ -101,6 +125,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getaddress")]
         public IActionResult GetAddress(ParamAddress itemData)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -114,6 +140,9 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH ADDRESS ITEM";
                     rm.name = StatusName.ok;
                     rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
                 else
                 {
@@ -121,6 +150,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
             }
             catch (Exception ex)
@@ -130,6 +162,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 
@@ -139,6 +173,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getdefaultaddress")]
         public IActionResult GetAddress(ParamMemberUserID itemData)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -152,6 +188,9 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH ADDRESS ITEM";
                     rm.name = StatusName.ok;
                     rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
                 else
                 {
@@ -159,6 +198,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
             }
             catch (Exception ex)
@@ -168,6 +210,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 
@@ -176,6 +220,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("list")]
         public IActionResult List(ParamMemberUserID itemData)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -187,6 +233,9 @@ namespace appify.web.api.Controllers
                     rm.message = "ADDRESS LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
                 else
                 {
@@ -194,6 +243,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
             }
             catch (Exception ex)
@@ -203,6 +255,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 

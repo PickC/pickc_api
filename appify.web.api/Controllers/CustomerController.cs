@@ -3,7 +3,11 @@ using appify.Business.Contract;
 using appify.models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Linq;
 
 namespace appify.web.api.Controllers
 {
@@ -13,15 +17,16 @@ namespace appify.web.api.Controllers
 
     public class CustomerController : ControllerBase
     {
-
+        public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly ICustomerBusiness customerBusiness;
         private ResponseMessage rm;
 
-        public CustomerController(IConfiguration configuration,ICustomerBusiness customerBusiness)
+        public CustomerController(IConfiguration configuration,ICustomerBusiness customerBusiness, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
+            this.eventLogBusiness = eventLogBusiness;
         }
 
         /// <summary>
@@ -56,10 +61,13 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("productlist")]
         public IActionResult GetMemberProducts(ParamMemberUserID itemData) {
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
+
+
                 List<MemberProduct> items = customerBusiness.ProductList(itemData.userID);
                 if (items?.Any() == true)
                 {
@@ -67,6 +75,11 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
+
                 }
                 else
                 {
@@ -74,6 +87,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                    this.eventLogBusiness.eventLogAdd(eventlog);
                 }
 
 
@@ -85,6 +101,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
+                this.eventLogBusiness.eventLogAdd(eventlog);
             }
             return Ok(rm);
 
