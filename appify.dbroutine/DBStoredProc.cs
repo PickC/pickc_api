@@ -146,7 +146,7 @@ namespace appify.dbroutine
         public const string ORDERSTATUSUPDATE = "[Operation].[usp_OrderStatusUpdate]";
         public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
         public const string UPDATEORDERPICKUP = "[Operation].[usp_UpdateOrderForPickup]";
-
+        public const string GETVENDORDETAILS = "[Operation].[usp_VendorDetails]";
 
         public const string SELECTORDERHEADERBYORDERID = "[Operation].[usp_OrderHeaderItem]";
 

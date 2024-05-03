@@ -53,7 +53,7 @@ builder.Services.AddSingleton<IMemberContactBusiness, MemberContactBusiness>();/
 builder.Services.AddSingleton<IMemberKYCBusiness, MemberKYCBusiness>();//
 builder.Services.AddSingleton<IMemberReturnPolicyBusiness, MemberReturnPolicyBusiness>();//
 builder.Services.AddSingleton<IMemberThemeBusiness, MemberThemeBusiness>();//
-//builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
+builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
 builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();//
 builder.Services.AddSingleton<IProductBusiness, ProductBusiness>();//
 builder.Services.AddSingleton<IProductImageBusiness, ProductImageBusiness>();//

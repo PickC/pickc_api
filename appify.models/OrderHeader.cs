@@ -80,6 +80,12 @@ namespace appify.models
 
     }
 
+    public class OrderVendorDetails
+    {
+        public Int64 VendorID { get; set; }
+        public string FirstName { get; set; }
+        public string? Token { get; set; }
+    }
     public class Order
     {
 
@@ -126,7 +132,7 @@ namespace appify.models
 
     }
 
-    public partial class VendorOrder
+        public partial class VendorOrder
     {
         public VendorOrder()
         {
