@@ -31,8 +31,12 @@ namespace appify.utility
 
 
         ////// FCM Body Messages
-        ///
-        public const string ORDER_FCM_SUBJECT = "Your Order has been successfully placed";
+
+        public static string ORDER_CUSTOMER_NOTIFICATION_TITLE = "Hi @Name";
+        public static string ORDER_CUSTOMER_NOTIFICATION_BODY = "Your Order No is @OrderNO Successfuly Placed! View your order details here.";
+
+        public static string ORDER_VENDOR_NOTIFICATION_TITLE = "Dear @Name";
+        public static string ORDER_VENDOR_NOTIFICATION_BODY = "You have received a new order is @OrderNO. click <here> to view the order details.";
 
     }
 }

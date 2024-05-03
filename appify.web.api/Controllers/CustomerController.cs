@@ -1,6 +1,7 @@
 ﻿using appify.Business;
 using appify.Business.Contract;
 using appify.models;
+using appify.utility;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -77,9 +78,7 @@ namespace appify.web.api.Controllers
                     rm.data = items;
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
-
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -88,8 +87,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
 
@@ -101,8 +99,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 

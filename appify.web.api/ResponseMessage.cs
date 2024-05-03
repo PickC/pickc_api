@@ -4,8 +4,8 @@
     {
         public Int16 statusCode { get; set; }
         public string name { get; set; }
-        public string message { get; set; }
-        public object data { get; set; }
+        public string? message { get; set; }
+        public object? data { get; set; }
     }
 
     public static class StatusName

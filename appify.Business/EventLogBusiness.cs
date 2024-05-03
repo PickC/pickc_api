@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace appify.Business
 {
-    public class EventLogBusiness : IEventLogBusiness
+    public  partial class EventLogBusiness : IEventLogBusiness
     {
         private IEventLogRepository repository;
         public EventLogBusiness(IEventLogRepository repository)

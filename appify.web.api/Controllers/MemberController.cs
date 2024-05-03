@@ -2,6 +2,7 @@
 using appify.Business.Contract;
 using appify.DataAccess.Contract;
 using appify.models;
+using appify.utility;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -64,8 +65,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok));
                 }
                 else
                 {
@@ -74,8 +74,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
                 }
 
             }
@@ -85,8 +84,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
 
             }
 
@@ -110,8 +108,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = member;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, member, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, member, StatusName.ok));
                 }
                 else
                 {
@@ -120,8 +117,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, null, rm.message));
                 }
 
             }
@@ -131,8 +127,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, userID, null, rm.message));
 
             }
             return Ok(rm);
@@ -159,8 +154,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, memberItem, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, memberItem, StatusName.ok));
                 }
                 else
                 {
@@ -169,8 +163,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
             }
@@ -180,8 +173,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -204,8 +196,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -214,8 +205,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -225,8 +215,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -249,8 +238,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -259,8 +247,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -270,9 +257,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
-
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -296,8 +281,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = member;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, member, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, member, StatusName.ok));
                 }
                 else
                 {
@@ -306,8 +290,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -317,8 +300,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -352,8 +334,7 @@ namespace appify.web.api.Controllers
 
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -362,8 +343,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -373,8 +353,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -397,8 +376,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = count;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, count, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, count, StatusName.ok));
                 }
                 else
                 {
@@ -407,8 +385,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message));
                 }
 
             }
@@ -418,8 +395,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
         }
@@ -440,9 +416,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = isAllowed;
                 //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, isAllowed, StatusName.ok);
-                this.eventLogBusiness.eventLogAdd(eventlog);
-
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, isAllowed, StatusName.ok));
             }
             catch (Exception ex)
             {
@@ -450,8 +424,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
         }
@@ -483,8 +456,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = returnData;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, returnData, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
                 }
                 else
                 {
@@ -493,8 +465,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -504,8 +475,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -551,8 +521,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = dashboard;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, dashboard, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, dashboard, StatusName.ok));
                 }
                 else
                 {
@@ -561,8 +530,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -572,8 +540,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
         }
@@ -596,8 +563,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -606,8 +572,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -618,8 +583,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -641,8 +605,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -651,8 +614,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -664,8 +626,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -689,8 +650,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -699,8 +659,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -710,8 +669,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -735,8 +693,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -745,8 +702,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -757,8 +713,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -782,8 +737,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = returndata;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, returndata, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, returndata, StatusName.ok));
                 }
                 else
                 {
@@ -792,8 +746,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -805,8 +758,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -830,8 +782,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -840,8 +791,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -851,8 +801,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -878,8 +827,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -888,8 +836,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -900,8 +847,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -928,8 +874,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -938,8 +883,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -951,8 +895,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -976,8 +919,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -986,8 +928,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -997,8 +938,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1025,8 +965,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1035,8 +974,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1047,8 +985,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1074,8 +1011,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -1084,8 +1020,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -1097,8 +1032,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -1122,8 +1056,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1132,8 +1065,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1143,8 +1075,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1171,8 +1102,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1181,8 +1111,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1193,8 +1122,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1218,8 +1146,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1228,8 +1155,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1240,8 +1166,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1263,8 +1188,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -1276,8 +1200,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -1286,8 +1209,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
                 }
 
 
@@ -1299,8 +1221,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -1326,8 +1247,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, items, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, items, result, StatusName.ok));
                 }
                 else
                 {
@@ -1336,8 +1256,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, items, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, items, null, rm.message));
                 }
 
 
@@ -1349,8 +1268,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, items, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, items, null, rm.message));
             }
             return Ok(rm);
 
@@ -1374,8 +1292,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1384,8 +1301,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1395,8 +1311,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1441,8 +1356,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, result, StatusName.ok));
                 }
                 else
                 {
@@ -1451,8 +1365,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1461,8 +1374,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, memberBanner, null, rm.message));
             }
 
             return Ok(rm);
@@ -1500,8 +1412,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1510,8 +1421,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1520,8 +1430,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -1580,8 +1489,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1590,8 +1498,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1600,8 +1507,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -1656,8 +1562,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, result, StatusName.ok));
                 }
                 else
                 {
@@ -1666,8 +1571,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1676,8 +1580,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
             }
 
             return Ok(rm);
@@ -1734,8 +1637,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1744,8 +1646,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                    this.eventLogBusiness.eventLogAdd(eventlog);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1754,8 +1655,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                EventLogs eventlog = UpdateEventLog.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message);
-                this.eventLogBusiness.eventLogAdd(eventlog);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);

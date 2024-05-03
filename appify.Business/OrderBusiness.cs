@@ -217,6 +217,9 @@ namespace appify.Business
             return orderRepository.GetOrderTrackingDetails(orderID);
         }
 
-
+        public OrderVendorDetails GetOrderVendorDetails(long VendorID)
+        {
+            return orderRepository.GetOrderVendorDetails(VendorID);
+        }
     }
 }
