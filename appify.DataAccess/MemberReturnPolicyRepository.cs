@@ -84,6 +84,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@MaxReturnDays", item.MaxReturnDays);
                         cmd.Parameters.AddWithValue("@IsProductDamaged", item.IsProductDamaged);
                         cmd.Parameters.AddWithValue("@IsWrongSize", item.IsWrongSize);
+                        cmd.Parameters.AddWithValue("@InCompatible", item.InCompatible);
                         cmd.Parameters.AddWithValue("@IsDeliveryDelay", item.IsDeliveryDelay);
                         cmd.Parameters.AddWithValue("@IsQualityIssue", item.IsQualityIssue);
                         cmd.Parameters.AddWithValue("@IsDifferentProduct", item.IsDifferentProduct);

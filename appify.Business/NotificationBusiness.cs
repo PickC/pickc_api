@@ -15,14 +15,24 @@ namespace appify.Business
 {
     public partial class NotificationBusiness : INotificationBusiness
     {
-        ///private INotificationRepository repository;
         ///private readonly IWebHostEnvironment _webHostEnvironment;
-        public NotificationBusiness() { 
-            //this.repository = repository;
+
+        private INotificationRepository repository;
+        public NotificationBusiness(INotificationRepository repository) { 
+            this.repository = repository;
         }
 
         public object Server { get; private set; }
 
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
+        {
+            return repository.GetNotificationByVendor(VendorID);
+        }
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
+        {
+            return repository.GetNotificationByUser(CustomerID);
+        }
+        
         public Notifications SendEmail(Notifications notifications)
         {
             /// return this.repository.SendEmail(notifications);
@@ -87,6 +97,29 @@ namespace appify.Business
                 throw ex;
             }
             return notifications;
+        }
+
+        public NotificationTemplate GetNotificationTemplate(long TemplateID)
+        {
+            return repository.GetNotificationTemplate(TemplateID);
+        }
+
+        public bool IsReadNotification(long NotificationID)
+        {
+            return repository.IsReadNotification(NotificationID);
+        }
+        public bool addNotificationMessage(PushNotificationMessage pushNotification)
+        {
+            return repository.addNotificationMessage(pushNotification);
+        }
+
+        public string unReadCountNotification(long UserID)
+        {
+            return repository.unReadCountNotification(UserID);
+        }
+        public VendorDetails GetVendorDetails(long VendorID, long OrderID)
+        {
+            return repository.GetVendorDetails(VendorID, OrderID);
         }
     }
 }

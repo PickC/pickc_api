@@ -268,5 +268,16 @@ namespace appify.dbroutine
         public const string LISTEVENTLOGBYVENDOR = "[Audit].[usp_EventLogListByVendor]";
         public const string SAVEEVENTLOG = "[Audit].[usp_EventLogSave]";
         public const string SELECTEVENTLOG = "[Audit].[usp_EventLogSelect]";
+
+        /// Notification History
+        public const string LISTNOTIFICATIONBYVENDOR = "[Utility].[usp_NotificationByVendor]";
+        public const string LISTNOTIFICATIONBYCUSTOMER = "[Utility].[usp_NotificationByCustomer]";
+        public const string SELECTNOTIFICATION = "[Utility].[usp_NotificationSelect]";
+        public const string ISREADNOtifICATION = "[Utility].[usp_NotificationIsRead]";
+        public const string SAVENOTIFICATION = "[Utility].[usp_NotificationSave]";
+        public const string UNREADNOTIFICATION = "[Utility].[usp_NotificationIsUnReadCount]";
+        
+        //// Notification Template
+        public const string SELECTNOTIFICATIONTEMPLATE = "[Utility].[usp_NotificationTemplateSelect]";
     }
 }

@@ -290,13 +290,5 @@ namespace appify.DataAccess
 
         }
 
-        public OrderVendorDetails GetOrderVendorDetails(long VendorID)
-        {
-            OrderVendorDetails items = new OrderVendorDetails();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETVENDORDETAILS, VendorID);
-            items = DataTableHelper.ConvertDataTable<OrderVendorDetails>(ds.Tables[0]).FirstOrDefault();
-
-            return items;
-        }
     }
 }
