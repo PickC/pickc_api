@@ -29,7 +29,5 @@ namespace appify.DataAccess.Contract
         public bool UpdateOrderAWB(Int64 orderID, string CourierRefID, string shipmentID, string awb);
         public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID);
 
-        public OrderVendorDetails GetOrderVendorDetails(long VendorID);
-
     }
 }

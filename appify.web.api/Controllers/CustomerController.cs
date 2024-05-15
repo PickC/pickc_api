@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace appify.web.api.Controllers
 {
@@ -67,7 +68,6 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
 
                 List<MemberProduct> items = customerBusiness.ProductList(itemData.userID);
                 if (items?.Any() == true)

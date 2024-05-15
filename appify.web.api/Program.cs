@@ -28,6 +28,7 @@ builder.Services.AddSingleton<IMemberKYCRepository, MemberKYCRepository>();//
 builder.Services.AddSingleton<IMemberRepository, MemberRepository>();//
 builder.Services.AddSingleton<IMemberReturnPolicyRepository, MemberReturnPolicyRepository>();//
 builder.Services.AddSingleton<IMemberThemeRepository, MemberThemeRepository>();//
+builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();//
 builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();//
 builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();//
 builder.Services.AddSingleton<IProductImageRepository, ProductImageRepository>();//

@@ -10,6 +10,16 @@ namespace appify.web.api
 
     }
 
+    public class ParamMemberVendorID
+    {
+        public long vendorID { get; set; }
+
+    }
+    public class ParamMemberNotificationID
+    {
+        public long NotificationID { get; set; }
+
+    }
     public class ParamBannerID
     {
         public long bannerID { get; set; }  

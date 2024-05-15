@@ -47,3 +47,8 @@ D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.util
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\refint\appify.utility.dll
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.utility.pdb
 D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\ref\appify.utility.dll
+D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Release\net7.0\appify.Business.Contract.dll
+D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Release\net7.0\appify.models.dll
+D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Release\net7.0\appify.Business.Contract.pdb
+D:\Projects\Dotnet\appify_20240401\appify.utility\bin\Release\net7.0\appify.models.pdb
+D:\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.u.89145032.Up2Date

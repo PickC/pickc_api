@@ -10,6 +10,8 @@ using System.Numerics;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Reflection.PortableExecutable;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static appify.models.NotificationType;
+using System.Threading.Tasks;
 
 namespace appify.web.api.Controllers
 {
@@ -57,7 +59,7 @@ namespace appify.web.api.Controllers
 
                     PaymentTransactionData sampleData = new PaymentTransactionData();
 
-                    sampleData.txnid = result.OrderNo;
+                    sampleData.txnid = result.OrderID.ToString();
                     sampleData.phone = order.MobileNo;
                     sampleData.email = order.EmailID;
                     sampleData.amount = (float)order.TotalAmount;
@@ -149,7 +151,6 @@ namespace appify.web.api.Controllers
                     invoiceItem.TotalAmount = TotalSellingAmount;
                     invoiceItem.InvoiceAmount = TotalSellingAmount - TotalTaxAmount;
 
-
                     var invoiceStatus = invoiceBusinesss.Save(invoiceItem);
 
                     var data = new OrderPaymentData();
@@ -157,8 +158,6 @@ namespace appify.web.api.Controllers
                     data.AccessKey = paymentData;
                     data.OrderNo = result.OrderNo;
                     data.OrderID = result.OrderID;
-
-
 
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "order SUCCESSFUL!";
@@ -177,28 +176,21 @@ namespace appify.web.api.Controllers
                     //notificationBusiness.SendEmail(emailnotifications);
 
                     /////FCM Notification --------
-                    ///
-                    string firstName = order.FirstName.ToString();
-                    if (firstName.Length != 0)
-                    {
-                        firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
-                    }
+
+                    //string firstName = order.FirstName.ToString();
+                    //if (firstName.Length != 0)
+                    //{
+                    //    firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
+                    //}
+
+
                     if (order.MemberID!=0)
                     {
-                        notificationModel.IsAndroiodDevice = true;
-                        notificationModel.DeviceId = order.DeviceToken;
-                        notificationModel.Title = NotificationConfig.ORDER_CUSTOMER_NOTIFICATION_TITLE.Replace("@Name", firstName);
-                        notificationModel.Body = NotificationConfig.ORDER_CUSTOMER_NOTIFICATION_BODY.Replace("@OrderNO", order.OrderNo);
-                        Pushnotification.FCMPushNotification(notificationModel);
+                        Pushnotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), order.VendorID, order.MemberID, data.OrderID, "<first_name>",this.notificationBusiness);
                     }
                     if(order.VendorID!=0)
                     {
-                        OrderVendorDetails orderVendorDetails = this.orderBusiness.GetOrderVendorDetails(order.VendorID);
-                        notificationModel.IsAndroiodDevice = true;
-                        notificationModel.DeviceId = orderVendorDetails.Token;
-                        notificationModel.Title = NotificationConfig.ORDER_VENDOR_NOTIFICATION_TITLE.Replace("@Name", orderVendorDetails.FirstName);
-                        notificationModel.Body = NotificationConfig.ORDER_VENDOR_NOTIFICATION_BODY.Replace("@OrderNO", order.OrderNo);
-                        Pushnotification.FCMPushNotification(notificationModel);
+                        Pushnotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacement), 0, order.VendorID, data.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                     }
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
@@ -942,9 +934,63 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+        //private void SendNotificationMessage(Int64 TemplateID, Int64 VendorID, Int64 MemberID, Int64 OrderID, string replaceTitle)
+        //{
+        //   // var reqHeader = Request;
+        //   // string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //    try
+        //    {
+        //        //////Notification Template
+        //        NotificationTemplate notificationTemplate = this.notificationBusiness.GetNotificationTemplate(TemplateID);
+        //        VendorDetails vendorDetails = this.notificationBusiness.GetVendorDetails(MemberID, OrderID);
+        //        notificationModel.IsAndroiodDevice = true;
+        //        notificationModel.DeviceId = vendorDetails.Token;
+        //        notificationModel.FCMSenderID = vendorDetails.FCMSenderID;
+        //        notificationModel.FCMServerKey = vendorDetails.FCMServerKey;
+        //        notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();
+        //        if(TemplateID==1007) ////Order Status Change
+        //        {
+        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
+        //                .Replace("<Delivery Date>", vendorDetails.OrderNo).Trim()
+        //                .Replace("<Delivery Date>", vendorDetails.OrderNo).Trim();
+        //        }
+        //        else if(TemplateID ==1010) ////Refund Processed
+        //        {
+        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
+        //               .Replace("<date range>", vendorDetails.OrderNo).Trim();
+        //        }
+        //        else if(TemplateID == 1011) ////Order Received
+        //        {
+        //                    notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
+        //                   .Replace("<Tracking Link>", vendorDetails.OrderNo).Trim();
+        //        }
+        //        else if(TemplateID == 1013) ////Back-in-Stock Notification
+        //        {
+        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("<product page link>", vendorDetails.OrderNo).Trim();
+        //        }
+        //        else
+        //        {
+        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim();
+        //        }
+
+        //        Pushnotification.FCMPushNotification(notificationModel);
+
+        //        PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
+        //        { SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
+        //        this.notificationBusiness.addNotificationMessage(pushNotificationMessage);
+
+        //        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, pushNotificationMessage, null, StatusName.ok));
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //      //  this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, ex.Message.ToString()));
+        //    }
+        //}
     }
 
-
+   
     internal class OrderPaymentData
     {
 

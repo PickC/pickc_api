@@ -102,22 +102,22 @@ namespace appify.DataAccess
             DataSet dsitem = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRINTINVOICEDETAIL, orderID);
             items = DataTableHelper.ConvertDataTable<InvoiceItemReport>(dsitem.Tables[0]);
 
-            decimal deliveryCharges = Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 100) / (100 + 18)), 2, MidpointRounding.AwayFromZero);
+            //decimal deliveryCharges = Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 100) / (100 + 18)), 2, MidpointRounding.AwayFromZero);
 
             /* Add Delivery as Line Item */
-            items.Add(new InvoiceItemReport
-            {
-                ProductID ="0",
-                ProductName="Shipping Charges",
-                Description = "Shipping Charges",
-                UnitPrice = deliveryCharges ,
-                Quantity = 1,
-                CGST = 0.00M,
-                SGST=0.00M,
-                IGST= Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 18)/100),2,MidpointRounding.AwayFromZero),
-                SellingAmount = Math.Round(invoiceReport.DeliveryCost,2,MidpointRounding.AwayFromZero)
+            //items.Add(new InvoiceItemReport
+            //{
+            //    ProductID ="0",
+            //    ProductName="Shipping Charges",
+            //    Description = "Shipping Charges",
+            //    UnitPrice = deliveryCharges ,
+            //    Quantity = 1,
+            //    CGST = 0.00M,
+            //    SGST=0.00M,
+            //    IGST= Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 18)/100),2,MidpointRounding.AwayFromZero),
+            //    SellingAmount = Math.Round(invoiceReport.DeliveryCost,2,MidpointRounding.AwayFromZero)
 
-            });
+            //});
 
 
             invoiceReport.InvoiceItems.AddRange(items);
