@@ -87,6 +87,15 @@ namespace appify.DataAccess
             return items;
         }
 
+        public List<Address> GetAddressList()
+        {
+            List<Address> items = new List<Address>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLADDRESS);
+            items = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]);
+
+            return items;
+        }
+
         public Address SaveAddress(Address item)
         {
             var result = false;

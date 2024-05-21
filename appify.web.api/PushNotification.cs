@@ -22,11 +22,12 @@ namespace appify.web.api
 
                 using (NotificationService service = new NotificationService(fcmNotificationSetting))
                 {
-                    notificationModel.IsAndroiodDevice = notificationModel2.IsAndroiodDevice;
+                    ///notificationModel.IsAndroiodDevice = notificationModel2.IsAndroiodDevice;
                     notificationModel.DeviceId = notificationModel2.DeviceId;
                     notificationModel.Title = notificationModel2.Title;
                     notificationModel.Body = notificationModel2.Body;
-                    service.SendNotificationAsync(notificationModel2);
+                    notificationModel.PlatformType = notificationModel2.PlatformType;
+                    service.SendNotificationAsync(notificationModel);
                     result = true;
                 }
             }
@@ -44,11 +45,19 @@ namespace appify.web.api
             try
             {
                 NotificationModel notificationModel = new NotificationModel();
+                bool IsVendor = false;
                 //////Notification Template
                 NotificationTemplate notificationTemplate = notificationBusiness.GetNotificationTemplate(TemplateID);
-                VendorDetails vendorDetails = notificationBusiness.GetVendorDetails(MemberID, OrderID);
-                notificationModel.IsAndroiodDevice = true;
+                if (VendorID == 0)
+                {
+                    VendorID = MemberID;
+                    IsVendor = true;
+                }
 
+                VendorDetails vendorDetails = notificationBusiness.GetVendorDetails(MemberID, OrderID);
+                VendorDetails FCMCredentials = notificationBusiness.GetVendorDetails(VendorID, OrderID);
+                ///notificationModel.IsAndroiodDevice = true;
+                notificationModel.PlatformType = vendorDetails.PlatformType;
                 notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();
                 if (TemplateID == 1007) ////Order Status Change
                 {
@@ -75,9 +84,18 @@ namespace appify.web.api
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim();
                 }
 
-                notificationModel.DeviceId = vendorDetails.Token;
-                notificationModel.FCMSenderID = vendorDetails.FCMSenderID;
-                notificationModel.FCMServerKey = vendorDetails.FCMServerKey;
+                notificationModel.DeviceId = vendorDetails.Token.Trim();
+                if (IsVendor == false)
+                {
+                    notificationModel.FCMSenderID = FCMCredentials.FCMSenderID.Trim();
+                    notificationModel.FCMServerKey = FCMCredentials.FCMServerKey.Trim();
+                }
+                else if(IsVendor == true)
+                {
+                    notificationModel.FCMSenderID = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:SenderId").Value;
+                    notificationModel.FCMServerKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:ServerKey").Value;
+                    VendorID = 0;
+                }
                 FCMPushNotification(notificationModel);
 
                 PushNotificationMessage pushNotificationMessage = new PushNotificationMessage

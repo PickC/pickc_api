@@ -57,6 +57,7 @@ namespace appify.models
         public Int64 VendorID { get; set; }
         public string FirstName { get; set; }
         public string? Token { get; set; }
+        public string? PlatformType { get; set; }
         public string OrderNo { get; set; }
         public string FCMServerKey { get; set; }
         public string FCMSenderID { get; set; }

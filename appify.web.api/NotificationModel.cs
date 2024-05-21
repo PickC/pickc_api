@@ -8,6 +8,8 @@ namespace appify.web.api
         public string? DeviceId { get; set; }
         [JsonProperty("isAndroiodDevice")]
         public bool IsAndroiodDevice { get; set; }
+        [JsonProperty("PlatformType")]
+        public string? PlatformType { get; set; }
         [JsonProperty("title")]
         public string? Title { get; set; }
         [JsonProperty("body")]

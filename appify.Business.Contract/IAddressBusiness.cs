@@ -14,5 +14,6 @@ namespace appify.Business.Contract
         public Address GetAddress(long AddressID, long linkID);
         public List<Address> GetList(long linkID);
         public Address GetDefaultAddress(long linkID);
+        public List<Address> GetAddressList();
     }
 }

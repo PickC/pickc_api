@@ -48,6 +48,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -108,6 +114,16 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -187,6 +203,10 @@
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.8.6, )"
+            },
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
             },
             "System.Net.Http": {
               "target": "Package",

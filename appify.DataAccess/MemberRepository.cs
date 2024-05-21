@@ -163,6 +163,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IsEnterprise", member.IsEnterprise);
                         cmd.Parameters.AddWithValue("@IsEcommerce", member.IsEcommerce);
                         cmd.Parameters.AddWithValue("@Token", member.Token);
+                        cmd.Parameters.AddWithValue("@PlatformType", member.PlatformType);
                         //cmd.Parameters.AddWithValue("@IsRegisteredByMobile", true);
                         //cmd.Parameters.Add(new SqlParameter("@NewMemberID", SqlDbType.BigInt).Direction = ParameterDirection.Output);
 

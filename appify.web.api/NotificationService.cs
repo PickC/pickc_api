@@ -27,7 +27,7 @@ namespace appify.web.api
                     SenderId = _fcmNotificationSetting.SenderId,
                     ServerKey = _fcmNotificationSetting.ServerKey
                 };
-                if (notificationModel.IsAndroiodDevice)
+                if (notificationModel.PlatformType == "ANDROID")
                 {
 
 
@@ -64,7 +64,7 @@ namespace appify.web.api
                         return response;
                     }
                 }
-                else
+                else if (notificationModel.PlatformType == "IOS")
                 {
                     /* Code here for APN Sender (iOS Device) */
                     //var apn = new ApnSender(apnSettings, httpClient);
@@ -89,7 +89,7 @@ namespace appify.web.api
                     ///var senderId = "Enter your SenderId";
                     tRequest.Headers.Add(string.Format("Sender: id={0}", settings.SenderId));
                     tRequest.ContentType = "application/json";
-                    var totoken = "dB7ml8jJYEjRlWXLXEQn1X:APA91bFNIvAlKZ0v-ydnpkx6LT_Pabc9kZR3NzeeyDjJVHCfsbXLgs8clpK8qcnbhkc44eBASFu_mo-PvfEqGKRBRGMIVvgbLV1Yh2xJAm0MUUmqu3lFpOGYaXNElgtrPh6x-GpTyAz9";
+                    var totoken = notificationModel.DeviceId;
                     var payload = new
                     {
                         to = totoken,

@@ -82,6 +82,7 @@ namespace appify.dbroutine
         public const string LISTADDRESS = "[Operation].[usp_AddressList]";
         public const string SAVEADDRESS = "[Operation].[usp_AddressSave]";
         public const string DELETEADDRESS = "[Operation].[usp_AddressDelete]";
+        public const string LISTALLADDRESS = "[Operation].[usp_AddressListALL]";
 
 
         /// <summary>
