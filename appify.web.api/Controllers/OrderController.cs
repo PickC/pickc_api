@@ -12,6 +12,7 @@ using System.Reflection.PortableExecutable;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static appify.models.NotificationType;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 
 namespace appify.web.api.Controllers
 {
@@ -700,6 +701,143 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// PhonePe WebHook for Order Paid.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// NOTE : PhonePe WebHook for Order Paid.
+        /// 
+        ///     {
+        ///         "success": true,
+        ///         "code": "PAYMENT_INITIATED",
+        ///         "message": "Payment Iniiated",
+        ///         "data": {
+        ///             "merchantId": "MERCHANTUAT",
+        ///             "merchantTransactionId": "MT7850590068188104",
+        ///             "instrumentResponse": {
+        ///                 "type": "PAY_PAGE",
+        ///                 "redirectInfo": {
+        ///                     "url": "https://mercury-uat.phonepe.com/transact?///t    ok en=MjdkNmQ0NjM2MTk5ZTlmNDcxYjY3NTAxNTY5MDFhZDk2ZjFjMDY0YTRiN2VhMjgzNjIwMjBmNzUwN2JiNTkxOWUwNDVkMTM2YTllOTpkNzNkNmM2NWQ2MWNiZjVhM2MwOWMzODU0ZGEzMDczNA",
+        ///                     "method": "GET"
+        ///                 }
+        ///             }
+        ///         }
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <param name="payload"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost]
+        [Route("phonepaywebhook_paid")]
+        public IActionResult ReceiveWebhook([FromBody] PhonePeWebhookPayload payload)////object payload
+        {  var reqHeader = Request;
+           string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+            if (payload == null)
+            {
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received null payload", "Received null payload", StatusName.ok));
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "Invalid payload";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+            bool isValid = ValidatePayload(payload);
+            if (!isValid)
+            {
+                return BadRequest("Invalid payload");
+            }
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received webhook", "Received webhook: {Payload}" + JsonConvert.SerializeObject(payload), StatusName.ok));
+
+            rm.statusCode = StatusCodes.OK;
+            rm.message = "RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY";
+            rm.name = StatusName.ok;
+            rm.data = payload;
+
+            // Respond with a 200 OK status to acknowledge the receipt of the webhook
+            return Ok(rm);
+        }
+        private bool ValidatePayload(PhonePeWebhookPayload payload)
+        {
+            // Implement validation logic as per your requirements
+            // Example: Check if the transaction ID and status are not null
+            if (string.IsNullOrEmpty(payload.data.merchantId) || string.IsNullOrEmpty(payload.data.merchantTransactionId))
+            {
+                return false;
+            }
+
+            // Additional validation logic
+            return true;
+        }
+
+        /// <summary>
+        /// RazorPay WebHook for Payment Captured.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// NOTE : RazorPay WebHook for Payment Captured.
+        /// 
+        ///     {
+        ///         "event": "payment.captured",
+        ///         "payload": {
+        ///             "payment": {
+        ///                 "entity": {
+        ///                     "id": "pay_29QQoUBi66xm2f",
+        ///                     "amount": 5000,
+        ///                     "currency": "INR",
+        ///                     "status": "captured",
+        ///                     "order_id": "order_DBJOWzybf0sJbb"
+        ///                 }
+        ///             }
+        ///         }
+        ///     }
+    /// 
+    /// 
+    /// </remarks>
+    /// <param name="payload"></param>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns the newly created Discount Object</response>
+    /// <response code="500">ResponseMessage with Error Description</response>
+
+    [HttpPost]
+        [Route("payment-captured")]
+        public IActionResult PaymentCaptured([FromBody] RazorpayWebhookPayload payload)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+            try
+            {
+                if (payload == null || payload.Event != "payment.captured")
+                {
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received null payload", "Received null payload", StatusName.ok));
+                }
+
+                // Log the payload for debugging purposes
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received webhook", "Received webhook: {Payload}" + JsonConvert.SerializeObject(payload), StatusName.ok));
+                // Process the payment captured event
+                var payment = payload.Payload.Payment.Entity;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received webhook", $"Payment captured: Id={payment.Id}, Amount={payment.Amount}, Status={payment.Status}", StatusName.ok));
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                rm.data = payload;
+            }
+            catch(Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+
+            return Ok(rm);
+        }
 
         [HttpPost, Route("TestPayment")]
         public async Task<IActionResult> InitiatePaymentAsync()

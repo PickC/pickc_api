@@ -34,6 +34,12 @@ namespace appify.utility
 
         public static readonly int IMAGE_SIZE = 5 * 1024 * 1024; /// 5 MB
 
+        public static readonly string PhonePayGateWayURL = "https://api-preprod.phonepe.com/apis/pg-sandbox";
+
+        public static readonly string OneDelhiveryCreateURL = "https://track.delhivery.com/api/backend/clientwarehouse/create/";
+        public static readonly string OneDelhiveryEditURL = "https://track.delhivery.com/api/backend/clientwarehouse/edit/";
+
+        public static readonly string OneDelhiveryToken = "9c0afe4ffc2f6ffd70fa4d1ee3a652f7f033f81c";
 
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
                                                 string? eventLogStatus)

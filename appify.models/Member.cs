@@ -47,6 +47,7 @@ namespace appify.models
         public string? ProfilePhoto { get; set; }
 
         public string? Token { get; set; }
+        public Int16 PlatformType { get; set; }
 
         public Int64? ParentID { get; set; }
 

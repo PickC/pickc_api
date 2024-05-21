@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -349,5 +350,100 @@ namespace appify.models
 
     }
 
+    public class VerifyRequestModel
+    {
+        public string X_VERIFY { get; set; }
+        public string base64 { get; set; }
+        public string TransactionId { get; set; }
+        public string MERCHANTID { get; set; }
+        // Add other properties from the request if needed
+    }
+
+    public class PhonePeWebhookPayload
+    {
+        [JsonProperty("success")]
+        public bool success { get; set; }
+
+        [JsonProperty("code")]
+        public string code { get; set; }
+
+        [JsonProperty("message")]
+        public string message { get; set; }
+
+        [JsonProperty("data")]
+        public merchantdata data { get; set; }
+
+        public class merchantdata
+        {
+            [JsonProperty("merchantId")]
+            public string merchantId { get; set; }
+
+            [JsonProperty("merchantTransactionId")]
+            public string merchantTransactionId { get; set; }
+
+            [JsonProperty("instrumentResponse")]
+            public instrumentData instrumentResponse { get; set; }
+        }
+
+        public class instrumentData
+        {
+            [JsonProperty("type")]
+            public string type { get; set; }
+
+            [JsonProperty("redirectInfo")]
+            public redirectData redirectInfo { get; set; }
+        }
+        public class redirectData
+        {
+            [JsonProperty("url")]
+            public string url { get; set; }
+
+            [JsonProperty("method")]
+            public string method { get; set; }
+        }
+
+        // Add other relevant fields based on PhonePe's webhook payload structure
+    }
+
+    public class RazorpayWebhookPayload
+    {
+        [JsonProperty("event")]
+        public string Event { get; set; }
+
+        [JsonProperty("payload")]
+        public PayloadData Payload { get; set; }
+
+        public class PayloadData
+        {
+            [JsonProperty("payment")]
+            public PaymentData Payment { get; set; }
+        }
+
+        public class PaymentData
+        {
+            [JsonProperty("entity")]
+            public PaymentEntity Entity { get; set; }
+        }
+
+        public class PaymentEntity
+        {
+            [JsonProperty("id")]
+            public string Id { get; set; }
+
+            [JsonProperty("amount")]
+            public int Amount { get; set; }
+
+            [JsonProperty("currency")]
+            public string Currency { get; set; }
+
+            [JsonProperty("status")]
+            public string Status { get; set; }
+
+            [JsonProperty("order_id")]
+            public string OrderId { get; set; }
+
+            // Add other relevant fields based on Razorpay's webhook payload structure
+        }
+    }
 
 }
