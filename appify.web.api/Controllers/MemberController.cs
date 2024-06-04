@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Newtonsoft.Json.Linq;
+using static appify.models.NotificationType;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,6 +28,7 @@ namespace appify.web.api.Controllers
         private readonly IMemberThemeBusiness memberThemeBusiness;
         private readonly IMemberKYCBusiness memberKYCBusiness;
         private readonly IMemberContactBusiness memberContactBusiness;
+        private readonly INotificationBusiness notificationBusiness;
         private ResponseMessage rm;
 
         public MemberController(IConfiguration configuration, 
@@ -34,7 +37,7 @@ namespace appify.web.api.Controllers
                                 IMemberAppSettingBusiness memberAppSettingBusiness,
                                 IMemberThemeBusiness memberThemeBusiness,
                                 IMemberKYCBusiness memberKYCBusiness,
-                                IMemberContactBusiness memberContactBusiness, IEventLogBusiness eventLogBusiness)
+                                IMemberContactBusiness memberContactBusiness, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData)
         {
             this.configuration = configuration;
             this.memberBusiness = iResultData;
@@ -44,6 +47,7 @@ namespace appify.web.api.Controllers
             this.memberKYCBusiness = memberKYCBusiness;
             this.memberContactBusiness = memberContactBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.notificationBusiness = IResultData;
         }
 
         // GET: api/<MemberController>
@@ -145,6 +149,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
+                Int64 UserID = item.UserID;
                 rm = new ResponseMessage();
                 var memberItem = this.memberBusiness.RegisterMember(item);
                 if (memberItem.UserID>0)
@@ -153,6 +158,14 @@ namespace appify.web.api.Controllers
                     rm.message = "MEMBER REGISTRATION SUCCESSFUL!";
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
+
+                    if(UserID==0)
+                    {
+                        PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, this.notificationBusiness);
+                    }
+
+
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, memberItem, StatusName.ok));
                 }

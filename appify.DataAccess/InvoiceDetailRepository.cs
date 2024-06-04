@@ -64,7 +64,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IGST", item.IGST);
                         cmd.Parameters.AddWithValue("@TaxAmount", item.TaxAmount);
                         cmd.Parameters.AddWithValue("@SellingAmount", item.SellingAmount);
-
+                        cmd.Parameters.AddWithValue("@SellingPrice", item.SellingPrice);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());

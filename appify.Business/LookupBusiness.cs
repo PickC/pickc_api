@@ -28,6 +28,11 @@ namespace appify.Business
             return repository.GetAllList();
         }
 
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey)
+        {
+            return repository.GetSystemConfigurationSettings(SettingKey);
+        }
+
         public List<Lookup> GetList(string category)
         {
             return repository.GetList(category);

@@ -1,4 +1,5 @@
-﻿using appify.Business.Contract;
+﻿using appify.Business;
+using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Microsoft.AspNetCore.Cors;
@@ -281,6 +282,95 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// gets System configuration settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "SettingKey": "DELIVERYCHANNEL"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH SYSTEM CONFIG SETTING LIST",
+        ///       "data": [
+        ///         {
+        ///           "settingValue": "SHIPROCKET",
+        ///           "settingStatus": true
+        ///         },
+        ///         {
+        ///           "settingValue": "DELHIVERY",
+        ///           "settingStatus": false
+        ///         },
+        ///         {
+        ///         "settingValue": "EASEBUZZ",
+        ///           "settingStatus": false
+        ///         },
+        ///         {
+        ///         "settingValue": "PHONEPE",
+        ///           "settingStatus": false
+        ///         },
+        ///         {
+        ///         "settingValue": "RAZORPAY",
+        ///           "settingStatus": true
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ParamSystemConfigSetting Object</returns>
+        /// <response code="500">ParamSystemConfigSetting with Error Description</response> 
+        [HttpPost]
+        [Route("systemconfigurationtlist")]
+        public IActionResult GetSystemConfigurationSettings (ParamSystemConfigSetting itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                List<SystemConfigSetting> items = lookupBusiness.GetSystemConfigurationSettings(itemData.SettingKey);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH SYSTEM CONFIG SETTING LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 

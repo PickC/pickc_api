@@ -97,6 +97,14 @@ namespace appify.DataAccess
 
             return item;
         }
+        public OrderUpdateDetail GetOrderUpdateDetail(long orderID)
+        {
+            OrderUpdateDetail item = new OrderUpdateDetail();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERUPDATEDETAIL, orderID);
+            item = DataTableHelper.ConvertDataTable<OrderUpdateDetail>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
 
         public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID) {
 
@@ -156,7 +164,16 @@ namespace appify.DataAccess
 
             return items;
         }
-        
+
+        public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID)
+        {
+            List<VendorOrder> items = new List<VendorOrder>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERBYVENDORDETAIL, vendorID, OrderID);
+            items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
+
+            return items;
+        }
+
         public OrderHeader Save(OrderHeader item)
         {
             var result = false;

@@ -96,9 +96,10 @@ namespace appify.DataAccess
                 {
                     using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVENOTIFICATION))
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.CommandType = CommandType.StoredProcedure; 
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@NotificationID", 0);
+                        cmd.Parameters.AddWithValue("@OrderID", pushNotification.OrderID);
                         cmd.Parameters.AddWithValue("@SenderID", pushNotification.SenderID);
                         cmd.Parameters.AddWithValue("@ReceiverID", pushNotification.ReceiverID);
                         cmd.Parameters.AddWithValue("@NotificationTitle", pushNotification.NotificationTitle);
@@ -161,6 +162,22 @@ namespace appify.DataAccess
             VendorDetails items = new VendorDetails();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETVENDORDETAILS, VendorID, OrderID);
             items = DataTableHelper.ConvertDataTable<VendorDetails>(ds.Tables[0]).FirstOrDefault();
+
+            return items;
+        }
+        public EmailNotificationTemplate GetEmailNotificationTemplate(long TemplateID)
+        {
+            EmailNotificationTemplate items = new EmailNotificationTemplate();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEMAILNOTIFICATIONTEMPLATE, TemplateID);
+            items = DataTableHelper.ConvertDataTable<EmailNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
+
+            return items;
+        }
+        public EmailNotificationHeader GetMemberDetails(long VendorID, long OrderID)
+        {
+            EmailNotificationHeader items = new EmailNotificationHeader();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERDETAILS, VendorID, OrderID);
+            items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]).FirstOrDefault();
 
             return items;
         }

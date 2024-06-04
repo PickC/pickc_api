@@ -19,7 +19,7 @@ namespace appify.Business.Contract
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID);
         public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks);
 
-
+        public OrderUpdateDetail GetOrderUpdateDetail(long orderID);
         public bool SaveItem(OrderItem item);
         public bool DeleteItem(long orderID);
 
@@ -28,6 +28,7 @@ namespace appify.Business.Contract
 
         public List<VendorOrder> ListByVendor(long vendorID);
 
+        public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID);
         public bool UpdateOrderPickup(Int64 orderID, decimal weight, decimal length, decimal width, decimal height);
 
         public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID);

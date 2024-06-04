@@ -64,6 +64,15 @@ namespace appify.DataAccess
             return item;
         }
 
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey)
+        {
+            List<SystemConfigSetting> item = new List<SystemConfigSetting>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSYSTEMCONFIGSETTING, SettingKey);
+            item = DataTableHelper.ConvertDataTable<SystemConfigSetting>(ds.Tables[0]);
+
+            return item;
+        }
+
         public List<Lookup> GetList(string category)
         {
             List<Lookup> items = new List<Lookup>();

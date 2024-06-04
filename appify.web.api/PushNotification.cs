@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace appify.web.api
 {
-    public class Pushnotification
+    public class PushNotification
     {
         public static bool FCMPushNotification(NotificationModel notificationModel2)
         {
@@ -99,7 +99,7 @@ namespace appify.web.api
                 FCMPushNotification(notificationModel);
 
                 PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
-                { SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
+                { OrderID= OrderID, SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
                 notificationBusiness.addNotificationMessage(pushNotificationMessage);
 
                 result = true;

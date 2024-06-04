@@ -128,6 +128,7 @@ namespace appify.dbroutine
         public const string LISTLOOKUPBYCATEGORY = "[Config].[usp_LookupListByCategory]";
         public const string LISTLOOKUPBYMEMBERCATEGORY = "[Config].[usp_LookupListByMemberCategory]";
         public const string LISTLOOKUP = "[Config].[usp_LookupList]";
+        public const string LISTSYSTEMCONFIGSETTING = "[Config].[usp_GetSettingbyKey]";
 
         /// <summary>
         /// [Operation].[OrderHeader]
@@ -151,7 +152,7 @@ namespace appify.dbroutine
 
         public const string SELECTORDERHEADERBYORDERID = "[Operation].[usp_OrderHeaderItem]";
 
-
+        public const string ORDERBYVENDORDETAIL = "[Operation].[usp_VendorOrdersDetail]";
 
         //DELIVERY
 
@@ -280,5 +281,13 @@ namespace appify.dbroutine
         
         //// Notification Template
         public const string SELECTNOTIFICATIONTEMPLATE = "[Utility].[usp_NotificationTemplateSelect]";
+
+        //// Email Notification Template
+        public const string SELECTEMAILNOTIFICATIONTEMPLATE = "[Utility].[usp_EmailNotificationTemplateSelect]";
+        public const string SELECTORDERUPDATEDETAIL = "[Operation].[usp_OrderUpdateDetail]";
+
+        //// Email Notification - Get Details
+        public const string GETMEMBERDETAILS = "[Operation].[usp_MemberDetails]";
+
     }
 }
