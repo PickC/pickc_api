@@ -64,6 +64,11 @@ namespace appify.Business
             throw new NotImplementedException();
         }
 
+        public OrderUpdateDetail GetOrderUpdateDetail(long orderID)
+        {
+            return orderRepository.GetOrderUpdateDetail(orderID);
+        }
+
         public List<CustomerOrder> List(long sellerID)
         {
             List<CustomerOrder> orders = orderRepository.List(sellerID);
@@ -117,7 +122,30 @@ namespace appify.Business
             return vendorOrders;
         }
 
+        public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID)
+        {
 
+            List<VendorOrder> vendorOrders = new List<VendorOrder>();
+
+            List<OrderDetail> orderItems = new List<OrderDetail>();
+
+
+            vendorOrders = orderRepository.GetByVendorDetail(vendorID, OrderID);
+
+            if (vendorOrders?.Any() == true)
+            {
+                foreach (var vo in vendorOrders)
+                {
+                    orderItems = new List<OrderDetail>();
+
+                    vo.items = orderDetailRepository.List(vo.OrderID);
+                }
+
+
+            }
+
+            return vendorOrders;
+        }
 
         public List<OrderDetail> ListItems(long sellerID)
         {

@@ -15,7 +15,7 @@ namespace appify.Business.Contract
 
         public Lookup GetLookUp(short lookupID);
         public List<Lookup> GetList(string category);
-
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey);
         public List<Lookup> GetList(string category, string userID);
 
         public List<Lookup> GetAllList();

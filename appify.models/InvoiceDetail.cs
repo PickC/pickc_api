@@ -28,5 +28,6 @@ namespace appify.models
         public decimal TaxAmount { get; set; }
 
         public decimal SellingAmount { get; set; }
+        public decimal SellingPrice { get; set; }
     }
 }

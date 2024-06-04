@@ -265,8 +265,13 @@ namespace appify.models
 
     }
 
-
-    public partial class CustomerOrder {
+    public partial class OrderUpdateDetail
+    {
+        public Int64 OrderID { get; set; }
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+    }
+        public partial class CustomerOrder {
 
         public CustomerOrder()
         {

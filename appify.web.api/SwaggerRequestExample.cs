@@ -45,7 +45,10 @@ namespace appify.web.api
 
     }
 
-
+    public class ParamSystemConfigSetting
+    {
+        public string SettingKey { get; set; }
+    }
     public class ParamDeactivateMember
     {
         public string mobileNo { get; set; }
@@ -185,5 +188,11 @@ namespace appify.web.api
     {
         public long DiscountID { get; set; }
         public long productID { get; set; }
+    }
+
+    public class ParamVendorOrder
+    {
+        public long VendorID { get; set; }
+        public long OrderID { get; set; }
     }
 }

@@ -13,6 +13,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using static appify.models.NotificationType;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
+using Azure.Core;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json.Linq;
 
 namespace appify.web.api.Controllers
 {
@@ -28,7 +31,6 @@ namespace appify.web.api.Controllers
         private readonly IInvoiceBusinesss invoiceBusinesss;
         private NotificationModel notificationModel;
         private ResponseMessage rm;
-        private Notifications emailnotifications;
         private readonly INotificationBusiness notificationBusiness;
         public OrderController(IConfiguration configuration, IOrderBusiness orderBusiness, IInvoiceBusinesss invoiceBusinesss, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData)
         {
@@ -40,9 +42,6 @@ namespace appify.web.api.Controllers
 
             ////FCM Objects
             notificationModel = new NotificationModel();
-
-            ////Email Notification Objects
-            emailnotifications = new Notifications();
         }
 
         [HttpPost, Route("save")]
@@ -84,23 +83,43 @@ namespace appify.web.api.Controllers
                         decimal gstValue = 0.00M;
                         decimal GSTPercent = 2.5M;
                         decimal originalPrice = 0.00M;
+                        decimal SellingAmount = 0.00M;
 
+                        ///// For Testing purpose : gurjeet at 12:25pm  30-05-2024
+                        //if ((ordItem.UnitPrice * 100) / (100 + (GSTPercent * 2)) > 1050)
+                        //{
+                        //    GSTPercent = 6.0M;
 
-                        if ((ordItem.UnitPrice * 100) / (100 + (GSTPercent * 2)) > 1050)
-                        {
-                            GSTPercent = 6.0M;
-                            
-                        }
+                        //}
 
                         //originalPrice = Math.Round((ordItem.UnitPrice * 100) / (100 + (GSTPercent * 2)), 2, MidpointRounding.AwayFromZero);
-                        originalPrice = Math.Round(((ordItem.UnitPrice * 100) / (100 + (GSTPercent * 2))),2);
+
+                        ///// For Testing purpose : gurjeet at 12:25pm  30-05-2024
+                        //originalPrice = Math.Round(((ordItem.UnitPrice * 100) / (100 + (GSTPercent * 2))), 2);
 
                         //gstValue = (ordItem.UnitPrice * (GSTPercent * 2)) / 100;
                         //gstValue = Math.Round(((originalPrice * (GSTPercent)) / 100), 2, MidpointRounding.AwayFromZero);
-                        gstValue = Math.Round(((originalPrice * (GSTPercent)) / 100),2);
 
+                         switch (ordItem.DiscountType)
+                        {
+                            case 3001:
+                                ordItem.SellingPrice = ordItem.UnitPrice - ((ordItem.UnitPrice * ordItem.DiscountAmount) / 100) ;
+                                break;
+                            case 3000:
+                                ordItem.SellingPrice = ordItem.UnitPrice -  ordItem.DiscountAmount  ;
+                                break;
+                            default:
+                                break;
+                        }
 
+                        if (ordItem.SellingPrice*100 / (100 + (GSTPercent * 2)) > 1050)
+                        {
+                            GSTPercent = 6.0M;
+                        }
 
+                        originalPrice = Math.Round(((ordItem.SellingPrice*100) / (100 + (GSTPercent * 2))), 2);
+
+                        gstValue = Math.Round(((originalPrice * (GSTPercent)) / 100), 2);
 
                         InvoiceDetail dt = new InvoiceDetail();
 
@@ -118,28 +137,52 @@ namespace appify.web.api.Controllers
                         {
                             //dt.CGST = Math.Round((gstValue * ordItem.Quantity), 2, MidpointRounding.AwayFromZero);
                             //dt.SGST = Math.Round((gstValue * ordItem.Quantity), 2, MidpointRounding.AwayFromZero);
-                            dt.CGST = Math.Round((gstValue * ordItem.Quantity),2);
-                            dt.SGST = Math.Round((gstValue * ordItem.Quantity),2);
+                            dt.CGST = Math.Round((gstValue * ordItem.Quantity), 2);
+                            dt.SGST = Math.Round((gstValue * ordItem.Quantity), 2);
 
                         }
                         else
                         {
                             //dt.IGST = Math.Round((gstValue * 2 * ordItem.Quantity), 2, MidpointRounding.AwayFromZero);
-                            dt.IGST = Math.Round((gstValue * 2 * ordItem.Quantity),2);
+                            dt.IGST = Math.Round((gstValue * 2 * ordItem.Quantity), 2);
                         }
                         //dt.TaxAmount = Math.Round(dt.SGST + dt.CGST + dt.IGST, 2, MidpointRounding.AwayFromZero);
                         //dt.UnitPrice = Math.Round(originalPrice, 2, MidpointRounding.AwayFromZero);
                         //dt.SellingAmount = Math.Round(((dt.UnitPrice * ordItem.Quantity)  + dt.TaxAmount), 2, MidpointRounding.AwayFromZero);
 
                         dt.TaxAmount = Math.Round(dt.SGST + dt.CGST + dt.IGST);
-                        dt.UnitPrice = Math.Round(originalPrice);
-                        dt.SellingAmount = Math.Round(((dt.UnitPrice * ordItem.Quantity) + dt.TaxAmount), 2);
+
+                        ///// For Testing purpose : gurjeet at 12:25pm  30-05-2024
+                        //dt.UnitPrice = Math.Round(originalPrice);
+
+                        dt.UnitPrice = ordItem.UnitPrice;
+                        //dt.SellingPrice = ordItem.SellingPrice * ordItem.Quantity;
+                        //dt.SellingAmount = Math.Round((ordItem.SellingPrice - dt.TaxAmount), 2);
+
+                        dt.SellingPrice = Math.Round(((ordItem.SellingPrice * ordItem.Quantity) - dt.TaxAmount), 2);
+                        dt.SellingAmount = ordItem.SellingPrice* ordItem.Quantity;
+
+                        /*
+                        switch (ordItem.DiscountType)
+                        {
+                            case 3001:
+                                dt.SellingPrice = originalPrice * ordItem.Quantity;
+                                dt.SellingAmount = Math.Round((originalPrice + dt.TaxAmount), 2);
+                                break;
+                            case 3000:
+                                dt.SellingPrice = Math.Round((ordItem.SellingPrice + dt.TaxAmount), 2); 
+                                dt.SellingAmount = ordItem.SellingPrice * ordItem.Quantity;
+                                break;
+                            default:
+                                break;
+                        }
+                        */
 
 
                         invoiceItem.items.Add(dt);
 
-                        ordItem.UnitPrice = dt.UnitPrice;
-                        ordItem.SellingPrice = dt.SellingAmount;
+                        //ordItem.UnitPrice = dt.UnitPrice;
+                        //ordItem.SellingPrice = dt.SellingAmount;
 
 
                     }
@@ -166,33 +209,27 @@ namespace appify.web.api.Controllers
                     //rm.data = orderMaster;
                     rm.data = data;
 
-                    ////Email Notification -------
-
-                    //emailnotifications.ToEmail = order.EmailID;
-                    //emailnotifications.ToEmailCC = NotificationConfig.TO_BCC;
-                    //emailnotifications.ToEmailBCC = NotificationConfig.TO_CC;
-                    //emailnotifications.EmailSubject = NotificationConfig.ORDER_EMAIL_SUBJECT;
-                    //emailnotifications.EmailTemplateURL = NotificationConfig.ORDER_SAVE_EMAIL_TEMPLATE_URL;
-                    //emailnotifications.EmailTemplae_ReplaceName = firstName;
-                    //notificationBusiness.SendEmail(emailnotifications);
-
-                    /////FCM Notification --------
-
                     //string firstName = order.FirstName.ToString();
                     //if (firstName.Length != 0)
                     //{
                     //    firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
                     //}
-
-
-                    if (order.MemberID!=0)
+                   /* int orderStatus = 3577;
+                    OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(data.OrderID);
+                    /////FCM Notification AND Email Notification
+                    if (orderStatus == 3577 || orderStatus == 3576)
                     {
-                        Pushnotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), order.VendorID, order.MemberID, data.OrderID, "<first_name>",this.notificationBusiness);
-                    }
-                    if(order.VendorID!=0)
-                    {
-                        Pushnotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacement), 0, order.VendorID, data.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                    }
+                        if (orderUpdateDetail.MemberID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.VendorID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacement), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacement), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
+                    }*/
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Saved", reqHeader, controllerURL, order, data, StatusName.ok));
@@ -205,7 +242,7 @@ namespace appify.web.api.Controllers
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Unable", reqHeader, controllerURL, order, null, rm.message));
-                     
+
                 }
 
             }
@@ -323,6 +360,25 @@ namespace appify.web.api.Controllers
                     rm.message = "STATUS UPDATED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
                     rm.data = statusData.OrderID.ToString();
+                    OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(statusData.OrderID);
+                    /////FCM Notification AND Email Notification
+                    if (statusData.OrderStatus==3577 || statusData.OrderStatus == 3596)
+                    {
+                        if (orderUpdateDetail.MemberID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.VendorID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacement), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacement), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
+                    }
+
+
+
+
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order is Updated", reqHeader, controllerURL, statusData, result, StatusName.ok));
                 }
@@ -393,7 +449,7 @@ namespace appify.web.api.Controllers
 
         }
 
-         
+
 
         [HttpPost, Route("updateorderawb")]
         public IActionResult UpdateOrderAWB(ParamOrderAWB statusData)
@@ -701,6 +757,49 @@ namespace appify.web.api.Controllers
 
         }
 
+        [HttpPost, Route("vendororderdetail")]
+        public IActionResult GetDetailByVendor(ParamVendorOrder itemData)
+        {
+            //dynamic data = jsonData;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<VendorOrder> items = orderBusiness.GetByVendorDetail(itemData.VendorID, itemData.OrderID);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH VENDOR ORDER DETAIL";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
         /// <summary>
         /// PhonePe WebHook for Order Paid.
         /// </summary>
@@ -735,8 +834,9 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("phonepaywebhook_paid")]
         public IActionResult ReceiveWebhook([FromBody] PhonePeWebhookPayload payload)////object payload
-        {  var reqHeader = Request;
-           string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
             if (payload == null)
             {
@@ -774,6 +874,56 @@ namespace appify.web.api.Controllers
             return true;
         }
 
+        [HttpPost]
+        [Route("phonepecallback")]
+        public async Task<IActionResult> PhonePeCallback()////object payload VerifyRequestModel verifyRequestModel
+        {////string val = "{\r\n  \"response\": \"ewoJInN1Y2Nlc3MiOiB0cnVlLAoJImNvZGUiOiAiUEFZTUVOVF9TVUNDRVNTIiwKCSJkYXRhIjogewoJCSJ0cmFuc2FjdGlvbklkIjogImY2MjI0MjBmLTJmNTgtNGYyZS04MzJmIiwKCQkibWVyY2hhbnRJZCI6ICJNSURURVNUIiwKCQkiYW1vdW50IjogMTAwMCwKCQkicHJvdmlkZXJSZWZlcmVuY2VJZCI6ICJQMTkxMjE4MTIxMDM1NzQyMTc1Njc1NSIsCgkJInBheW1lbnRTdGF0ZSI6ICJDT01QTEVURUQiLAoJCSJwYXlSZXNwb25zZUNvZGUiOiAiU1VDQ0VTUyIKCX0KfQ==\"\r\n}";
+
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+
+            // Verify the X-VERIFY header.
+            string xVerifyHeader = reqHeader.Headers["X-VERIFY"];////verifyRequestModel.X_VERIFY;
+            if (xVerifyHeader == null || !VerifyXVerifyHeader(xVerifyHeader))
+            {
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Received null payload", "Received null payload", StatusName.ok));
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "Invalid payload";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+            using var reader = new StreamReader(HttpContext.Request.Body);
+
+            // You now have the body string raw
+            var body = await reader.ReadToEndAsync();////verifyRequestModel.base64;
+
+            JObject json = JObject.Parse(body);
+            byte[] data = Convert.FromBase64String(json["response"].ToString());
+            string decodedString = System.Text.Encoding.UTF8.GetString(data);
+
+            // As well as a bound model
+            var request = JsonConvert.DeserializeObject(decodedString);
+
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "Response webhook", "Response: " + decodedString, StatusName.ok));
+
+            rm.statusCode = StatusCodes.OK;
+            rm.message = "RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY";
+            rm.name = StatusName.ok;
+            rm.data = request;
+
+            // Respond with a 200 OK status to acknowledge the receipt of the webhook
+            return Ok(rm);
+        }
+
+        private bool VerifyXVerifyHeader(string xVerifyHeader)
+        {
+            // TODO: Implement the logic to verify the X-VERIFY header.
+            return true;
+        }
+
+
+
         /// <summary>
         /// RazorPay WebHook for Payment Captured.
         /// </summary>
@@ -795,15 +945,15 @@ namespace appify.web.api.Controllers
         ///             }
         ///         }
         ///     }
-    /// 
-    /// 
-    /// </remarks>
-    /// <param name="payload"></param>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns the newly created Discount Object</response>
-    /// <response code="500">ResponseMessage with Error Description</response>
+        /// 
+        /// 
+        /// </remarks>
+        /// <param name="payload"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response>
 
-    [HttpPost]
+        [HttpPost]
         [Route("payment-captured")]
         public IActionResult PaymentCaptured([FromBody] RazorpayWebhookPayload payload)
         {
@@ -828,7 +978,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.ok;
                 rm.data = payload;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
@@ -1073,115 +1223,59 @@ namespace appify.web.api.Controllers
 
         }
 
-        //private void SendNotificationMessage(Int64 TemplateID, Int64 VendorID, Int64 MemberID, Int64 OrderID, string replaceTitle)
-        //{
-        //   // var reqHeader = Request;
-        //   // string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        //////Notification Template
-        //        NotificationTemplate notificationTemplate = this.notificationBusiness.GetNotificationTemplate(TemplateID);
-        //        VendorDetails vendorDetails = this.notificationBusiness.GetVendorDetails(MemberID, OrderID);
-        //        notificationModel.IsAndroiodDevice = true;
-        //        notificationModel.DeviceId = vendorDetails.Token;
-        //        notificationModel.FCMSenderID = vendorDetails.FCMSenderID;
-        //        notificationModel.FCMServerKey = vendorDetails.FCMServerKey;
-        //        notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();
-        //        if(TemplateID==1007) ////Order Status Change
-        //        {
-        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
-        //                .Replace("<Delivery Date>", vendorDetails.OrderNo).Trim()
-        //                .Replace("<Delivery Date>", vendorDetails.OrderNo).Trim();
-        //        }
-        //        else if(TemplateID ==1010) ////Refund Processed
-        //        {
-        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
-        //               .Replace("<date range>", vendorDetails.OrderNo).Trim();
-        //        }
-        //        else if(TemplateID == 1011) ////Order Received
-        //        {
-        //                    notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
-        //                   .Replace("<Tracking Link>", vendorDetails.OrderNo).Trim();
-        //        }
-        //        else if(TemplateID == 1013) ////Back-in-Stock Notification
-        //        {
-        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("<product page link>", vendorDetails.OrderNo).Trim();
-        //        }
-        //        else
-        //        {
-        //            notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim();
-        //        }
-
-        //        Pushnotification.FCMPushNotification(notificationModel);
-
-        //        PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
-        //        { SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
-        //        this.notificationBusiness.addNotificationMessage(pushNotificationMessage);
-
-        //        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, pushNotificationMessage, null, StatusName.ok));
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //      //  this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, ex.Message.ToString()));
-        //    }
-        //}
-    }
-
-   
-    internal class OrderPaymentData
-    {
-
-        public string OrderNo { get; set; }
-        public string AccessKey { get; set; }
-
-        public Int64 OrderID { get; set; }
-        public string ErrorMsg { get; set; }
-    }
-
-    internal class PaymentTransactionData
-    {
-        public float amount { get; set; }
-        public string firstname { get; set; }
-        public string email { get; set; }
-        public string phone { get; set; }
-        public string productinfo { get; set; }
-        public string txnid { get; set; }
-        public string udf1 { get; set; }
-        public string udf2 { get; set; }
-        public string udf3 { get; set; }
-        public string udf4 { get; set; }
-        public string udf5 { get; set; }
-        public string udf6 { get; set; }
-        public string udf7 { get; set; }
-        public string udf8 { get; set; }
-        public string udf9 { get; set; }
-        public string udf10 { get; set; }
-
-
-
-        public PaymentTransactionData()
+        internal class OrderPaymentData
         {
-            amount = 200.00F;
-            firstname = "appify_testuser";
-            email = "testuser@appi-fy.ai";
-            phone = "9885217825";
-            productinfo = "test product";
-            txnid = "TXNORD_TEST001";
-            udf1 = "";
-            udf2 = "";
-            udf3 = "";
-            udf10 = "";
-            udf4 = "";
-            udf5 = "";
-            udf6 = "";
-            udf7 = "";
-            udf8 = "";
-            udf9 = "";
 
+            public string OrderNo { get; set; }
+            public string AccessKey { get; set; }
+
+            public Int64 OrderID { get; set; }
+            public string ErrorMsg { get; set; }
         }
 
+        internal class PaymentTransactionData
+        {
+            public float amount { get; set; }
+            public string firstname { get; set; }
+            public string email { get; set; }
+            public string phone { get; set; }
+            public string productinfo { get; set; }
+            public string txnid { get; set; }
+            public string udf1 { get; set; }
+            public string udf2 { get; set; }
+            public string udf3 { get; set; }
+            public string udf4 { get; set; }
+            public string udf5 { get; set; }
+            public string udf6 { get; set; }
+            public string udf7 { get; set; }
+            public string udf8 { get; set; }
+            public string udf9 { get; set; }
+            public string udf10 { get; set; }
 
+
+
+            public PaymentTransactionData()
+            {
+                amount = 200.00F;
+                firstname = "appify_testuser";
+                email = "testuser@appi-fy.ai";
+                phone = "9885217825";
+                productinfo = "test product";
+                txnid = "TXNORD_TEST001";
+                udf1 = "";
+                udf2 = "";
+                udf3 = "";
+                udf10 = "";
+                udf4 = "";
+                udf5 = "";
+                udf6 = "";
+                udf7 = "";
+                udf8 = "";
+                udf9 = "";
+
+            }
+
+        }
     }
 
 }

@@ -28,4 +28,10 @@ namespace appify.models
 
         public DateTime  ModifiedOn { get; set; }
     }
+
+    public partial class SystemConfigSetting
+    {
+        public string? SettingValue { get; set; }
+        public bool SettingStatus { get; set; }
+    }
 }

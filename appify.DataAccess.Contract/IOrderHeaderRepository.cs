@@ -22,7 +22,8 @@ namespace appify.DataAccess.Contract
         public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks);
 
         public List<VendorOrder> ListByVendor(long vendorID);
-
+        public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID);
+        public OrderUpdateDetail GetOrderUpdateDetail(long orderID);
         public bool UpdateOrderPickup(Int64 orderID, decimal weight, decimal length, decimal width, decimal height);
         public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID);
 

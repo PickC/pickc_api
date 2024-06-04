@@ -15,26 +15,27 @@ namespace appify.models
         public Notifications() { }
 
         public string ToEmail { get; set; }
-        public string ToEmailCC {  get; set; }
-        public string ToEmailBCC {  get; set; }
-        public string EmailSubject {  get; set; }
-        public string EmailTemplateURL {  get; set; }
-        public string EmailTemplae_ReplaceName {  get; set; }
+        public string ToEmailCC { get; set; }
+        public string ToEmailBCC { get; set; }
+        public string EmailSubject { get; set; }
+        public string EmailTemplateURL { get; set; }
+        public string EmailBody { get; set; }
     }
 
     public class PushNotificationMessage
     {
         public Int64 NotificationID { get; set; }
+        public Int64 OrderID {  get; set; }
         public Int64 SenderID { get; set; }
         public Int64 ReceiverID { get; set; }
         public DateTime NotificationDate { get; set; }
         public string NotificationTitle { get; set; }
         public string NotificationMessage { get; set; }
 
-        public Int16 NotificationEvent{ get; set; }
-        public bool IsRead {  get; set; }
+        public Int16 NotificationEvent { get; set; }
+        public bool IsRead { get; set; }
 
-        public Int16 NotificationStatus {  get; set; }
+        public Int16 NotificationStatus { get; set; }
         public DateTime ReadOn { get; set; }
         public bool IsCancel { get; set; }
 
@@ -42,7 +43,7 @@ namespace appify.models
 
     public class NotificationTemplate
     {
-        public Int64 NotificationID { get; set; }
+        public Int64 TemplateID { get; set; }
         public string Duration { get; set; }
         public string TriggerEvent { get; set; }
         public bool IsPushNotification { get; set; }
@@ -66,7 +67,7 @@ namespace appify.models
     {
         public enum NotificationTemplateType
         {
-            SuccessfulSignup =1000,
+            SuccessfulSignup = 1000,
             OrderConfirmation = 1001,
             OrderPlacement = 1002,
             ShippingDeliveryUpdates = 1003,
@@ -83,4 +84,62 @@ namespace appify.models
         }
     }
 
+    public class EmailNotificationTemplate
+    {
+        public Int64 TemplateID { get; set; }
+        public string Duration { get; set; }
+        public string TriggerEvent { get; set; }
+        public bool IsEmail { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+        public string TemplateURL { get; set; }
+        public bool IsActive { get; set; }
+
+    }
+
+    public class EmailNotificationHeader
+    {
+        public Int64 VendorID { get; set; }
+        public Int64 MemberID { get; set; }
+        public string FirstName { get; set; }
+        public string EmailID { get; set; }
+        public string MobileNo { get; set; }
+        public Int64 AddressID { get; set; }
+        public Int64 OrderID { get; set; }
+        public string? OrderNo { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string ProductName { get; set; }
+        public string TrackingNumber { get; set; }
+        public DateTime? DeliveredOn { get; set; }
+        public short OrderQuantity { get; set; }
+        public decimal OrderPrice { get; set; }
+        public string shipping_address { get; set; }
+        public string shipping_address_2 { get; set; }
+        public short? DeliveryChannel { get; set; }
+        public string? DeliveryChannelDescription { get; set; }
+
+            /////// As per the Email Templates few fields are required
+        ///
+            ////{{contact_email} 
+            ////{{contact_phone}} 
+            ////{{your_name} }
+            ////{{your_position} }
+            ////[Tracking Number]
+            ////[Estimated Delivery Date]
+            ////[Tracking Link]
+            ////[support@email.com]
+            ////[Your E-commerce Brand]
+            ////[Your Company Name]
+            ////[Contact Information]
+            ////[processing/shipped/on the way]
+            ////[Your E-commerce Website]
+            ////[Cart Link]
+            ////[insert timeframe]
+            ////[specific date]
+            ////[Feedback Link]
+            ////[Product 1]
+            ////[Product 2]
+            ////[Product 3] 
+    }
 }
