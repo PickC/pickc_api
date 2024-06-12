@@ -154,6 +154,8 @@ namespace appify.dbroutine
 
         public const string ORDERBYVENDORDETAIL = "[Operation].[usp_VendorOrdersDetail]";
 
+        public const string UPDATEORDERTRACKINGSTATUS = "[Operation].[usp_UpdateOrderStatusShiprocket]";
+
         //DELIVERY
 
         public const string ORDERDELIVERYHEADER = "[Operation].[usp_OrderHeaderDelivery]";

@@ -265,6 +265,19 @@ namespace appify.models
 
     }
 
+    public partial class OrderTrackingUpdate
+    {
+        public Int64 OrderID { get; set; }
+        public short OrderStatus { get; set; }
+        public string Remarks { get; set; }
+        public string CourierRefID { get; set; }
+        public string ShipmentID { get; set; }
+        public string AWB { get; set; }
+        public DateTime DeliveredOn { get; set; }
+        public string CourierName { get; set; }
+        public string TrackURL {  get; set; }   
+    }
+
     public partial class OrderUpdateDetail
     {
         public Int64 OrderID { get; set; }

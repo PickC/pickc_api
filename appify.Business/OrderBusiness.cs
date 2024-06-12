@@ -244,6 +244,9 @@ namespace appify.Business
         public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID) {
             return orderRepository.GetOrderTrackingDetails(orderID);
         }
-
+        public bool UpdateOrderTrackingStatus(OrderTrackingUpdate item)
+        {
+            return orderRepository.UpdateOrderTrackingStatus(item);
+        }
     }
 }

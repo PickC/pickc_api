@@ -59,7 +59,7 @@ namespace appify.Business
         {
             return repository.GetEmailNotificationTemplate(TemplateID);
         }
-        public EmailNotificationHeader GetMemberDetails(long MemberID, long OrderID)
+        public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID)
         {
             return repository.GetMemberDetails(MemberID, OrderID);
         }

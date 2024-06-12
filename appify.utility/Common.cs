@@ -39,6 +39,13 @@ namespace appify.utility
         public static readonly string OneDelhiveryCreateURL = "https://track.delhivery.com/api/backend/clientwarehouse/create/";
         public static readonly string OneDelhiveryEditURL = "https://track.delhivery.com/api/backend/clientwarehouse/edit/";
 
+        /// <summary>
+        /// Shiprocket Tracking API URL
+        /// </summary>
+        public static readonly string ShipRocketTrackingURL = "https://apiv2.shiprocket.in/v1/external/courier/track";
+
+        public static readonly string ShiproketDeliveryTrackingURL = "https://shiprocket.co/tracking/";
+
         public static readonly string OneDelhiveryToken = "9c0afe4ffc2f6ffd70fa4d1ee3a652f7f033f81c";
 
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,

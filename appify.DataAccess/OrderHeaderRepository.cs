@@ -307,5 +307,43 @@ namespace appify.DataAccess
 
         }
 
+        public bool UpdateOrderTrackingStatus(OrderTrackingUpdate item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEORDERTRACKINGSTATUS))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@OrderID", item.OrderID);
+                        cmd.Parameters.AddWithValue("@OrderStatus", item.OrderStatus);
+                        cmd.Parameters.AddWithValue("@Remarks", item.Remarks);
+                        cmd.Parameters.AddWithValue("@CourierRefID", item.CourierRefID);
+                        cmd.Parameters.AddWithValue("@ShipmentID", item.ShipmentID);
+                        cmd.Parameters.AddWithValue("@AWB", item.AWB);
+                        cmd.Parameters.AddWithValue("@DeliveredOn", item.DeliveredOn);
+                        cmd.Parameters.AddWithValue("@CourierName", item.CourierName);
+                        cmd.Parameters.AddWithValue("@TrackURL", item.TrackURL);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+
+        }
     }
 }

@@ -76,15 +76,21 @@ namespace appify.web.api
             bool result = false;
             try
             {
+                int OrderQuantity = 0;
                 EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(TemplateID);
-                EmailNotificationHeader getEmailNotificationHeader = notificationBusiness.GetMemberDetails(MemberID, OrderID);
+                List<EmailNotificationHeader> getEmailNotificationHeader = notificationBusiness.GetMemberDetails(MemberID, OrderID);
+                foreach(var item in getEmailNotificationHeader)
+                {
+                    OrderQuantity += item.OrderQuantity;
+                }
+
                 Notifications notifications = new Notifications
                 {
                     ToEmailCC = NotificationConfig.TO_BCC,
                     ToEmailBCC = NotificationConfig.TO_CC,
                     EmailSubject = emailNotificationTemplate.Subject,
                     EmailTemplateURL = emailNotificationTemplate.TemplateURL,
-                    ToEmail = getEmailNotificationHeader.EmailID
+                    ToEmail = getEmailNotificationHeader[0].EmailID
                 };
                 ////notifications.ToEmail = "nkolweb@gmail.com";
 
@@ -96,37 +102,85 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1000) ////Welcome Signup
                 {
-                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader.FirstName);
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName=="" ? "John" : getEmailNotificationHeader[0].FirstName);
                 }
-                if (TemplateID == 1001) ////Order Confirmation
+                if (TemplateID == 1001) ////Order Placement To Customer
                 {
-                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader.FirstName)
-                        .Replace("{{order_number}}", getEmailNotificationHeader.OrderNo)
-                        .Replace("{{order_date}}", getEmailNotificationHeader.OrderDate.ToString())
-                        .Replace("{{order_total}}", Convert.ToString(getEmailNotificationHeader.TotalAmount))
-                        //.Replace("{{tracking_number}}", getEmailNotificationHeader.TrackingNumber)
-                        .Replace("{{delivery_date}}", getEmailNotificationHeader.DeliveredOn.ToString());
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{order_date}}", getEmailNotificationHeader[0].OrderDate.ToString())
+                        .Replace("{{order_quantity}}", OrderQuantity.ToString())
+                        .Replace("{{order_price}}",getEmailNotificationHeader[0].TotalAmount.ToString())
+                        .Replace("{{delivery_address}}", getEmailNotificationHeader[0].shipping_address.ToString());
                 }
-                else if(TemplateID == 1002) ////Order Placement
+                else if (TemplateID == 1002) ////Order Placement To Vendor
                 {
-                    mailbody = mailbody.Replace("{{vendor_name}}", getEmailNotificationHeader.FirstName)
-                        .Replace("{{product_name}}", getEmailNotificationHeader.ProductName)
-                        .Replace("{{order_number}}", getEmailNotificationHeader.OrderNo)
-                        .Replace("{{order_date}}", getEmailNotificationHeader.OrderDate.ToString())
-                        .Replace("{{order_quantity}}", Convert.ToString(getEmailNotificationHeader.OrderQuantity))
-                        .Replace("{{order_price}}", Convert.ToString(getEmailNotificationHeader.TotalAmount));
-                        //.Replace("{{delivery_address}}", getEmailNotificationHeader.DeliveryChannelDescription)
-                        //.Replace("{{delivery_date}}", getEmailNotificationHeader.DeliveredOn.ToString())
-                        //.Replace("{{contact_email}}", getEmailNotificationHeader.DeliveredOn.ToString())
-                        //.Replace("{{contact_phone}}", getEmailNotificationHeader.DeliveredOn.ToString())
-                        //.Replace("{{your_name}}", getEmailNotificationHeader.DeliveredOn.ToString())
-                        //.Replace("{{your_position}}", getEmailNotificationHeader.DeliveredOn.ToString());
+                    mailbody = mailbody.Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{order_date}}", getEmailNotificationHeader[0].OrderDate.ToString())
+                        .Replace("{{order_quantity}}", OrderQuantity.ToString())
+                        .Replace("{{order_price}}", getEmailNotificationHeader[0].TotalAmount.ToString())
+                        .Replace("{{delivery_address}}", getEmailNotificationHeader[0].shipping_address.ToString());
+                }
+                else if (TemplateID == 1003) ////Order Confirm
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{order_date}}", getEmailNotificationHeader[0].OrderDate.ToString())
+                        .Replace("{{order_total}}", getEmailNotificationHeader[0].TotalAmount.ToString())
+                        .Replace("{{tracking_number}}", getEmailNotificationHeader[0].TrackingNumber.ToString())
+                        .Replace("{{delivery_date}}", getEmailNotificationHeader[0].DeliveredOn.ToString());
+
+                    
+                }
+                else if (TemplateID == 1004) ////Shipping Delivery Updates
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{carrier_name}}", getEmailNotificationHeader[0].CourierName.ToString())
+                        .Replace("{{tracking_number}}", getEmailNotificationHeader[0].TrackingNumber.ToString())
+                        .Replace("{{estimated_delivery_date}}", getEmailNotificationHeader[0].DeliveredOn.ToString())
+                        .Replace("{{tracking_link}}", getEmailNotificationHeader[0].TrackURL.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                }
+                else if (TemplateID == 1005) ////Delivery Updates
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                }
+                else if (TemplateID == 1006) ///Delivery Confirmation
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                }
+                else if (TemplateID == 1007) ////Delayed Shipment Notification
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                }
+                else if (TemplateID == 1010) ////Order Cancellation Customer
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                }
+                else if (TemplateID == 1011) ////Order Cancellation Vendor
+                {
+                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString());
                 }
                 notifications.EmailBody = mailbody;
-                if(notifications.ToEmail!="")
+                if(notifications.ToEmail=="")
                 {
-                    SendEmail(notifications);
+                    notifications.ToEmail = "support@appi-fy.ai";
                 }
+                
+                //if (notifications.ToEmail!="")
+                //{
+                    SendEmail(notifications);
+               // }
 
                 result = true;
             }
