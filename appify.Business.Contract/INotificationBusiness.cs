@@ -18,6 +18,6 @@ namespace appify.Business.Contract
         public string unReadCountNotification(long UserID);
         public VendorDetails GetVendorDetails(long VendorID, long OrderID);
         public EmailNotificationTemplate GetEmailNotificationTemplate(long TemplateID);
-        public EmailNotificationHeader GetMemberDetails(long MemberID, long OrderID);
+        public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID);
     }
 }

@@ -238,19 +238,19 @@
 																style="padding-bottom:20px;padding-left:20px;padding-right:20px;padding-top:10px;">
 																<div
 																	style="color:#545454;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;">Dear [Customer Name],</p>
+																	<p style="margin: 0; word-break: break-word;">Dear {{name}},</p>
 																	<p style="margin: 0; word-break: break-word;">
-																		<br />Exciting news! Your order #[Order Number] has been shipped and is on its way to you. To track your shipment in real-time, 
+																		<br />Exciting news! Your order {{order_number}} has been shipped and is on its way to you. To track your shipment in real-time, 
 																		</p>
 																	<p style="margin: 0; word-break: break-word;">
 																		<br />Please use the following tracking details:<br /><strong>-
-																		</strong> Carrier: [Carrier Name]<br /><strong>-</strong> Tracking Number: [Tracking Number]<br /><strong>-</strong> Estimated Delivery Date: [Estimated Delivery Date]<br /></p>
+																		</strong> Carrier: {{carrier_name}}<br /><strong>-</strong> Tracking Number: {{tracking_number}}<br /><strong>-</strong> Estimated Delivery Date: {{estimated_delivery_date}}<br /></p>
 																	<p style="margin: 0; word-break: break-word;">
-																		<br />You can track your order by clicking on the following link: [Tracking Link]. If you have any questions or concerns, feel free to contact our customer support team at [support@email.com].</p>
+																		<br />You can track your order by clicking on the following link: {{tracking_link}}. If you have any questions or concerns, feel free to contact our customer support team at support@appi-fy.ai.</p>
 																	<p style="margin: 0; word-break: break-word;">
-																		<br />Thank you for choosing [Your E-commerce Brand]. We hope you enjoy your new items!</p>
+																		<br />Thank you for choosing {{vendor_app_name}}. We hope you enjoy your new items!</p>
 																	<p style="margin: 0; word-break: break-word;">
-																		<br />Best regards,<br /><br/>[Your Company Name]<br/>[Contact Information]</p>
+																		<br />Best regards,<br />The Appify Team</p>
 																</div>
 															</td>
 														</tr>

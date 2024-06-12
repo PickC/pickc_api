@@ -173,11 +173,11 @@ namespace appify.DataAccess
 
             return items;
         }
-        public EmailNotificationHeader GetMemberDetails(long VendorID, long OrderID)
+        public List<EmailNotificationHeader> GetMemberDetails(long VendorID, long OrderID)
         {
-            EmailNotificationHeader items = new EmailNotificationHeader();
+            List<EmailNotificationHeader> items = new List<EmailNotificationHeader>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERDETAILS, VendorID, OrderID);
-            items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]).FirstOrDefault();
+            items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]);
 
             return items;
         }

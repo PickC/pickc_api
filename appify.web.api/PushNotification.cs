@@ -58,24 +58,25 @@ namespace appify.web.api
                 VendorDetails FCMCredentials = notificationBusiness.GetVendorDetails(VendorID, OrderID);
                 ///notificationModel.IsAndroiodDevice = true;
                 notificationModel.PlatformType = vendorDetails.PlatformType;
+
                 notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();
-                if (TemplateID == 1007) ////Order Status Change
+                if (TemplateID == 1008) ////Order Status Change
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
-                        .Replace("<Delivery Date>", "").Trim()
-                        .Replace("<Tracking Link>", "").Trim();
+                        .Replace("<Delivery Date>", vendorDetails.DeliveredOn.ToString()).Trim()
+                        .Replace("<Tracking Link>", vendorDetails.TrackURL.ToString()).Trim();
                 }
-                else if (TemplateID == 1010) ////Refund Processed
+                else if (TemplateID == 1012) ////Refund Processed
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
                        .Replace("<date range>", "").Trim();
                 }
-                else if (TemplateID == 1011) ////Order Received
+                else if (TemplateID == 1013) ////Order Received
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
                    .Replace("<Tracking Link>", "").Trim();
                 }
-                else if (TemplateID == 1013) ////Back-in-Stock Notification
+                else if (TemplateID == 1015) ////Back-in-Stock Notification
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("<product page link>", "").Trim();
                 }

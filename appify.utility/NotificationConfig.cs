@@ -16,7 +16,7 @@ namespace appify.utility
         public const string SMTPCLIENT = "smtp.gmail.com";
         public const Int16 PORT = 587;
         public const string TO_BCC = "";
-        public const string TO_CC = "";
+        public const string TO_CC = "support@appi-fy.ai";
         ////// Email Templates Files Path
 
     }

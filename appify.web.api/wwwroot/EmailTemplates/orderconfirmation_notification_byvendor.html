@@ -238,13 +238,13 @@
 																style="padding-bottom:20px;padding-left:20px;padding-right:20px;padding-top:10px;">
 																<div
 																	style="color:#545454;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;font-size:16px;font-weight:400;letter-spacing:0px;line-height:120%;text-align:left;mso-line-height-alt:19.2px;">
-																	<p style="margin: 0; word-break: break-word;">Dear [Customer Name],</p>
+																	<p style="margin: 0; word-break: break-word;">Dear {{name}},</p>
 																	<p style="margin: 0; word-break: break-word;">
-																		<br />We are excited to inform you that your recent order #[Order Number] has been successfully placed and confirmed by our vendor. Your items are now being prepared for shipment.<br /><br />Here are the details of your order:<br />Order Number: #[Order Number]<br />Items: [List of Items] <br />Total Amount: [Total Amount]<br /><br />You will receive another email with the tracking information once your order has been dispatched. If you have any questions or concerns, feel free to reach out to our customer support team at [support@email.com].</p>
+																		<br />We are excited to inform you that your recent order {{order_number}} has been successfully placed and confirmed by our vendor. Your items are now being prepared for shipment.<br /><br />Here are the details of your order:<br />Order Number: {{order_number}}<br />Items: {{order_quantity}} <br />Total Amount: {{total_amount}}<br /><br />You will receive another email with the tracking information once your order has been dispatched. If you have any questions or concerns, feel free to reach out to our customer support team at support@appi-fy.ai.</p>
 																		<p style="margin: 0; word-break: break-word;">
-																			<br />Thank you for choosing [Your E-commerce Brand]. We appreciate your business!</p>
+																			<br />Thank you for choosing {{vendor_app_name}}. We appreciate your business!</p>
 																		<p style="margin: 0; word-break: break-word;">
-																			<br />Best regards,<br /><br/>[Your Company Name]<br/>[Contact Information]</p>
+																			<br />Best regards,<br />The Appify Team</p>
 																</div>
 															</td>
 														</tr>

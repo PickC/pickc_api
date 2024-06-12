@@ -34,6 +34,7 @@ D:\Project\Appify.API\appify.api\appify.models\obj\Release\net7.0\ref\appify.mod
 D:\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.deps.json
 D:\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.dll
 D:\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.pdb
+D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.csproj.AssemblyReference.cache
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.GeneratedMSBuildEditorConfig.editorconfig
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.AssemblyInfoInputs.cache
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.AssemblyInfo.cs
@@ -43,4 +44,3 @@ D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.model
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\refint\appify.models.dll
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.pdb
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\ref\appify.models.dll
-D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.csproj.AssemblyReference.cache

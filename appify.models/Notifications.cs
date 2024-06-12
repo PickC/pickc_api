@@ -62,25 +62,30 @@ namespace appify.models
         public string OrderNo { get; set; }
         public string FCMServerKey { get; set; }
         public string FCMSenderID { get; set; }
+        public DateTime DeliveredOn { get; set; }
+        public string TrackingNumber { get; set; }
+        public string TrackURL { get; set; }
     }
     public class NotificationType
     {
         public enum NotificationTemplateType
         {
             SuccessfulSignup = 1000,
-            OrderConfirmation = 1001,
-            OrderPlacement = 1002,
-            ShippingDeliveryUpdates = 1003,
-            DeliveryUpdates = 1004,
-            DeliveryConfirmation = 1005,
-            DelayedShipmentNotification = 1006,
-            OrderStatusChange = 1007,
-            AbandonedCartReminder = 1008,
-            OrderCancellation = 1009,
-            RefundProcessed = 1010,
-            OrderReceived = 1011,
-            Feedbackorrating = 1012,
-            BackinStock = 1013,
+            OrderPlacementCustomer = 1001,
+            OrderPlacementVendor = 1002,
+            OrderConfirmation = 1003,
+            ShippingDeliveryUpdates = 1004,
+            DeliveryUpdates = 1005,
+            DeliveryConfirmation = 1006,
+            DelayedShipmentNotification = 1007,
+            OrderStatusChange = 1008,
+            AbandonedCartReminder = 1009,
+            OrderCancellationCustomer = 1010,
+            OrderCancellationVendor = 1011,
+            RefundProcessed = 1012,
+            OrderReceived = 1013,
+            Feedbackorrating = 1014,
+            BackinStock = 1015,
         }
     }
 
@@ -110,6 +115,7 @@ namespace appify.models
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
         public string ProductName { get; set; }
+        public string AppName { get; set; }
         public string TrackingNumber { get; set; }
         public DateTime? DeliveredOn { get; set; }
         public short OrderQuantity { get; set; }
@@ -118,28 +124,7 @@ namespace appify.models
         public string shipping_address_2 { get; set; }
         public short? DeliveryChannel { get; set; }
         public string? DeliveryChannelDescription { get; set; }
-
-            /////// As per the Email Templates few fields are required
-        ///
-            ////{{contact_email} 
-            ////{{contact_phone}} 
-            ////{{your_name} }
-            ////{{your_position} }
-            ////[Tracking Number]
-            ////[Estimated Delivery Date]
-            ////[Tracking Link]
-            ////[support@email.com]
-            ////[Your E-commerce Brand]
-            ////[Your Company Name]
-            ////[Contact Information]
-            ////[processing/shipped/on the way]
-            ////[Your E-commerce Website]
-            ////[Cart Link]
-            ////[insert timeframe]
-            ////[specific date]
-            ////[Feedback Link]
-            ////[Product 1]
-            ////[Product 2]
-            ////[Product 3] 
+        public string CourierName { get; set; }
+        public string TrackURL { get; set; }
     }
 }
