@@ -37,5 +37,6 @@ namespace appify.Business.Contract
 
         public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID);
         public bool UpdateOrderTrackingStatus(OrderTrackingUpdate item);
+        public bool OrderPaymentSave(OrderPayment item);
     }
 }

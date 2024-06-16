@@ -179,6 +179,11 @@ namespace appify.dbroutine
 
 
 
+        ///<summary>
+        /// [Operation].[OrderPayment]
+        /// </summary>
+        /// 
+        public const string SAVEORDERPAYMENT = "[Operation].[usp_OrderPaymentSave]";
 
 
         /// <summary>

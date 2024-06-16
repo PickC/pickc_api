@@ -255,7 +255,18 @@ namespace appify.models
 
     }
 
-
+    public partial class OrderPayment
+    {
+        public Int64 PaymentID { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public Int64 OrderID { get; set; }
+        public string EventName { get; set; }
+        public decimal PaymentAmount { get; set; }
+        public string OrderReferenceNo { get; set; }
+        public string PaymentReferenceNo { get; set; }
+        public short PaymentMode { get; set; }
+        public string LookupCode {  get; set; }
+    }
     public partial class OrderTrackingDetails {
 
         public Int64 OrderID { get; set; }
