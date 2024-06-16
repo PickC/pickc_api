@@ -345,5 +345,44 @@ namespace appify.DataAccess
             return result;
 
         }
+
+        public bool OrderPaymentSave(OrderPayment item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEORDERPAYMENT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@PaymentID", item.PaymentID);
+                        cmd.Parameters.AddWithValue("@PaymentDate", item.PaymentDate);
+                        cmd.Parameters.AddWithValue("@OrderID", item.OrderID);
+                        cmd.Parameters.AddWithValue("@EventName", item.EventName);
+                        cmd.Parameters.AddWithValue("@PaymentAmount", item.PaymentAmount);
+                        cmd.Parameters.AddWithValue("@OrderReferenceNo", item.OrderReferenceNo);
+                        cmd.Parameters.AddWithValue("@PaymentReferenceNo", item.PaymentReferenceNo);
+                        cmd.Parameters.AddWithValue("@PaymentMode", item.PaymentMode);
+                        cmd.Parameters.AddWithValue("@LookupCode", item.LookupCode);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+
+        }
     }
 }

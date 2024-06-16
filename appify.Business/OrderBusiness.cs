@@ -248,5 +248,10 @@ namespace appify.Business
         {
             return orderRepository.UpdateOrderTrackingStatus(item);
         }
+
+        public bool OrderPaymentSave(OrderPayment item)
+        {
+            return orderRepository.OrderPaymentSave(item);
+        }
     }
 }
