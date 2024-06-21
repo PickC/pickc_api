@@ -178,8 +178,10 @@ namespace appify.DataAccess
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
-                        member.UserID = Convert.ToInt64(outPutParameter.Value);
-
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            member.UserID = Convert.ToInt64(outPutParameter.Value);
+                        else
+                            member.UserID = 0;
                         con.Close();
                     }
 
