@@ -76,6 +76,7 @@ namespace appify.web.api
             bool result = false;
             try
             {
+                //TemplateID = 1010;
                 int OrderQuantity = 0;
                 EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(TemplateID);
                 List<EmailNotificationHeader> getEmailNotificationHeader = notificationBusiness.GetMemberDetails(MemberID, OrderID);
@@ -88,11 +89,11 @@ namespace appify.web.api
                 {
                     ToEmailCC = NotificationConfig.TO_BCC,
                     ToEmailBCC = NotificationConfig.TO_CC,
-                    EmailSubject = emailNotificationTemplate.Subject,
+                    EmailSubject = emailNotificationTemplate.Subject.Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
                     EmailTemplateURL = emailNotificationTemplate.TemplateURL,
                     ToEmail = getEmailNotificationHeader[0].EmailID
                 };
-                ////notifications.ToEmail = "nkolweb@gmail.com";
+                //notifications.ToEmail = "nkolweb@gmail.com";
 
                 string path = notifications.EmailTemplateURL;
                 string mailbody = string.Empty;
@@ -106,12 +107,14 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1001) ////Order Placement To Customer
                 {
+                    notifications.EmailSubject = notifications.EmailSubject.Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
                     mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
                         .Replace("{{order_date}}", getEmailNotificationHeader[0].OrderDate.ToString())
                         .Replace("{{order_quantity}}", OrderQuantity.ToString())
                         .Replace("{{order_price}}",getEmailNotificationHeader[0].TotalAmount.ToString())
-                        .Replace("{{delivery_address}}", getEmailNotificationHeader[0].shipping_address.ToString());
+                        .Replace("{{delivery_address}}", getEmailNotificationHeader[0].shipping_address.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
                 }
                 else if (TemplateID == 1002) ////Order Placement To Vendor
                 {
@@ -129,9 +132,9 @@ namespace appify.web.api
                         .Replace("{{order_date}}", getEmailNotificationHeader[0].OrderDate.ToString())
                         .Replace("{{order_total}}", getEmailNotificationHeader[0].TotalAmount.ToString())
                         .Replace("{{tracking_number}}", getEmailNotificationHeader[0].TrackingNumber.ToString())
-                        .Replace("{{delivery_date}}", getEmailNotificationHeader[0].DeliveredOn.ToString());
+                        .Replace("{{delivery_date}}", getEmailNotificationHeader[0].DeliveredOn.ToString())
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
 
-                    
                 }
                 else if (TemplateID == 1004) ////Shipping Delivery Updates
                 {
@@ -149,7 +152,7 @@ namespace appify.web.api
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
                         .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
                 }
-                else if (TemplateID == 1006) ///Delivery Confirmation
+                else if (TemplateID == 1006) ////Delivery Confirmation
                 {
                     mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
@@ -158,6 +161,7 @@ namespace appify.web.api
                 else if (TemplateID == 1007) ////Delayed Shipment Notification
                 {
                     mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                        .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
                         .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
                 }
                 else if (TemplateID == 1010) ////Order Cancellation Customer

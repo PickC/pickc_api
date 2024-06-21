@@ -220,7 +220,13 @@ namespace appify.web.api.Controllers
                      /////FCM Notification AND Email Notification
                      if (orderStatus == 3577)
                      {
-                         if (orderUpdateDetail.MemberID != 0)
+                        if (orderUpdateDetail.MemberID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
+
+                        if (orderUpdateDetail.MemberID != 0)
                          {
                              PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                              EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
@@ -230,7 +236,8 @@ namespace appify.web.api.Controllers
                              PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                              EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                          }
-                     }*/
+
+                    }*/
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Saved", reqHeader, controllerURL, order, data, StatusName.ok));
