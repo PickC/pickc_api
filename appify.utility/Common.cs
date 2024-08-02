@@ -87,5 +87,43 @@ namespace appify.utility
             return eventLog;
         }
 
+        public static async Task<bool> UpdateEventLogsNew(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
+                                        string? eventLogStatus, IEventLogBusiness eventLogBusiness)
+        {
+
+            bool result=false;
+            EventLogs eventLog;
+            try
+            {
+                Int64 VendorID = request.Headers["VendorID"].Count > 0 ? Int64.Parse(request.Headers["VendorID"]) : 0;
+                Int64 CustomerID = request.Headers["CustomerID"].Count > 0 ? Int64.Parse(request.Headers["CustomerID"]) : 0;
+                string IPAddress = request.Headers["IPAddress"].Count > 0 ? request.Headers["IPAddress"] : "Not Found";
+                string AppName = request.Headers["AppName"].Count > 0 ? request.Headers["AppName"] : "Not Found";
+
+                eventLog = new EventLogs
+                {
+                    EventType = eventType,
+                    VendorID = VendorID,
+                    CustomerID = CustomerID,
+                    Source = url,
+                    Module = AppName,
+                    IPAddress = IPAddress,
+                    EventLog = eventLogStatus,
+                    InputJSON = Common.ConvertObjectToJson(inputData),
+                    OutputJSON = Common.ConvertObjectToJson(outputData),
+                    EventTime = DateTime.Now,
+                    AppName = AppName
+                };
+
+                result = eventLogBusiness.eventLogAdd(eventLog);
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
 }

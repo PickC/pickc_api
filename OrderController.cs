@@ -17,7 +17,6 @@ using Azure.Core;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
-using Twilio.Http;
 
 namespace appify.web.api.Controllers
 {
@@ -47,7 +46,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("save")]
-        public async Task<IActionResult> Add(Order order)
+        public IActionResult Add(Order order)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -216,15 +215,32 @@ namespace appify.web.api.Controllers
                     //{
                     //    firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
                     //}
+                    /*int orderStatus = 3577;
+                     OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(data.OrderID);
+                     /////FCM Notification AND Email Notification
+                     if (orderStatus == 3577)
+                     {
+                        if (orderUpdateDetail.MemberID != 0)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                        }
 
-                    if (order.PaymentType == 3703)
-                    {
-                        OrderPlace_PushNotification_Email(data.OrderID);
-                    }
+                        if (orderUpdateDetail.MemberID != 0)
+                         {
+                             PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                         }
+                         if (orderUpdateDetail.VendorID != 0)
+                         {
+                             PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                         }
+
+                    }*/
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, order, data, StatusName.ok));
-                    await Common.UpdateEventLogsNew("ORDER HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, order, data, StatusName.ok, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Saved", reqHeader, controllerURL, order, data, StatusName.ok));
                 }
                 else
                 {
@@ -233,8 +249,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - UNSBLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message));
-                    await Common.UpdateEventLogsNew("ORDER - UNSBLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Unable", reqHeader, controllerURL, order, null, rm.message));
+
                 }
 
             }
@@ -245,15 +261,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Error", reqHeader, controllerURL, order, null, rm.message));
             }
             return Ok(rm);
 
         }
 
         [HttpPost, Route("remove")]
-        public async Task<IActionResult> Remove(Int64 orderID)
+        public IActionResult Remove(Int64 orderID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -269,8 +284,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Removed", reqHeader, controllerURL, orderID, result, StatusName.ok));
-                    await Common.UpdateEventLogsNew("ORDER REMOVED SUCCESSFULLY", reqHeader, controllerURL, orderID, result, StatusName.ok, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Removed", reqHeader, controllerURL, orderID, result, StatusName.ok));
                 }
                 else
                 {
@@ -279,8 +293,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Unable to Removed", reqHeader, controllerURL, orderID, null, rm.message));
-                    await Common.UpdateEventLogsNew("ORDER - UNABLE TO REMOVED", reqHeader, controllerURL, orderID, result, rm.message, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Unable to Removed", reqHeader, controllerURL, orderID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -290,8 +303,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Remove - Error", reqHeader, controllerURL, orderID, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - REMOVED - ERROR", reqHeader, controllerURL, orderID, null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Remove - Error", reqHeader, controllerURL, orderID, null, rm.message));
             }
             return Ok(rm);
 
@@ -315,7 +327,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER INVOICE GENERATED SUCCESSFULLY", reqHeader, controllerURL, orderID, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Invoice Generated", reqHeader, controllerURL, orderID, result, StatusName.ok));
                 }
                 else
                 {
@@ -324,7 +336,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER NOT GENERATED", reqHeader, controllerURL, orderID, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Not Generated", reqHeader, controllerURL, orderID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -334,7 +346,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER INVOICE ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Invoice Error", reqHeader, controllerURL, orderID, null, rm.message));
             }
             return Ok(rm);
 
@@ -358,7 +370,7 @@ namespace appify.web.api.Controllers
                     rm.data = statusData.OrderID.ToString();
                     OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(statusData.OrderID);
                     /////FCM Notification AND Email Notification
-                    /*if (statusData.OrderStatus == 3932)
+                    if (statusData.OrderStatus == 3932)
                     {
                         if (orderUpdateDetail.MemberID != 0)
                         {
@@ -369,27 +381,6 @@ namespace appify.web.api.Controllers
                         {
                             PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                        }
-                    }*/
-                    if (statusData.OrderStatus == 3587) //// Cancelled by Customer
-                    {
-                        if (orderUpdateDetail.MemberID != 0)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                        }
-                        if (orderUpdateDetail.VendorID != 0)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                        }
-                    }
-                    if (statusData.OrderStatus == 3588) //// Declined by Vendor
-                    {
-                        if (orderUpdateDetail.MemberID != 0)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                         }
                     }
                     if (statusData.OrderStatus == 3577)
@@ -403,7 +394,7 @@ namespace appify.web.api.Controllers
 
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER IS UPDATED", reqHeader, controllerURL, statusData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order is Updated", reqHeader, controllerURL, statusData, result, StatusName.ok));
                 }
                 else
                 {
@@ -412,7 +403,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER NOT UPDATED", reqHeader, controllerURL, statusData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order not Updated", reqHeader, controllerURL, statusData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -422,7 +413,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER UPDATED ERROR", reqHeader, controllerURL, statusData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Updated Error", reqHeader, controllerURL, statusData, null, rm.message));
             }
             return Ok(rm);
 
@@ -447,7 +438,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = statusData.OrderID.ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS UPDATED SUCCESSFULLY", reqHeader, controllerURL, statusData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status updated", reqHeader, controllerURL, statusData, result, StatusName.ok));
                 }
                 else
                 {
@@ -456,7 +447,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO UPDATE ORDER PICKUP STATUS", reqHeader, controllerURL, statusData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status not updated", reqHeader, controllerURL, statusData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -466,7 +457,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS ERROR", reqHeader, controllerURL, statusData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status Error", reqHeader, controllerURL, statusData, null, rm.message));
             }
             return Ok(rm);
 
@@ -491,7 +482,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = statusData.OrderID.ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS UPDATED SUCCESSFULLY", reqHeader, controllerURL, statusData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status updated", reqHeader, controllerURL, statusData, result, StatusName.ok));
                 }
                 else
                 {
@@ -500,7 +491,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO UPDATE ORDER PICKUP STATUS", reqHeader, controllerURL, statusData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status not updated", reqHeader, controllerURL, statusData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -510,7 +501,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS NOT UPDATED", reqHeader, controllerURL, statusData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Pickup status not updated", reqHeader, controllerURL, statusData, null, rm.message));
             }
             return Ok(rm);
 
@@ -535,7 +526,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER TRACKING DETAILS FETCHED SUCCESSFULLY", reqHeader, controllerURL, orderID, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER TRACKING DETAILS FETCHED", reqHeader, controllerURL, orderID, result, StatusName.ok));
                 }
                 else
                 {
@@ -578,7 +569,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, item, StatusName.ok));
                 }
                 else
                 {
@@ -587,7 +578,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, null, rm.message));
                 }
 
             }
@@ -598,7 +589,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, null, rm.message));
             }
             return Ok(rm);
 
@@ -622,7 +613,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetOrderForDelivery IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, item, StatusName.ok));
                 }
                 else
                 {
@@ -631,7 +622,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetOrderForDelivery - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, null, rm.message));
                 }
 
             }
@@ -642,14 +633,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetOrderForDelivery - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, orderID, null, rm.message));
             }
             return Ok(rm);
 
         }
 
         [HttpPost, Route("list")]
-        public async Task<IActionResult> List(ParamMemberUserID itemData)
+        public IActionResult List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -665,8 +656,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("FETCH ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -675,8 +665,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("FETCH ORDER LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
 
@@ -688,15 +677,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH ORDER LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
         }
 
         [HttpPost, Route("summarylist")]
-        public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
+        public IActionResult SummaryList(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -704,7 +692,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
+                List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID);
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -712,8 +700,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -722,8 +709,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
 
@@ -735,8 +721,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -744,7 +729,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("vendororderlist")]
-        public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
+        public IActionResult ListByVendor(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -752,7 +737,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                List<VendorOrderNew> items = orderBusiness.ListByVendorNew(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
+                List<VendorOrder> items = orderBusiness.ListByVendor(itemData.userID);
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -760,8 +745,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -770,8 +754,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -782,8 +765,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -806,7 +788,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH VENDOR ORDER DETAIL SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -815,7 +797,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH VENDOR ORDER DETAIL - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -826,32 +808,12 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH VENDOR ORDER DETAIL - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
         }
-        private void OrderPlace_PushNotification_Email(long OrderID)
-        {
-            try
-            {
-                OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(OrderID);
-                /////FCM Notification AND Email Notification
-                if (orderUpdateDetail.MemberID != 0)
-                {
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                }
-                if (orderUpdateDetail.VendorID != 0)
-                {
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-        }
+
         /* [HttpPost]
          [Route("PhonePayWebhookPaymentPaid")]
          public IActionResult ReceiveWebhook([FromBody] PhonePeWebhookPayload payload)////object payload
@@ -936,11 +898,10 @@ namespace appify.web.api.Controllers
             try { 
                     // Verify the X-VERIFY header.
                     string xVerifyHeader = reqHeader.Headers["X-VERIFY"];////verifyRequestModel.X_VERIFY;
-                    if (xVerifyHeader == null || !VerifyXVerifyHeaderPhonepe(xVerifyHeader))
+                    if (xVerifyHeader == null || !VerifyXVerifyHeader(xVerifyHeader))
                     {
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - PHONEPAY RESPONSE NULL", reqHeader, controllerURL, "PhonepeCallBack Received Null Payload", "Received null payload", StatusName.ok));
-                    await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - PHONEPAY RESPONSE NULL", reqHeader, controllerURL, "PhonepeCallBack Received Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.ERROR;
+                        this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "PhonepeCallBack Received Null Payload", "Received null payload", StatusName.ok));
+                        rm.statusCode = StatusCodes.ERROR;
                         rm.message = "Invalid payload";
                         rm.name = StatusName.invalid;
                         rm.data = null;
@@ -957,9 +918,9 @@ namespace appify.web.api.Controllers
                     // As well as a bound model
                     var request = JsonConvert.DeserializeObject(decodedString);
 
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "PhonepeCallBack Webhook Sucess Response", decodedString, StatusName.ok));
-                await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "PhonepeCallBack Webhook Sucess Response", decodedString, StatusName.ok, this.eventLogBusiness);
-                rm.statusCode = StatusCodes.OK;
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "PhonepeCallBack Webhook Sucess Response", decodedString, StatusName.ok));
+
+                    rm.statusCode = StatusCodes.OK;
                     rm.message = "RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY";
                     rm.name = StatusName.ok;
                     rm.data = request;
@@ -971,14 +932,13 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - PHONEPAY ERROR", reqHeader, controllerURL, "PhonepeCallBack Webhook Error Response", null, rm.message));
-                await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - PHONEPAY ERROR", reqHeader, controllerURL, "PhonepeCallBack Webhook Error Response", null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "PhonepeCallBack Webhook Error Response", null, rm.message));
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);
         }
 
-        private bool VerifyXVerifyHeaderPhonepe(string xVerifyHeader)
+        private bool VerifyXVerifyHeader(string xVerifyHeader)
         {
             // TODO: Implement the logic to verify the X-VERIFY header.
             return true;
@@ -1034,22 +994,20 @@ namespace appify.web.api.Controllers
             string[] eventSearch ={
               "downtime",
               "payment_link",
-              "notification",
-              "authorized"
+              "notification"
             };
 
             try { 
             // Verify the X-VERIFY header.
             string xVerifyHeader = reqHeader.Headers["X-Razorpay-Signature"];////verifyRequestModel.X_VERIFY;
             ////xVerifyHeader = "Appyfy@1234$";
-            if (xVerifyHeader == null)//// || !VerifyXVerifyHeadeRazorpay(xVerifyHeader)
-                {
+            if (xVerifyHeader == null || !VerifyXVerifyHeadeRazorpay(xVerifyHeader))
+            {
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = "Invalid payload";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Received null payload", reqHeader, controllerURL, "RAZORPAY Received Null Payload X-Razorpay-Signature-" + xVerifyHeader, "RAZORPAY Received null payload", StatusName.ok));
-                    await Common.UpdateEventLogsNew("RAZORPAY Received null payload", reqHeader, controllerURL, "RAZORPAY Received Null Payload X-Razorpay-Signature-" + xVerifyHeader, "RAZORPAY Received null payload", StatusName.ok, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "RAZORPAY Received Null Payload X-Razorpay-Signature-" + xVerifyHeader, "RAZORPAY Received null payload", StatusName.ok));
                 }
             else
             {
@@ -1074,7 +1032,7 @@ namespace appify.web.api.Controllers
                         PaymentDate = dt,
                         OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
                         EventName = Convert.ToString(request["event"]),
-                        PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
+                        PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["notes"]["orderId"]) / 100,
                         OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
                         PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
                         PaymentMode = 0,
@@ -1087,19 +1045,13 @@ namespace appify.web.api.Controllers
                         rm.message = "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY";
                         rm.name = StatusName.ok;
                         rm.data = request;
-                        if (orderPayment.EventName == "payment.captured")
-                        {
-                            OrderPlace_PushNotification_Email(orderPayment.OrderID);
-                        }
-                            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok));
-                            await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok, this.eventLogBusiness);
-                        }
+                        this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok));
+                    }
                 }
                 else
                 {
-                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok));
-                        await Common.UpdateEventLogsNew("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok, this.eventLogBusiness);
-                    }
+                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok));
+                }
 
               }
 
@@ -1110,8 +1062,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response", null, rm.message));
-                await Common.UpdateEventLogsNew("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response", null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "RAZORPAY Webhook Error Response", null, rm.message));
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);
@@ -1162,19 +1113,17 @@ namespace appify.web.api.Controllers
             rm = new ResponseMessage();
             try { 
                     // Verify the X-VERIFY header.
-                   string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
-
-                    //xVerifyHeader = "Appify@1234#";
-                    if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
-                {
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok));
-                    await Common.UpdateEventLogsNew("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.ERROR;
+                    string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
+                    ////xVerifyHeader = "Appify@1234#";
+                    if (xVerifyHeader == null || xVerifyHeader == "")
+                    {
+                        this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok));
+                        rm.statusCode = StatusCodes.ERROR;
                         rm.message = "Invalid payload";
                         rm.name = StatusName.invalid;
                         rm.data = null;
                     }
-                    else
+                    else if(xVerifyHeader == "Appify@1234#")
                     {
                         using var reader = new StreamReader(HttpContext.Request.Body);
                         // You now have the body string raw
@@ -1182,12 +1131,12 @@ namespace appify.web.api.Controllers
 
                         // As well as a bound model
                         var request = JsonConvert.DeserializeObject(body);
-                        //var responseval = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"OD10602406156\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
+                        ////var responseval = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"1719\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
                         var requestObj = (JObject)JsonConvert.DeserializeObject(body);
 
                         OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
                         {
-                            OrderNo = Convert.ToString((JValue)requestObj["order_id"]),
+                            OrderID = Convert.ToInt64((JValue)requestObj["order_id"]),
                             OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
                             Remarks = Convert.ToString((JValue)requestObj["current_status"]),
                             CourierRefID = Convert.ToString((JValue)requestObj["channel_id"]),
@@ -1199,7 +1148,7 @@ namespace appify.web.api.Controllers
                         };
 
                         var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
-                        if (result>0)
+                        if (result)
                         {
                             rm.statusCode = StatusCodes.OK;
                             rm.message = "SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY";
@@ -1221,7 +1170,7 @@ namespace appify.web.api.Controllers
                             ->	51	Picked Up
                             ->  37  Delivery Delayed
                             */
-                            OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
+                            OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(orderTrackingUpdate.OrderID);
                             if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
                             {
                                 if (orderUpdateDetail.MemberID != 0)
@@ -1268,9 +1217,8 @@ namespace appify.web.api.Controllers
                                 }
                             }
                         }
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok));
-                    await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok, this.eventLogBusiness);
-                }
+                        this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok));
+                    }
 
                 }
             catch (Exception ex)
@@ -1279,21 +1227,10 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message));
-                await Common.UpdateEventLogsNew("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message));
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);
-        }
-
-        private bool VerifyXVerifyHeaderShipRocket(string xVerifyHeader)
-        {
-            string Secret = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ShipRocketKey:Secret").Value;
-            // TODO: Implement the logic to verify the X-VERIFY header.
-            if (Secret == xVerifyHeader)
-                return true;
-            else
-                return false;
         }
 
         /// <summary>
@@ -1344,14 +1281,13 @@ namespace appify.web.api.Controllers
             string xVerifyHeader = reqHeader.Headers["x-api-key"];
             if (xVerifyHeader == null || xVerifyHeader == "")
             {
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.ok));
-                await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Received Null Payload", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.invalid, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.ok));
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = "Invalid payload";
                 rm.name = StatusName.invalid;
                 rm.data = null;
             }
-            else//// if (xVerifyHeader == "Appify@1234#")
+            else if (xVerifyHeader == "Appify@1234#")
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
                 // You now have the body string raw
@@ -1359,38 +1295,31 @@ namespace appify.web.api.Controllers
 
                 // As well as a bound model
                 var request = JsonConvert.DeserializeObject(body);
-                    /* var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+                /* var requestObj = (JObject)JsonConvert.DeserializeObject(body);
 
-                     OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
-                     {
-                         OrderID = Convert.ToInt32((JValue)requestObj["order_id"]),
-                         OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
-                         Remarks = Convert.ToString((JValue)requestObj["current_status"]),
-                         CourierRefID = Convert.ToString((JValue)requestObj["channel_id"]),
-                         ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
-                         AWB = Convert.ToString((JValue)requestObj["awb"]),
-                         DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
-                         CourierName = Convert.ToString((JValue)requestObj["courier_name"]),
-                         TrackURL = Common.ShiproketDeliveryTrackingURL + (JValue)requestObj["awb"].ToString()
-                     };
+                 OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
+                 {
+                     OrderID = Convert.ToInt32((JValue)requestObj["order_id"]),
+                     OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
+                     Remarks = Convert.ToString((JValue)requestObj["current_status"]),
+                     CourierRefID = Convert.ToString((JValue)requestObj["channel_id"]),
+                     ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
+                     AWB = Convert.ToString((JValue)requestObj["awb"]),
+                     DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
+                     CourierName = Convert.ToString((JValue)requestObj["courier_name"]),
+                     TrackURL = Common.ShiproketDeliveryTrackingURL + (JValue)requestObj["awb"].ToString()
+                 };
 
-                     var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
-                     if (result)
-                     {
-                         rm.statusCode = StatusCodes.OK;
-                         rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
-                         rm.name = StatusName.ok;
-                         rm.data = request;
-                     }*/
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", request, StatusName.ok));
-
-                    //// Need to comment
-                    await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", request, StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
-                    rm.name = StatusName.ok;
-                    ////rm.data = request;
-                }
+                 var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
+                 if (result)
+                 {
+                     rm.statusCode = StatusCodes.OK;
+                     rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
+                     rm.name = StatusName.ok;
+                     rm.data = request;
+                 }*/
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", request, StatusName.ok));
+            }
 
         }
             catch (Exception ex)
@@ -1399,8 +1328,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message));
-                await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Error", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message, this.eventLogBusiness);
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message));
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);
@@ -1469,7 +1397,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = resultDict["error_desc"].ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PAYMENT GATEWAY VALIDATION", reqHeader, controllerURL, null, rm.data, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TestPayment", reqHeader, controllerURL, null, rm.data, rm.message));
                 }
 
             }
@@ -1481,7 +1409,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.ok;
                 rm.data = strResult;
                 //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PAYMENT GATEWAY KEY", reqHeader, controllerURL, null, strResult, StatusName.ok));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TestPayment", reqHeader, controllerURL, null, strResult, StatusName.ok));
             }
 
 
@@ -1620,7 +1548,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = resultDict["error_desc"].ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PAYMENT GATEWAY VALIDATION", reqHeader, controllerURL, null, rm.data, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TestPayment", reqHeader, controllerURL, null, rm.data, rm.message));
                 }
 
             }
@@ -1632,7 +1560,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.ok;
                 rm.data = strResult;
                 //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PAYMENT GATEWAY KEY", reqHeader, controllerURL, null, strResult, StatusName.ok));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TestPayment", reqHeader, controllerURL, null, strResult, StatusName.ok));
             }
 
 

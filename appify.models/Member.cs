@@ -138,8 +138,14 @@ namespace appify.models
         }
 
     }
-
-
+    public partial class MemberDashboardLite
+    {
+        public long VendorID { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public Int32 PendingOrder { get; set; }
+        public Int32 CompletedOrder { get; set; }
+        public Int32 ActiveOrder {  get; set; }
+    }
     public partial class MemberKYC {
 
         public Int64 MemberID { get; set; }

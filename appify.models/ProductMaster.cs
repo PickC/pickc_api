@@ -102,4 +102,10 @@ namespace appify.models
 
 
     }
+
+    public partial class ProductMasterCategories
+    {
+        public long CategoryID { get; set;}
+        public string Category {  get; set; }
+    }
 }

@@ -91,21 +91,21 @@ namespace appify.Business
             return orders;
         }
 
-        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID)
+        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
-            List<CustomerOrderSummary> orders = orderRepository.CustomerSummaryList(sellerID);
+            List<CustomerOrderSummary> orders = orderRepository.CustomerSummaryList(sellerID, OrderStatus, PageNo, Rows);
             return orders;
         }
 
 
-        public List<VendorOrder> ListByVendor(long vendorID) { 
+        public List<VendorOrder> ListByVendor(long vendorID, string OrderStatus, short PageNo, short Rows) { 
         
             List<VendorOrder> vendorOrders = new List<VendorOrder>();
 
             List<OrderDetail> orderItems = new List<OrderDetail>();
 
 
-            vendorOrders = orderRepository.ListByVendor(vendorID);
+            vendorOrders = orderRepository.ListByVendor(vendorID, OrderStatus, PageNo, Rows);
 
             if (vendorOrders?.Any()==true)
             {
@@ -117,6 +117,31 @@ namespace appify.Business
                 }
 
                 
+            }
+
+            return vendorOrders;
+        }
+
+        public List<VendorOrderNew> ListByVendorNew(long vendorID, string OrderStatus, short PageNo, short Rows)
+        {
+
+            List<VendorOrderNew> vendorOrders = new List<VendorOrderNew>();
+
+            List<OrderDetailNew> orderItems = new List<OrderDetailNew>();
+
+
+            vendorOrders = orderRepository.ListByVendorNew(vendorID, OrderStatus, PageNo, Rows);
+
+            if (vendorOrders?.Any() == true)
+            {
+                foreach (var vo in vendorOrders)
+                {
+                    orderItems = new List<OrderDetailNew>();
+
+                    vo.items = orderDetailRepository.ListNew(vo.OrderID);
+                }
+
+
             }
 
             return vendorOrders;
@@ -244,7 +269,7 @@ namespace appify.Business
         public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID) {
             return orderRepository.GetOrderTrackingDetails(orderID);
         }
-        public bool UpdateOrderTrackingStatus(OrderTrackingUpdate item)
+        public Int64 UpdateOrderTrackingStatus(OrderTrackingUpdate item)
         {
             return orderRepository.UpdateOrderTrackingStatus(item);
         }

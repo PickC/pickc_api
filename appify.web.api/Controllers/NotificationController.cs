@@ -76,7 +76,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -94,7 +94,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -153,7 +153,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -162,7 +162,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -171,7 +171,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -208,7 +208,7 @@ namespace appify.web.api.Controllers
                     rm.message = "ISREAD NOTIFICATION HAS BEEN SUCCESSFULLY SET!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION HAS BEEN SUCCESSFULLY SET", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -217,7 +217,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -263,7 +263,7 @@ namespace appify.web.api.Controllers
                     rm.message = "UNREAD NOTIFICATION COUNT HAS BEEN SUCCESSFULLY RETURNED!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION COUNT HAS BEEN SUCCESSFULLY RETURNED", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -272,7 +272,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -281,7 +281,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);

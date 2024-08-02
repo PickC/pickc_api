@@ -37,7 +37,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("save")]
-        public IActionResult Add(Address item)
+        public async Task<IActionResult> Add(Address item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -53,7 +53,8 @@ namespace appify.web.api.Controllers
                     rm.data = result;
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("ADDRESS SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -62,7 +63,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    await Common.UpdateEventLogsNew("ADDRESS SAVED - NO CONTENT", reqHeader, controllerURL, item, result, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -73,7 +75,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                await Common.UpdateEventLogsNew("ADDRESS SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -98,7 +101,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -107,7 +110,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -117,7 +120,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -142,7 +145,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET ADDRESS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -151,7 +154,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET ADDRESS NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -161,7 +164,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET ADDRESS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -187,7 +190,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DEFAULT ADDRESS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -196,7 +199,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DEFAULT ADDRESS NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -206,7 +209,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DEFAULT ADDRESS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -229,7 +232,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 }
                 else
                 {
@@ -238,7 +241,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS LIST - NO CENTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -248,14 +251,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
         }
 
         [HttpPost, Route("saveaddress")]
-        public IActionResult SaveAddress()
+        public async Task<IActionResult> SaveAddress()
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -288,7 +291,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("OneDelhivery SAVED ADDRESS SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -297,7 +301,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                    await Common.UpdateEventLogsNew("OneDelhivery - NO CONTENT", reqHeader, controllerURL, null, items, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -307,7 +312,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                await Common.UpdateEventLogsNew("OneDelhivery SAVED ADDRESS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

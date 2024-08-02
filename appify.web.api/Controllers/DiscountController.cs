@@ -57,7 +57,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Discount Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
-        public IActionResult discountHeaderAdd(List<DiscountHeader> discountHeader)
+        public async Task<IActionResult> discountHeaderAdd(List<DiscountHeader> discountHeader)
         {
             var result = true;
             var reqHeader = Request;
@@ -79,7 +79,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = returnItem;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, returnItem, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, returnItem, StatusName.ok));
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVED SUCCESSFULLY", reqHeader, controllerURL, discountHeader, returnItem, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -88,7 +89,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, null, rm.message));
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVE - NO CONTENT", reqHeader, controllerURL, discountHeader, returnItem, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -97,7 +99,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, discountHeader, null, rm.message));
+                await Common.UpdateEventLogsNew("DISCOUNT SAVE - ERROR", reqHeader, controllerURL, discountHeader, null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);
@@ -136,7 +139,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -145,7 +148,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -154,7 +157,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -221,7 +224,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -230,7 +233,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -239,7 +242,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -295,7 +298,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, null, result, StatusName.ok));
                 }
                 else
                 {
@@ -304,7 +307,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEM - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -313,7 +316,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEM - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
 
             return Ok(rm);
@@ -378,7 +381,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST BY VENDOR SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -387,7 +390,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST BY VENDOR - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -396,7 +399,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST BY VENDOR - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
@@ -456,7 +459,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT DISCOUNTS SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -465,7 +468,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT DISCOUNTS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -474,7 +477,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT DISCOUNTS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);

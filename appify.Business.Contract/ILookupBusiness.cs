@@ -19,5 +19,7 @@ namespace appify.Business.Contract
         public List<Lookup> GetList(string category, string userID);
 
         public List<Lookup> GetAllList();
+
+        public List<LookupStartUpList> GetListForStartup(string category);
     }
 }

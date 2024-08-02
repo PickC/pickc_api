@@ -25,7 +25,7 @@ namespace appify.dbroutine
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
         public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
         public const string MEMBERONLINEPAYMENTSTATUS = "[Operation].[usp_MemberOnlinePaymentStatus]";
-
+        public const string MEMBERDASHBOARD = "[Operation].[usp_VendorDashboard]";
 
 
         // Vendor Customer Details //
@@ -97,7 +97,7 @@ namespace appify.dbroutine
         public const string DELETEPRODUCTMASTER = "[Operation].[usp_ProductMasterDelete]";
         public const string LISTALLPRODUCT = "[Operation].[usp_ProductMasterListAll]";
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
-
+        public const string SELECTPRODUCTMASTERCATEGORIES = "[Master].[usp_Categories]";
 
         /// <summary>
         /// [Operation].[ProductImage]
@@ -129,6 +129,7 @@ namespace appify.dbroutine
         public const string LISTLOOKUPBYMEMBERCATEGORY = "[Config].[usp_LookupListByMemberCategory]";
         public const string LISTLOOKUP = "[Config].[usp_LookupList]";
         public const string LISTSYSTEMCONFIGSETTING = "[Config].[usp_GetSettingbyKey]";
+        public const string LISTLOOKUPBYCATEGORYSTARTUP = "[Config].[usp_LookupListByCategoryStartUp]";
 
         /// <summary>
         /// [Operation].[OrderHeader]
@@ -143,10 +144,12 @@ namespace appify.dbroutine
         public const string SAVEORDERHEADER = "[Operation].[usp_OrderHeaderSave]";
         public const string DELETEORDERHEADER = "[Operation].[usp_OrderHeaderDelete]";
         public const string LISTORDERSUMMARYBYSELLER = "[Operation].[usp_OrderSummaryListBySeller]";
+        public const string LISTORDERBYCUSTOMER = "[Operation].[usp_CustomerOrderPageView]";
         public const string LISTORDERHEADERBYSELLER = "[Operation].[usp_OrderHeaderListBySeller]";
         public const string SELECTORDERHEADERBYORDERNO = "[Operation].[usp_OrderHeaderSelectByOrderNo]";
         public const string ORDERSTATUSUPDATE = "[Operation].[usp_OrderStatusUpdate]";
-        public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
+        //public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
+        public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrderPageView]";
         public const string UPDATEORDERPICKUP = "[Operation].[usp_UpdateOrderForPickup]";
         public const string GETVENDORDETAILS = "[Operation].[usp_VendorDetails]";
 

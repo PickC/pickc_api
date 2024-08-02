@@ -10,6 +10,19 @@ namespace appify.web.api
 
     }
 
+    public class ParamMemberOrder : ParamMemberUserID
+    {
+        public string OrderStatus { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+
+    public class ParamMemberDashboard
+    {
+        public long userID { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+    }
     public class ParamMemberVendorID
     {
         public long vendorID { get; set; }
@@ -80,6 +93,11 @@ namespace appify.web.api
 
     }
 
+    public class ParamParent
+    {
+        public long parentID { get; set; }
+    }
+
     public class ParamProductPrice : ParamProduct
     {
         public long priceID { get; set; }
@@ -143,7 +161,14 @@ namespace appify.web.api
     }
 
 
+    public class ParamLookupCategoryList {
+        public List<ParamLookupCategory>? list { get; set; }
+    }
 
+    public class ParamLookupCategories
+    {
+        public string list { get; set; }
+    }
     public class ParamOrderAWB
     {
         public Int64 OrderID { get; set; }

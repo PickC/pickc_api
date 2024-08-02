@@ -146,21 +146,30 @@ namespace appify.DataAccess
             return items;
         }
 
-        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID)
+        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
             List<CustomerOrderSummary> items = new List<CustomerOrderSummary>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERSUMMARYBYSELLER, sellerID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYCUSTOMER, sellerID, OrderStatus, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<CustomerOrderSummary>(ds.Tables[0]);
 
             return items;
         }
         
 
-        public List<VendorOrder> ListByVendor(long vendorID)
+        public List<VendorOrder> ListByVendor(long vendorID, string OrderStatus, short PageNo, short Rows)
         {
             List<VendorOrder> items = new List<VendorOrder>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
+
+            return items;
+        }
+
+        public List<VendorOrderNew> ListByVendorNew(long vendorID, string OrderStatus, short PageNo, short Rows)
+        {
+            List<VendorOrderNew> items = new List<VendorOrderNew>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
+            items = DataTableHelper.ConvertDataTable<VendorOrderNew>(ds.Tables[0]);
 
             return items;
         }
@@ -307,9 +316,10 @@ namespace appify.DataAccess
 
         }
 
-        public bool UpdateOrderTrackingStatus(OrderTrackingUpdate item)
+        public Int64 UpdateOrderTrackingStatus(OrderTrackingUpdate item)
         {
             var result = false;
+            Int64 OrderID = 0;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
             try
             {
@@ -319,7 +329,7 @@ namespace appify.DataAccess
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@OrderID", item.OrderID);
+                        cmd.Parameters.AddWithValue("@OrderNo", item.OrderNo);
                         cmd.Parameters.AddWithValue("@OrderStatus", item.OrderStatus);
                         cmd.Parameters.AddWithValue("@Remarks", item.Remarks);
                         cmd.Parameters.AddWithValue("@CourierRefID", item.CourierRefID);
@@ -328,8 +338,17 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@DeliveredOn", item.DeliveredOn);
                         cmd.Parameters.AddWithValue("@CourierName", item.CourierName);
                         cmd.Parameters.AddWithValue("@TrackURL", item.TrackURL);
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewOrderID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            OrderID = Convert.ToInt64(outPutParameter.Value);
 
                         con.Close();
                     }
@@ -342,7 +361,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return OrderID;
 
         }
 

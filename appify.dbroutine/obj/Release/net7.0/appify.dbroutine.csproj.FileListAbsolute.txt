@@ -44,3 +44,16 @@ D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.db
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\refint\appify.dbroutine.dll
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.pdb
 D:\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\ref\appify.dbroutine.dll
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.deps.json
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.dll
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\bin\Release\net7.0\appify.dbroutine.pdb
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.csproj.AssemblyReference.cache
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.GeneratedMSBuildEditorConfig.editorconfig
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.AssemblyInfoInputs.cache
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.AssemblyInfo.cs
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.csproj.CoreCompileInputs.cache
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.sourcelink.json
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.dll
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\refint\appify.dbroutine.dll
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.pdb
+C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\ref\appify.dbroutine.dll
