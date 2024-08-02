@@ -47,7 +47,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -56,7 +56,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
                 }
 
             }
@@ -67,7 +67,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -90,7 +90,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, themeID, result, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED SUCCESSFULLY", reqHeader, controllerURL, themeID, result, StatusName.ok));
                 }
                 else
                 {
@@ -99,7 +99,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, themeID, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED - NO CONTENT", reqHeader, controllerURL, themeID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -109,7 +109,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, themeID, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED - ERROR", reqHeader, controllerURL, themeID, null, rm.message));
             }
             return Ok(rm);
 
@@ -134,7 +134,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, themeID, item, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM SUCCESSFULLY", reqHeader, controllerURL, themeID, item, StatusName.ok));
                 }
                 else
                 {
@@ -143,7 +143,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, themeID, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM - NO CONTENT", reqHeader, controllerURL, themeID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, themeID, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM - ERROR", reqHeader, controllerURL, themeID, null, rm.message));
             }
             return Ok(rm);
 
@@ -176,7 +176,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok));
                 }
                 else
                 {
@@ -185,7 +185,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -195,7 +195,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
             return Ok(rm);
 

@@ -70,6 +70,15 @@ namespace appify.DataAccess
             return items;
         }
 
+        public List<OrderDetailNew> ListNew(Int64 orderID)
+        {
+            List<OrderDetailNew> items = new List<OrderDetailNew>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDETAIL, orderID);
+            items = DataTableHelper.ConvertDataTable<OrderDetailNew>(ds.Tables[0]);
+
+            return items;
+        }
+
         public List<OrderDetailDelivery> GetOrderItemForDelivery(Int64 orderID) {
 
             List<OrderDetailDelivery> items = new List<OrderDetailDelivery>();

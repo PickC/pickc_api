@@ -58,5 +58,10 @@ namespace appify.Business
             return repository.SaveLookUp(item);
 
         }
+
+        public List<LookupStartUpList> GetListForStartup(string category)
+        {
+            return repository.GetListForStartup(category);
+        }
     }
 }

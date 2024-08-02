@@ -173,8 +173,6 @@ namespace appify.models
 
         public DateTime? DeliveredOn { get; set; }
 
-        public string ShippingAddress { get; set; }
-
         public string SettlementStatus { get; set; }
         public string SettlementDescription { get; set; }
 
@@ -185,12 +183,75 @@ namespace appify.models
         public short? DeliveryChannel { get; set; }
 
         public string? DeliveryChannelDescription { get; set; }
-
+        public string ShippingAddress { get; set; }
+        public string CurrentRemarks { get; set; }
+        public DateTime CurrentDate { get; set; }
         public List<OrderDetail> items { get; set; }
 
     }
 
+    public partial class VendorOrderNew
+    {
+        public VendorOrderNew()
+        {
+            items = new List<OrderDetailNew>();
+        }
 
+        public Int64 OrderID { get; set; }
+
+        public string OrderNo { get; set; }
+
+        public DateTime OrderDate { get; set; }
+
+        //public Int64 VendorID { get; set; }
+        //public Int64 MemberID { get; set; }
+
+        public Int64? AddressID { get; set; }
+        public Int16 OrderStatus { get; set; }
+
+
+        public decimal OrderAmount { get; set; }
+
+        public decimal DiscountAmount { get; set; }
+
+        public decimal TaxAmount { get; set; }
+
+        public decimal TotalAmount { get; set; }
+
+        //public bool IsCancel { get; set; }
+
+        //public bool IsDelivered { get; set; }
+
+        public string Remarks { get; set; }
+
+        public string DeliveryInstruction { get; set; }
+
+        public decimal DeliveryCost { get; set; }
+
+        //public string OrderStatusDescription { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public short PaymentType { get; set; }
+        //public string PaymentTypeDescription { get; set; }
+
+        public DateTime? DeliveredOn { get; set; }
+
+        public string SettlementStatus { get; set; }
+        //public string SettlementDescription { get; set; }
+
+        public DateTime? SettlementDate { get; set; }
+        public decimal? SettlementAmount { get; set; }
+        public string Reason { get; set; }
+
+        //public short? DeliveryChannel { get; set; }
+
+        public string? DeliveryChannelDescription { get; set; }
+        public string ShippingAddress { get; set; }
+        public string CurrentRemarks { get; set; }
+        public DateTime CurrentDate { get; set; }
+        public List<OrderDetailNew> items { get; set; }
+
+    }
     public class OrderHeaderDelivery
     {
 
@@ -278,7 +339,7 @@ namespace appify.models
 
     public partial class OrderTrackingUpdate
     {
-        public Int64 OrderID { get; set; }
+        public string OrderNo { get; set; }
         public short OrderStatus { get; set; }
         public string Remarks { get; set; }
         public string CourierRefID { get; set; }
@@ -314,8 +375,8 @@ namespace appify.models
         public Int16 OrderStatus { get; set; }
 
 
-        //public decimal OrderAmount { get; set; }
-        public string OrderAmount { get; set; }
+        public decimal OrderAmount { get; set; }
+        //public string OrderAmount { get; set; }
 
         public decimal DiscountAmount { get; set; }
 

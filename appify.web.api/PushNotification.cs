@@ -56,7 +56,7 @@ namespace appify.web.api
 
                 VendorDetails vendorDetails = notificationBusiness.GetVendorDetails(MemberID, OrderID);
                 VendorDetails FCMCredentials = notificationBusiness.GetVendorDetails(VendorID, OrderID);
-                ///notificationModel.IsAndroiodDevice = true;
+                ////notificationModel.IsAndroiodDevice = true;
                 notificationModel.PlatformType = vendorDetails.PlatformType;
 
                 notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();

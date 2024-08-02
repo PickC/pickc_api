@@ -278,8 +278,22 @@ namespace appify.DataAccess
             }
 
         }
-         
 
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo)
+        {
+            try
+            {
+                MemberDashboardLite items = new MemberDashboardLite();
+                DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERDASHBOARD, userID, dateFrom, dateTo);
+                items = DataTableHelper.ConvertDataTable<MemberDashboardLite>(ds.Tables[0]).FirstOrDefault();
+
+                return items;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
 
         public bool MemberLogOut(long userID)
         {

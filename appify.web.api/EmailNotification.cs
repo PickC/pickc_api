@@ -103,7 +103,7 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1000) ////Welcome Signup
                 {
-                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName=="" ? "John" : getEmailNotificationHeader[0].FirstName);
+                   // mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName=="" ? "John" : getEmailNotificationHeader[0].FirstName);
                 }
                 if (TemplateID == 1001) ////Order Placement To Customer
                 {
@@ -172,19 +172,19 @@ namespace appify.web.api
                 }
                 else if (TemplateID == 1011) ////Order Cancellation Vendor
                 {
-                    mailbody = mailbody.Replace("{{name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                    mailbody = mailbody.Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString());
                 }
                 notifications.EmailBody = mailbody;
                 if(notifications.ToEmail=="")
                 {
-                    notifications.ToEmail = "support@appi-fy.ai";
+                    //notifications.ToEmail = "support@appi-fy.ai";
                 }
                 
-                //if (notifications.ToEmail!="")
-                //{
+                if (notifications.ToEmail!="")
+                {
                     SendEmail(notifications);
-               // }
+                }
 
                 result = true;
             }

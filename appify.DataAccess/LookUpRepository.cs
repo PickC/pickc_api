@@ -147,5 +147,14 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        public List<LookupStartUpList> GetListForStartup(string category)
+        {
+            List<LookupStartUpList> items = new List<LookupStartUpList>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTLOOKUPBYCATEGORYSTARTUP, category);
+            items = DataTableHelper.ConvertDataTable<LookupStartUpList>(ds.Tables[0]);
+
+            return items;
+        }
     }
 }

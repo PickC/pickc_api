@@ -24,7 +24,7 @@ namespace appify.DataAccess.Contract
           
         public Member IsMemberExist(string emailID,string mobileNo, short memberType, Int64 parentID);
 
-
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo);
         public Member MemberLogIn(string emailID, string mobileNo, string password,Int64 parentID);
         public bool MemberLogOut(long userID);
 

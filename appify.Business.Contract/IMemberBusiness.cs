@@ -20,7 +20,7 @@ namespace appify.Business.Contract
 
         public Member MemberLogIn(string emailID, string mobileNo, string password, Int64 parentID);
         public object MemberLogOut(long userID);
-        public object MemberDashboard(long userID);
+        public MemberDashboardLite MemberDashboard(long userID,DateTime dateFrom, DateTime dateTo);
 
         public bool RemoveMemberByMobileNo(string mobileNo, string password);
 

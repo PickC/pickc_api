@@ -33,5 +33,18 @@ namespace appify.models
     {
         public string? SettingValue { get; set; }
         public bool SettingStatus { get; set; }
+        public string? KeyID {  get; set; }
+        public string? SecretKey { get; set; }
+        public string? KeyType {  get; set; }
+    }
+
+    public partial class LookupStartUpList
+    {
+        public Int16 LookupID { get; set; }
+
+        public string? LookupCode { get; set; }
+
+        public string? LookupCategory { get; set; }
+
     }
 }

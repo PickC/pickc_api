@@ -227,5 +227,14 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        public List<ProductMasterCategories> GetProductMasterCategories(long parentID)
+        {
+            List<ProductMasterCategories> item = new List<ProductMasterCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTMASTERCATEGORIES, parentID);
+            item = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
+
+            return item;
+        }
     }
 }

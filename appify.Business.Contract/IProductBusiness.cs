@@ -25,6 +25,6 @@ namespace appify.Business.Contract
         public List<NewProduct> GetNewProductsList(long VendorID, bool IsNew = false);
 
         public bool UpdateNewProducts(long ProductID, bool IsNew);
-        
+        public List<ProductMasterCategories> GetProductMasterCategories(long parentID);
     }
 }
