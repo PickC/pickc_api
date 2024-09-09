@@ -33,7 +33,10 @@ namespace appify.Business
         {
             return repository.GetProductImages(productID);
         }
-
+        public List<ProductImageNew> GetProductImagesNew(long productID)
+        {
+            return repository.GetProductImagesNew(productID);
+        }
         public bool RemoveProductImage(long imageID,long productID)
         {
             return repository.RemoveProductImage(imageID, productID);

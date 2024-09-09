@@ -21,4 +21,12 @@ namespace appify.models
         public DateTime? CreatedOn { get; set; }
 
     }
+
+    public partial class ProductImageNew
+    {
+        public Int64 ImageID { get; set; }
+
+        public string? ImageName { get; set; }
+
+    }
 }

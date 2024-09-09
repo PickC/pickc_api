@@ -56,8 +56,7 @@ namespace appify.models
         public bool? IsOnlinePaymentEnabled { get; set; }
         public bool? IsEnterprise { get; set; }
         public bool? IsEcommerce { get; set; }
-
-
+        public bool? IsWelcomeEmail { get; set; }
 
     }
 

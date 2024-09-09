@@ -35,48 +35,61 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("save")]
-        public IActionResult Add(Product product)
+        public async Task<IActionResult> Add(Product product)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-                rm = new ResponseMessage();
-                var productMaster = this.productBusiness.SaveProduct(product);
-                if (productMaster != null)
+                rm = new ResponseMessage();////To Do Need to check internal - price, image is empty then return exception message
+
+                if (product.prices?.Any() == true && product.images?.Any() == true)
                 {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "PRODUCT SUCCESSFUL!";
-                    rm.name = StatusName.ok;
-                    //rm.data = productMaster;
+                        var productMaster = this.productBusiness.SaveProduct(product);
+                        if (productMaster != null)
+                        {
+                            rm.statusCode = StatusCodes.OK;
+                            rm.message = "PRODUCT SUCCESSFUL!";
+                            rm.name = StatusName.ok;
+                            //rm.data = productMaster;
+
+                            var canUpdate = this.productBusiness.UpdateProductImagePrice(product.ProductID);
+
+                            var newproduct = new ProductMaster();
 
 
-                    var canUpdate = this.productBusiness.UpdateProductImagePrice(product.ProductID);
+                            newproduct = this.productBusiness.GetProduct(product.ProductID);
+                            if (newproduct != null)
+                            {
+                                product.ProductID = newproduct.ProductID;
+                                //product.ProductID=item.ProductID;
+                                product.prices = this.priceBusiness.PriceList(product.ProductID);
+                                product.images = this.imageBusiness.GetProductImages(product.ProductID);
+                            }
 
-                    var newproduct = new ProductMaster();
-
-
-                    newproduct = this.productBusiness.GetProduct(product.ProductID);
-                    if (newproduct != null)
-                    {
-                        product.ProductID = newproduct.ProductID;
-                        //product.ProductID=item.ProductID;
-                        product.prices = this.priceBusiness.PriceList(product.ProductID);
-                        product.images = this.imageBusiness.GetProductImages(product.ProductID);
+                            rm.data = product;
+                        //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, StatusName.ok));
+                        await Common.UpdateEventLogsNew("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, rm.message, this.eventLogBusiness);
                     }
-
-                    rm.data = product;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, StatusName.ok));
-                }
+                        else
+                        {
+                            rm.statusCode = StatusCodes.ERROR;
+                            rm.message = "UNABLE TO ADD/UPDATE PRODUCT";
+                            rm.name = StatusName.invalid;
+                            rm.data = null;
+                        //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message));
+                        await Common.UpdateEventLogsNew("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message, this.eventLogBusiness);
+                    }
+                   }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "UNABLE TO ADD/UPDATE PRODUCT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message));
+                    await Common.UpdateEventLogsNew("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -87,7 +100,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED - ERROR", reqHeader, controllerURL, product, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED - ERROR", reqHeader, controllerURL, product, null, rm.message));
+                await Common.UpdateEventLogsNew("PRODUCT SAVED - ERROR", reqHeader, controllerURL, product, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -173,6 +187,52 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost, Route("getitemnew")]
+        public async Task<IActionResult> GetProductNew(ParamProduct itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.productBusiness.GetProductNew(itemData.productID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    await Common.UpdateEventLogsNew("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

@@ -10,6 +10,7 @@ namespace appify.DataAccess.Contract
     public  interface IProductPriceRepository
     {
         public List<ProductPrice> PriceList(long productID);
+        public List<ProductPriceNew> PriceListNew(long productID);
         public ProductPrice GetPrice (long priceID,long productID, string size);
         public bool RemovePrice(long priceID, long productID, string size);
         public bool SavePrice(ProductPrice price);

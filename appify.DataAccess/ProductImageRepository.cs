@@ -79,6 +79,15 @@ namespace appify.DataAccess
             return items;
         }
 
+        public List<ProductImageNew> GetProductImagesNew(long productID)
+        {
+            List<ProductImageNew> items = new List<ProductImageNew>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTIMAGENEW, productID);
+            items = DataTableHelper.ConvertDataTable<ProductImageNew>(ds.Tables[0]);
+
+            return items;
+        }
+
         public bool RemoveProductImage(long imageID, long productID)
         {
             var result = false;

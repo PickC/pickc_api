@@ -31,7 +31,10 @@ namespace appify.Business
         {
             return repository.RegisterMember(member);
         }
-
+        public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail)
+        {
+            return repository.UpdateWelcomeEmail(userID,IsWelcomeEmail);
+        }
         public bool RemoveMember(long userID)
         {
             return repository.RemoveMember(userID);

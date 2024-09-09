@@ -10,7 +10,7 @@ namespace appify.Business.Contract
     public interface ILookupBusiness
     {
         public bool HasLookUp(short lookupID);
-        public bool SaveLookUp(Lookup item);
+        public Lookup SaveLookUp(Lookup item);
         public bool DeleteLookUp(short lookupID);
 
         public Lookup GetLookUp(short lookupID);

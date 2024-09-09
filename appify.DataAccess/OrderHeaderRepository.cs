@@ -365,6 +365,52 @@ namespace appify.DataAccess
 
         }
 
+        public Int64 UpdateDelhiveryOrderTrackingStatus(OrderTrackingUpdateDelhivery item)
+        {
+            var result = false;
+            Int64 OrderID = 0;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEORDERTRACKINGSTATUSDELHIVERY))
+                    { 
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@AWB", item.AWB);
+                        cmd.Parameters.AddWithValue("@Status", item.Status);
+                        cmd.Parameters.AddWithValue("@StatusType", item.StatusType);
+                        cmd.Parameters.AddWithValue("@Instructions", item.Instructions);
+                        cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
+                        cmd.Parameters.AddWithValue("@StatusDateTime", item.StatusDateTime);
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewOrderID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            OrderID = Convert.ToInt64(outPutParameter.Value);
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return OrderID;
+
+        }
+
         public bool OrderPaymentSave(OrderPayment item)
         {
             var result = false;

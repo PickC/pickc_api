@@ -73,7 +73,13 @@ namespace appify.DataAccess
             return members;
         }
 
-
+        public bool UpdateWelcomeEmail(long userID, bool IsWelcomeEmail)
+        {
+            bool result = false;
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring,dbroutine.DBStoredProc.UPDATEWELCOMEEMAIL,userID, IsWelcomeEmail);
+            result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            return result;
+        }
         public bool CheckMemberOnlinePaymentStatus(long userID) {
 
             bool result= false;
@@ -96,11 +102,6 @@ namespace appify.DataAccess
             return members;
 
         }
-
-
- 
-
-
 
         public Member GetMember(long userID)
         {

@@ -109,7 +109,7 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
-        public bool SaveLookUp(Lookup lookup)
+        public Lookup SaveLookUp(Lookup lookup)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -130,10 +130,16 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedBy",  lookup.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", lookup.ModifiedBy);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewLookupID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
+                        lookup.LookupID = Convert.ToInt16(outPutParameter.Value);
                         con.Close();
                     }
 
@@ -145,7 +151,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return lookup;
         }
 
         public List<LookupStartUpList> GetListForStartup(string category)

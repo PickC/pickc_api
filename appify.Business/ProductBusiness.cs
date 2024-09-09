@@ -46,11 +46,26 @@ namespace appify.Business
             return repository.GetProduct(productId);
 
         }
+        public ProductMasterNew GetProductNew(long productId)
+        {
+            ProductMasterNew productMaster = new ProductMasterNew();
+            List<ProductPriceNew> prices = new List<ProductPriceNew>();
+            List<ProductImageNew> images = new List<ProductImageNew>();
+
+            productMaster = repository.GetProductNew(productId);
+            if(productMaster!=null)
+            {
+                productMaster.prices = priceRepository.PriceListNew(productId);
+                productMaster.images = imageRepository.GetProductImagesNew(productId);
+            }
+            return productMaster;
+        }
 
         public List<ProductMaster> GetProducts(long sellerID)
         {
             return repository.GetProducts(sellerID);
         }
+
         public List<ProductMaster> GetAllProducts()
         {
             return repository.GetAllProducts();

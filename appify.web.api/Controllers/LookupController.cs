@@ -37,7 +37,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
 
                 var result = lookupBusiness.SaveLookUp(item);
-                if (result)
+                if (result!=null)
                 {
                     var newitem = new Lookup();
 
