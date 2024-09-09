@@ -60,6 +60,39 @@ namespace appify.models
 
     }
 
+    public partial class ProductMasterNew
+    {
+        public ProductMasterNew()
+        {
+            prices = new List<ProductPriceNew>();
+            images = new List<ProductImageNew>();
+        }
+        public Int64 ProductID { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string? Description { get; set; }
+
+        public Int16? Category { get; set; }
+
+        public string? Brand { get; set; }
+
+        public string? Color { get; set; }
+
+        public Int16? UOM { get; set; }
+
+        public string Currency { get; set; }
+
+        public bool? IsAvailable { get; set; }
+
+        public string HSNCode { get; set; }
+
+        public bool? IsNew { get; set; }
+
+        public List<ProductPriceNew>? prices { get; set; }
+        public List<ProductImageNew>? images { get; set; }
+    }
+
     public partial class ProductWeb : ProductMaster
     {
 
@@ -67,7 +100,13 @@ namespace appify.models
         public string CategoryDescription { get; set; }
 
     }
-
+    public partial class MemberAllDetail
+    {
+        public bool? WareHouse { get; set; }
+        public short Products { get; set; }
+        public bool? Category { get; set; }
+        public bool? AppDetails { get; set; }
+    }
     public partial class MemberProduct
     {
 
@@ -82,13 +121,12 @@ namespace appify.models
         public decimal? Price { get; set; }
         public string? ImageName { get; set; }
 
-        public bool? IsNew { get; set;}
+        public bool? IsNew { get; set; }
 
         public Int16? DiscountType { get; set; }
-        public decimal? DiscountValue {  get; set; }
+        public decimal? DiscountValue { get; set; }
 
     }
-
     public partial class NewProduct
     {
 
@@ -105,7 +143,22 @@ namespace appify.models
 
     public partial class ProductMasterCategories
     {
-        public long CategoryID { get; set;}
-        public string Category {  get; set; }
+        public long CategoryID { get; set; }
+        public string Category { get; set; }
+    }
+
+    public partial class HomePageProductByCategory
+    {
+        public HomePageProductByCategory()
+        {
+            categories = new List<ProductMasterCategories>();
+            products = new List<MemberProduct>();
+            //productdetails = new List<ProductMaster>();
+        }
+
+        public List<ProductMasterCategories>? categories { get; set; }
+        public List<MemberProduct>? products { get; set; }
+
+        //public List<ProductMaster>? productdetails { get; set; }
     }
 }

@@ -144,7 +144,46 @@ namespace appify.web.api.Controllers
         }
 
 
-
+        /// <summary>
+        /// Add/Update Member.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// NOTE : For a new / update Member
+        /// 
+        ///     {
+        ///       "userID": 1060,
+        ///       "emailID": "kvrkalyan1985@gmail.com",
+        ///       "mobileNo": "6382014003",
+        ///       "password": "Appify@123",
+        ///       "firstName": "I AM",
+        ///       "lastName": "BACK",
+        ///       "memberType": 1000,
+        ///       "otp": "731885",
+        ///       "isOTPSent": true,
+        ///       "otpSentDate": "2023-11-01 13:20:59.313",
+        ///       "isResendOTP": false,
+        ///       "isOTPVerified": true,
+        ///       "isEmailVerified": false,
+        ///       "isActive": true,
+        ///       "createdOn": "2023-11-01 00:51:01.600",
+        ///       "profilePhoto": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/1721297240519",
+        ///              "token": "eAv9G_F7TwqiPU0e6wp1rR:APA91bEfdEOHKbaIx2yv8YPSGKsUmbnyWoMW5fhEMdoAwCYnGQEWWlmEvMGNWNUNxEc2UeiXYGYO0JdI_GnSSAsl6BfsLl51Pk8YVGcGQONoUsGhSzyIEHutcUkb7rWyA4Gp0hDWrTnn",
+        ///       "platformType": 3994,
+        ///       "parentID": 0,
+        ///       "isRegisteredByMobile": true,
+        ///       "isOnlinePaymentEnabled": true,
+        ///       "isEnterprise": false,
+        ///       "isEcommerce": false,
+        ///       "IsWelcomeEmail":false
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <param name="discountHeader"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
 
 
         // POST api/<MemberController>
@@ -165,12 +204,20 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
 
-                    if(UserID==0)
+                    if(UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
                     {
-                        PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, this.notificationBusiness);
+                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
+                        //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
+                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                     }
 
+                    if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
+                    {
+                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
+                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
+                    }
 
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok));
@@ -593,9 +640,8 @@ namespace appify.web.api.Controllers
             try
             {
                // dynamic data = jsondata;
-
                 rm = new ResponseMessage();
-                var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID), itemData.dateFrom, itemData.dateTo);
+                var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID),itemData.dateFrom, itemData.dateTo);
 
                 //TODO: to implement the above dashboard information
 

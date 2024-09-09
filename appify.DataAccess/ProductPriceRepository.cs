@@ -40,6 +40,14 @@ namespace appify.DataAccess
 
             return items;
         }
+        public List<ProductPriceNew> PriceListNew(long productID)
+        {
+            List<ProductPriceNew> items = new List<ProductPriceNew>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTPRICENEW, productID);
+            items = DataTableHelper.ConvertDataTable<ProductPriceNew>(ds.Tables[0]);
+
+            return items;
+        }
 
         public bool RemovePrice(long priceID, long productID,string size)
         {

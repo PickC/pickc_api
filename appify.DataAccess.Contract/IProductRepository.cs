@@ -14,6 +14,7 @@ namespace appify.DataAccess.Contract
         public bool DeleteProduct(long productId);
 
         public ProductMaster GetProduct(long productId);
+        public ProductMasterNew GetProductNew(long productId);
         public List<ProductMaster> GetProducts(long sellerID);
         public List<ProductMaster> GetAllProducts();
 

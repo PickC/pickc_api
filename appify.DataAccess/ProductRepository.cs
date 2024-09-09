@@ -95,6 +95,14 @@ namespace appify.DataAccess
             return item;
         }
 
+        public ProductMasterNew GetProductNew(long productId)
+        {
+            ProductMasterNew item = new ProductMasterNew();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTMASTERNEW, productId);
+            item = DataTableHelper.ConvertDataTable<ProductMasterNew>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
         public List<ProductMaster> GetProducts(long sellerID)
         {
             List<ProductMaster> items = new List<ProductMaster>();

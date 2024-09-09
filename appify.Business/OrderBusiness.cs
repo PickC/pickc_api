@@ -273,6 +273,10 @@ namespace appify.Business
         {
             return orderRepository.UpdateOrderTrackingStatus(item);
         }
+        public Int64 UpdateDelhiveryOrderTrackingStatus(OrderTrackingUpdateDelhivery item)
+        {
+            return orderRepository.UpdateDelhiveryOrderTrackingStatus(item);
+        }
 
         public bool OrderPaymentSave(OrderPayment item)
         {

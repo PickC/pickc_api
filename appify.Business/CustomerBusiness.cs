@@ -23,5 +23,17 @@ namespace appify.Business
         public List<MemberProduct> ProductList(long vendorID) {
             return this.repository.ProductList(vendorID);
         }
+        public MemberAllDetail GetMemberAllDetails(long userID)
+        {
+            return this.repository.GetMemberAllDetails(userID);
+        }
+        public HomePageProductByCategory GetProductListByVAUA(long userID)
+        {
+            return this.repository.GetProductListByVAUA(userID);
+        }
+        public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
+        {
+            return this.repository.ProductListByCategory(vendorID, CategoryID, pageNo, rows);
+        }
     }
 }

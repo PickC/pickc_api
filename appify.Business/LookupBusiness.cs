@@ -53,7 +53,7 @@ namespace appify.Business
             throw new NotImplementedException();
         }
 
-        public bool SaveLookUp(Lookup item)
+        public Lookup SaveLookUp(Lookup item)
         {
             return repository.SaveLookUp(item);
 

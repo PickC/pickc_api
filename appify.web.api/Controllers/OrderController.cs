@@ -217,7 +217,7 @@ namespace appify.web.api.Controllers
                     //    firstName = char.ToUpper(firstName[0]) + firstName.Substring(1);
                     //}
 
-                    if (order.PaymentType == 3703)
+                    if (order.PaymentType == 3703) //// 3703 is COD (Cash on Delivery)
                     {
                         OrderPlace_PushNotification_Email(data.OrderID);
                     }
@@ -301,6 +301,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("printinvoice")]
         public IActionResult PrintInvoice(Int64 orderID)
         {
+            //OrderPlace_PushNotification_Email(1976);
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
@@ -358,46 +359,46 @@ namespace appify.web.api.Controllers
                     rm.data = statusData.OrderID.ToString();
                     OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(statusData.OrderID);
                     /////FCM Notification AND Email Notification
-                    /*if (statusData.OrderStatus == 3932)
+                    if (statusData.OrderStatus == 3587) //// Cancelled by Customer Cast 1 - We have 2 cases 1st is before confirmed the order
                     {
-                        if (orderUpdateDetail.MemberID != 0)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                        }
                         if (orderUpdateDetail.VendorID != 0)
                         {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                         }
-                    }*/
-                    if (statusData.OrderStatus == 3587) //// Cancelled by Customer
-                    {
                         if (orderUpdateDetail.MemberID != 0)
                         {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                        }
-                        if (orderUpdateDetail.VendorID != 0)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
                     if (statusData.OrderStatus == 3588) //// Declined by Vendor
                     {
+                        if (orderUpdateDetail.VendorID != 0)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                        }
                         if (orderUpdateDetail.MemberID != 0)
                         {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
-                    if (statusData.OrderStatus == 3577)
+                    if (statusData.OrderStatus == 3577) //// Order Confirmed by Vendor
                     {
+                        if (orderUpdateDetail.VendorID != 0)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                        }
                         if (orderUpdateDetail.MemberID != 0)
                         {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
 
@@ -835,21 +836,24 @@ namespace appify.web.api.Controllers
         {
             try
             {
+                //// Order Placed By Customer COD & Online
                 OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(OrderID);
                 /////FCM Notification AND Email Notification
-                if (orderUpdateDetail.MemberID != 0)
+                if (orderUpdateDetail.VendorID != 0) //// New Order Placement send Mail and notification to Vendor & Opps
                 {
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                }
-                if (orderUpdateDetail.VendorID != 0)
-                {
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                }
+                if (orderUpdateDetail.MemberID != 0)//// New Order Placement send Mail and notification to Customer
+                {
+                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                 }
             }
             catch (Exception ex)
             {
+                throw ex;
             }
         }
         /* [HttpPost]
@@ -1035,7 +1039,8 @@ namespace appify.web.api.Controllers
               "downtime",
               "payment_link",
               "notification",
-              "authorized"
+              "authorized",
+              "order.paid"
             };
 
             try { 
@@ -1055,6 +1060,7 @@ namespace appify.web.api.Controllers
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
                 var body = await reader.ReadToEndAsync();
+
                 var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
                 string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
                 foreach (var s in eventSearch)
@@ -1093,13 +1099,13 @@ namespace appify.web.api.Controllers
                         }
                             //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok));
                             await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok, this.eventLogBusiness);
-                        }
+                    }
                 }
                 else
                 {
                         //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok));
-                        await Common.UpdateEventLogsNew("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok, this.eventLogBusiness);
-                    }
+                        //await Common.UpdateEventLogsNew("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok, this.eventLogBusiness);
+                }
 
               }
 
@@ -1165,7 +1171,7 @@ namespace appify.web.api.Controllers
                    string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
 
                     //xVerifyHeader = "Appify@1234#";
-                    if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
+                if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
                 {
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok));
                     await Common.UpdateEventLogsNew("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
@@ -1181,21 +1187,22 @@ namespace appify.web.api.Controllers
                         var body = await reader.ReadToEndAsync();
 
                         // As well as a bound model
-                        var request = JsonConvert.DeserializeObject(body);
-                        //var responseval = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"OD10602406156\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
+                        //var request = JsonConvert.DeserializeObject(body);
+                        //var body = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"OD10602406156\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
+
                         var requestObj = (JObject)JsonConvert.DeserializeObject(body);
 
                         OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
                         {
-                            OrderNo = Convert.ToString((JValue)requestObj["order_id"]),
+                            OrderNo = System.String.IsNullOrEmpty((string?)(JValue)requestObj["order_id"]) ? "" : Convert.ToString((JValue)requestObj["order_id"]),
                             OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
-                            Remarks = Convert.ToString((JValue)requestObj["current_status"]),
-                            CourierRefID = Convert.ToString((JValue)requestObj["channel_id"]),
+                            Remarks = System.String.IsNullOrEmpty((string?)(JValue)requestObj["current_status"]) ? "" : Convert.ToString((JValue)requestObj["current_status"]),
+                            CourierRefID = System.String.IsNullOrEmpty((string?)(JValue)requestObj["channel_id"]) ? "" : Convert.ToString((JValue)requestObj["channel_id"]),
                             ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
-                            AWB = Convert.ToString((JValue)requestObj["awb"]),
+                            AWB = System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : Convert.ToString((JValue)requestObj["awb"]),
                             DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
-                            CourierName = Convert.ToString((JValue)requestObj["courier_name"]),
-                            TrackURL = Common.ShiproketDeliveryTrackingURL + (JValue)requestObj["awb"].ToString()
+                            CourierName = System.String.IsNullOrEmpty((string?)(JValue)requestObj["courier_name"]) ? "" : Convert.ToString((JValue)requestObj["courier_name"]),
+                            TrackURL = Common.ShiproketDeliveryTrackingURL + (System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : (JValue)requestObj["awb"].ToString())
                         };
 
                         var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
@@ -1204,7 +1211,7 @@ namespace appify.web.api.Controllers
                             rm.statusCode = StatusCodes.OK;
                             rm.message = "SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY";
                             rm.name = StatusName.ok;
-                            rm.data = request;
+                            rm.data = requestObj;
                             /*
                             Shiprocket Order Status Table
 
@@ -1222,7 +1229,7 @@ namespace appify.web.api.Controllers
                             ->  37  Delivery Delayed
                             */
                             OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
-                            if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
+                           /* if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
                             {
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
@@ -1253,23 +1260,24 @@ namespace appify.web.api.Controllers
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
-                            }
-                            if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled
+                            }*/
+                            if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled by Customer
                             {
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                }
                                 if (orderUpdateDetail.VendorID != 0)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                }
+                                if (orderUpdateDetail.MemberID != 0)
+                                {
+                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
                             }
                         }
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok));
-                    await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
                 }
 
                 }
@@ -1354,38 +1362,50 @@ namespace appify.web.api.Controllers
             else//// if (xVerifyHeader == "Appify@1234#")
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
-                // You now have the body string raw
-                var body = await reader.ReadToEndAsync();
-
+                    // You now have the body string raw
+                    var body = await reader.ReadToEndAsync();
+                //var body = "{    \"Shipment\": {      \"AWB\": \"19041618371282\",      \"ReferenceNo\": \"OD26232407001\",      \"PickUpDate\": \"2024-07-26T17:53:53\",      \"Sortcode\": \"DEL/UDY\",      \"NSLCode\": \"RD-AC\",      \"Status\": {        \"Status\": \"RTO\",        \"StatusDateTime\": \"2024-08-06T18:   27:36.822\",        \"StatusType\": \"DL\",        \"StatusLocation\": \"Pushpavanam_Vedaranyam_D (Tamil Nadu)\",        \"Instructions\": \"RETURN Accepted\"      }    }  }";
                 // As well as a bound model
-                var request = JsonConvert.DeserializeObject(body);
-                    /* var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+                //var request = JsonConvert.DeserializeObject(body);
+                var requestObj = (JObject)JsonConvert.DeserializeObject(body);
 
-                     OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
-                     {
-                         OrderID = Convert.ToInt32((JValue)requestObj["order_id"]),
-                         OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
-                         Remarks = Convert.ToString((JValue)requestObj["current_status"]),
-                         CourierRefID = Convert.ToString((JValue)requestObj["channel_id"]),
-                         ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
-                         AWB = Convert.ToString((JValue)requestObj["awb"]),
-                         DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
-                         CourierName = Convert.ToString((JValue)requestObj["courier_name"]),
-                         TrackURL = Common.ShiproketDeliveryTrackingURL + (JValue)requestObj["awb"].ToString()
-                     };
-
-                     var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
-                     if (result)
-                     {
-                         rm.statusCode = StatusCodes.OK;
-                         rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
-                         rm.name = StatusName.ok;
-                         rm.data = request;
-                     }*/
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", request, StatusName.ok));
+                OrderTrackingUpdateDelhivery orderTrackingUpdate = new OrderTrackingUpdateDelhivery
+                {
+                    AWB = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["AWB"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["AWB"]),
+                    Status = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Status"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Status"]),
+                    StatusType = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusType"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["StatusType"]),
+                    Instructions = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Instructions"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Instructions"]),
+                    ReferenceNo = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["ReferenceNo"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["ReferenceNo"]),
+                    StatusDateTime = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusDateTime"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)requestObj["Shipment"]["Status"]["StatusDateTime"])
+                };
+                         
+                    var result = orderBusiness.UpdateDelhiveryOrderTrackingStatus(orderTrackingUpdate);
+                    if (result>0)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
+                        rm.name = StatusName.ok;
+                        rm.data = requestObj;
+                        OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
+                        if (orderTrackingUpdate.Status == "RTO") //// Cancelled by Customer
+                        {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                        }
+                    }
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok));
 
                     //// Need to comment
-                    await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", request, StatusName.ok, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
                     rm.name = StatusName.ok;

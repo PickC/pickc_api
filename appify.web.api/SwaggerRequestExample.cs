@@ -9,14 +9,24 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
-
+    public class ParamCategoryID
+    {
+        public long userID { get; set; }
+        public long categoryID { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
     public class ParamMemberOrder : ParamMemberUserID
     {
         public string OrderStatus { get; set; }
         public short PageNo { get; set; }
         public short Rows { get; set; }
     }
-
+    public class ParamProductList : ParamMemberUserID
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
     public class ParamMemberDashboard
     {
         public long userID { get; set; }

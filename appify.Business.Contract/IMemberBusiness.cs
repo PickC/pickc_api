@@ -11,7 +11,7 @@ namespace appify.Business.Contract
         public Member GetMember(long userID);
 
         public Member RegisterMember(Member member);
-
+        public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail);
         public bool ResetPassword(long userID, string password);
 
         public bool RemoveMember(long userID);

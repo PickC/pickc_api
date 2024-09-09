@@ -243,7 +243,7 @@ namespace appify.models
         public decimal? SettlementAmount { get; set; }
         public string Reason { get; set; }
 
-        //public short? DeliveryChannel { get; set; }
+        public short? DeliveryChannel { get; set; }
 
         public string? DeliveryChannelDescription { get; set; }
         public string ShippingAddress { get; set; }
@@ -348,6 +348,16 @@ namespace appify.models
         public DateTime DeliveredOn { get; set; }
         public string CourierName { get; set; }
         public string TrackURL {  get; set; }   
+    }
+
+    public partial class OrderTrackingUpdateDelhivery
+    {
+        public string AWB { get; set; }
+        public string Status { get; set; }
+        public string StatusType {  get; set; }
+        public string Instructions { get; set; }
+        public string ReferenceNo { get; set; }
+        public DateTime StatusDateTime { get; set; }
     }
 
     public partial class OrderUpdateDetail
