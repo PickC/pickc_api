@@ -9,9 +9,9 @@ namespace appify.Business.Contract
 {
     public interface INotificationBusiness
     {
-        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID);
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows);
 
-        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID);
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows);
         public NotificationTemplate GetNotificationTemplate(long TemplateID);
         public bool IsReadNotification(long NotificationID);
         public bool addNotificationMessage(PushNotificationMessage pushNotification);
