@@ -30,7 +30,9 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///         "vendorID": 1833
+        ///         "userID": 1833,
+        ///         "pageNo":1,
+        ///         "rows":10
         ///     }
         ///     
         /// Sample response JSON :
@@ -68,7 +70,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.notificationBusiness.GetNotificationByVendor(itemData.vendorID);
+                var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -107,7 +109,9 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///         "userID": 1847
+        ///         "userID": 1847,
+        ///         "pageNo":1,
+        ///         "rows":10
         ///     }
         ///     
         /// Sample response JSON :
@@ -138,14 +142,14 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("notificationlistbyuser")]
-        public IActionResult GetNotificationByUser(ParamMemberUserID itemData)
+        public IActionResult GetNotificationByUser(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.notificationBusiness.GetNotificationByUser(itemData.userID);
+                var result = this.notificationBusiness.GetNotificationByUser(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

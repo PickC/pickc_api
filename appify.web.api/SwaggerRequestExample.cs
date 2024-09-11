@@ -27,15 +27,22 @@ namespace appify.web.api
         public short PageNo { get; set; }
         public short Rows { get; set; }
     }
+
+
+    public class ParamPageNumber
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
     public class ParamMemberDashboard
     {
         public long userID { get; set; }
         public DateTime dateFrom { get; set; }
         public DateTime dateTo { get; set; }
     }
-    public class ParamMemberVendorID
+    public class ParamMemberVendorID: ParamPageNumber
     {
-        public long vendorID { get; set; }
+        public long userID { get; set; }
 
     }
     public class ParamMemberNotificationID
@@ -45,10 +52,11 @@ namespace appify.web.api
     }
     public class ParamBannerID
     {
-        public long bannerID { get; set; }  
+        public long bannerID { get; set; }
     }
 
-    public class ParamNewProductsByMember : ParamMemberUserID {
+    public class ParamNewProductsByMember : ParamMemberUserID
+    {
         public bool IsNew { get; set; }
     }
     public class ParamEventID
@@ -171,7 +179,8 @@ namespace appify.web.api
     }
 
 
-    public class ParamLookupCategoryList {
+    public class ParamLookupCategoryList
+    {
         public List<ParamLookupCategory>? list { get; set; }
     }
 
@@ -234,7 +243,7 @@ namespace appify.web.api
     {
         public Int64 OrderID { get; set; }
         public string RazorpayPaymentId { get; set; }
-        public string RazorpayOrderId {  get; set; }
-        public string RazorpaySignature {  get; set; }
+        public string RazorpayOrderId { get; set; }
+        public string RazorpaySignature { get; set; }
     }
 }

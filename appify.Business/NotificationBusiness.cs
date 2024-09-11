@@ -24,13 +24,13 @@ namespace appify.Business
 
         public object Server { get; private set; }
 
-        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows)
         {
-            return repository.GetNotificationByVendor(VendorID);
+            return repository.GetNotificationByVendor(VendorID,PageNo,Rows);
         }
-        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows)
         {
-            return repository.GetNotificationByUser(CustomerID);
+            return repository.GetNotificationByUser(CustomerID, PageNo, Rows);
         }
 
         public NotificationTemplate GetNotificationTemplate(long TemplateID)
