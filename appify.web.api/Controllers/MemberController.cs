@@ -3,6 +3,7 @@ using appify.Business.Contract;
 using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +19,7 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
     public class MemberController : ControllerBase
     {
         public readonly IEventLogBusiness eventLogBusiness;
