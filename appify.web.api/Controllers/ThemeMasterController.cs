@@ -1,8 +1,11 @@
 ﻿using appify.Business;
 using appify.Business.Contract;
 using appify.models;
+using appify.utility;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace appify.web.api.Controllers
@@ -12,16 +15,17 @@ namespace appify.web.api.Controllers
     [EnableCors("AllowOrigin")]
     public class ThemeMasterController : ControllerBase
     {
+        public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly IThemeMasterBusiness themeMasterBusiness;
         private ResponseMessage rm;
 
 
-        public ThemeMasterController(IConfiguration configuration, IThemeMasterBusiness iResultData)
+        public ThemeMasterController(IConfiguration configuration, IThemeMasterBusiness iResultData, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.themeMasterBusiness = iResultData;
-
+            this.eventLogBusiness = eventLogBusiness;
         }
 
 
@@ -29,6 +33,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("save")]
         public IActionResult Add(ThemeMaster item)
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
@@ -40,6 +46,8 @@ namespace appify.web.api.Controllers
                     rm.message = "THEME MASTER SAVED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
                     rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
                 }
                 else
                 {
@@ -47,6 +55,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
                 }
 
             }
@@ -57,6 +67,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME MASTER SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message));
             }
             return Ok(rm);
 
@@ -65,7 +76,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("remove")]
         public IActionResult Remove(long themeID)
         {
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -77,6 +89,8 @@ namespace appify.web.api.Controllers
                     rm.message = "THEME REMOVED";
                     rm.name = StatusName.ok;
                     rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED SUCCESSFULLY", reqHeader, controllerURL, themeID, result, StatusName.ok));
                 }
                 else
                 {
@@ -84,6 +98,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED - NO CONTENT", reqHeader, controllerURL, themeID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -93,6 +109,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME REMOVED - ERROR", reqHeader, controllerURL, themeID, null, rm.message));
             }
             return Ok(rm);
 
@@ -101,7 +118,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("get")]
         public IActionResult GetThemeMaster(long themeID)
         {
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -115,6 +133,8 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH THEME ITEM";
                     rm.name = StatusName.ok;
                     rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM SUCCESSFULLY", reqHeader, controllerURL, themeID, item, StatusName.ok));
                 }
                 else
                 {
@@ -122,6 +142,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM - NO CONTENT", reqHeader, controllerURL, themeID, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -131,6 +153,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH THEME ITEM - ERROR", reqHeader, controllerURL, themeID, null, rm.message));
             }
             return Ok(rm);
 
@@ -139,6 +162,8 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("list")]
         public IActionResult List()
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
@@ -150,6 +175,8 @@ namespace appify.web.api.Controllers
                     rm.message = "THEME LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok));
                 }
                 else
                 {
@@ -157,6 +184,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -166,6 +195,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
             return Ok(rm);
 

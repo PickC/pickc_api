@@ -31,7 +31,10 @@ namespace appify.Business
         {
             return repository.RegisterMember(member);
         }
-
+        public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail)
+        {
+            return repository.UpdateWelcomeEmail(userID,IsWelcomeEmail);
+        }
         public bool RemoveMember(long userID)
         {
             return repository.RemoveMember(userID);
@@ -56,9 +59,9 @@ namespace appify.Business
             return repository.MemberLogOut(userID);
         }
 
-        public object MemberDashboard(long userID)
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo)
         {
-            throw new NotImplementedException();
+            return repository.MemberDashboard(userID, dateFrom, dateTo);
         }
 
         public List<Member> GetAllVendors(int pageNo, int rows)

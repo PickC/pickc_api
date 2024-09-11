@@ -9,7 +9,40 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
+    public class ParamCategoryID
+    {
+        public long userID { get; set; }
+        public long categoryID { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamMemberOrder : ParamMemberUserID
+    {
+        public string OrderStatus { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamProductList : ParamMemberUserID
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamMemberDashboard
+    {
+        public long userID { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+    }
+    public class ParamMemberVendorID
+    {
+        public long vendorID { get; set; }
 
+    }
+    public class ParamMemberNotificationID
+    {
+        public long NotificationID { get; set; }
+
+    }
     public class ParamBannerID
     {
         public long bannerID { get; set; }  
@@ -35,7 +68,10 @@ namespace appify.web.api
 
     }
 
-
+    public class ParamSystemConfigSetting
+    {
+        public string SettingKey { get; set; }
+    }
     public class ParamDeactivateMember
     {
         public string mobileNo { get; set; }
@@ -65,6 +101,11 @@ namespace appify.web.api
     {
         public long productID { get; set; }
 
+    }
+
+    public class ParamParent
+    {
+        public long parentID { get; set; }
     }
 
     public class ParamProductPrice : ParamProduct
@@ -130,7 +171,14 @@ namespace appify.web.api
     }
 
 
+    public class ParamLookupCategoryList {
+        public List<ParamLookupCategory>? list { get; set; }
+    }
 
+    public class ParamLookupCategories
+    {
+        public string list { get; set; }
+    }
     public class ParamOrderAWB
     {
         public Int64 OrderID { get; set; }
@@ -175,5 +223,18 @@ namespace appify.web.api
     {
         public long DiscountID { get; set; }
         public long productID { get; set; }
+    }
+
+    public class ParamVendorOrder
+    {
+        public long VendorID { get; set; }
+        public long OrderID { get; set; }
+    }
+    public class ParamOrderItem
+    {
+        public Int64 OrderID { get; set; }
+        public string RazorpayPaymentId { get; set; }
+        public string RazorpayOrderId {  get; set; }
+        public string RazorpaySignature {  get; set; }
     }
 }

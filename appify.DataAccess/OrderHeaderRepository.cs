@@ -97,6 +97,14 @@ namespace appify.DataAccess
 
             return item;
         }
+        public OrderUpdateDetail GetOrderUpdateDetail(long orderID)
+        {
+            OrderUpdateDetail item = new OrderUpdateDetail();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERUPDATEDETAIL, orderID);
+            item = DataTableHelper.ConvertDataTable<OrderUpdateDetail>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
 
         public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID) {
 
@@ -138,25 +146,43 @@ namespace appify.DataAccess
             return items;
         }
 
-        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID)
+        public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
             List<CustomerOrderSummary> items = new List<CustomerOrderSummary>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERSUMMARYBYSELLER, sellerID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYCUSTOMER, sellerID, OrderStatus, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<CustomerOrderSummary>(ds.Tables[0]);
 
             return items;
         }
         
 
-        public List<VendorOrder> ListByVendor(long vendorID)
+        public List<VendorOrder> ListByVendor(long vendorID, string OrderStatus, short PageNo, short Rows)
         {
             List<VendorOrder> items = new List<VendorOrder>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
 
             return items;
         }
-        
+
+        public List<VendorOrderNew> ListByVendorNew(long vendorID, string OrderStatus, short PageNo, short Rows)
+        {
+            List<VendorOrderNew> items = new List<VendorOrderNew>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
+            items = DataTableHelper.ConvertDataTable<VendorOrderNew>(ds.Tables[0]);
+
+            return items;
+        }
+
+        public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID)
+        {
+            List<VendorOrder> items = new List<VendorOrder>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERBYVENDORDETAIL, vendorID, OrderID);
+            items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
+
+            return items;
+        }
+
         public OrderHeader Save(OrderHeader item)
         {
             var result = false;
@@ -290,6 +316,138 @@ namespace appify.DataAccess
 
         }
 
-        
+        public Int64 UpdateOrderTrackingStatus(OrderTrackingUpdate item)
+        {
+            var result = false;
+            Int64 OrderID = 0;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEORDERTRACKINGSTATUS))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@OrderNo", item.OrderNo);
+                        cmd.Parameters.AddWithValue("@OrderStatus", item.OrderStatus);
+                        cmd.Parameters.AddWithValue("@Remarks", item.Remarks);
+                        cmd.Parameters.AddWithValue("@CourierRefID", item.CourierRefID);
+                        cmd.Parameters.AddWithValue("@ShipmentID", item.ShipmentID);
+                        cmd.Parameters.AddWithValue("@AWB", item.AWB);
+                        cmd.Parameters.AddWithValue("@DeliveredOn", item.DeliveredOn);
+                        cmd.Parameters.AddWithValue("@CourierName", item.CourierName);
+                        cmd.Parameters.AddWithValue("@TrackURL", item.TrackURL);
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewOrderID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            OrderID = Convert.ToInt64(outPutParameter.Value);
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return OrderID;
+
+        }
+
+        public Int64 UpdateDelhiveryOrderTrackingStatus(OrderTrackingUpdateDelhivery item)
+        {
+            var result = false;
+            Int64 OrderID = 0;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEORDERTRACKINGSTATUSDELHIVERY))
+                    { 
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@AWB", item.AWB);
+                        cmd.Parameters.AddWithValue("@Status", item.Status);
+                        cmd.Parameters.AddWithValue("@StatusType", item.StatusType);
+                        cmd.Parameters.AddWithValue("@Instructions", item.Instructions);
+                        cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
+                        cmd.Parameters.AddWithValue("@StatusDateTime", item.StatusDateTime);
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewOrderID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            OrderID = Convert.ToInt64(outPutParameter.Value);
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return OrderID;
+
+        }
+
+        public bool OrderPaymentSave(OrderPayment item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEORDERPAYMENT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@PaymentID", item.PaymentID);
+                        cmd.Parameters.AddWithValue("@PaymentDate", item.PaymentDate);
+                        cmd.Parameters.AddWithValue("@OrderID", item.OrderID);
+                        cmd.Parameters.AddWithValue("@EventName", item.EventName);
+                        cmd.Parameters.AddWithValue("@PaymentAmount", item.PaymentAmount);
+                        cmd.Parameters.AddWithValue("@OrderReferenceNo", item.OrderReferenceNo);
+                        cmd.Parameters.AddWithValue("@PaymentReferenceNo", item.PaymentReferenceNo);
+                        cmd.Parameters.AddWithValue("@PaymentMode", item.PaymentMode);
+                        cmd.Parameters.AddWithValue("@LookupCode", item.LookupCode);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+
+        }
     }
 }

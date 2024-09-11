@@ -12,5 +12,8 @@ namespace appify.DataAccess.Contract
         public List<Member> GetAllCustomersByVendor(long vendorID, int pageNo, int rows);
 
         public List<MemberProduct> ProductList(long vendorID);
+        public MemberAllDetail GetMemberAllDetails(long userID);
+        public HomePageProductByCategory GetProductListByVAUA(long userID);
+        public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows);
     }
 }

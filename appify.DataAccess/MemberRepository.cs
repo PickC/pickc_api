@@ -73,7 +73,13 @@ namespace appify.DataAccess
             return members;
         }
 
-
+        public bool UpdateWelcomeEmail(long userID, bool IsWelcomeEmail)
+        {
+            bool result = false;
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring,dbroutine.DBStoredProc.UPDATEWELCOMEEMAIL,userID, IsWelcomeEmail);
+            result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            return result;
+        }
         public bool CheckMemberOnlinePaymentStatus(long userID) {
 
             bool result= false;
@@ -96,11 +102,6 @@ namespace appify.DataAccess
             return members;
 
         }
-
-
- 
-
-
 
         public Member GetMember(long userID)
         {
@@ -163,6 +164,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IsEnterprise", member.IsEnterprise);
                         cmd.Parameters.AddWithValue("@IsEcommerce", member.IsEcommerce);
                         cmd.Parameters.AddWithValue("@Token", member.Token);
+                        cmd.Parameters.AddWithValue("@PlatformType", member.PlatformType);
                         //cmd.Parameters.AddWithValue("@IsRegisteredByMobile", true);
                         //cmd.Parameters.Add(new SqlParameter("@NewMemberID", SqlDbType.BigInt).Direction = ParameterDirection.Output);
 
@@ -177,8 +179,10 @@ namespace appify.DataAccess
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
-                        member.UserID = Convert.ToInt64(outPutParameter.Value);
-
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            member.UserID = Convert.ToInt64(outPutParameter.Value);
+                        else
+                            member.UserID = 0;
                         con.Close();
                     }
 
@@ -275,8 +279,22 @@ namespace appify.DataAccess
             }
 
         }
-         
 
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo)
+        {
+            try
+            {
+                MemberDashboardLite items = new MemberDashboardLite();
+                DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERDASHBOARD, userID, dateFrom, dateTo);
+                items = DataTableHelper.ConvertDataTable<MemberDashboardLite>(ds.Tables[0]).FirstOrDefault();
+
+                return items;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
 
         public bool MemberLogOut(long userID)
         {

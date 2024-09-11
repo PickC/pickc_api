@@ -27,6 +27,10 @@ namespace appify.Business
         {
             return repository.PriceList(productID);
         }
+        public List<ProductPriceNew> PriceListNew(long productID)
+        {
+            return repository.PriceListNew(productID);
+        }
 
         public bool RemovePrice(long priceID,long productID,string size)
         {

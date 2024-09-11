@@ -43,5 +43,9 @@ namespace appify.Business
         {
             return repository.SaveAddress(item);
         }
+        public List<Address> GetAddressList()
+        {
+            return repository.GetAddressList();
+        }
     }
 }

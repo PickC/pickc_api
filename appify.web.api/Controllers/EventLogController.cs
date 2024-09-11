@@ -12,13 +12,13 @@ namespace appify.web.api.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly IEventLogBusiness eventLogBusiness;
-       private ResponseMessage rm;
+        private ResponseMessage rm;
         public EventLogController(IConfiguration configuration, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.eventLogBusiness = eventLogBusiness;
         }
-        /// <summary>
+        /*/// <summary>
         /// Adds a Event Log.
         /// </summary>
         /// <remarks>
@@ -126,7 +126,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
-
+        */
 
         /// <summary>
         /// gets Event Log by EventID

@@ -114,6 +114,7 @@ namespace appify.models
 
 
         public decimal DiscountAmount { get; set; }
+        public decimal DiscountPrice { get; set; }
         public decimal CGST { get; set; }
         public decimal SGST { get; set; }
         public decimal IGST { get; set; }

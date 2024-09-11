@@ -15,7 +15,7 @@ namespace appify.DataAccess.Contract
         public Member GetMember(long userID);
           
         public Member RegisterMember(Member item);
-          
+        public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail);
         public bool RemoveMember(long userID);
           
         public bool ResetPassword(long userID,string password);
@@ -24,7 +24,7 @@ namespace appify.DataAccess.Contract
           
         public Member IsMemberExist(string emailID,string mobileNo, short memberType, Int64 parentID);
 
-
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo);
         public Member MemberLogIn(string emailID, string mobileNo, string password,Int64 parentID);
         public bool MemberLogOut(long userID);
 

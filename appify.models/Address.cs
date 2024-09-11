@@ -44,4 +44,21 @@ namespace appify.models
 
         public string LocationID { get; set; }
     }
+
+    public partial class AddressObj
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string address { get; set; }
+        public string city { get; set; }
+        public string country { get; set; }
+        public string pin { get; set; }
+        public string return_address { get; set; }
+        public string return_pin { get; set; }
+        public string return_city { get; set; }
+        public string return_state { get; set; }
+        public string return_country { get; set; }
+
+    }
 }

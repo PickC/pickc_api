@@ -43,6 +43,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -111,6 +117,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -170,6 +182,12 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -225,6 +243,16 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -268,7 +296,14 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj": {
+                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj"
+              },
+              "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+                "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -281,6 +316,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
@@ -288,6 +327,14 @@
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.8.6, )"
+            },
+            "System.Json": {
+              "target": "Package",
+              "version": "[4.7.1, )"
+            },
+            "System.Net.Http": {
+              "target": "Package",
+              "version": "[4.3.4, )"
             }
           },
           "imports": [

@@ -25,15 +25,15 @@ namespace appify.dbroutine
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
         public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
         public const string MEMBERONLINEPAYMENTSTATUS = "[Operation].[usp_MemberOnlinePaymentStatus]";
-
-
-
+        public const string MEMBERDASHBOARD = "[Operation].[usp_VendorDashboard]";
+        public const string UPDATEWELCOMEEMAIL = "[Operation].[usp_MemberUpdateWelcomeEmail]";
         // Vendor Customer Details //
 
         public const string PAGEVIEWCUSTOMERBYMEMBER = "[Operation].[usp_CustomerPageView]";
         public const string PRODUCTSBYVENDOR = "[Operation].[usp_ProductsByVendor]";
-
-
+        public const string PRODUCTSBYCATEGORY = "[Operation].[usp_ProductsByCategory]";
+        public const string MEMBERALLDETAILS = "[Operation].[usp_GetMemberAllDetails]";
+        public const string PRODUCTSBYCATEGORIES = "[Operation].[usp_CategoriesProductsByVendor]";
 
         /// <summary>
         /// [Operation].[MemberReturnPolicy]
@@ -82,6 +82,7 @@ namespace appify.dbroutine
         public const string LISTADDRESS = "[Operation].[usp_AddressList]";
         public const string SAVEADDRESS = "[Operation].[usp_AddressSave]";
         public const string DELETEADDRESS = "[Operation].[usp_AddressDelete]";
+        public const string LISTALLADDRESS = "[Operation].[usp_AddressListALL]";
 
 
         /// <summary>
@@ -89,6 +90,7 @@ namespace appify.dbroutine
         /// </summary>
 
         public const string SELECTPRODUCTMASTER = "[Operation].[usp_ProductMasterSelect]";
+        public const string SELECTPRODUCTMASTERNEW = "[Operation].[usp_ProductMasterSelectNew]";
         public const string LISTPRODUCTMASTER = "[Operation].[usp_ProductMasterList]";
         public const string LISTPRODUCTMASTERALL = "[Operation].[usp_ProductMasterListAll]";
 
@@ -96,7 +98,7 @@ namespace appify.dbroutine
         public const string DELETEPRODUCTMASTER = "[Operation].[usp_ProductMasterDelete]";
         public const string LISTALLPRODUCT = "[Operation].[usp_ProductMasterListAll]";
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
-
+        public const string SELECTPRODUCTMASTERCATEGORIES = "[Master].[usp_Categories]";
 
         /// <summary>
         /// [Operation].[ProductImage]
@@ -105,6 +107,7 @@ namespace appify.dbroutine
         public const string DELETEPRODUCTIMAGEALL = "[Operation].[usp_ProductImageDeleteAll]";
         public const string SELECTPRODUCTIMAGE = "[Operation].[usp_ProductImageSelect]";
         public const string LISTPRODUCTIMAGE = "[Operation].[usp_ProductImageList]";
+        public const string LISTPRODUCTIMAGENEW = "[Operation].[usp_ProductImageListNew]";
         public const string SAVEPRODUCTIMAGE = "[Operation].[usp_ProductImageSave]";
         public const string DELETEPRODUCTIMAGE = "[Operation].[usp_ProductImageDelete]";
 
@@ -114,6 +117,7 @@ namespace appify.dbroutine
 
         public const string SELECTPRODUCTPRICE = "[Operation].[usp_ProductPriceSelect]";
         public const string LISTPRODUCTPRICE = "[Operation].[usp_ProductPriceList]";
+        public const string LISTPRODUCTPRICENEW = "[Operation].[usp_ProductPriceListNew]";
         public const string SAVEPRODUCTPRICE = "[Operation].[usp_ProductPriceSave]";
         public const string DELETEPRODUCTPRICE = "[Operation].[usp_ProductPriceDelete]";
 
@@ -127,6 +131,8 @@ namespace appify.dbroutine
         public const string LISTLOOKUPBYCATEGORY = "[Config].[usp_LookupListByCategory]";
         public const string LISTLOOKUPBYMEMBERCATEGORY = "[Config].[usp_LookupListByMemberCategory]";
         public const string LISTLOOKUP = "[Config].[usp_LookupList]";
+        public const string LISTSYSTEMCONFIGSETTING = "[Config].[usp_GetSettingbyKey]";
+        public const string LISTLOOKUPBYCATEGORYSTARTUP = "[Config].[usp_LookupListByCategoryStartUp]";
 
         /// <summary>
         /// [Operation].[OrderHeader]
@@ -141,19 +147,23 @@ namespace appify.dbroutine
         public const string SAVEORDERHEADER = "[Operation].[usp_OrderHeaderSave]";
         public const string DELETEORDERHEADER = "[Operation].[usp_OrderHeaderDelete]";
         public const string LISTORDERSUMMARYBYSELLER = "[Operation].[usp_OrderSummaryListBySeller]";
+        public const string LISTORDERBYCUSTOMER = "[Operation].[usp_CustomerOrderPageView]";
         public const string LISTORDERHEADERBYSELLER = "[Operation].[usp_OrderHeaderListBySeller]";
         public const string SELECTORDERHEADERBYORDERNO = "[Operation].[usp_OrderHeaderSelectByOrderNo]";
         public const string ORDERSTATUSUPDATE = "[Operation].[usp_OrderStatusUpdate]";
-        public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
+        //public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrdersList]";
+        public const string LISTORDERBYVENDOR = "[Operation].[usp_VendorOrderPageView]";
         public const string UPDATEORDERPICKUP = "[Operation].[usp_UpdateOrderForPickup]";
-
+        public const string GETVENDORDETAILS = "[Operation].[usp_VendorDetails]";
 
         public const string SELECTORDERHEADERBYORDERID = "[Operation].[usp_OrderHeaderItem]";
 
+        public const string ORDERBYVENDORDETAIL = "[Operation].[usp_VendorOrdersDetail]";
 
+        public const string UPDATEORDERTRACKINGSTATUS = "[Operation].[usp_UpdateOrderStatusShiprocket]";
 
         //DELIVERY
-
+        public const string UPDATEORDERTRACKINGSTATUSDELHIVERY = "[Operation].[usp_UpdateOrderStatusDelhivery]";
         public const string ORDERDELIVERYHEADER = "[Operation].[usp_OrderHeaderDelivery]";
         public const string ORDERDELIVERYDETAILS = "[Operation].[usp_OrderDetailDelivery]";
         public const string ORDERUPDATEAWB = "[Operation].[usp_OrderUpdateAWB]";
@@ -175,6 +185,11 @@ namespace appify.dbroutine
 
 
 
+        ///<summary>
+        /// [Operation].[OrderPayment]
+        /// </summary>
+        /// 
+        public const string SAVEORDERPAYMENT = "[Operation].[usp_OrderPaymentSave]";
 
 
         /// <summary>
@@ -268,5 +283,24 @@ namespace appify.dbroutine
         public const string LISTEVENTLOGBYVENDOR = "[Audit].[usp_EventLogListByVendor]";
         public const string SAVEEVENTLOG = "[Audit].[usp_EventLogSave]";
         public const string SELECTEVENTLOG = "[Audit].[usp_EventLogSelect]";
+
+        /// Notification History
+        public const string LISTNOTIFICATIONBYVENDOR = "[Utility].[usp_NotificationByVendor]";
+        public const string LISTNOTIFICATIONBYCUSTOMER = "[Utility].[usp_NotificationByCustomer]";
+        public const string SELECTNOTIFICATION = "[Utility].[usp_NotificationSelect]";
+        public const string ISREADNOtifICATION = "[Utility].[usp_NotificationIsRead]";
+        public const string SAVENOTIFICATION = "[Utility].[usp_NotificationSave]";
+        public const string UNREADNOTIFICATION = "[Utility].[usp_NotificationIsUnReadCount]";
+        
+        //// Notification Template
+        public const string SELECTNOTIFICATIONTEMPLATE = "[Utility].[usp_NotificationTemplateSelect]";
+
+        //// Email Notification Template
+        public const string SELECTEMAILNOTIFICATIONTEMPLATE = "[Utility].[usp_EmailNotificationTemplateSelect]";
+        public const string SELECTORDERUPDATEDETAIL = "[Operation].[usp_OrderUpdateDetail]";
+
+        //// Email Notification - Get Details
+        public const string GETMEMBERDETAILS = "[Operation].[usp_MemberDetails]";
+
     }
 }

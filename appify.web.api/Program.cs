@@ -2,6 +2,7 @@ using appify.Business;
 using appify.Business.Contract;
 using appify.DataAccess;
 using appify.DataAccess.Contract;
+using Asp.Versioning;
 using System.IO;
 using System.Reflection;
 
@@ -28,6 +29,7 @@ builder.Services.AddSingleton<IMemberKYCRepository, MemberKYCRepository>();//
 builder.Services.AddSingleton<IMemberRepository, MemberRepository>();//
 builder.Services.AddSingleton<IMemberReturnPolicyRepository, MemberReturnPolicyRepository>();//
 builder.Services.AddSingleton<IMemberThemeRepository, MemberThemeRepository>();//
+builder.Services.AddSingleton<INotificationRepository, NotificationRepository>();//
 builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();//
 builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();//
 builder.Services.AddSingleton<IProductImageRepository, ProductImageRepository>();//
@@ -53,7 +55,7 @@ builder.Services.AddSingleton<IMemberContactBusiness, MemberContactBusiness>();/
 builder.Services.AddSingleton<IMemberKYCBusiness, MemberKYCBusiness>();//
 builder.Services.AddSingleton<IMemberReturnPolicyBusiness, MemberReturnPolicyBusiness>();//
 builder.Services.AddSingleton<IMemberThemeBusiness, MemberThemeBusiness>();//
-//builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
+builder.Services.AddSingleton<INotificationBusiness, NotificationBusiness>();//
 builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();//
 builder.Services.AddSingleton<IProductBusiness, ProductBusiness>();//
 builder.Services.AddSingleton<IProductImageBusiness, ProductImageBusiness>();//
@@ -87,6 +89,21 @@ builder.Services.AddSwaggerGen(sg=> {
     var swaggerdocfilePath = Path.Combine(baseDirectory, "appify.web.api.xml");
     sg.IncludeXmlComments(swaggerdocfilePath);
 } );
+
+builder.Services.AddApiVersioning(o =>
+{
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    o.DefaultApiVersion = new ApiVersion(1, 0);
+    o.ReportApiVersions = true;
+    o.ApiVersionReader = ApiVersionReader.Combine(
+        //new QueryStringApiVersionReader("api-version"),
+        new HeaderApiVersionReader("appify-version"));
+        //new MediaTypeApiVersionReader("ver"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 var app = builder.Build();
 

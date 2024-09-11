@@ -45,5 +45,33 @@ namespace appify.DataAccess
 
 
         }
+
+        public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
+        {
+            List<MemberProduct> products = new List<MemberProduct>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYCATEGORY, vendorID, CategoryID, pageNo, rows);
+            products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+
+            return products;
+
+
+        }
+        public MemberAllDetail GetMemberAllDetails(long userID)
+        {
+            MemberAllDetail item = new MemberAllDetail();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERALLDETAILS, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAllDetail>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+        public HomePageProductByCategory GetProductListByVAUA(long userID)
+        {
+            HomePageProductByCategory item = new HomePageProductByCategory();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYCATEGORIES, userID);
+            item.categories = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
+            item.products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[1]);
+            //item.productdetails = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[2]);
+            return item;
+        }
     }
 }

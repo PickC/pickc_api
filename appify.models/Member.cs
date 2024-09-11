@@ -47,6 +47,7 @@ namespace appify.models
         public string? ProfilePhoto { get; set; }
 
         public string? Token { get; set; }
+        public Int16 PlatformType { get; set; }
 
         public Int64? ParentID { get; set; }
 
@@ -55,8 +56,7 @@ namespace appify.models
         public bool? IsOnlinePaymentEnabled { get; set; }
         public bool? IsEnterprise { get; set; }
         public bool? IsEcommerce { get; set; }
-
-
+        public bool? IsWelcomeEmail { get; set; }
 
     }
 
@@ -137,8 +137,14 @@ namespace appify.models
         }
 
     }
-
-
+    public partial class MemberDashboardLite
+    {
+        public long VendorID { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public Int32 PendingOrder { get; set; }
+        public Int32 CompletedOrder { get; set; }
+        public Int32 ActiveOrder {  get; set; }
+    }
     public partial class MemberKYC {
 
         public Int64 MemberID { get; set; }

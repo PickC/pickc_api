@@ -30,10 +30,10 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<DiscountHeader> GetAll(long DiscountID)
+        public List<DiscountHeader> GetAll()
         {
             List<DiscountHeader> item = new List<DiscountHeader>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTHEADER, DiscountID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTHEADER);
             item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]);
 
             return item;
@@ -50,17 +50,17 @@ namespace appify.DataAccess
         }
 
 
-        public List<ProductDiscount> ListByProduct(long productID)
+        public List<ProductDiscountList> ListByProduct(long productID)
         {
-            List<ProductDiscount> items = new List<ProductDiscount>();
+            List<ProductDiscountList> items = new List<ProductDiscountList>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTVENDORPRODUCTDISCOUNTS, productID);
-            items = DataTableHelper.ConvertDataTable<ProductDiscount>(ds.Tables[0]);
+            items = DataTableHelper.ConvertDataTable<ProductDiscountList>(ds.Tables[0]);
 
             return items;
         }
         
 
-        public bool Remove(long DiscountID, long ModifiedBy)
+        public bool Remove(long DiscountID, long ProductID)
         {
             var result = false;
             try
@@ -72,7 +72,7 @@ namespace appify.DataAccess
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@DiscountID", DiscountID);
-                        cmd.Parameters.AddWithValue("@ModifiedBy", ModifiedBy);
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
@@ -103,7 +103,7 @@ namespace appify.DataAccess
                         cmd.Connection = con;
 
                         cmd.Parameters.AddWithValue("@DiscountID", item.DiscountID); 
-                        cmd.Parameters.AddWithValue("@VendorID", item.VendorID); 
+                        cmd.Parameters.AddWithValue("@ProductID", item.ProductID); 
                         cmd.Parameters.AddWithValue("@DiscountType", item.DiscountType);
                         cmd.Parameters.AddWithValue("@DiscountValue", item.DiscountValue);
                         cmd.Parameters.AddWithValue("@EffectiveDate", item.EffectiveDate);
@@ -119,7 +119,7 @@ namespace appify.DataAccess
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
-
+                        item.IsActive = true;
                         item.DiscountID = Convert.ToInt64(outPutParameter.Value);
                         con.Close();
                     }

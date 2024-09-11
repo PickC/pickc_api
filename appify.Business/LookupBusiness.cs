@@ -28,6 +28,11 @@ namespace appify.Business
             return repository.GetAllList();
         }
 
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey)
+        {
+            return repository.GetSystemConfigurationSettings(SettingKey);
+        }
+
         public List<Lookup> GetList(string category)
         {
             return repository.GetList(category);
@@ -48,10 +53,15 @@ namespace appify.Business
             throw new NotImplementedException();
         }
 
-        public bool SaveLookUp(Lookup item)
+        public Lookup SaveLookUp(Lookup item)
         {
             return repository.SaveLookUp(item);
 
+        }
+
+        public List<LookupStartUpList> GetListForStartup(string category)
+        {
+            return repository.GetListForStartup(category);
         }
     }
 }

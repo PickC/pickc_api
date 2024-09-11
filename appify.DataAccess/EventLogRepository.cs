@@ -22,10 +22,10 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public EventLogs eventLogAdd(EventLogs eventLog)
+        public bool eventLogAdd(EventLogs eventLog)
         {
 
-            var result = false;
+            var result = true;
             try
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
@@ -43,20 +43,12 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IPAddress", eventLog.IPAddress);
                         cmd.Parameters.AddWithValue("@EventLog", eventLog.EventLog);
                         cmd.Parameters.AddWithValue("@InputJSON", eventLog.InputJSON);
+                        cmd.Parameters.AddWithValue("@OutputJSON", eventLog.OutputJSON);
                         cmd.Parameters.AddWithValue("@EventTime", eventLog.EventTime);
                         cmd.Parameters.AddWithValue("@AppName", eventLog.AppName);
 
-                        //Add the output parameter to the command object
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@EventID";
-                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
-                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
-
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
-
-                        eventLog.EventID = Convert.ToInt64(outPutParameter.Value);
 
                         con.Close();
                     }
@@ -69,7 +61,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return eventLog;
+            return result;
         }
 
         public bool eventLogRemove(long EventID)

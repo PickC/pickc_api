@@ -15,5 +15,6 @@ namespace appify.DataAccess.Contract
         public List<Address> GetList(long linkID);
 
         public Address GetDefaultAddress(long linkID);
+        public List<Address> GetAddressList();
     }
 }

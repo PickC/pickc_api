@@ -1,6 +1,8 @@
 ﻿using appify.Business.Contract;
 using appify.models;
+using appify.utility;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,24 +13,26 @@ namespace appify.web.api.Controllers
     [EnableCors("AllowOrigin")]
     public class WebAdminController : ControllerBase
     {
+        public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly IProductBusiness productBusiness;
         private readonly IMemberBusiness memberBusiness;
         private ResponseMessage rm;
 
-        public WebAdminController(IConfiguration configuration,IMemberBusiness memberBusiness,IProductBusiness product)
+        public WebAdminController(IConfiguration configuration,IMemberBusiness memberBusiness,IProductBusiness product, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
             this.memberBusiness = memberBusiness;
-
+            this.eventLogBusiness = eventLogBusiness;
 
         }
 
         [HttpPost]
         [Route("products")]
         public IActionResult ListAllProducts() {
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
@@ -39,6 +43,8 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok));
                 }
                 else
                 {
@@ -46,6 +52,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
                 }
 
 
@@ -57,6 +65,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
             return Ok(rm);
 
@@ -64,9 +73,10 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("vendors")]
-        public IActionResult ListAllVendors()
+        public async Task<IActionResult> ListAllVendors()
         {
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
@@ -77,6 +87,9 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -84,6 +97,9 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, null, items, rm.message, this.eventLogBusiness);
                 }
 
 
@@ -95,6 +111,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -104,6 +122,8 @@ namespace appify.web.api.Controllers
         [Route("vendordetails")]
         public IActionResult GetVendorDetails(ParamMemberUserID itemData )
         {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             Member item = new Member();
             try
             {
@@ -115,6 +135,8 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VENDORDETAILS FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -123,6 +145,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = item;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VENDORDETAILS FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
 
@@ -134,6 +158,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VENDORDETAILS FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 

@@ -14,7 +14,7 @@ namespace appify.DataAccess.Contract
 
         public OrderDetail Get(short itemID, Int64 orderID);
         public List<OrderDetail> List(Int64 orderID);
-
+        public List<OrderDetailNew> ListNew(Int64 orderID);
         public List<OrderDetailDelivery> GetOrderItemForDelivery(Int64 orderID);
     }
 }
