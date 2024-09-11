@@ -18,6 +18,8 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
 using System.Net.Http.Headers;
 using Twilio.Http;
+using appify.Business;
+using Razorpay.Api;
 
 namespace appify.web.api.Controllers
 {
@@ -47,7 +49,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("save")]
-        public async Task<IActionResult> Add(Order order)
+        public async Task<IActionResult> Add(appify.models.Order order)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -69,7 +71,7 @@ namespace appify.web.api.Controllers
                     var paymentData = InitiatePayment(sampleData);
 
 
-                    Invoice invoiceItem = new Invoice();
+                    appify.models.Invoice invoiceItem = new appify.models.Invoice();
 
                     invoiceItem.InvoiceID = 0;
                     invoiceItem.OrderID = result.OrderID;
@@ -1510,7 +1512,190 @@ namespace appify.web.api.Controllers
 
         }
 
+    /// <summary>
+    /// WebApp - Create Order 
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "amount": 566,
+    ///       "currency": "INA",
+    ///       "receipt": "SAM",
+    ///       "note": [
+    ///         "string"
+    ///       ],
+    ///       "partialPayment": false,
+    ///       "firstPaymentMinAmount": 0
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///         {
+    ///           "id": "order_Z6t7VFTb9xHeOs",
+    ///           "entity": "order",
+    ///           "amount": 100,
+    ///           "amount_paid": 0,
+    ///           "amount_due": 100,
+    ///           "currency": "INR",
+    ///           "receipt": "receipt#1",
+    ///           "offer_id": null,
+    ///           "status": "created",
+    ///           "attempts": 0,
+    ///           "notes": [],
+    ///           "created_at": 1582628071
+    ///         }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+        [Route("createorderwebapp")]
+        public async Task<IActionResult> CreateOrderWebApp(OrderCreateWebApp itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
 
+                Dictionary<string, object> input = new Dictionary<string, object>();
+                input.Add("amount",itemData.Amount);
+                input.Add("currency", itemData.Currency);
+                input.Add("receipt",itemData.Receipt);
+                input.Add("notes", itemData.note);
+                input.Add("partial_payment", itemData.PartialPayment);
+                input.Add("first_payment_min_amount", itemData.FirstPaymentMinAmount);
+
+                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+                Razorpay.Api.Order order = client.Order.Create(input);
+
+                var orderId = order["id"].ToString();
+
+                //var items = customerBusiness.GetProductListByVAUA(itemData.userID);
+                if (orderId != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED";
+                    rm.name = StatusName.ok;
+                    rm.data = order;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, itemData, order, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+    /// <summary>
+    /// WebApp - Order Items Save
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "orderID": 0,
+    ///       "razorpayPaymentId": "string",
+    ///       "razorpayOrderId": "string",
+    ///       "razorpaySignature": "string"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///         {
+    ///           "id": "order_Z6t7VFTb9xHeOs",
+    ///           "entity": "order",
+    ///           "amount": 100,
+    ///           "amount_paid": 0,
+    ///           "amount_due": 100,
+    ///           "currency": "INR",
+    ///           "receipt": "receipt#1",
+    ///           "offer_id": null,
+    ///           "status": "created",
+    ///           "attempts": 0,
+    ///           "notes": [],
+    ///           "created_at": 1582628071
+    ///         }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+        [Route("saveitemsorderwebapp")]
+        public async Task<IActionResult> SaveItemsOrderWebApp(ParamOrderItem itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = true;
+                //var items = this.orderBusiness.GetOrderForDelivery(itemData.OrderID);
+                //if (items != null)
+                //{
+                //    rm.statusCode = StatusCodes.OK;
+                //    rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED";
+                //    rm.name = StatusName.ok;
+                //    rm.data = items;
+
+                //    await Common.UpdateEventLogsNew("RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+                //}
+                //else
+                //{
+                //    rm.statusCode = StatusCodes.ERROR;
+                //    rm.message = "NO CONTENT";
+                //    rm.name = StatusName.invalid;
+                //    rm.data = null;
+                //    await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                //}
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
         private string InitiatePayment(PaymentTransactionData data)
         {
             var reqHeader = Request;

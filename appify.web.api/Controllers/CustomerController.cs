@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Razorpay.Api;
+using System.Net;
+using System.Text;
 
 namespace appify.web.api.Controllers
 {
@@ -353,25 +356,87 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
+                // This URL is used for sending messages
+                string myURI = "https://api.bulksms.com/v1/messages";
 
-                var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                new ClientSecrets
+                // change these values to match your own account
+                string myUsername = "appifydeveloper";
+                string myPassword = "App1fyd3v3l0p#r";
+
+                // the details of the message we want to send
+                string myData = "{to: \"+919810722979\", body:\"Hello Mr. Smith!\"}";
+
+                // build the request based on the supplied settings
+                var request = WebRequest.Create(myURI);
+
+                // supply the credentials
+                request.Credentials = new NetworkCredential(myUsername, myPassword);
+                request.PreAuthenticate = true;
+                // we want to use HTTP POST
+                request.Method = "POST";
+                // for this API, the type must always be JSON
+                request.ContentType = "application/json";
+
+                // Here we use Unicode encoding, but ASCIIEncoding would also work
+                var encoding = new UnicodeEncoding();
+                var encodedData = encoding.GetBytes(myData);
+
+                // Write the data to the request stream
+                var stream = request.GetRequestStream();
+                stream.Write(encodedData, 0, encodedData.Length);
+                stream.Close();
+
+                // try ... catch to handle errors nicely
+                try
                 {
-                    ClientId = "853172481735-ll2ic3il1dq9nioa7c4gh9a2g8l310pr.apps.googleusercontent.com",
-                    ClientSecret = "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"
-                },
-                new[] { "email", "profile", "https://mail.google.com/" },
-                "user",
-                CancellationToken.None
-                );
+                    // make the call to the API
+                    var response = request.GetResponse();
 
-                var jwtPayload = GoogleJsonWebSignature.ValidateAsync(credential.Token.IdToken).Result;
-                var username = jwtPayload.Email;
+                    // read the response and print it to the console
+                    var reader = new StreamReader(response.GetResponseStream());
+                    Console.WriteLine(reader.ReadToEnd());
+                }
+                catch (WebException ex)
+                {
+                    // show the general message
+                    Console.WriteLine("An error occurred:" + ex.Message);
+
+                    // print the detail that comes with the error
+                    var reader = new StreamReader(ex.Response.GetResponseStream());
+                    Console.WriteLine("Error details:" + reader.ReadToEnd());
+                }
+
+                //Dictionary<string, object> input = new Dictionary<string, object>();
+                //input.Add("amount", 100); // this amount should be same as transaction amount
+                //input.Add("currency", "INR");
+                //input.Add("receipt", "12121");
+
+                //string key = "rzp_test_OVkzHWQC4WRAMj";
+                //string secret = @"App1fyr@z0rp@yp\$0d";
+
+                //RazorpayClient client = new RazorpayClient(key, secret);
+
+                //Razorpay.Api.Order order = client.Order.Create(input);
+                //var orderId = order["id"].ToString();
+
+                //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                //new ClientSecrets
+                //{
+                //    ClientId = "853172481735-ll2ic3il1dq9nioa7c4gh9a2g8l310pr.apps.googleusercontent.com",
+                //    ClientSecret = "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"
+                //},
+                //new[] { "email", "profile", "https://mail.google.com/" },
+                //"user",
+                //CancellationToken.None
+                //);
+
+                //var jwtPayload = GoogleJsonWebSignature.ValidateAsync(credential.Token.IdToken).Result;
+                //var username = jwtPayload.Email;
 
                 rm.statusCode = StatusCodes.OK;
-                rm.message = credential.Token.IdToken;
-                rm.name = jwtPayload.Email;
-                rm.data = null;
+                rm.message = "Razorpay Create Order";
+                //rm.name = orderId;
+                //rm.data = order;
 
 
             }
