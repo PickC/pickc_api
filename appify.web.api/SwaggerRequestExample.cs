@@ -230,4 +230,11 @@ namespace appify.web.api
         public long VendorID { get; set; }
         public long OrderID { get; set; }
     }
+    public class ParamOrderItem
+    {
+        public Int64 OrderID { get; set; }
+        public string RazorpayPaymentId { get; set; }
+        public string RazorpayOrderId {  get; set; }
+        public string RazorpaySignature {  get; set; }
+    }
 }

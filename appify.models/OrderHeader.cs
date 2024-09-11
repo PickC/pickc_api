@@ -336,7 +336,19 @@ namespace appify.models
         public string AWB { get; set; }
 
     }
-
+    public partial class OrderCreateWebApp
+    {
+        OrderCreateWebApp()
+        {
+            note = new List<string>();
+        }
+        public decimal Amount {  get; set; }
+        public string Currency {  get; set; }
+        public string Receipt { get; set; }
+        public List<string> note { get; set; }
+        public bool PartialPayment { get; set; }
+        public long FirstPaymentMinAmount {  get; set; }
+    }
     public partial class OrderTrackingUpdate
     {
         public string OrderNo { get; set; }
