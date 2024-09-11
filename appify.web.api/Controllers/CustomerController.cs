@@ -15,13 +15,14 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Razorpay.Api;
 using System.Net;
 using System.Text;
+using Asp.Versioning;
 
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
-
+    //[ApiVersion("1.0")]
     public class CustomerController : ControllerBase
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -67,6 +68,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("productlist")]
+        //[MapToApiVersion("1.0")]
         public IActionResult GetMemberProducts(ParamMemberUserID itemData) {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;

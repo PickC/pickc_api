@@ -2,6 +2,7 @@ using appify.Business;
 using appify.Business.Contract;
 using appify.DataAccess;
 using appify.DataAccess.Contract;
+using Asp.Versioning;
 using System.IO;
 using System.Reflection;
 
@@ -88,6 +89,21 @@ builder.Services.AddSwaggerGen(sg=> {
     var swaggerdocfilePath = Path.Combine(baseDirectory, "appify.web.api.xml");
     sg.IncludeXmlComments(swaggerdocfilePath);
 } );
+
+builder.Services.AddApiVersioning(o =>
+{
+    o.AssumeDefaultVersionWhenUnspecified = true;
+    o.DefaultApiVersion = new ApiVersion(1, 0);
+    o.ReportApiVersions = true;
+    o.ApiVersionReader = ApiVersionReader.Combine(
+        //new QueryStringApiVersionReader("api-version"),
+        new HeaderApiVersionReader("appify-version"));
+        //new MediaTypeApiVersionReader("ver"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 var app = builder.Build();
 
