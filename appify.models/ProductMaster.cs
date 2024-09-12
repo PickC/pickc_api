@@ -147,6 +147,15 @@ namespace appify.models
         public string Category { get; set; }
     }
 
+    public partial class ProductCategories
+    {
+        public long CategoryID { get; set; }
+        public string Category { get; set; }
+        public long ParentID { get; set; }
+        public bool IsActive { get; set; }
+        public string FullCategory { get; set; }
+    }
+
     public partial class HomePageProductByCategory
     {
         public HomePageProductByCategory()
