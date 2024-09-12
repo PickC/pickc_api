@@ -70,3 +70,8 @@ C:\DDrive\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appi
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\refint\appify.utility.dll
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\appify.utility.pdb
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.utility\obj\Release\net7.0\ref\appify.utility.dll
+D:\Project\Appify.API\appify.api\appify.utility\bin\Release\net7.0\appify.Business.Contract.dll
+D:\Project\Appify.API\appify.api\appify.utility\bin\Release\net7.0\appify.models.dll
+D:\Project\Appify.API\appify.api\appify.utility\bin\Release\net7.0\appify.Business.Contract.pdb
+D:\Project\Appify.API\appify.api\appify.utility\bin\Release\net7.0\appify.models.pdb
+D:\Project\Appify.API\appify.api\appify.utility\obj\Release\net7.0\appify.utility.csproj.CopyComplete

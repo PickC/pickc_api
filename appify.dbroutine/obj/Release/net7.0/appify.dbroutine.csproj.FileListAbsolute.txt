@@ -57,3 +57,4 @@ C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\ap
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\refint\appify.dbroutine.dll
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.pdb
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.dbroutine\obj\Release\net7.0\ref\appify.dbroutine.dll
+D:\Project\Appify.API\appify.api\appify.dbroutine\obj\Release\net7.0\appify.dbroutine.csproj.AssemblyReference.cache

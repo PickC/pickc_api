@@ -16,12 +16,14 @@ using static System.Net.WebRequestMethods;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
+using Asp.Versioning;
 
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
     public class AddressController : Controller
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -37,6 +39,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("save")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> Add(Address item)
         {
             var reqHeader = Request;
@@ -84,7 +87,8 @@ namespace appify.web.api.Controllers
 
         
         [HttpPost, Route("remove")]
-       
+        [MapToApiVersion("1.0")]
+
         public IActionResult Remove(ParamAddress itemData)
         {
             var reqHeader = Request;
@@ -127,6 +131,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("getaddress")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetAddress(ParamAddress itemData)
         {
             var reqHeader = Request;
@@ -172,6 +177,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("getdefaultaddress")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetAddress(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -216,6 +222,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public IActionResult List(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -258,6 +265,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("saveaddress")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> SaveAddress()
         {
             var reqHeader = Request;

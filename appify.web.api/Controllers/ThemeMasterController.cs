@@ -2,6 +2,7 @@
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -13,6 +14,8 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
     public class ThemeMasterController : ControllerBase
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -31,6 +34,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("save")]
+        [MapToApiVersion("1.0")]
         public IActionResult Add(ThemeMaster item)
         {
             var reqHeader = Request;
@@ -74,6 +78,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult Remove(long themeID)
         {
             var reqHeader = Request;
@@ -116,6 +121,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetThemeMaster(long themeID)
         {
             var reqHeader = Request;
@@ -160,6 +166,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public IActionResult List()
         {
             var reqHeader = Request;

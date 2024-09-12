@@ -109,3 +109,5 @@ C:\DDrive\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Release\net7.0\a
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Release\net7.0\refint\appify.DataAccess.dll
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Release\net7.0\appify.DataAccess.pdb
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.DataAccess\obj\Release\net7.0\ref\appify.DataAccess.dll
+D:\Project\Appify.API\appify.api\appify.DataAccess\bin\Release\net7.0\appify.Business.Contract.dll
+D:\Project\Appify.API\appify.api\appify.DataAccess\bin\Release\net7.0\appify.Business.Contract.pdb
