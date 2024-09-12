@@ -346,6 +346,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "IP2Location.IPGeolocation": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
             "Microsoft.AspNetCore.Http.Abstractions": {
               "target": "Package",
               "version": "[2.2.0, )"

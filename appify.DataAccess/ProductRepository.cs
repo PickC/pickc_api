@@ -244,5 +244,13 @@ namespace appify.DataAccess
 
             return item;
         }
+        public List<ProductCategories> GetCategoriesList(long parentID)
+        {
+            List<ProductCategories> item = new List<ProductCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
+            item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
+
+            return item;
+        }
     }
 }

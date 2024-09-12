@@ -2,6 +2,32 @@
   "version": 3,
   "targets": {
     "net7.0": {
+      "CsvHelper/31.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/CsvHelper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/CsvHelper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "IP2Location.IPGeolocation/9.0.2": {
+        "type": "package",
+        "dependencies": {
+          "CsvHelper": "31.0.2",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "compile": {
+          "lib/net7.0/IP2Location.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/IP2Location.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -1088,6 +1114,55 @@
     }
   },
   "libraries": {
+    "CsvHelper/31.0.2": {
+      "sha512": "ndlIN77XcFm6qqGlNPzl0XjVupMCBVhVSiO+1+X2UhJtnnvkx9f//7FOvlkLuEQ76NC3Y7owa8IOhgtKVa4H7Q==",
+      "type": "package",
+      "path": "csvhelper/31.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "csvhelper.31.0.2.nupkg.sha512",
+        "csvhelper.nuspec",
+        "lib/net462/CsvHelper.dll",
+        "lib/net462/CsvHelper.xml",
+        "lib/net47/CsvHelper.dll",
+        "lib/net47/CsvHelper.xml",
+        "lib/net48/CsvHelper.dll",
+        "lib/net48/CsvHelper.xml",
+        "lib/net6.0/CsvHelper.dll",
+        "lib/net6.0/CsvHelper.xml",
+        "lib/net7.0/CsvHelper.dll",
+        "lib/net7.0/CsvHelper.xml",
+        "lib/net8.0/CsvHelper.dll",
+        "lib/net8.0/CsvHelper.xml",
+        "lib/netstandard2.0/CsvHelper.dll",
+        "lib/netstandard2.0/CsvHelper.xml",
+        "lib/netstandard2.1/CsvHelper.dll",
+        "lib/netstandard2.1/CsvHelper.xml"
+      ]
+    },
+    "IP2Location.IPGeolocation/9.0.2": {
+      "sha512": "NaPGPm9igkThdiXEXhQFGbruhRqIMyNSqHjwJPWMrfh15zBzEQ7zkr11sjY4FsE47eHL7+G4wwlQiK/i5xaUIA==",
+      "type": "package",
+      "path": "ip2location.ipgeolocation/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "ip2location.ipgeolocation.9.0.2.nupkg.sha512",
+        "ip2location.ipgeolocation.nuspec",
+        "ipl-logo-square-128.png",
+        "lib/net472/IP2Location.dll",
+        "lib/net48/IP2Location.dll",
+        "lib/net481/IP2Location.dll",
+        "lib/net5.0/IP2Location.dll",
+        "lib/net6.0/IP2Location.dll",
+        "lib/net7.0/IP2Location.dll",
+        "lib/net8.0/IP2Location.dll",
+        "lib/netstandard2.0/IP2Location.dll"
+      ]
+    },
     "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
       "sha512": "Nxs7Z1q3f1STfLYKJSVXCs1iBl+Ya6E8o4Oy1bCxJ/rNI44E/0f6tbsrVqAWfB7jlnJfyaAtIalBVxPKUPQb4Q==",
       "type": "package",
@@ -3630,6 +3705,7 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "IP2Location.IPGeolocation >= 9.0.2",
       "Microsoft.AspNetCore.Http.Abstractions >= 2.2.0",
       "Newtonsoft.Json >= 13.0.3",
       "System.Data.SqlClient >= 4.8.6",
@@ -3691,6 +3767,10 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "IP2Location.IPGeolocation": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
           "Microsoft.AspNetCore.Http.Abstractions": {
             "target": "Package",
             "version": "[2.2.0, )"
