@@ -1,6 +1,7 @@
 ﻿using appify.Business.Contract;
 using appify.models;
 using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.Metadata;
@@ -11,6 +12,8 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
     public class WebAdminController : ControllerBase
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -30,6 +33,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("products")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListAllProducts() {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -73,6 +77,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("vendors")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> ListAllVendors()
         {
             var reqHeader = Request;
@@ -120,6 +125,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("vendordetails")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetVendorDetails(ParamMemberUserID itemData )
         {
             var reqHeader = Request;

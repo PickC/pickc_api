@@ -36,6 +36,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("save")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> Add(Product product)
         {
             var reqHeader = Request;
@@ -109,6 +110,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult Remove(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -151,6 +153,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("getitem")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetProduct(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -194,6 +197,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("getitemnew")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetProductNew(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -240,6 +244,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public IActionResult List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -285,6 +290,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("listall")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListAll()
         {
             //dynamic data = jsonData;
@@ -330,6 +336,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("price/list")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListProductPrice(ParamProduct itemData)
         {
             //dynamic data=jsonData;
@@ -372,6 +379,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("price/getprice")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetProductPrice(ParamProductPrice itemData)
         {
             var reqHeader = Request;
@@ -416,6 +424,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("price/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddProductPrice(ProductPrice price)
         {
             var reqHeader = Request;
@@ -459,6 +468,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("price/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveProductPrice(ParamProductPrice itemData)
         {
             var reqHeader = Request;
@@ -503,6 +513,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("image/list")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListProductImage(ParamProduct itemData)
         {
             //dynamic data = jsonData;
@@ -545,6 +556,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("image/getimage")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetProductImage(ParamProductImage itemData)
         {
             var reqHeader = Request;
@@ -589,6 +601,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("image/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddProductImage(ProductImage item)
         {
             var reqHeader = Request;
@@ -632,6 +645,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("image/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveProductImage(ParamProductImage itemData)
         {
             var reqHeader = Request;
@@ -677,6 +691,7 @@ namespace appify.web.api.Controllers
         /// Verify Image Based On ImageURL
         /// </summary>
         [HttpPost, Route("image/verify")]
+        [MapToApiVersion("1.0")]
         public IActionResult VerifyImage([Required] string imagePath)
         {
             var reqHeader = Request;
@@ -711,6 +726,7 @@ namespace appify.web.api.Controllers
         /// Verify Image Based On IForm File
         /// </summary>
         [HttpPost, Route("image/verifyByIForm")]
+        [MapToApiVersion("1.0")]
         public IActionResult VerifyImageByIForm([Required]IFormFile file)
         {/////[FromForm] IFormFile file  [FileExtensions(Extensions = "jpg,png,gif,jpeg")] 
             var reqHeader = Request;
@@ -809,7 +825,7 @@ namespace appify.web.api.Controllers
                 return responseBody;
             }
         }
-    private static async Task<string> ImageClassifier(string imagePath)
+        private static async Task<string> ImageClassifier(string imagePath)
         {
 
 
@@ -878,6 +894,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("NewProductsList")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetNewProductsList(ParamNewProductsByMember itemData)
         {
             var reqHeader = Request;
@@ -935,6 +952,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("UpdateProductAsNew")]
+        [MapToApiVersion("1.0")]
         public IActionResult UpdateNewProducts(List<ParamNewProduct> itemData)
         {
             var reqHeader = Request;
@@ -998,6 +1016,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("getmastercategories")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMasterCategories(ParamParent itemData)
         {
             var reqHeader = Request;
