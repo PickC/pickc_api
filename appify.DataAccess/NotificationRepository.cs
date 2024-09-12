@@ -26,20 +26,20 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
-        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID,PageNo,Rows);
             items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
 
             return items;
         }
 
 
-        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
 
             return items;

@@ -15,7 +15,6 @@ namespace appify.web.api.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     public class LookupController : Controller
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -31,6 +30,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost,Route("save")]
+        [MapToApiVersion("1.0")]
         public IActionResult Add(Lookup item)
         {
             var reqHeader = Request;
@@ -78,6 +78,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult Remove(ParamLookup itemData)
         {
             var reqHeader = Request;
@@ -120,6 +121,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost,Route("getitem")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetLookup(ParamLookup jsonData)
         {
             var reqHeader = Request;
@@ -205,50 +207,52 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-        [HttpPost, Route("list")]
-        [MapToApiVersion("2.0")]
-        public IActionResult Listv2(ParamLookupCategory jsonData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic data = jsonData;
-            try
-            {
-                rm = new ResponseMessage();
-                List<Lookup> items = lookupBusiness.GetList(jsonData.category);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "LOOK-UP LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - NO CONTENT", reqHeader, controllerURL, jsonData, null, rm.message));
-                }
-            }
-            catch (Exception ex)
-            {
+        
+        //[HttpPost, Route("list")]
+        //[MapToApiVersion("2.0")]
+        //public IActionResult Listv2(ParamLookupCategory jsonData)
+        //{
+        //    var reqHeader = Request;
+        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //    //dynamic data = jsonData;
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        List<Lookup> items = lookupBusiness.GetList(jsonData.category);
+        //        if (items?.Any() == true)
+        //        {
+        //            rm.statusCode = StatusCodes.OK;
+        //            rm.message = "LOOK-UP LIST";
+        //            rm.name = StatusName.ok;
+        //            rm.data = items;
+        //            //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+        //            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok));
+        //        }
+        //        else
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "NO CONTENT";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = null;
+        //            //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+        //            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - NO CONTENT", reqHeader, controllerURL, jsonData, null, rm.message));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - ERROR", reqHeader, controllerURL, jsonData, null, rm.message));
-            }
-            return Ok(rm);
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+        //        this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - ERROR", reqHeader, controllerURL, jsonData, null, rm.message));
+        //    }
+        //    return Ok(rm);
 
-        }
+        //}
 
         [HttpPost, Route("listbymember")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListByMember(ParamLookupByMember jsonData)
         {
             var reqHeader = Request;
@@ -293,6 +297,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpGet, Route("listall")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> ListAll()
         {
             var reqHeader = Request;
@@ -337,6 +342,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("listallforstartup")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> ListAllForStartUp(ParamLookupCategories categoryList)
         {
             var reqHeader = Request;
@@ -432,6 +438,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ParamSystemConfigSetting with Error Description</response> 
         [HttpPost]
         [Route("systemconfigurationtlist")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetSystemConfigurationSettings (ParamSystemConfigSetting itemData)
         {
             var reqHeader = Request;

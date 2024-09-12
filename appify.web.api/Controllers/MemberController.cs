@@ -54,6 +54,7 @@ namespace appify.web.api.Controllers
 
         // GET: api/<MemberController>
         [HttpGet]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllMembers()
         {
             var reqHeader = Request;
@@ -102,6 +103,7 @@ namespace appify.web.api.Controllers
 
         // GET api/<MemberController>/5
         [HttpGet("{userID}")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetMember(long userID)
         {
             var reqHeader = Request;
@@ -190,6 +192,7 @@ namespace appify.web.api.Controllers
 
         // POST api/<MemberController>
         [HttpPost,Route("Register")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> Register(appify.models.Member item)
         {
             var reqHeader = Request;
@@ -251,6 +254,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost,Route("DeActivateMember")]
+        [MapToApiVersion("1.0")]
         public IActionResult DeactivateMember(ParamMemberUserID itemData)
         {
             //dynamic data = jsondata;
@@ -293,6 +297,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("DeleteMember")]
+        [MapToApiVersion("1.0")]
         public IActionResult DeleteMember(ParamDeactivateMember itemData)
         {
             //dynamic data = jsondata;
@@ -335,6 +340,7 @@ namespace appify.web.api.Controllers
         
 
         [HttpPost,Route("ResetPassword")]
+        [MapToApiVersion("1.0")]
         public IActionResult ResetPassword(ParamMemberResetPassword itemData)
         {
             var reqHeader = Request;
@@ -428,10 +434,12 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+        [MapToApiVersion("1.0")]
 
 
         // GET api/<MemberController>/5
         [HttpPost,Route("OrdersCount")]
+        [MapToApiVersion("1.0")]
         public IActionResult OrdersCount(ParamMemberUserID item)
         {
             var reqHeader = Request;
@@ -473,6 +481,7 @@ namespace appify.web.api.Controllers
 
         // GET api/<MemberController>/5
         [HttpPost, Route("OnlinePaymentAllowed")]
+        [MapToApiVersion("1.0")]
         public IActionResult OnlinePaymentStatus(ParamMemberUserID item)
         {
             var reqHeader = Request;
@@ -503,6 +512,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("SignIn")]
+        [MapToApiVersion("1.0")]
         public IActionResult SignIn(ParamSignIn itemData)
         {
             var reqHeader = Request;
@@ -552,6 +562,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("dashboard")]
+        [MapToApiVersion("1.0")]
         public IActionResult MemberDashboard(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -635,6 +646,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response>
 
         [HttpPost, Route("dashboardsummery")]
+        [MapToApiVersion("1.0")]
         public IActionResult MemberDashboardSummery(ParamMemberDashboard itemData)
         {
             var reqHeader = Request;
@@ -679,6 +691,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("rp/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetReturnPolicy(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -723,6 +736,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("rp/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddReturnPolicy(MemberReturnPolicy item)
         {
             var reqHeader = Request;
@@ -766,6 +780,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("rp/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveReturnPolicy(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -809,6 +824,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("appsetting/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetAppSetting(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -853,6 +869,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("appsetting/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddAppSetting(MemberAppSetting item)
         {
             var reqHeader = Request;
@@ -898,6 +915,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("appsetting/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveAppSetting(ParamAppSetting itemData)
         {
             var reqHeader = Request;
@@ -943,6 +961,7 @@ namespace appify.web.api.Controllers
         //Member Theme APIs
 
         [HttpPost, Route("theme/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMemberTheme(ParamMemberTheme itemData)
         {
             var reqHeader = Request;
@@ -987,6 +1006,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("theme/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddMemberTheme(ParamMemberTheme item)
         {
             var reqHeader = Request;
@@ -1035,6 +1055,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("theme/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberTheme(ParamMemberTheme itemData)
         {
             var reqHeader = Request;
@@ -1081,6 +1102,7 @@ namespace appify.web.api.Controllers
         //Member KYC APIs
 
         [HttpPost, Route("kyc/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMemberKYC(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1125,6 +1147,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("kyc/save")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddMemberKYC(MemberKYC item)
         {
             var reqHeader = Request;
@@ -1175,6 +1198,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("kyc/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberKYC(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1221,6 +1245,7 @@ namespace appify.web.api.Controllers
         //Member Contact APIs
 
         [HttpPost, Route("contact/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMemberContact(ParamMemberContact itemData)
         {
             var reqHeader = Request;
@@ -1265,6 +1290,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("contact/list")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListMemberContact(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1309,6 +1335,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("contact/save")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddMemberContact(MemberContact item)
         {
             var reqHeader = Request;
@@ -1364,6 +1391,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("contact/bulksave")]
+        [MapToApiVersion("1.0")]
         public IActionResult AddMemberContactBulk(List<MemberContact> items)
         {
             var reqHeader = Request;
@@ -1411,6 +1439,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("contact/remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberKYC(ParamMemberContact itemData)
         {
             var reqHeader = Request;
@@ -1477,6 +1506,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("banner/Save")]
+        [MapToApiVersion("1.0")]
         public IActionResult memberBannerAdd(MemberBanner memberBanner)
         {
             var reqHeader = Request;
@@ -1533,6 +1563,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("banner/Remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult memberBannerRemove(ParamBannerID itemData)
         {
             var reqHeader = Request;
@@ -1610,6 +1641,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("banner/get")]
+        [MapToApiVersion("1.0")]
         public IActionResult memberBannerGet(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1683,6 +1715,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("banner/list")]
+        [MapToApiVersion("1.0")]
         public IActionResult memberBannerList()
         {
             var reqHeader = Request;
@@ -1758,6 +1791,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("banner/listbyvendor")]
+        [MapToApiVersion("1.0")]
         public IActionResult memberBannerListByVendor(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
