@@ -22,7 +22,7 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
-    //[ApiVersion("1.0")]
+    [ApiVersion("1.0")]
     public class CustomerController : ControllerBase
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -68,7 +68,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("productlist")]
-        //[MapToApiVersion("1.0")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMemberProducts(ParamMemberUserID itemData) {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -146,6 +146,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("productlistbycategory")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetMemberProductsByCategory(ParamCategoryID itemData)
         {
             var reqHeader = Request;
@@ -222,6 +223,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("AllDetails")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetAllDetails(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -301,6 +303,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("productlistbyvaua")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetProductListByVAUA(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -350,6 +353,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("generatetoken")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> generatetoken()
         {
             var reqHeader = Request;

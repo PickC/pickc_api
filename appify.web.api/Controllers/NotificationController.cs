@@ -1,5 +1,6 @@
 ﻿using appify.Business.Contract;
 using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,8 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
     public class NotificationController : Controller
     {
         private IConfiguration configuration;
@@ -63,6 +66,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("notificationlistbyvendor")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetNotificationByVendor(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -142,6 +146,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost]
         [Route("notificationlistbyuser")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetNotificationByUser(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -198,6 +203,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("IsRead")]
+        [MapToApiVersion("1.0")]
         public IActionResult isReadNotification(ParamMemberNotificationID itemData)
         {
             var reqHeader = Request;
@@ -253,6 +259,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("UnReadCount")]
+        [MapToApiVersion("1.0")]
         public IActionResult unReadCountNotification(ParamMemberUserID itemData)
         {
             var reqHeader = Request;

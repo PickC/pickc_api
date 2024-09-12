@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 using appify.models;
+using Asp.Versioning;
 
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
     public class EventLogController : Controller
     {
         private readonly IConfiguration configuration;
@@ -167,6 +170,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("get")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogGet(ParamEventID itemData)
         {
             try
@@ -236,6 +240,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogList()
         {
             try
@@ -307,6 +312,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyvendor")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogListByVendor(ParamMemberUserID itemData)
         {
             try
@@ -378,6 +384,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbycustomer")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogListByCustomer(ParamMemberUserID itemData)
         {
             try

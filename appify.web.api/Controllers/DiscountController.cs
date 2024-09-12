@@ -1,6 +1,7 @@
 ﻿using appify.Business.Contract;
 using appify.models;
 using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ namespace appify.web.api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
 
     public class DiscountController : ControllerBase
     {
@@ -57,6 +59,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns the newly created Discount Object</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> discountHeaderAdd(List<DiscountHeader> discountHeader)
         {
             var result = true;
@@ -124,6 +127,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost, Route("Remove")]
+        [MapToApiVersion("1.0")]
         public IActionResult discountHeaderRemove(ParamDiscountDetail itemData)
         {
             var reqHeader = Request;
@@ -209,6 +213,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("Get")]
+        [MapToApiVersion("1.0")]
         public IActionResult discountHeaderGet(ParamDiscount itemData)
         {
             var reqHeader = Request;
@@ -283,6 +288,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("List")]
+        [MapToApiVersion("1.0")]
         public IActionResult discountHeaderList()
         {
             var reqHeader = Request;
@@ -366,6 +372,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns Discounted Products List Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyvendor")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListByVendor(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -444,6 +451,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns Discounted Products List Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyproduct")]
+        [MapToApiVersion("1.0")]
         public IActionResult ListByProduct(ParamProduct itemData)
         {
             var reqHeader = Request;

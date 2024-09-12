@@ -20,12 +20,15 @@ using System.Net.Http.Headers;
 using Twilio.Http;
 using appify.Business;
 using Razorpay.Api;
+using Asp.Versioning;
 
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
 
     public class OrderController : ControllerBase
     {
@@ -49,6 +52,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("save")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> Add(appify.models.Order order)
         {
             var reqHeader = Request;
@@ -255,6 +259,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("remove")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> Remove(Int64 orderID)
         {
             var reqHeader = Request;
@@ -301,6 +306,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("printinvoice")]
+        [MapToApiVersion("1.0")]
         public IActionResult PrintInvoice(Int64 orderID)
         {
             //OrderPlace_PushNotification_Email(1976);
@@ -344,6 +350,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("updatestatus")]
+        [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderStatus(ParamOrderStatus statusData)
         {
             var reqHeader = Request;
@@ -434,6 +441,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("updateorderforpickup")]
+        [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderForPickup(ParamOrderForPickup statusData)
         {
             var reqHeader = Request;
@@ -478,6 +486,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("updateorderawb")]
+        [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderAWB(ParamOrderAWB statusData)
         {
             var reqHeader = Request;
@@ -522,6 +531,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("gettrackingdetails")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetOrderTrackingDetails(Int64 orderID)
         {
             var reqHeader = Request;
@@ -565,6 +575,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("getitem")]
+        [MapToApiVersion("1.0")]
         public IActionResult Getorder(long orderID)
         {
             var reqHeader = Request;
@@ -609,6 +620,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("getorderpickup")]
+        [MapToApiVersion("1.0")]
         public IActionResult Getorderfordelivery(long orderID)
         {
             var reqHeader = Request;
@@ -652,6 +664,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -699,6 +712,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("summarylist")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
         {
             //dynamic data = jsonData;
@@ -747,6 +761,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("vendororderlist")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
         {
             //dynamic data = jsonData;
@@ -793,6 +808,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("vendororderdetail")]
+        [MapToApiVersion("1.0")]
         public IActionResult GetDetailByVendor(ParamVendorOrder itemData)
         {
             //dynamic data = jsonData;
@@ -933,6 +949,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("PhonepeCallBack")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> PhonePeCallback()////object payload VerifyRequestModel verifyRequestModel
         {////string val = "{\r\n  \"response\": \"ewoJInN1Y2Nlc3MiOiB0cnVlLAoJImNvZGUiOiAiUEFZTUVOVF9TVUNDRVNTIiwKCSJkYXRhIjogewoJCSJ0cmFuc2FjdGlvbklkIjogImY2MjI0MjBmLTJmNTgtNGYyZS04MzJmIiwKCQkibWVyY2hhbnRJZCI6ICJNSURURVNUIiwKCQkiYW1vdW50IjogMTAwMCwKCQkicHJvdmlkZXJSZWZlcmVuY2VJZCI6ICJQMTkxMjE4MTIxMDM1NzQyMTc1Njc1NSIsCgkJInBheW1lbnRTdGF0ZSI6ICJDT01QTEVURUQiLAoJCSJwYXlSZXNwb25zZUNvZGUiOiAiU1VDQ0VTUyIKCX0KfQ==\"\r\n}";
 
@@ -1031,6 +1048,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("WebhookPaymentEvents")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> WebhookPaymentEvents()/////[FromBody] RazorpayWebhookPayload payload
         {
             var reqHeader = Request;
@@ -1163,6 +1181,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("WebhookShipRocket")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> WebhookShipRocket()
         {
             var reqHeader = Request;
@@ -1344,6 +1363,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("WebhookOneDelhivery")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> WebhookOneDelhivery()
         {
             var reqHeader = Request;
@@ -1429,6 +1449,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("TestPayment")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> InitiatePaymentAsync()
         {
             var reqHeader = Request;
@@ -1552,8 +1573,9 @@ namespace appify.web.api.Controllers
     /// <returns>ResponseMessage Object</returns>
     /// <response code="200">Returns Product Item against the VendorID </response>
     /// <response code="500">ResponseMessage with Error Description</response> 
-    [HttpPost]
+        [HttpPost]
         [Route("createorderwebapp")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> CreateOrderWebApp(OrderCreateWebApp itemData)
         {
             var reqHeader = Request;
@@ -1650,8 +1672,9 @@ namespace appify.web.api.Controllers
     /// <returns>ResponseMessage Object</returns>
     /// <response code="200">Returns Product Item against the VendorID </response>
     /// <response code="500">ResponseMessage with Error Description</response> 
-    [HttpPost]
+        [HttpPost]
         [Route("saveitemsorderwebapp")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> SaveItemsOrderWebApp(ParamOrderItem itemData)
         {
             var reqHeader = Request;
@@ -1785,6 +1808,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("TestTransaction")]
+        [MapToApiVersion("1.0")]
         public async Task<IActionResult> TestTransactionAPIAsync()
         {
             var reqHeader = Request;
