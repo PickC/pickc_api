@@ -2,10 +2,10 @@
 using System.Text;
 namespace appify.utility
 {
-    public class DataHash
+    public static class DataHash
     {
         private static readonly string SecretKey = "App1fyd3v3l0p3r";
-        public string EncryptData(string input)
+        public static string EncryptData(string input)
         {
             byte[] RandomNumber = new byte[32];
 
@@ -25,7 +25,7 @@ namespace appify.utility
             }
         }
 
-        public bool DecryptData(string input, string storedHash)
+        public static    bool DecryptData(string input, string storedHash)
         {
             byte[] hashbytes  = Convert.FromBase64String(storedHash);
             byte[] RandomNumber = new byte[32];

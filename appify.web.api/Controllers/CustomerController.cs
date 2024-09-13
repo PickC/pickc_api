@@ -29,7 +29,7 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly ICustomerBusiness customerBusiness;
         private ResponseMessage rm;
-
+        private readonly string[] allowedCountries = { "IN" };
         public CustomerController(IConfiguration configuration,ICustomerBusiness customerBusiness, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
@@ -361,56 +361,58 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                string pass = DataHash.EncryptData("Appify@123#");
 
-                // This URL is used for sending messages
-                string myURI = "https://api.bulksms.com/v1/messages";
+                var result = Common.CheckIPAddress(HttpContext, allowedCountries);
+                //// This URL is used for sending messages
+                //string myURI = "https://api.bulksms.com/v1/messages";
 
-                // change these values to match your own account
-                string myUsername = "appifydeveloper";
-                string myPassword = "App1fyd3v3l0p#r";
+                //// change these values to match your own account
+                //string myUsername = "appifydeveloper";
+                //string myPassword = "App1fyd3v3l0p#r";
 
-                // the details of the message we want to send
-                string myData = "{to: \"+919810722979\", body:\"Hello Mr. Smith!\"}";
+                //// the details of the message we want to send
+                //string myData = "{to: \"+919810722979\", body:\"Hello Mr. Smith!\"}";
 
-                // build the request based on the supplied settings
-                var request = WebRequest.Create(myURI);
+                //// build the request based on the supplied settings
+                //var request = WebRequest.Create(myURI);
 
-                // supply the credentials
-                request.Credentials = new NetworkCredential(myUsername, myPassword);
-                request.PreAuthenticate = true;
-                // we want to use HTTP POST
-                request.Method = "POST";
-                // for this API, the type must always be JSON
-                request.ContentType = "application/json";
+                //// supply the credentials
+                //request.Credentials = new NetworkCredential(myUsername, myPassword);
+                //request.PreAuthenticate = true;
+                //// we want to use HTTP POST
+                //request.Method = "POST";
+                //// for this API, the type must always be JSON
+                //request.ContentType = "application/json";
 
-                // Here we use Unicode encoding, but ASCIIEncoding would also work
-                var encoding = new UnicodeEncoding();
-                var encodedData = encoding.GetBytes(myData);
+                //// Here we use Unicode encoding, but ASCIIEncoding would also work
+                //var encoding = new UnicodeEncoding();
+                //var encodedData = encoding.GetBytes(myData);
 
-                // Write the data to the request stream
-                var stream = request.GetRequestStream();
-                stream.Write(encodedData, 0, encodedData.Length);
-                stream.Close();
+                //// Write the data to the request stream
+                //var stream = request.GetRequestStream();
+                //stream.Write(encodedData, 0, encodedData.Length);
+                //stream.Close();
 
-                // try ... catch to handle errors nicely
-                try
-                {
-                    // make the call to the API
-                    var response = request.GetResponse();
+                //// try ... catch to handle errors nicely
+                //try
+                //{
+                //    // make the call to the API
+                //    var response = request.GetResponse();
 
-                    // read the response and print it to the console
-                    var reader = new StreamReader(response.GetResponseStream());
-                    Console.WriteLine(reader.ReadToEnd());
-                }
-                catch (WebException ex)
-                {
-                    // show the general message
-                    Console.WriteLine("An error occurred:" + ex.Message);
+                //    // read the response and print it to the console
+                //    var reader = new StreamReader(response.GetResponseStream());
+                //    Console.WriteLine(reader.ReadToEnd());
+                //}
+                //catch (WebException ex)
+                //{
+                //    // show the general message
+                //    Console.WriteLine("An error occurred:" + ex.Message);
 
-                    // print the detail that comes with the error
-                    var reader = new StreamReader(ex.Response.GetResponseStream());
-                    Console.WriteLine("Error details:" + reader.ReadToEnd());
-                }
+                //    // print the detail that comes with the error
+                //    var reader = new StreamReader(ex.Response.GetResponseStream());
+                //    Console.WriteLine("Error details:" + reader.ReadToEnd());
+                //}
 
                 //Dictionary<string, object> input = new Dictionary<string, object>();
                 //input.Add("amount", 100); // this amount should be same as transaction amount
@@ -440,7 +442,7 @@ namespace appify.web.api.Controllers
                 //var username = jwtPayload.Email;
 
                 rm.statusCode = StatusCodes.OK;
-                rm.message = "Razorpay Create Order";
+                rm.message = result;
                 //rm.name = orderId;
                 //rm.data = order;
 
