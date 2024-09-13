@@ -40,8 +40,13 @@ namespace appify.web.api
         public DateTime dateFrom { get; set; }
         public DateTime dateTo { get; set; }
     }
-    public class ParamMemberVendorID: ParamPageNumber
+    public class ParamMemberVendorID
     {
+        public long userID { get; set; }
+
+    }
+
+    public class ParamMemberVendorIDPagination : ParamPageNumber {
         public long userID { get; set; }
 
     }

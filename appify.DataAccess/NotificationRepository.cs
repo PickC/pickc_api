@@ -26,24 +26,40 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
+        {
+            List<PushNotificationMessage> items = new List<PushNotificationMessage>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID);
+            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+
+            return items;
+        }
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
+        {
+            List<PushNotificationMessage> items = new List<PushNotificationMessage>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID);
+            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+
+            return items;
+        }
+
         public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID,PageNo,Rows);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDORPAGEVIEW, VendorID, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
 
             return items;
         }
-
-
         public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID, PageNo, Rows);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMERPAGEVIEW, CustomerID, PageNo, Rows);
             items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
 
             return items;
         }
+
 
         public NotificationTemplate GetNotificationTemplate(long TemplateID)
         {

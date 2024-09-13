@@ -4,6 +4,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Reflection.PortableExecutable;
 
 namespace appify.web.api.Controllers
@@ -12,6 +13,7 @@ namespace appify.web.api.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
 
     public class NotificationController : Controller
     {
@@ -30,6 +32,30 @@ namespace appify.web.api.Controllers
         /// gets Notification items information based on Vendor ID
         /// </summary>
         /// <remarks>
+        /// Changes :
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Retrives the In-App Notifications based on Customer ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1833
+        ///     }
+        ///
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Retrives the In-App Notifications based on Vendor ID with pageview
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
         /// Sample request JSON :
         /// 
         ///     {
@@ -37,7 +63,8 @@ namespace appify.web.api.Controllers
         ///         "pageNo":1,
         ///         "rows":10
         ///     }
-        ///     
+        /// 
+        /// 
         /// Sample response JSON :
         /// 
         ///     {
@@ -68,6 +95,48 @@ namespace appify.web.api.Controllers
         [Route("notificationlistbyvendor")]
         [MapToApiVersion("1.0")]
         public IActionResult GetNotificationByVendor(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH NOTIFICATION LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+       
+        [HttpPost]
+        [Route("notificationlistbyvendor")]
+        [MapToApiVersion("1.1")]
+        public IActionResult GetNotificationByVendorPagination(ParamMemberVendorIDPagination itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -106,14 +175,37 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+
         /// <summary>
         /// gets Notification items information based on Customer ID
         /// </summary>
         /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Retrives the In-App Notifications based on Customer ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
         /// Sample request JSON :
         /// 
         ///     {
-        ///         "userID": 1847,
+        ///         "userID": 1847
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Retrives the In-App Notifications based on Customer ID with pageview
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1833,
         ///         "pageNo":1,
         ///         "rows":10
         ///     }
@@ -154,6 +246,97 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                var result = this.notificationBusiness.GetNotificationByUser(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH NOTIFICATION LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByUser - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+
+
+        /// <summary>
+        /// gets Notification items information based on Customer ID
+        /// </summary>
+        /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Retrives the In-App Notifications based on Vendor ID with pageview
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1833,
+        ///         "pageNo":1,
+        ///         "rows":10
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH NOTIFICATION LIST!",
+        ///       "data": [
+        ///         {
+        ///           "notificationID": 1000,
+        ///           "senderID": 1833,
+        ///           "receiverID": 1847,
+        ///           "notificationDate": "2024-05-06T15:55:06.807",
+        ///           "notificationMessage": "Your Order No is PO1473150202312150614 Successfuly Placed! View your order details here",
+        ///           "notificationEvent": 0,
+        ///           "isRead": false,
+        ///           "notificationStatus": 1,
+        ///           "readOn": false,
+        ///           "isCancel": false
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost]
+        [Route("notificationlistbyuser")]
+        [MapToApiVersion("1.1")]
+        public IActionResult GetNotificationByUserPagination(ParamMemberVendorIDPagination itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
                 var result = this.notificationBusiness.GetNotificationByUser(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
@@ -185,6 +368,14 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// SET IsRead Notification by NotificationID
