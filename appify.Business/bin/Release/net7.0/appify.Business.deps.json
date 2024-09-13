@@ -18,6 +18,26 @@
           "appify.Business.dll": {}
         }
       },
+      "CsvHelper/31.0.2": {
+        "runtime": {
+          "lib/net7.0/CsvHelper.dll": {
+            "assemblyVersion": "31.0.0.0",
+            "fileVersion": "31.0.2.15"
+          }
+        }
+      },
+      "IP2Location.IPGeolocation/9.0.2": {
+        "dependencies": {
+          "CsvHelper": "31.0.2",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net7.0/IP2Location.dll": {
+            "assemblyVersion": "9.0.2.0",
+            "fileVersion": "9.0.2.0"
+          }
+        }
+      },
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Http.Features": "2.2.0",
@@ -567,6 +587,7 @@
       },
       "appify.utility/1.0.0": {
         "dependencies": {
+          "IP2Location.IPGeolocation": "9.0.2",
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
           "Newtonsoft.Json": "13.0.3",
           "System.Data.SqlClient": "4.8.6",
@@ -586,6 +607,20 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "CsvHelper/31.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ndlIN77XcFm6qqGlNPzl0XjVupMCBVhVSiO+1+X2UhJtnnvkx9f//7FOvlkLuEQ76NC3Y7owa8IOhgtKVa4H7Q==",
+      "path": "csvhelper/31.0.2",
+      "hashPath": "csvhelper.31.0.2.nupkg.sha512"
+    },
+    "IP2Location.IPGeolocation/9.0.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NaPGPm9igkThdiXEXhQFGbruhRqIMyNSqHjwJPWMrfh15zBzEQ7zkr11sjY4FsE47eHL7+G4wwlQiK/i5xaUIA==",
+      "path": "ip2location.ipgeolocation/9.0.2",
+      "hashPath": "ip2location.ipgeolocation.9.0.2.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
       "type": "package",

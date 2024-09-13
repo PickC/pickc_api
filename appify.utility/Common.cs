@@ -127,5 +127,39 @@ namespace appify.utility
             }
             return result;
         }
+
+        public static string CheckIPAddress(HttpContext httpContext, string[] allowedCountries)
+        {
+            var result = "";
+            try
+            {
+                var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
+                if (ipAddress == null)
+                {
+                    if (ipAddress == "::1")
+                        ipAddress = "127.0.0.1";   // ::1 is an IPV6 lookback address when testing in local host!
+
+                    var ip2location = new IP2Location.Component();
+                    var location = ip2location.IPQuery(ipAddress);
+                    if (!allowedCountries.Contains(location.CountryShort))
+                    {
+                        result = "Access Denied! for country " + location.CountryLong;
+                    }
+                    else
+                    {
+                        result = "Access allowed";
+                    }
+                }
+                else
+                {
+                    result = "Invalid IP Address";
+                }
+            }
+            catch (Exception ex)
+            {
+                result = ex.ToString();
+            }
+            return result;
+        }
     }
 }
