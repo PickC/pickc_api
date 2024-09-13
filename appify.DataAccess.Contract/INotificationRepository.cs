@@ -11,8 +11,14 @@ namespace appify.DataAccess.Contract
     {
         public Notifications SendEmail(Notifications notifications);
 
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID);
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID);
+
+        //the below function is used for pagination API version : 1.1
         public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows);
         public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows);
+
+
         public NotificationTemplate GetNotificationTemplate(long TemplateID);
 
         public bool IsReadNotification(long NotificationID);
