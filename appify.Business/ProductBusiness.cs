@@ -130,5 +130,9 @@ namespace appify.Business
         {
             return repository.GetProductMasterCategories(parentID);
         }
+        public List<ProductCategories> GetCategoriesList(long parentID)
+        {
+            return repository.GetCategoriesList(parentID);
+        }
     }
 }

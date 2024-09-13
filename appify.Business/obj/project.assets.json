@@ -2,6 +2,32 @@
   "version": 3,
   "targets": {
     "net7.0": {
+      "CsvHelper/31.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net7.0/CsvHelper.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net7.0/CsvHelper.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "IP2Location.IPGeolocation/9.0.2": {
+        "type": "package",
+        "dependencies": {
+          "CsvHelper": "31.0.2",
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "compile": {
+          "lib/net7.0/IP2Location.dll": {}
+        },
+        "runtime": {
+          "lib/net7.0/IP2Location.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
         "type": "package",
         "dependencies": {
@@ -1103,6 +1129,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
+          "IP2Location.IPGeolocation": "9.0.2",
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
           "Newtonsoft.Json": "13.0.3",
           "System.Data.SqlClient": "4.8.6",
@@ -1121,6 +1148,55 @@
     }
   },
   "libraries": {
+    "CsvHelper/31.0.2": {
+      "sha512": "ndlIN77XcFm6qqGlNPzl0XjVupMCBVhVSiO+1+X2UhJtnnvkx9f//7FOvlkLuEQ76NC3Y7owa8IOhgtKVa4H7Q==",
+      "type": "package",
+      "path": "csvhelper/31.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "csvhelper.31.0.2.nupkg.sha512",
+        "csvhelper.nuspec",
+        "lib/net462/CsvHelper.dll",
+        "lib/net462/CsvHelper.xml",
+        "lib/net47/CsvHelper.dll",
+        "lib/net47/CsvHelper.xml",
+        "lib/net48/CsvHelper.dll",
+        "lib/net48/CsvHelper.xml",
+        "lib/net6.0/CsvHelper.dll",
+        "lib/net6.0/CsvHelper.xml",
+        "lib/net7.0/CsvHelper.dll",
+        "lib/net7.0/CsvHelper.xml",
+        "lib/net8.0/CsvHelper.dll",
+        "lib/net8.0/CsvHelper.xml",
+        "lib/netstandard2.0/CsvHelper.dll",
+        "lib/netstandard2.0/CsvHelper.xml",
+        "lib/netstandard2.1/CsvHelper.dll",
+        "lib/netstandard2.1/CsvHelper.xml"
+      ]
+    },
+    "IP2Location.IPGeolocation/9.0.2": {
+      "sha512": "NaPGPm9igkThdiXEXhQFGbruhRqIMyNSqHjwJPWMrfh15zBzEQ7zkr11sjY4FsE47eHL7+G4wwlQiK/i5xaUIA==",
+      "type": "package",
+      "path": "ip2location.ipgeolocation/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "ip2location.ipgeolocation.9.0.2.nupkg.sha512",
+        "ip2location.ipgeolocation.nuspec",
+        "ipl-logo-square-128.png",
+        "lib/net472/IP2Location.dll",
+        "lib/net48/IP2Location.dll",
+        "lib/net481/IP2Location.dll",
+        "lib/net5.0/IP2Location.dll",
+        "lib/net6.0/IP2Location.dll",
+        "lib/net7.0/IP2Location.dll",
+        "lib/net8.0/IP2Location.dll",
+        "lib/netstandard2.0/IP2Location.dll"
+      ]
+    },
     "Microsoft.AspNetCore.Http.Abstractions/2.2.0": {
       "sha512": "Nxs7Z1q3f1STfLYKJSVXCs1iBl+Ya6E8o4Oy1bCxJ/rNI44E/0f6tbsrVqAWfB7jlnJfyaAtIalBVxPKUPQb4Q==",
       "type": "package",
@@ -3681,19 +3757,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sharma\\.nuget\\packages\\": {}
+    "C:\\Users\\HP\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\appify.Business.csproj",
+      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business\\appify.Business.csproj",
       "projectName": "appify.Business",
-      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\appify.Business.csproj",
-      "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business\\obj\\",
+      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business\\appify.Business.csproj",
+      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3701,23 +3777,24 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.Business.Contract\\appify.Business.Contract.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
             },
-            "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj": {
-              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.utility\\appify.utility.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj"
             }
           }
         }
@@ -3726,6 +3803,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3753,7 +3835,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -99,6 +99,7 @@ namespace appify.dbroutine
         public const string LISTALLPRODUCT = "[Operation].[usp_ProductMasterListAll]";
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
         public const string SELECTPRODUCTMASTERCATEGORIES = "[Master].[usp_Categories]";
+        public const string CATEGORIESLISTBYID = "[Operation].[usp_CategoriesByID]";
 
         /// <summary>
         /// [Operation].[ProductImage]
