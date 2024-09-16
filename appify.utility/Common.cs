@@ -12,14 +12,11 @@ using appify.models;
 using Microsoft.AspNetCore.Http;
 using appify.Business.Contract;
 using appify.Business;
-<<<<<<< HEAD
 using System.Net;
-=======
 using System.Net.Sockets;
 using Microsoft.Extensions;
 using Microsoft.Extensions.Configuration;
 
->>>>>>> main
 namespace appify.utility
 {
     public static class Common
