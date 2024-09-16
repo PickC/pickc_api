@@ -23,6 +23,10 @@ namespace appify.Business
         public List<MemberProduct> ProductList(long vendorID) {
             return this.repository.ProductList(vendorID);
         }
+        public List<MemberProduct> ProductListNew(long vendorID)
+        {
+            return this.repository.ProductListNew(vendorID);
+        }
         public MemberAllDetail GetMemberAllDetails(long userID)
         {
             return this.repository.GetMemberAllDetails(userID);

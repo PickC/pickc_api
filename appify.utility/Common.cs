@@ -12,6 +12,7 @@ using appify.models;
 using Microsoft.AspNetCore.Http;
 using appify.Business.Contract;
 using appify.Business;
+using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -135,10 +136,11 @@ namespace appify.utility
         public static string CheckIPAddress(HttpContext httpContext, string[] allowedCountries)
         {
             var result = "";
+            var ipAddress = "";
             try
             {
-                var ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
-                if (ipAddress == null)
+                ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
+                if (ipAddress != null)
                 {
                     if (ipAddress == "::1")
                         ipAddress = "127.0.0.1";   // ::1 is an IPV6 lookback address when testing in local host!
@@ -163,7 +165,7 @@ namespace appify.utility
             {
                 result = ex.ToString();
             }
-            return result;
+            return result + "-"+ Convert.ToString(ipAddress);
         }
 
 
