@@ -401,3 +401,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/appify.Business/obj/Debug/net7.0/appify.Business.assets.cache
+/appify.DataAccess.Contract/obj/Debug/net7.0/appify.DataAccess.Contract.assets.cache
+/appify.Business.Contract/obj/Debug/net7.0/appify.Business.Contract.assets.cache
+/appify.dbroutine/obj/Debug/net7.0/appify.dbroutine.assets.cache
+/appify.utility/obj/Debug/net7.0/appify.utility.assets.cache
+/appify.models/obj/Debug/net7.0/appify.models.assets.cache
