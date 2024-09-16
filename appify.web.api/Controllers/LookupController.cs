@@ -15,6 +15,7 @@ namespace appify.web.api.Controllers
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     public class LookupController : Controller
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -29,7 +30,7 @@ namespace appify.web.api.Controllers
         }
 
 
-        [HttpPost,Route("save")]
+        [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
         public IActionResult Add(Lookup item)
         {
@@ -40,7 +41,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
 
                 var result = lookupBusiness.SaveLookUp(item);
-                if (result!=null)
+                if (result != null)
                 {
                     var newitem = new Lookup();
 
@@ -120,7 +121,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("getitem")]
+        [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
         public IActionResult GetLookup(ParamLookup jsonData)
         {
@@ -133,7 +134,7 @@ namespace appify.web.api.Controllers
 
                 var item = lookupBusiness.GetLookUp(jsonData.lookupID);
 
-                if (item!=null)
+                if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH LOOKUP ITEM";
@@ -165,7 +166,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost,Route("list")]
+        [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
         public IActionResult List(ParamLookupCategory jsonData)
         {
@@ -176,7 +177,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 List<Lookup> items = lookupBusiness.GetList(jsonData.category);
-                if (items?.Any()==true)
+                if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "LOOK-UP LIST";
@@ -207,7 +208,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-        
+
         //[HttpPost, Route("list")]
         //[MapToApiVersion("2.0")]
         //public IActionResult Listv2(ParamLookupCategory jsonData)
@@ -262,7 +263,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                items = lookupBusiness.GetList(jsonData.category,jsonData.userID);
+                items = lookupBusiness.GetList(jsonData.category, jsonData.userID);
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -439,7 +440,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("systemconfigurationtlist")]
         [MapToApiVersion("1.0")]
-        public IActionResult GetSystemConfigurationSettings (ParamSystemConfigSetting itemData)
+        public IActionResult GetSystemConfigurationSettings(ParamSystemConfigSetting itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -478,6 +479,44 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH SYSTEM CONFIG SETTING LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpGet, Route("generateOTP")]
+        [MapToApiVersion("1.0")]
+        [MapToApiVersion("1.1")]
+        public IActionResult GenerateOTP()
+        {
+            //var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
+
+                String OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "GENERATE OTP ";
+                rm.name = StatusName.ok;
+                rm.data = OTPValue;
+
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH SYSTEM CONFIG SETTING LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH SYSTEM CONFIG SETTING LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 

@@ -370,13 +370,6 @@ namespace appify.web.api.Controllers
         }
 
 
-
-
-
-
-
-
-
         /// <summary>
         /// SET IsRead Notification by NotificationID
         /// </summary>
