@@ -12,7 +12,14 @@ using appify.models;
 using Microsoft.AspNetCore.Http;
 using appify.Business.Contract;
 using appify.Business;
+<<<<<<< HEAD
 using System.Net;
+=======
+using System.Net.Sockets;
+using Microsoft.Extensions;
+using Microsoft.Extensions.Configuration;
+
+>>>>>>> main
 namespace appify.utility
 {
     public static class Common
@@ -162,6 +169,23 @@ namespace appify.utility
                 result = ex.ToString();
             }
             return result + "-"+ Convert.ToString(ipAddress);
+        }
+
+
+        
+        public static string GenerateOTP(string secretKey)
+        {
+            //
+            var OTPSecretKey = secretKey;
+            
+            var password = "";
+            Random r = new Random();
+            int keyLength = OTPSecretKey.Length;
+            for (var i = 0; i < 6; i++)
+            {
+                password += OTPSecretKey[r.Next(0, keyLength)];
+            }
+            return password;
         }
     }
 }
