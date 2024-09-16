@@ -44,6 +44,7 @@ D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.model
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\refint\appify.models.dll
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.pdb
 D:\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\ref\appify.models.dll
+D:\Project\Appify.API\appify.api\appify.models\obj\Release\net7.0\appify.models.csproj.AssemblyReference.cache
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.deps.json
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.dll
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\bin\Release\net7.0\appify.models.pdb
@@ -57,4 +58,3 @@ C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appif
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\refint\appify.models.dll
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\appify.models.pdb
 C:\DDrive\Projects\Dotnet\appify_20240401\appify.models\obj\Release\net7.0\ref\appify.models.dll
-D:\Project\Appify.API\appify.api\appify.models\obj\Release\net7.0\appify.models.csproj.AssemblyReference.cache

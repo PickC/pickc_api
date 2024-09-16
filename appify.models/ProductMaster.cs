@@ -125,6 +125,7 @@ namespace appify.models
 
         public Int16? DiscountType { get; set; }
         public decimal? DiscountValue { get; set; }
+        public string? CategoryName {  get; set; }
 
     }
     public partial class NewProduct
@@ -152,8 +153,9 @@ namespace appify.models
         public long CategoryID { get; set; }
         public string Category { get; set; }
         public long ParentID { get; set; }
-        public bool IsActive { get; set; }
+        //public bool IsActive { get; set; }
         public string FullCategory { get; set; }
+        //public long MainID { get; set; }
     }
 
     public partial class HomePageProductByCategory

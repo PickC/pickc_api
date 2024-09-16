@@ -45,6 +45,16 @@ namespace appify.DataAccess
 
 
         }
+        public List<MemberProduct> ProductListNew(long vendorID)
+        {
+            List<MemberProduct> products = new List<MemberProduct>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYVENDORNEW, vendorID);
+            products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+
+            return products;
+
+
+        }
 
         public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
         {

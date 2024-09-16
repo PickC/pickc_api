@@ -31,6 +31,7 @@ namespace appify.dbroutine
 
         public const string PAGEVIEWCUSTOMERBYMEMBER = "[Operation].[usp_CustomerPageView]";
         public const string PRODUCTSBYVENDOR = "[Operation].[usp_ProductsByVendor]";
+        public const string PRODUCTSBYVENDORNEW = "[Operation].[usp_ProductsByVendorNew]";
         public const string PRODUCTSBYCATEGORY = "[Operation].[usp_ProductsByCategory]";
         public const string MEMBERALLDETAILS = "[Operation].[usp_GetMemberAllDetails]";
         public const string PRODUCTSBYCATEGORIES = "[Operation].[usp_CategoriesProductsByVendor]";
