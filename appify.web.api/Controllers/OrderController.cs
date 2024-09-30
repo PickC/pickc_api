@@ -1395,6 +1395,7 @@ namespace appify.web.api.Controllers
                 {
                     AWB = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["AWB"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["AWB"]),
                     Status = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Status"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Status"]),
+
                     StatusType = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusType"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["StatusType"]),
                     Instructions = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Instructions"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Instructions"]),
                     ReferenceNo = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["ReferenceNo"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["ReferenceNo"]),

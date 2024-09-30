@@ -4,7 +4,6 @@ namespace appify.utility
 {
     public static class DataHash
     {
-        private static readonly string SecretKey = "App1fyd3v3l0p3r";
         public static string EncryptData(string input)
         {
             byte[] RandomNumber = new byte[32];
@@ -14,7 +13,7 @@ namespace appify.utility
                 rng.GetBytes(RandomNumber);
             }
 
-            string SecretPassword = input + Convert.ToBase64String(RandomNumber) + SecretKey;
+            string SecretPassword = input + Convert.ToBase64String(RandomNumber) + Common.SecretKey;
             using (var sha256 = SHA256.Create())
             {
                 byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(SecretPassword));
@@ -31,7 +30,7 @@ namespace appify.utility
             byte[] RandomNumber = new byte[32];
 
             Array.Copy(hashbytes,0, RandomNumber, 0,RandomNumber.Length);
-            string SecretPassword = input + Convert.ToBase64String(RandomNumber) + SecretKey;
+            string SecretPassword = input + Convert.ToBase64String(RandomNumber) + Common.SecretKey;
 
             using (var sha256 = SHA256.Create())
             {

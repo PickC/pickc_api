@@ -253,6 +253,74 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// GenerateOTP.
+        /// </summary>
+        /// <remarks>
+        /// Sample Response:
+        /// NOTE : GenerateOTP.
+        ///
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "OTP HAS BEEN SUCCESSFULLY GENERATED",
+        ///       "data": "yryl1A"
+        ///     }
+    ///
+    /// </remarks>
+    /// <param name="itemData"></param>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns the newly created Discount Object</response>
+    /// <response code="500">ResponseMessage with Error Description</response>
+
+    [HttpPost, Route("generateotp")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GenerateOTP(string MobileNo)
+        {
+            var reqHeader = Request;
+            string result = "";
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                // dynamic data = jsondata;
+                rm = new ResponseMessage();
+                var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
+
+                string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
+                result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                //TODO: to implement the above dashboard information
+
+                if (OTPValue != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "OTP HAS BEEN SUCCESSFULLY GENERATED & SENT";
+                    rm.name = StatusName.ok;
+                    rm.data = OTPValue;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, null, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO GENERATE OTP";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO GENERATE OTP", reqHeader, controllerURL, null, result, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP GERENATED - ERROR", reqHeader, controllerURL, null, result, rm.message));
+            }
+            return Ok(rm);
+        }
+
         [HttpPost,Route("DeActivateMember")]
         [MapToApiVersion("1.0")]
         public IActionResult DeactivateMember(ParamMemberUserID itemData)

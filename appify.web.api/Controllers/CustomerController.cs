@@ -19,6 +19,7 @@ using Asp.Versioning;
 using System.Net.Http.Headers;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using System.Management;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -412,111 +413,79 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                string accountSid = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:accountSid").Value;
-                string authToken = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:authToken").Value;
 
-                TwilioClient.Init(accountSid, authToken);
-                var message = MessageResource.Create(
-                    body: "Join Earth's mightiest heroes. Like Kevin Bacon.",
-                    from: new Twilio.Types.PhoneNumber("+919885217825"),
-                    to: new Twilio.Types.PhoneNumber("+919810722979")
-                );
+                string clientId = "604537213086-2r3o5j2ljn2rpdkhsfsd34vspki0v4nq.apps.googleusercontent.com";
+                string clientSecret = "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";
+                string refreshToken = "YourRefreshToken";
+                string fromEmail = "gurjeet@appi-fy.ai";
+                string toEmail = "nkolweb@gmail.com";
 
-                var result = message.Sid;
+                var clientSecrets = new ClientSecrets
+                {
+                    ClientId = clientId,
+                    ClientSecret = clientSecret
+                };
+
+                var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    clientSecrets,
+                    new[] { "https://mail.google.com/" },
+                    "user",
+                    CancellationToken.None);
+
+                if (credential.Token.IsExpired(credential.Flow.Clock))
+                {
+                    await credential.RefreshTokenAsync(CancellationToken.None);
+                }
+
+
+
+                //var message = new MimeMessage();
+                //message.From.Add(new MailboxAddress("Your Name", fromEmail));
+                //message.To.Add(new MailboxAddress("Recipient Name", toEmail));
+                //message.Subject = "Test Email";
+                //message.Body = new TextPart(TextFormat.Plain)
+                //{
+                //    Text = "This is a test email sent using OAuth2 in .NET Core."
+                //};
+
+                //using (var client = new SmtpClient())
+                //{
+                //    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                //    var oauth2 = new SaslMechanismOAuth2(fromEmail, credential.Token.AccessToken);
+                //    await client.AuthenticateAsync(oauth2);
+                //    await client.SendAsync(message);
+                //    await client.DisconnectAsync(true);
+                //}
+
+                return Ok(credential.Token);
+
+                //var items = customerBusiness.GetMemberPasswordList();
+                //foreach (var item in items)
+                //{
+                //string pass = DataHash.EncryptData(item.OldPassword);
+                //var result = customerBusiness.SaveMemberPassword(item.UserID, pass);
+                //}
+
+
+                /////// Twilio
+                //string accountSid = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:accountSid").Value;
+                //string authToken = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:authToken").Value;
+
+                //TwilioClient.Init(accountSid, authToken);
+                //var message = MessageResource.Create(
+                //    body: "Join Earth's mightiest heroes. Like Kevin Bacon.",
+                //    from: new Twilio.Types.PhoneNumber("+919885217825"),
+                //    to: new Twilio.Types.PhoneNumber("+919810722979")
+                //);
+
+                //var result = message.Sid;
 
 
                 /////////////// ENCRYPTION
-                //string pass = DataHash.EncryptData("Appify@123#");
-
+                // string pass = DataHash.EncryptData("Appify@123");
+                //bool repass = DataHash.DecryptData("Appify@123", "UN5QLpw54G5gRLD8yQhD915AqsAgfcEIQxhnyGT8ryCJXRO+WX1Ikl0/RntoGB9Q8P9avvjxAvfSN+LR7bpj7g==");
                 /////////////// IP2 LOCATION
                 //var result = Common.CheckIPAddress(HttpContext, allowedCountries);
-
-
-                /////////////// BULKSMS - TOKEN 
-
-                //string myURI = "https://api.bulksms.com/v1/messages";
-                ////string myData = "{ \"to\": \"+919810722979\", \"body\": \"Hello World!\"}";
-                //string myData = "{to: \"+919810722979\", body:\"Hello Mr. Smith!\"}";
-
-                //using (var client = new HttpClient())
-                //{
-
-                //    var uri = new Uri(myURI);
-                //    client.BaseAddress = new Uri(myURI);
-                //    client.DefaultRequestHeaders.Accept.Clear();
-                //    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", "NkYxQzdEM0RERjYwNDRDQTkzQkNGOEJGNUE5NjdFMTctMDItNzpPUHBJUVlDQXNZMjFkTWdKdVR1NjJPNkZ0IXAjXw==");
-
-                //    var jsonString = Common.ConvertObjectToJson(myData);
-                //    HttpResponseMessage Res = client.PostAsync(uri, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
-                //    var response = await Res.Content.ReadAsStringAsync();
-
-                //}
-
-                /////////////// BULKSMS - USERNAME & PASSWORD
-
-                //// This URL is used for sending messages
-
-
-                //// change these values to match your own account
-                //string myUsername = "appifydeveloper";
-                //string myPassword = "App1fyd3v3l0p#r";
-
-                //// the details of the message we want to send
-                ////string myData = "{to: \"+919810722979\", body:\"Hello Mr. Smith!\"}";
-
-                //// build the request based on the supplied settings
-                //var request = WebRequest.Create(myURI);
-
-                //// supply the credentials
-                //request.Credentials = new NetworkCredential(myUsername, myPassword);
-                //request.PreAuthenticate = true;
-                //// we want to use HTTP POST
-                //request.Method = "POST";
-                //// for this API, the type must always be JSON
-                //request.ContentType = "application/json";
-
-                //// Here we use Unicode encoding, but ASCIIEncoding would also work
-                //var encoding = new UnicodeEncoding();
-                //var encodedData = encoding.GetBytes(myData);
-
-                //// Write the data to the request stream
-                //var stream = request.GetRequestStream();
-                //stream.Write(encodedData, 0, encodedData.Length);
-                //stream.Close();
-
-                //// try ... catch to handle errors nicely
-                //try
-                //{
-                //    // make the call to the API
-                //    var response = request.GetResponse();
-
-                //    // read the response and print it to the console
-                //    var reader = new StreamReader(response.GetResponseStream());
-                //    Console.WriteLine(reader.ReadToEnd());
-                //}
-                //catch (WebException ex)
-                //{
-                //    // show the general message
-                //    Console.WriteLine("An error occurred:" + ex.Message);
-
-                //    // print the detail that comes with the error
-                //    var reader = new StreamReader(ex.Response.GetResponseStream());
-                //    Console.WriteLine("Error details:" + reader.ReadToEnd());
-                //}
-
-                //Dictionary<string, object> input = new Dictionary<string, object>();
-                //input.Add("amount", 100); // this amount should be same as transaction amount
-                //input.Add("currency", "INR");
-                //input.Add("receipt", "12121");
-
-                //string key = "rzp_test_OVkzHWQC4WRAMj";
-                //string secret = @"App1fyr@z0rp@yp\$0d";
-
-                //RazorpayClient client = new RazorpayClient(key, secret);
-
-                //Razorpay.Api.Order order = client.Order.Create(input);
-                //var orderId = order["id"].ToString();
 
                 //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 //new ClientSecrets
@@ -533,7 +502,7 @@ namespace appify.web.api.Controllers
                 //var username = jwtPayload.Email;
 
                 rm.statusCode = StatusCodes.OK;
-                rm.message = result;
+                rm.message = "result";
                 //rm.name = orderId;
                 //rm.data = order;
 
