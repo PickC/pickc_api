@@ -46,6 +46,11 @@ namespace appify.web.api
 
     }
 
+    public class ParamVendorCategories : ParamMemberVendorID
+    {
+        public long ParentCatID { get; set; }
+        public bool IsActive { get; set; }
+    }
     public class ParamMemberVendorIDPagination : ParamPageNumber {
         public long userID { get; set; }
 

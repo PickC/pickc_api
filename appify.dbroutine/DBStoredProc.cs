@@ -36,6 +36,8 @@ namespace appify.dbroutine
         public const string MEMBERALLDETAILS = "[Operation].[usp_GetMemberAllDetails]";
         public const string PRODUCTSBYCATEGORIES = "[Operation].[usp_CategoriesProductsByVendor]";
 
+        public const string GETMEMBERPASSWORDLIST = "[Operation].[USP_GENERATEPASSWORD_SELECT]";
+        public const string GENERATEMEMBERPASSWORD = "[Operation].[USP_GENERATEPASSWORD_HASHCODE]";
         /// <summary>
         /// [Operation].[MemberReturnPolicy]
         /// </summary>
@@ -101,7 +103,9 @@ namespace appify.dbroutine
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
         public const string SELECTPRODUCTMASTERCATEGORIES = "[Master].[usp_Categories]";
         public const string CATEGORIESLISTBYID = "[Operation].[usp_CategoriesByID]";
-
+        public const string CATEGORIESNAME = "[Operation].[usp_CategorieName]";
+        public const string SAVEPARENTCATEGORIES = "[Operation].[usp_MemberCategorySave]";
+        public const string PARENTCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>

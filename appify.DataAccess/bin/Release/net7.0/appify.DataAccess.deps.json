@@ -980,6 +980,7 @@
         "dependencies": {
           "IP2Location.IPGeolocation": "9.0.2",
           "Microsoft.AspNetCore.Http.Abstractions": "2.2.0",
+          "Microsoft.Extensions.Configuration": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
           "System.Data.SqlClient": "4.8.6",
           "System.Json": "4.7.1",

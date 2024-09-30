@@ -16,7 +16,7 @@ namespace appify.models
 
         public string? Description { get; set; }
 
-        public Int16? Category { get; set; }
+        public Int32? Category { get; set; }
 
         public string? Brand { get; set; }
 
@@ -73,7 +73,7 @@ namespace appify.models
 
         public string? Description { get; set; }
 
-        public Int16? Category { get; set; }
+        public Int32? Category { get; set; }
 
         public string? Brand { get; set; }
 
@@ -115,7 +115,7 @@ namespace appify.models
         public Int64 VendorID { get; set; }
 
         public string ProductName { get; set; }
-        public Int16? Category { get; set; }
+        public Int32? Category { get; set; }
 
         public string? Brand { get; set; }
         public decimal? Price { get; set; }
@@ -128,6 +128,13 @@ namespace appify.models
         public string? CategoryName {  get; set; }
 
     }
+
+    public partial class MemberPassword
+    {
+        public Int32 UserID { get; set; }
+        public string OldPassword {  get; set; }
+    }
+
     public partial class NewProduct
     {
 
@@ -148,6 +155,12 @@ namespace appify.models
         public string Category { get; set; }
     }
 
+    public partial class ParentCategories
+    {
+        public long UserID { get; set; }
+        public long ParentCatID { get; set; }
+        public bool IsActive { get; set; }
+    }
     public partial class ProductCategories
     {
         public long CategoryID { get; set; }
@@ -158,6 +171,12 @@ namespace appify.models
         //public long MainID { get; set; }
     }
 
+    public partial class ProductCategoryName
+    {
+        public long ParentID { get; set; }
+        public string ParentName { get; set; }
+        public string CategoryName { get; set; }
+    }
     public partial class HomePageProductByCategory
     {
         public HomePageProductByCategory()

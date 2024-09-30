@@ -6,7 +6,6 @@ using System.Text;
 using FirebaseAdmin.Messaging;
 using appify.Business.Contract;
 using System.IO;
-
 namespace appify.web.api
 {
     public class EmailNotification
