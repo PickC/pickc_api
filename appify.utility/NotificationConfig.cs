@@ -15,8 +15,8 @@ namespace appify.utility
         public const string GMAIL_PASSWORD_FROM = "App1fyn0r3ply@2023";
         public const string SMTPCLIENT = "smtp.gmail.com";
         public const Int16 PORT = 587;
-        public const string TO_BCC = "";//"ragsarma@gmail.com";//"aj@appi-fy.ai";  ////// On production Aj Email will be there
-        public const string TO_CC = "";//"neella@appi-fy.ai";//"shipments@appi-fy.ai"; ///// On Production Shipments Email will be there
+        public const string TO_BCC = "aj@appi-fy.ai";  ////// On production Aj Email will be there
+        public const string TO_CC = "shipments@appi-fy.ai"; ///// On Production Shipments Email will be there
         public const string To_OPPSTeam = "support@appi-fy.ai";
         ////// Email Templates Files Path
 

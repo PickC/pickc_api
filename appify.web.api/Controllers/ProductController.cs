@@ -1120,5 +1120,210 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+        /// <summary>
+        /// Get Categories Name By ParentID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "ParentID": 1248
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("getcategoryname")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetCategorieName(ParamParent itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.productBusiness.GetCategorieName(itemData.parentID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH CATEGORIES BY PARENTID";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Save Selected Parent Categories By VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {	
+        ///       "userID": 1060,
+        ///       "parentCatID": 1000,
+        ///       "isActive":true
+        ///     },
+        ///     {
+        ///       "userID": 1060,
+        ///       "parentCatID": 1001,
+        ///       "isActive":false
+        ///     },
+        ///     {
+        ///       "userID": 1060,
+        ///       "parentCatID": 1002,
+        ///       "isActive":true
+        ///     },
+        ///     {
+        ///       "userID": 1060,
+        ///       "parentCatID": 1003,
+        ///       "isActive":true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("savevendorcategories")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> SaveVendorCategories(List<ParentCategories> vendorCategories)
+        {
+            var reqHeader = Request;
+            var result = true;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                List<ParentCategories> returnItem = new List<ParentCategories>();
+                foreach (var item in vendorCategories)
+                {
+                    returnItem.Add(this.productBusiness.SaveVendorCategories(item));
+                }
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SELECTED PARENT CATEGORIES SAVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = returnItem;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    await Common.UpdateEventLogsNew("VENDOR SELECTED PARENT CATEGORIES SAVED SUCCESSFULLY!", reqHeader, controllerURL, vendorCategories, returnItem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("VENDOR SELECTED PARENT CATEGORIES - NO CONTENT", reqHeader, controllerURL, vendorCategories, returnItem, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("VENDOR SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, vendorCategories, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get Selected Parent Categories By VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "userID": 1060
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("getvendorcategories")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetVendorCategories(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.productBusiness.GetVendorCategories(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH SELECTED PARENT CATEGORIES";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace appify.utility
             return obj;
         }
 
+        public static readonly string SecretKey = "App1fyd3v3l0p3r";
+
         public static readonly string IMAGECLASSIFIER_URL = "https://appify-image-classifier.azurewebsites.net/classify-image/";
 
         public static readonly int IMAGE_SIZE = 5 * 1024 * 1024; /// 5 MB

@@ -252,5 +252,55 @@ namespace appify.DataAccess
 
             return item;
         }
+        public List<ProductCategoryName> GetCategorieName(long parentID)
+        {
+            List<ProductCategoryName> item = new List<ProductCategoryName>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESNAME, parentID);
+            item = DataTableHelper.ConvertDataTable<ProductCategoryName>(ds.Tables[0]);
+
+            return item;
+        }
+        public ParentCategories SaveVendorCategories(ParentCategories vendorCategories)
+        {
+
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEPARENTCATEGORIES))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@UserID", vendorCategories.UserID);
+                        cmd.Parameters.AddWithValue("@ParentCatID", vendorCategories.ParentCatID);
+                        cmd.Parameters.AddWithValue("@IsActive", vendorCategories.IsActive);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return vendorCategories;
+        }
+        public List<ParentCategories> GetVendorCategories(long VendorID)
+        {
+            List<ParentCategories> item = new List<ParentCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PARENTCATEGORIES, VendorID);
+            item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
+
+            return item;
+        }
     }
 }

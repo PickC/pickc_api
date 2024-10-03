@@ -16,5 +16,7 @@ namespace appify.Business.Contract
         public MemberAllDetail GetMemberAllDetails(long userID);
         public HomePageProductByCategory GetProductListByVAUA(long userID);
         public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows);
+        public List<MemberPassword> GetMemberPasswordList();
+        public bool SaveMemberPassword(long userID, string password);
     }
 }

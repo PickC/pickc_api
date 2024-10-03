@@ -83,5 +83,41 @@ namespace appify.DataAccess
             //item.productdetails = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[2]);
             return item;
         }
+        public List<MemberPassword> GetMemberPasswordList()
+        {
+            List<MemberPassword> products = new List<MemberPassword>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERPASSWORDLIST);
+            products = DataTableHelper.ConvertDataTable<MemberPassword>(ds.Tables[0]);
+
+            return products;
+        }
+        public bool SaveMemberPassword(long userID, string password)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.GENERATEMEMBERPASSWORD))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", userID);
+                        cmd.Parameters.AddWithValue("@Password", password);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
+        }
     }
 }

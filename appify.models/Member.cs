@@ -52,7 +52,6 @@ namespace appify.models
         public Int64? ParentID { get; set; }
 
         public bool? IsRegisteredByMobile { get; set; }
-
         public bool? IsOnlinePaymentEnabled { get; set; }
         public bool? IsEnterprise { get; set; }
         public bool? IsEcommerce { get; set; }
