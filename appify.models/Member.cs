@@ -194,5 +194,9 @@ namespace appify.models
         public DateTime EndDate { get; set; }
         public bool IsCancel { get; set; }
     }
-
+    public partial class MemberSMSSetting
+    {
+        public Int64 VendorID { get; set; }
+        public bool IsFirebase { get; set; }
+    }
 }

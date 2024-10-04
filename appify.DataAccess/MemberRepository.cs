@@ -430,6 +430,13 @@ namespace appify.DataAccess
 
             return result;
         }
+        public MemberSMSSetting memberSMSSettingGet(long VendorID)
+        {
+            MemberSMSSetting item = new MemberSMSSetting();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERSMSSETTING, VendorID);
+            item = DataTableHelper.ConvertDataTable<MemberSMSSetting>(ds.Tables[0]).FirstOrDefault();
 
+            return item;
+        }
     }
 }
