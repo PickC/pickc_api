@@ -11,9 +11,10 @@ namespace appify.DataAccess.Contract
     {
         public bool HasLookUp(short lookupID);
         public Lookup SaveLookUp(Lookup item);
-        public bool DeleteLookUp(short lookupID);
+        public bool DeleteLookUp(long lookupID);
 
         public Lookup GetLookUp(short lookupID);
+        public Lookup GetLookUp(string lookupCode, string category);
         public List<Lookup> GetList(string category);
         public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey);
         public List<Lookup> GetList(string category,string userID);

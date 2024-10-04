@@ -23,7 +23,7 @@ namespace appify.DataAccess
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
-        public bool DeleteLookUp(short lookupID)
+        public bool DeleteLookUp(long lookupID)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);

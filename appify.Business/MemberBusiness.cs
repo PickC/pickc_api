@@ -100,5 +100,9 @@ namespace appify.Business
         {
             return repository.memberBannerListByVendor(VendorID);
         }
+        public MemberSMSSetting memberSMSSettingGet(long VendorID)
+        {
+            return repository.memberSMSSettingGet(VendorID);
+        }
     }
 }

@@ -14,7 +14,8 @@ namespace appify.utility
         {
             string myURI = "https://api.bulksms.com/v1/messages";
             //string myData = "{ \"to\": \"+919810722979\", \"body\": \"Hello World!\"}";
-            string myData = "{\"to\": \"+91" + MobileNo+ "\", \"body\":\"" + OTPCode + " is your verification code.\"}";
+            //string myData = "{\"to\": \"+91" + MobileNo+ "\", \"body\":\"" + OTPCode + " is your verification code.\"}";
+            string myData = "{\"to\": \"+91" + MobileNo + "\", \"body\":\"" + OTPCode + " is your verification code.\", \"routingGroup\":\"ECONOMY\"}";
             ///////////// BULKSMS - USERNAME & PASSWORD
 
             // This URL is used for sending messages
