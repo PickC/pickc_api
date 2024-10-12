@@ -18,7 +18,7 @@ namespace appify.Business
             this.repository = repository;
         }
 
-        public bool DeleteLookUp(short lookupID)
+        public bool DeleteLookUp(long lookupID)
         {
             return repository.DeleteLookUp(lookupID);
         }
@@ -48,6 +48,10 @@ namespace appify.Business
             return repository.GetLookUp(lookupID);
         }
 
+        public Lookup GetLookUp(string lookupCode, string category)
+        {
+            return repository.GetLookUp(lookupCode, category);
+        }
         public bool HasLookUp(short lookupID)
         {
             throw new NotImplementedException();

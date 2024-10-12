@@ -20,5 +20,6 @@ namespace appify.models
         public string OutputJSON { get; set; }
         public DateTime EventTime { get; set; }
         public string AppName { get; set; }
+        public string Version { get; set; }
     }
 }

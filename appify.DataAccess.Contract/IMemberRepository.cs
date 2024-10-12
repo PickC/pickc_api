@@ -41,5 +41,6 @@ namespace appify.DataAccess.Contract
         public MemberBanner memberBannerGet(long MemberID);
         public List<MemberBanner> memberBannerList();
         public List<MemberBanner> memberBannerListByVendor(long VendorID);
+        public MemberSMSSetting memberSMSSettingGet(long VendorID);
     }
 }

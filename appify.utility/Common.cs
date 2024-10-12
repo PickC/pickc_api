@@ -69,24 +69,24 @@ namespace appify.utility
                 Int64 CustomerID = request.Headers["CustomerID"].Count > 0 ? Int64.Parse(request.Headers["CustomerID"]) : 0;
                 string IPAddress = request.Headers["IPAddress"].Count > 0 ? request.Headers["IPAddress"] : "Not Found";
                 string AppName = request.Headers["AppName"].Count > 0 ? request.Headers["AppName"] : "Not Found";
-                
+                string module = request.Headers["module"].Count > 0 ? request.Headers["module"] : "Not Found";
+                string Version = request.Headers["appify-version"].Count > 0 ? request.Headers["appify-version"] : "Not Found";
+
                 eventLog = new EventLogs
                 {
                     EventType = eventType,
                     VendorID = VendorID,
                     CustomerID = CustomerID,
                     Source = url,
-                    Module = AppName,
+                    Module = module,
                     IPAddress = IPAddress,
                     EventLog = eventLogStatus,
                     InputJSON = Common.ConvertObjectToJson(inputData),
                     OutputJSON = Common.ConvertObjectToJson(outputData),
                     EventTime = DateTime.Now,
-                    AppName = AppName
+                    AppName = AppName,
+                    Version = Version
                 };
-
- 
-                 
 
             }
             catch (Exception ex)
@@ -108,6 +108,8 @@ namespace appify.utility
                 Int64 CustomerID = request.Headers["CustomerID"].Count > 0 ? Int64.Parse(request.Headers["CustomerID"]) : 0;
                 string IPAddress = request.Headers["IPAddress"].Count > 0 ? request.Headers["IPAddress"] : "Not Found";
                 string AppName = request.Headers["AppName"].Count > 0 ? request.Headers["AppName"] : "Not Found";
+                string module = request.Headers["module"].Count > 0 ? request.Headers["module"] : "Not Found";
+                string Version = request.Headers["appify-version"].Count > 0 ? request.Headers["appify-version"] : "Not Found";
 
                 eventLog = new EventLogs
                 {
@@ -115,13 +117,14 @@ namespace appify.utility
                     VendorID = VendorID,
                     CustomerID = CustomerID,
                     Source = url,
-                    Module = AppName,
+                    Module = module,
                     IPAddress = IPAddress,
                     EventLog = eventLogStatus,
                     InputJSON = Common.ConvertObjectToJson(inputData),
                     OutputJSON = Common.ConvertObjectToJson(outputData),
                     EventTime = DateTime.Now,
-                    AppName = AppName
+                    AppName = AppName,
+                    Version = Version
                 };
 
                 result = eventLogBusiness.eventLogAdd(eventLog);

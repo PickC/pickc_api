@@ -45,6 +45,27 @@ namespace appify.web.api.Controllers
         /// gets Product items information based on Vendor ID
         /// </summary>
         /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Gets Product items information based on Vendor ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1847
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Gets Product List New Item information based on Vendor ID
+        /// 
+        /// -----------------------------------------------------------------------------------------
         /// Sample request JSON :
         /// 
         ///     {
@@ -401,7 +422,9 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// This END POINT JUST FOR TESTING DIFFERENT FUCNTIONS
+        /// </summary>
         [HttpPost]
         [Route("generatetoken")]
         [MapToApiVersion("1.0")]

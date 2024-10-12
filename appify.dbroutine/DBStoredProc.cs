@@ -278,7 +278,7 @@ namespace appify.dbroutine
         public const string LISTMEMBERBANNERBYVENDOR = "[Operation].[usp_MemberBannerListByVendor]";
         public const string SAVEMEMBERBANNER = "[Operation].[usp_MemberBannerSave]";
         public const string SELECTMEMBERBANNER = "[Operation].[usp_MemberBannerSelect]";
-
+        public const string SELECTMEMBERSMSSETTING = "[Operation].[usp_MemberSmsSetting]";
         /// <summary>
         /// [Audit].[EventLog]
         /// </summary>

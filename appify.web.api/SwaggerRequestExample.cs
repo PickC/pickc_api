@@ -153,7 +153,13 @@ namespace appify.web.api
 
     public class ParamLookup
     {
-        public short lookupID { get; set; }
+        public long lookupID { get; set; }
+    }
+
+    public class ParamLookupCode
+    {
+        public string lookupCode { get; set; }
+        public string category { get; set; }
     }
 
     public class ParamLookupCategory

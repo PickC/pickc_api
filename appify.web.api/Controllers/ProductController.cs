@@ -34,7 +34,128 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
         }
 
-
+        /// <summary>
+        /// Add/Update a Product
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "productID": 1093,
+        ///       "vendorID": 1058,
+        ///       "productName": "Cotton Shirt",
+        ///       "description": "Cotton Shirt",
+        ///       "category": 3641,
+        ///       "brand": "Kf2",
+        ///       "size": "string",
+        ///       "color": "6 color",
+        ///       "uom": 3502,
+        ///       "weight": 100,
+        ///       "priceID": 2181,
+        ///       "currency": "INR",
+        ///       "imageID": 1411,
+        ///       "isActive": true,
+        ///       "isAvailable": true,
+        ///       "stockQty": 0,
+        ///       "createdOn": "2024-05-01T12:21:24.754Z",
+        ///       "modifiedOn": "2024-05-01T12:21:24.754Z",
+        ///       "hsnCode": "string",
+        ///       "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_B58001A3-2429-486F-A781-///D    B8 3A60E8A33-4419-000004E3B3BF730E.jpg",
+        ///       "isNew": true,
+        ///       "prices": [
+        ///         {
+        ///           "priceID": 1281,
+        ///           "productID": 1093,
+        ///           "price": 6,
+        ///           "discount": 0,
+        ///           "discountType": 0,
+        ///           "effectiveDate": "2024-05-01T12:21:24.754Z",
+        ///           "isActive": true,
+        ///           "size": "m",
+        ///           "stock": 3,
+        ///           "weight": 100
+        ///         }
+        ///       ],
+        ///       "images": [
+        ///         {
+        ///           "imageID": 1411,
+        ///           "productID": 1093,
+        ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_B58001A3-2429-486F-A781-///D    B8 3A60E8A33-4419-000004E3B3BF730E.jpg",
+        ///           "isActive": true,
+        ///           "contentType": 0,
+        ///           "createdOn": "2024-05-01T12:21:24.754Z"
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "PRODUCT SUCCESSFUL!",
+        ///       "data": {
+        ///         "prices": [
+        ///           {
+        ///             "priceID": 2181,
+        ///             "productID": 1093,
+        ///             "price": 60,
+        ///             "discount": 0,
+        ///             "discountType": 0,
+        ///             "effectiveDate": "2024-05-01T00:00:00",
+        ///             "isActive": true,
+        ///             "size": "M",
+        ///             "stock": 3,
+        ///             "weight": 1001
+        ///           }
+        ///         ],
+        ///         "images": [
+        ///           {
+        ///             "imageID": 1411,
+        ///             "productID": 1093,
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_B58001A3-2429-486F-A781-///D  B8 3A60E8A33-4419-000004E3B3BF730E.jpg",
+        ///             "isActive": true,
+        ///             "contentType": 0,
+        ///             "createdOn": "2023-12-07T19:37:15.113"
+        ///           },
+        ///           {
+        ///         "imageID": 1412,
+        ///             "productID": 1093,
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer////i    ma ge_cropper_7A720428-1EAE-4AC2-9B42-7DE46FAEE9D6-4419-000004E3BF859451.jpg",
+        ///             "isActive": true,
+        ///             "contentType": 0,
+        ///             "createdOn": "2023-12-07T19:37:15.2"
+        ///           }
+        ///         ],
+        ///         "productID": 1093,
+        ///         "vendorID": 1058,
+        ///         "productName": "Cotton Shirt",
+        ///         "description": "Cotton Shirt",
+        ///         "category": 3641,
+        ///         "brand": "Kf2",
+        ///         "size": "string",
+        ///         "color": "6 color",
+        ///         "uom": 3502,
+        ///         "weight": 100,
+        ///         "priceID": 2181,
+        ///         "currency": "INR",
+        ///         "imageID": 1411,
+        ///         "isActive": true,
+        ///         "isAvailable": true,
+        ///         "stockQty": 0,
+        ///         "createdOn": "2024-05-01T12:21:24.754Z",
+        ///         "modifiedOn": "2024-05-01T12:21:24.754Z",
+        ///         "hsnCode": "string",
+        ///         "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_B58001A3-2429-486F-A781-///D  B8 3A60E8A33-4419-000004E3B3BF730E.jpg",
+        ///         "isNew": true
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">PRODUCT SUCCESSFUL </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> Add(Product product)
@@ -108,7 +229,21 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove a Product
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "productID": 1003
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">PRODUCT REMOVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
         public IActionResult Remove(ParamProduct itemData)
@@ -151,8 +286,53 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("getitem")]
+    /// <summary>
+    /// Remove an Address
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1003
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH PRODUCT",
+    ///       "data": {
+    ///         "productID": 1003,
+    ///         "vendorID": 1001,
+    ///         "productName": "White Round neck Tshirts",
+    ///         "description": "plain white t shirts round neck full and half sleeves ",
+    ///         "category": 3608,
+    ///         "brand": "Qikink Fashion ",
+    ///         "size": "",
+    ///         "color": "white ",
+    ///         "uom": 3500,
+    ///         "weight": 0,
+    ///         "priceID": 1007,
+    ///         "currency": "INR",
+    ///         "imageID": 1009,
+    ///         "isActive": true,
+    ///         "isAvailable": true,
+    ///         "stockQty": 0,
+    ///         "createdOn": null,
+    ///         "modifiedOn": "2023-09-21T09:38:16.513",
+    ///         "hsnCode": null,
+    ///         "imageName": null,
+    ///         "isNew": false
+    ///       }
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">GET PRODUCT - SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
         public IActionResult GetProduct(ParamProduct itemData)
         {
@@ -195,7 +375,80 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove an Address
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "productID": 1003
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH PRODUCT",
+        ///       "data": {
+        ///         "productID": 1003,
+        ///         "productName": "White Round neck Tshirts",
+        ///         "description": "plain white t shirts round neck full and half sleeves ",
+        ///         "category": 3608,
+        ///         "brand": "Qikink Fashion ",
+        ///         "color": "white ",
+        ///         "uom": 3500,
+        ///         "currency": "INR",
+        ///         "isAvailable": true,
+        ///         "hsnCode": null,
+        ///         "isNew": false,
+        ///         "prices": [
+        ///           {
+        ///             "priceID": 1007,
+        ///             "price": 400,
+        ///             "discount": 0,
+        ///             "discountType": 0,
+        ///             "effectiveDate": "2023-09-06T00:00:00",
+        ///             "size": "M",
+        ///             "stock": 9,
+        ///             "weight": null
+        ///           },
+        ///           {
+        ///             "priceID": 1008,
+        ///             "price": 800,
+        ///             "discount": 0,
+        ///             "discountType": 0,
+        ///             "effectiveDate": "2023-09-06T00:00:00",
+        ///             "size": "L",
+        ///             "stock": 10,
+        ///             "weight": null
+        ///           },
+        ///           {
+        ///         "priceID": 1009,
+        ///             "price": 900,
+        ///             "discount": 0,
+        ///             "discountType": 0,
+        ///             "effectiveDate": "2023-09-06T00:00:00",
+        ///             "size": "XL",
+        ///             "stock": 22,
+        ///             "weight": null
+        ///           }
+        ///         ],
+        ///         "images": [
+        ///           {
+        ///             "imageID": 1009,
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693993789689.jpg"
+        ///           }
+        ///         ]
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET PRODUCT - SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("getitemnew")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetProductNew(ParamProduct itemData)
@@ -242,7 +495,76 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Get Product List by UserID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH PRODUCT LIST",
+        ///       "data": [
+        ///         {
+        ///           "productID": 1064,
+        ///           "vendorID": 1060,
+        ///           "productName": "Men's Slim Fit Casual Shirts",
+        ///           "description": "This Shirt comes in cotton fabric and is perfect for casual and formal wear.",
+        ///           "category": 1751,
+        ///           "brand": "I AM BACK ",
+        ///           "size": "",
+        ///           "color": "Beige ",
+        ///           "uom": 3502,
+        ///           "weight": 0,
+        ///           "priceID": 5649,
+        ///           "currency": "INR",
+        ///           "imageID": 1086,
+        ///           "isActive": true,
+        ///           "isAvailable": true,
+        ///           "stockQty": 0,
+        ///           "createdOn": null,
+        ///           "modifiedOn": "2024-09-30T15:44:43.447",
+        ///           "hsnCode": "t5678",
+        ///           "imageName": null,
+        ///           "isNew": false
+        ///         },
+        ///         {
+        ///           "productID": 1065,
+        ///           "vendorID": 1060,
+        ///           "productName": "Men's Casual Wear Shirt with Vertical Stripes ",
+        ///           "description": "This shirt is a perfect fit for both casual and formal wear, it comes in pure cotton fabric. A good to go for party wear a    s well.",
+        ///           "category": 3646,
+        ///           "brand": "I AM BACK ",
+        ///           "size": "",
+        ///           "color": "White and Grey",
+        ///           "uom": 3502,
+        ///           "weight": 0,
+        ///           "priceID": 5653,
+        ///           "currency": "INR",
+        ///           "imageID": 1087,
+        ///           "isActive": true,
+        ///           "isAvailable": true,
+        ///           "stockQty": 0,
+        ///           "createdOn": null,
+        ///           "modifiedOn": "2024-06-17T16:12:10.68",
+        ///           "hsnCode": "t8699",
+        ///           "imageName": null,
+        ///           "isNew": false
+        ///         }]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH PRODUCT LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
         public IActionResult List(ParamMemberUserID itemData)
@@ -288,7 +610,72 @@ namespace appify.web.api.Controllers
 
         }
 
-
+        /// <summary>
+        /// Get Product List ALL
+        /// </summary>
+        /// <remarks>
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///         {
+        ///           "statusCode": 200,
+        ///           "name": "SUCCESS_OK",
+        ///           "message": "FETCH PRODUCT LIST",
+        ///           "data": [
+        ///             {
+        ///               "productID": 1000,
+        ///               "vendorID": 1000,
+        ///               "productName": "Linen Sarees ",
+        ///               "description": "Linen wear",
+        ///               "category": 3607,
+        ///               "brand": "Dhaage Life",
+        ///               "size": "",
+        ///               "color": "Multi colour ",
+        ///               "uom": 3500,
+        ///               "weight": 0,
+        ///               "priceID": 1000,
+        ///               "currency": "INR",
+        ///               "imageID": 1000,
+        ///               "isActive": true,
+        ///               "isAvailable": true,
+        ///               "stockQty": 0,
+        ///               "createdOn": null,
+        ///               "modifiedOn": null,
+        ///               "hsnCode": null,
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+        ///               "isNew": false
+        ///             },
+        ///             {
+        ///               "productID": 1000,
+        ///               "vendorID": 1000,
+        ///               "productName": "Linen Sarees ",
+        ///               "description": "Linen wear",
+        ///               "category": 3607,
+        ///               "brand": "Dhaage Life",
+        ///               "size": "",
+        ///               "color": "Multi colour ",
+        ///               "uom": 3500,
+        ///               "weight": 0,
+        ///               "priceID": 1000,
+        ///               "currency": "INR",
+        ///               "imageID": 1000,
+        ///               "isActive": true,
+        ///               "isAvailable": true,
+        ///               "stockQty": 0,
+        ///               "createdOn": null,
+        ///               "modifiedOn": null,
+        ///               "hsnCode": null,
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992902396.jpg",
+        ///               "isNew": false
+        ///             }
+        ///             ]
+        ///         }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH PRODUCT LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("listall")]
         [MapToApiVersion("1.0")]
         public IActionResult ListAll()
@@ -333,9 +720,69 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+    /// <summary>
+    /// Get Product's Price List
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1003
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH PRODUCT-PRICE LIST",
+    ///       "data": [
+    ///         {
+    ///           "priceID": 1007,
+    ///           "productID": 1003,
+    ///           "price": 400,
+    ///           "discount": 0,
+    ///           "discountType": 0,
+    ///           "effectiveDate": "2023-09-06T00:00:00",
+    ///           "isActive": true,
+    ///           "size": "M",
+    ///           "stock": 9,
+    ///           "weight": null
+    ///         },
+    ///         {
+    ///           "priceID": 1008,
+    ///           "productID": 1003,
+    ///           "price": 800,
+    ///           "discount": 0,
+    ///           "discountType": 0,
+    ///           "effectiveDate": "2023-09-06T00:00:00",
+    ///           "isActive": true,
+    ///           "size": "L",
+    ///           "stock": 10,
+    ///           "weight": null
+    ///         },
+    ///         {
+    ///         "priceID": 1009,
+    ///           "productID": 1003,
+    ///           "price": 900,
+    ///           "discount": 0,
+    ///           "discountType": 0,
+    ///           "effectiveDate": "2023-09-06T00:00:00",
+    ///           "isActive": true,
+    ///           "size": "XL",
+    ///           "stock": 22,
+    ///           "weight": null
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH PRODUCT-PRICE LIST </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
 
-
-        [HttpPost, Route("price/list")]
+    [HttpPost, Route("price/list")]
         [MapToApiVersion("1.0")]
         public IActionResult ListProductPrice(ParamProduct itemData)
         {
@@ -377,8 +824,24 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("price/getprice")]
+    /// <summary>
+    /// Get Product's Price
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1003,
+    ///       "priceID": 1010,
+    ///       "size": "XXL"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH PRODUCT-PRICE </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("price/getprice")]
         [MapToApiVersion("1.0")]
         public IActionResult GetProductPrice(ParamProductPrice itemData)
         {
@@ -422,229 +885,397 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("price/save")]
-        [MapToApiVersion("1.0")]
-        public IActionResult AddProductPrice(ProductPrice price)
+    /// <summary>
+    /// Add/Update Product's Price
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "priceID": 1010,
+    ///       "productID": 1003,
+    ///       "price": 1100.00,
+    ///       "discount": 0.00,
+    ///       "discountType": 0,
+    ///       "effectiveDate": "2024-09-30T18:42:32.625Z",
+    ///       "isActive": true,
+    ///       "size": "string",
+    ///       "stock": 10,
+    ///       "weight": 130
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCT-PRICE SAVED SUCCESSFULLY",
+    ///       "data": true
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PRODUCT-PRICE SAVED SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("price/save")]
+    [MapToApiVersion("1.0")]
+    public IActionResult AddProductPrice(ProductPrice price)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            rm = new ResponseMessage();
+            var result = priceBusiness.SavePrice(price);
+            if (result)
             {
-                rm = new ResponseMessage();
-                var result = priceBusiness.SavePrice(price);
-                if (result)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "PRODUCT-PRICE SAVED SUCCESSFULLY";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED SUCCESSFULLY", reqHeader, controllerURL, price, result, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED - NO CONTENT", reqHeader, controllerURL, price, null, rm.message));
-                }
-
-
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCT-PRICE SAVED SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                rm.data = result;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED SUCCESSFULLY", reqHeader, controllerURL, price, result, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED - ERROR", reqHeader, controllerURL, price, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED - NO CONTENT", reqHeader, controllerURL, price, null, rm.message));
             }
-            return Ok(rm);
+
 
         }
-
-        [HttpPost, Route("price/remove")]
-        [MapToApiVersion("1.0")]
-        public IActionResult RemoveProductPrice(ParamProductPrice itemData)
+        catch (Exception ex)
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic data = jsonData;
-            try
-            {
-                rm = new ResponseMessage();
-                var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
 
-                if (result)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "PRODUCT-PRICE REMOVED";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED - ERROR", reqHeader, controllerURL, price, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Remove Product's Price
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1003,
+    ///       "priceID": 1010,
+    ///       "size": "XXL"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCT-PRICE REMOVED",
+    ///       "data": true
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PRODUCT-PRICE REMOVED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("price/remove")]
+    [MapToApiVersion("1.0")]
+    public IActionResult RemoveProductPrice(ParamProductPrice itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //dynamic data = jsonData;
+        try
+        {
+            rm = new ResponseMessage();
+            var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
+
+            if (result)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCT-PRICE REMOVED";
+                rm.name = StatusName.ok;
+                rm.data = result;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
             }
-            return Ok(rm);
-
         }
-
-
-        [HttpPost, Route("image/list")]
-        [MapToApiVersion("1.0")]
-        public IActionResult ListProductImage(ParamProduct itemData)
+        catch (Exception ex)
         {
-            //dynamic data = jsonData;
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                var items = imageBusiness.GetProductImages(itemData.productID);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT-IMAGE LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
-            }
-            catch (Exception ex)
-            {
 
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+
+    /// <summary>
+    /// Get Product's Image List
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1000,
+    ///       "imageID": 1000
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH PRODUCT-IMAGE",
+    ///       "data": {
+    ///         "imageID": 1000,
+    ///         "productID": 1000,
+    ///         "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+    ///         "isActive": false,
+    ///         "contentType": 0,
+    ///         "createdOn": "2023-09-06T02:36:54.12"
+    ///       }
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH PRODUCT-IMAGE </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost, Route("image/list")]
+    [MapToApiVersion("1.0")]
+    public IActionResult ListProductImage(ParamProduct itemData)
+    {
+        //dynamic data = jsonData;
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            var items = imageBusiness.GetProductImages(itemData.productID);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT-IMAGE LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+            }
+            else
+            {
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
             }
-            return Ok(rm);
-
         }
-
-        [HttpPost, Route("image/getimage")]
-        [MapToApiVersion("1.0")]
-        public IActionResult GetProductImage(ParamProductImage itemData)
+        catch (Exception ex)
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic data = jsonData;
-            try
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Get Product's Image
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1000,
+    ///       "imageID": 1000
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH PRODUCT-IMAGE",
+    ///       "data": {
+    ///         "imageID": 1000,
+    ///         "productID": 1000,
+    ///         "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+    ///         "isActive": false,
+    ///         "contentType": 0,
+    ///         "createdOn": "2023-09-06T02:36:54.12"
+    ///       }
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH PRODUCT-IMAGE </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost, Route("image/getimage")]
+    [MapToApiVersion("1.0")]
+    public IActionResult GetProductImage(ParamProductImage itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //dynamic data = jsonData;
+        try
+        {
+            rm = new ResponseMessage();
+            var item = imageBusiness.GetProductImage(itemData.imageID, itemData.productID);
+
+            if (item != null)
             {
-                rm = new ResponseMessage();
-                var item = imageBusiness.GetProductImage(itemData.imageID, itemData.productID);
-
-                if (item != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT-IMAGE";
-                    rm.name = StatusName.ok;
-                    rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
-
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT-IMAGE";
+                rm.name = StatusName.ok;
+                rm.data = item;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
             }
-            return Ok(rm);
 
         }
-
-        [HttpPost, Route("image/save")]
-        [MapToApiVersion("1.0")]
-        public IActionResult AddProductImage(ProductImage item)
+        catch (Exception ex)
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT-IMAGE - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Adds/Update an Product Image
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "imageID": 1000,
+    ///       "productID": 1000,
+    ///       "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1693992886365.jpg",
+    ///       "isActive": true,
+    ///       "contentType": 0,
+    ///       "createdOn": "2024-09-30T18:28:24.225Z"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCT-IMAGE SAVED SUCCESSFULLY",
+    ///       "data": true
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PRODUCT-IMAGE SAVED SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost, Route("image/save")]
+    [MapToApiVersion("1.0")]
+    public IActionResult AddProductImage(ProductImage item)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            var result = imageBusiness.AddProductImage(item);
+            if (result)
             {
-                rm = new ResponseMessage();
-                var result = imageBusiness.AddProductImage(item);
-                if (result)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "PRODUCT-IMAGE SAVED SUCCESSFULLY";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
-                }
-
-
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCT-IMAGE SAVED SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                rm.data = result;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
             }
-            return Ok(rm);
+
 
         }
+        catch (Exception ex)
+        {
 
-        [HttpPost, Route("image/remove")]
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Remove Product's Image
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "productID": 1000,
+    ///       "imageID": 1000
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCT-IMAGE REMOVED",
+    ///       "data": true
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PRODUCT-IMAGE REMOVED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    ///
+    [HttpPost, Route("image/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveProductImage(ParamProductImage itemData)
         {
@@ -877,81 +1508,117 @@ namespace appify.web.api.Controllers
             }
         }
 
-        /// <summary>
-        /// Get New Product List By Vendor
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     POST /Get List of New Products
-        ///     {
-        ///         "VendorID": 1004
-        ///     }
-        /// </remarks>
-        /// <param name="itemData"></param>
-        /// <returns>Response Message Object Type : ProductMaster</returns>
-        /// <response code="200">PRODUCTS LIST WITH NEW STATUS</response>
-        /// <response code="500">Returns Error ResponseMessages </response> 
+    /// <summary>
+    /// Get New Product List By Vendor
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    /// POST /Get List of New Products
+    ///     {
+    ///       "userID": 0,
+    ///       "isNew": true
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCTS LIST WITH NEW STATUS",
+    ///       "data": [
+    ///         {
+    ///           "productID": 1711,
+    ///           "productName": "LEE MORGAN TRENDY SHIRT",
+    ///           "description": "Product Details : \nFit : Regular\nFabric : Cotton Blend\nSleeve : Full Sleeve\nPattern : Solid\nColour : Light Green \    nF abric //care :/ Machine Wash.",
+    ///           "brand": "LEE MORGAN ",
+    ///           "price": 949,
+    ///           "isNew": true
+    ///         },
+    ///         {
+    ///           "productID": 1715,
+    ///           "productName": "Trendy Double Pocket Light Grey Shirt For Men's ",
+    ///           "description": "Product Details : \nFit : Regular\nFabric : Cotton Blend\nSleeve : Full Sleeve\nPattern : Solid\nColour : Light Grey\  nF abric //care : /Machine Wash.",
+    ///           "brand": "LEE MORGAN ",
+    ///           "price": 949,
+    ///           "isNew": true
+    ///         }]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <param name="itemData"></param>
+    /// <returns>Response Message Object Type : ProductMaster</returns>
+    /// <response code="200">PRODUCTS LIST WITH NEW STATUS</response>
+    /// <response code="500">Returns Error ResponseMessages </response> 
 
-        [HttpPost, Route("NewProductsList")]
-        [MapToApiVersion("1.0")]
-        public IActionResult GetNewProductsList(ParamNewProductsByMember itemData)
+    [HttpPost, Route("NewProductsList")]
+    [MapToApiVersion("1.0")]
+    public IActionResult GetNewProductsList(ParamNewProductsByMember itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            rm = new ResponseMessage();
+            var result = this.productBusiness.GetNewProductsList(itemData.userID,itemData.IsNew );
+            if (result != null)
             {
-                rm = new ResponseMessage();
-                var result = this.productBusiness.GetNewProductsList(itemData.userID,itemData.IsNew );
-                if (result != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "PRODUCTS LIST WITH NEW STATUS";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCTS LIST WITH NEW STATUS SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TransacPRODUCTS LIST WITH NEW STATUS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "PRODUCTS LIST WITH NEW STATUS";
+                rm.name = StatusName.ok;
+                rm.data = result;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCTS LIST WITH NEW STATUS SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TransacPRODUCTS LIST WITH NEW STATUS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TransacPRODUCTS LIST WITH NEW STATUS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
             }
-
-            return Ok(rm);
         }
-        /// <summary>
-        /// Update New Product By ProductID and IsNew.
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        /// 
-        ///     Method Type : POST
-        ///     
-        ///     {
-        ///         "ProductID": 1004,
-        ///         "IsNew":true
-        ///     }
-        /// 
-        /// </remarks>
-        /// <param name="itemData"></param>
-        /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
-        /// <response code="500">Returns Error ResponseMessages </response> 
-        [HttpPost, Route("UpdateProductAsNew")]
+        catch (Exception ex)
+        {
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("TransacPRODUCTS LIST WITH NEW STATUS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+
+        return Ok(rm);
+    }
+    /// <summary>
+    /// Update New Product By ProductID and IsNew.
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     Method Type : POST
+    ///     
+    ///     {
+    ///         "ProductID": 1004,
+    ///         "IsNew":true
+    ///     }
+    /// 
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PRODUCT NEW STATUS UPDATED SUCCESSFULLY!",
+    ///       "data": true
+    ///     }
+    /// 
+    /// </remarks>
+    /// <param name="itemData"></param>
+    /// <returns>Boolean value</returns>
+    /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+    /// <response code="500">Returns Error ResponseMessages </response> 
+    [HttpPost, Route("UpdateProductAsNew")]
         [MapToApiVersion("1.0")]
         public IActionResult UpdateNewProducts(List<ParamNewProduct> itemData)
         {
@@ -1009,10 +1676,32 @@ namespace appify.web.api.Controllers
         ///         "ParentID": 1001
         ///     }
         /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH PRODUCT MASTER CATEGORIES",
+        ///       "data": [
+        ///         {
+        ///           "categoryID": 1026,
+        ///           "category": "Home Medical Supplies and Equipment "
+        ///         },
+        ///         {
+        ///           "categoryID": 1027,
+        ///           "category": "Personal Care"
+        ///         },
+        ///         {
+        ///         "categoryID": 1028,
+        ///           "category": "Health Care "
+        ///         }
+        ///       ]
+        ///     }
+        /// 
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="200">FETCH PRODUCT MASTER CATEGORIES!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("getmastercategories")]
@@ -1071,10 +1760,31 @@ namespace appify.web.api.Controllers
         ///         "ParentID": 1001
         ///     }
         /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH CATEGORIES BY PARENTID",
+        ///       "data": [
+        ///         {
+        ///           "categoryID": 1026,
+        ///           "category": "Home Medical Supplies and Equipment ",
+        ///           "parentID": 1001,
+        ///           "fullCategory": "Health and Personal Care>>Home Medical Supplies and Equipment "
+        ///         },
+        ///         {
+        ///           "categoryID": 1027,
+        ///           "category": "Personal Care",
+        ///           "parentID": 1001,
+        ///           "fullCategory": "Health and Personal Care>>Personal Care"
+        ///         }]
+        ///     }
+        /// 
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="200">FETCH CATEGORIES BY PARENTID!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("getcategoriesbyid")]
@@ -1121,67 +1831,82 @@ namespace appify.web.api.Controllers
 
         }
 
-        /// <summary>
-        /// Get Categories Name By ParentID
-        /// </summary>
-        /// <remarks>
-        /// Sample request:
-        /// 
-        ///     Method Type : POST
-        ///     
-        ///     {
-        ///         "ParentID": 1248
-        ///     }
-        /// 
-        /// </remarks>
-        /// <param name="itemData"></param>
-        /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
-        /// <response code="500">Returns Error ResponseMessages </response> 
+    /// <summary>
+    /// Get Categories Name By ParentID
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    /// 
+    ///     Method Type : POST
+    ///     
+    ///     {
+    ///         "ParentID": 1248
+    ///     }
+    /// 
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH CATEGORIES BY PARENTID",
+    ///       "data": [
+    ///         {
+    ///           "parentID": 1000,
+    ///           "parentName": "Beauty",
+    ///           "categoryName": "Kajal and Kohls"
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <param name="itemData"></param>
+    /// <returns>Boolean value</returns>
+    /// <response code="200">FETCH CATEGORIES BY PARENTID!</response>
+    /// <response code="500">Returns Error ResponseMessages </response> 
 
-        [HttpPost, Route("getcategoryname")]
-        [MapToApiVersion("1.0")]
-        public IActionResult GetCategorieName(ParamParent itemData)
+    [HttpPost, Route("getcategoryname")]
+    [MapToApiVersion("1.0")]
+    public IActionResult GetCategorieName(ParamParent itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //dynamic data = jsonData;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic data = jsonData;
-            try
+            rm = new ResponseMessage();
+            var item = this.productBusiness.GetCategorieName(itemData.parentID);
+            if (item != null)
             {
-                rm = new ResponseMessage();
-                var item = this.productBusiness.GetCategorieName(itemData.parentID);
-                if (item != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH CATEGORIES BY PARENTID";
-                    rm.name = StatusName.ok;
-                    rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
-
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH CATEGORIES BY PARENTID";
+                rm.name = StatusName.ok;
+                rm.data = item;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
             }
-            return Ok(rm);
 
         }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
 
         /// <summary>
         /// Save Selected Parent Categories By VendorID
@@ -1213,9 +1938,8 @@ namespace appify.web.api.Controllers
         ///     }
         /// 
         /// </remarks>
-        /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="200">VENDOR SELECTED PARENT CATEGORIES SAVED SUCCESSFULLY!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("savevendorcategories")]
@@ -1277,11 +2001,46 @@ namespace appify.web.api.Controllers
         ///     {
         ///         "userID": 1060
         ///     }
+        ///     
+        /// Sample response JSON :
         /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH SELECTED PARENT CATEGORIES",
+        ///       "data": [
+        ///         {
+        ///           "userID": 1060,
+        ///           "parentCatID": 1000,
+        ///           "isActive": true
+        ///         },
+        ///         {
+        ///           "userID": 1060,
+        ///           "parentCatID": 1001,
+        ///           "isActive": false
+        ///         },
+        ///         {
+        ///         "userID": 1060,
+        ///           "parentCatID": 1002,
+        ///           "isActive": true
+        ///         },
+        ///         {
+        ///         "userID": 1060,
+        ///           "parentCatID": 4191,
+        ///           "isActive": false
+        ///         },
+        ///         {
+        ///         "userID": 1060,
+        ///           "parentCatID": 1003,
+        ///           "isActive": true
+        ///         }
+        ///       ]
+        ///     }
+        ///     
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">PRODUCT NEW STATUS UPDATED SUCCESSFULLY!</response>
+        /// <response code="200">FETCH SELECTED PARENT CATEGORIES!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
         [HttpPost, Route("getvendorcategories")]
