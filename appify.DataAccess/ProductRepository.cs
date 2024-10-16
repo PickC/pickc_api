@@ -252,10 +252,10 @@ namespace appify.DataAccess
 
             return item;
         }
-        public List<ProductCategoryName> GetCategorieName(long parentID)
+        public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
             List<ProductCategoryName> item = new List<ProductCategoryName>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESNAME, parentID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESNAME, categoryID);
             item = DataTableHelper.ConvertDataTable<ProductCategoryName>(ds.Tables[0]);
 
             return item;

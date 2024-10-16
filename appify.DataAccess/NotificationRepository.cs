@@ -69,6 +69,14 @@ namespace appify.DataAccess
 
             return items;
         }
+        public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID)
+        {
+            SMSNotificationTemplate items = new SMSNotificationTemplate();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSNOTIFICATIONTEMPLATE, TemplateID);
+            items = DataTableHelper.ConvertDataTable<SMSNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
+
+            return items;
+        }
 
         public bool IsReadNotification(long NotificationID)
         {
@@ -194,6 +202,23 @@ namespace appify.DataAccess
             List<EmailNotificationHeader> items = new List<EmailNotificationHeader>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERDETAILS, VendorID, OrderID);
             items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]);
+
+            return items;
+        }
+        public SMSSystemConfigSetting GetSMSSystemConfig()
+        {
+            SMSSystemConfigSetting items = new SMSSystemConfigSetting();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
+            items = DataTableHelper.ConvertDataTable<SMSSystemConfigSetting>(ds.Tables[0]).FirstOrDefault();
+
+            return items;
+        }
+
+        public List<SMSConfig> GetSMSConfig()
+        {
+            List<SMSConfig> items = new List<SMSConfig>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
+            items = DataTableHelper.ConvertDataTable<SMSConfig>(ds.Tables[0]).ToList();
 
             return items;
         }
