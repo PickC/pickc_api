@@ -46,7 +46,10 @@ namespace appify.Business
         {
             return repository.GetNotificationTemplate(TemplateID);
         }
-
+        public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID)
+        {
+            return repository.GetSMSNotificationTemplate(TemplateID);
+        }
         public bool IsReadNotification(long NotificationID)
         {
             return repository.IsReadNotification(NotificationID);
@@ -71,6 +74,14 @@ namespace appify.Business
         public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID)
         {
             return repository.GetMemberDetails(MemberID, OrderID);
+        }
+        public SMSSystemConfigSetting GetSMSSystemConfig()
+        {
+            return repository.GetSMSSystemConfig();
+        }
+        public List<SMSConfig> GetSMSConfig()
+        {
+            return repository.GetSMSConfig();
         }
     }
 }

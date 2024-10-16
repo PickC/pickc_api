@@ -134,9 +134,9 @@ namespace appify.Business
         {
             return repository.GetCategoriesList(parentID);
         }
-        public List<ProductCategoryName> GetCategorieName(long parentID)
+        public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
-            return repository.GetCategorieName(parentID);
+            return repository.GetCategorieName(categoryID);
         }
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories)
         {

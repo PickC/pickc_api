@@ -53,6 +53,16 @@ namespace appify.models
 
     }
 
+    public class SMSNotificationTemplate
+    {
+        public Int64 SMSTemplateID { get; set; }
+        public bool IsSMS { get; set; }
+        public string MessageTitle { get; set; }
+        public string MessageBody { get; set; }
+        public bool IsActive { get; set; }
+
+    }
+
     public class VendorDetails
     {
         public Int64 VendorID { get; set; }
@@ -85,10 +95,21 @@ namespace appify.models
             OrderCancellationCustomerVendor = 1012, 
             OrderCancellationCustomer = 1013,
             OrderCancellationCustomerOpps = 1014,
+            BackinStock = 1015,
+            OrderShippedVendor = 1016,
+            OrderShippedCustomer =1017,
+            OrderShippedOpps =1018,
+            OrderOutForDelivery = 1019,
+            OrderDeliveredVendor = 1020,
+            OrderDeliveredCustomer =1021,
+            OrderDeliveredOpps =1022,
+            OrderDelayVendor=1023,
+            OrderDelayCustomer=1024,
+            OrderDelayOpps=2025
             //RefundProcessed = 1012,
             //OrderReceived = 1013,
             //Feedbackorrating = 1014,
-            //BackinStock = 1015,
+
 
             //ShippingDeliveryUpdates = 1004,
             //DeliveryUpdates = 1005,
@@ -115,6 +136,8 @@ namespace appify.models
             OrderReceived = 1013,
             Feedbackorrating = 1014,
             BackinStock = 1015,
+            OTP = 1016,
+            SuccessfulSignupCustomer = 1017
         }
     }
 
@@ -161,5 +184,19 @@ namespace appify.models
         public string? CustomerEmail { get; set; }
         public string CourierName { get; set; }
         public string TrackURL { get; set; }
+    }
+
+    public class SMSSystemConfigSetting
+    {
+        public string userid { set; get; }
+        public string password { set; get; }
+        public string sender { get; set; }
+        public string peid {  set; get; }
+    }
+
+    public class SMSConfig
+    {
+        public string SettingKey { get; set; }
+        public string SettingValue { set; get; }
     }
 }

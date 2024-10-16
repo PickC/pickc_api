@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Newtonsoft.Json.Linq;
+using Razorpay.Api;
 using static appify.models.NotificationType;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -303,6 +304,7 @@ namespace appify.web.api.Controllers
                     if(UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
                     {
                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
+                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
@@ -311,6 +313,7 @@ namespace appify.web.api.Controllers
                     if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
                     {
                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
+                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                     }
@@ -366,10 +369,9 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("generateotp")]
         [MapToApiVersion("1.0")]
-        public IActionResult GenerateOTP(string MobileNo)
+        public async Task<IActionResult> GenerateOTP(string MobileNo)
         {
             var reqHeader = Request;
-            string result = "";
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -378,9 +380,9 @@ namespace appify.web.api.Controllers
                 var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
 
                 string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
-                result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                //result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
                 //TODO: to implement the above dashboard information
-
                 if (OTPValue != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -388,7 +390,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = OTPValue;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, null, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -397,7 +399,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO GENERATE OTP", reqHeader, controllerURL, null, result, rm.message));
+                    await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
                 }
 
             }
@@ -407,7 +409,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP GERENATED - ERROR", reqHeader, controllerURL, null, result, rm.message));
+                await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
         }
