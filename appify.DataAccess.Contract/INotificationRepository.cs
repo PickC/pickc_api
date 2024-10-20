@@ -20,12 +20,14 @@ namespace appify.DataAccess.Contract
 
 
         public NotificationTemplate GetNotificationTemplate(long TemplateID);
-
+        public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID);
         public bool IsReadNotification(long NotificationID);
         public bool addNotificationMessage(PushNotificationMessage pushNotification);
         public string unReadCountNotification(long UserID);
         public VendorDetails GetVendorDetails(long VendorID, long OrderID);
         public EmailNotificationTemplate GetEmailNotificationTemplate(long TemplateID);
         public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID);
+        public SMSSystemConfigSetting GetSMSSystemConfig();
+        public List<SMSConfig> GetSMSConfig();
     }
 }

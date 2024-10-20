@@ -174,8 +174,7 @@ namespace appify.models
     public partial class ProductCategoryName
     {
         public long ParentID { get; set; }
-        public string ParentName { get; set; }
-        public string CategoryName { get; set; }
+        public string BreadCrumb { get; set; }
     }
     public partial class HomePageProductByCategory
     {

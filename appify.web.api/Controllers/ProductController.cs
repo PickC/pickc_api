@@ -1845,18 +1845,17 @@ namespace appify.web.api.Controllers
     /// 
     /// Sample response JSON :
     /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "FETCH CATEGORIES BY PARENTID",
-    ///       "data": [
-    ///         {
-    ///           "parentID": 1000,
-    ///           "parentName": "Beauty",
-    ///           "categoryName": "Kajal and Kohls"
-    ///         }
-    ///       ]
-    ///     }
+    ///        {
+    ///          "statusCode": 200,
+    ///          "name": "SUCCESS_OK",
+    ///          "message": "FETCH CATEGORIES BY PARENTID",
+    ///          "data": [
+    ///            {
+    ///              "parentID": 1000,
+    ///              "breadCrumb": "Beauty>>Make-up>>Eyes>>Kajal and Kohls"
+    ///            }
+    ///          ]
+    ///        }
     /// 
     /// </remarks>
     /// <param name="itemData"></param>
@@ -1866,7 +1865,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("getcategoryname")]
     [MapToApiVersion("1.0")]
-    public IActionResult GetCategorieName(ParamParent itemData)
+    public IActionResult GetCategorieName(ParamCatID itemData)
     {
         var reqHeader = Request;
         string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1874,7 +1873,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            var item = this.productBusiness.GetCategorieName(itemData.parentID);
+            var item = this.productBusiness.GetCategorieName(itemData.categoryID);
             if (item != null)
             {
                 rm.statusCode = StatusCodes.OK;

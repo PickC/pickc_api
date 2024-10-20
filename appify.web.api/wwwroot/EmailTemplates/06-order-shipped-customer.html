@@ -159,7 +159,7 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
           <td class="center-text" Simpli align="center" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;font-weight:400;font-style:normal;color:#333333;text-decoration:none;letter-spacing:0px;text-align: left;">
               <singleline>
                 <div mc:edit Simpli>
-                  We are pleased to inform you that your order #[Order Number] has been shipped! Below are the shipment and delivery tracking details to help you keep track of your order:
+                  We are pleased to inform you that your order #{{order_number}} has been shipped! Below are the shipment and delivery tracking details to help you keep track of your order:
                 </div>
               </singleline>
           </td>
@@ -193,10 +193,10 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                       <td class="center-text" Simpli align="left" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:20px;font-weight:400;font-style:normal;color:#666666;text-decoration:none;letter-spacing:0px;">
                           <singleline>
                             <div mc:edit Simpli>
-                              Carrier: [Carrier Name]<br>
-                              Tracking Number: [Tracking Number]<br>
-                              Estimated Delivery Date: [Estimated Delivery Date]<br>
-                              You can track your package using the following link: [Tracking Link]
+                              Carrier: {{carrier_name}}<br>
+                              Tracking Number: {{tracking_number}}<br>
+                              Estimated Delivery Date: {{delivery_date}}<br>
+                              You can track your package using the following link: {{tracking_link}}
                             </div>
                           </singleline>
                       </td>
@@ -222,7 +222,7 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                       Thank you for shopping with us!<br>
                       
                       Best regards,<br>
-                      [Vendor name],<br>
+                      {{vendor_app_name}},<br>
                       Powered by Appify
                     </div>
                   </singleline>

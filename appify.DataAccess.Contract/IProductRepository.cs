@@ -27,7 +27,7 @@ namespace appify.DataAccess.Contract
         public bool UpdateNewProducts(long ProductID, bool IsNew);
         public List<ProductMasterCategories> GetProductMasterCategories(long parentID);
         public List<ProductCategories> GetCategoriesList(long parentID);
-        public List<ProductCategoryName> GetCategorieName(long parentID);
+        public List<ProductCategoryName> GetCategorieName(long categoryID);
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories);
         public List<ParentCategories> GetVendorCategories(long VendorID);
     }

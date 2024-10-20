@@ -44,6 +44,7 @@ namespace appify.web.api
                 var smtpClient = new SmtpClient(NotificationConfig.SMTPCLIENT)
                 {
                     Port = NotificationConfig.PORT,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
                     Credentials = new NetworkCredential(fromMail, fromPassword),
                     EnableSsl = true,
                 };
@@ -58,9 +59,9 @@ namespace appify.web.api
                 //message.AlternateViews.Add(alternativeView);
 
 
-                smtpClient.SendMailAsync(message);
+                //smtpClient.SendMailAsync(message);
                 
-                //smtpClient.Send(message);
+                smtpClient.Send(message);
                 result = true;
             }
             catch (Exception ex)
@@ -92,7 +93,7 @@ namespace appify.web.api
                     EmailTemplateURL = emailNotificationTemplate.TemplateURL,
                     ToEmail = getEmailNotificationHeader[0].EmailID
                 };
-                notifications.ToEmail = "nkolweb@gmail.com";
+                ////notifications.ToEmail = "gurjeet@appi-fy.ai";////sharma@appi-fy.ai
 
                 string path = notifications.EmailTemplateURL;
                 string mailbody = string.Empty;

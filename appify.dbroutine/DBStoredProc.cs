@@ -305,11 +305,11 @@ namespace appify.dbroutine
         
         //// Notification Template
         public const string SELECTNOTIFICATIONTEMPLATE = "[Utility].[usp_NotificationTemplateSelect]";
-
+        public const string SELECTSMSNOTIFICATIONTEMPLATE = "[Utility].[usp_SMSNotificationTemplateSelect]";
         //// Email Notification Template
         public const string SELECTEMAILNOTIFICATIONTEMPLATE = "[Utility].[usp_EmailNotificationTemplateSelect]";
         public const string SELECTORDERUPDATEDETAIL = "[Operation].[usp_OrderUpdateDetail]";
-
+        public const string SELECTSMSCONFIGSETTING = "[Utility].[usp_SMSConfigSetting]";
         //// Email Notification - Get Details
         public const string GETMEMBERDETAILS = "[Operation].[usp_MemberDetails]";
 
