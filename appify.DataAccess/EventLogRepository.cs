@@ -46,6 +46,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@OutputJSON", eventLog.OutputJSON);
                         cmd.Parameters.AddWithValue("@EventTime", eventLog.EventTime);
                         cmd.Parameters.AddWithValue("@AppName", eventLog.AppName);
+                        cmd.Parameters.AddWithValue("@Version", eventLog.Version);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());

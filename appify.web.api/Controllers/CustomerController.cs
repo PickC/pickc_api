@@ -20,6 +20,8 @@ using System.Net.Http.Headers;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using System.Management;
+using static System.Net.Mime.MediaTypeNames;
+using Microsoft.VisualBasic;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -45,6 +47,27 @@ namespace appify.web.api.Controllers
         /// gets Product items information based on Vendor ID
         /// </summary>
         /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Gets Product items information based on Vendor ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1847
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Gets Product List New Item information based on Vendor ID
+        /// 
+        /// -----------------------------------------------------------------------------------------
         /// Sample request JSON :
         /// 
         ///     {
@@ -401,41 +424,114 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// This END POINT JUST FOR TESTING DIFFERENT FUCNTIONS
+        /// </summary>
         [HttpPost]
-        [Route("generatetoken")]
+        [Route("fortestingfunc")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> generatetoken()
+        public async Task<IActionResult> fortestingfuc()
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-
-
-                string clientId = "604537213086-2r3o5j2ljn2rpdkhsfsd34vspki0v4nq.apps.googleusercontent.com";
-                string clientSecret = "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";
-                string refreshToken = "YourRefreshToken";
-                string fromEmail = "gurjeet@appi-fy.ai";
-                string toEmail = "nkolweb@gmail.com";
-
-                var clientSecrets = new ClientSecrets
+                string responseBody = "";
+                using (var client = new HttpClient())
                 {
-                    ClientId = clientId,
-                    ClientSecret = clientSecret
-                };
 
-                var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    clientSecrets,
-                    new[] { "https://mail.google.com/" },
-                    "user",
-                    CancellationToken.None);
+                    var BaseUri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
+                    var parameters = new Dictionary<string, string>();
+                    parameters["userid"] = "appify";
+                    parameters["password"] = "App1fyd3v3l0p3r";
+                    parameters["sender"] = "APFYRT";
+                    parameters["mobileno"] = "9810722979";
+                    parameters["msg"] = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL";
+                    parameters["peid"] = "1701172830092637857";
+                    parameters["tpid"] = "1707172862932634661";
 
-                if (credential.Token.IsExpired(credential.Flow.Clock))
-                {
-                    await credential.RefreshTokenAsync(CancellationToken.None);
+                    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        responseBody = await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        responseBody = response.StatusCode.ToString();
+                    }
+
                 }
+
+                //SendSMSHeader sendSMSHeader = new SendSMSHeader
+                //{
+                //    userid = "appify",
+                //    password = "App1fyd3v3l0p3r",
+                //    sender = "APFYRT",
+                //    mobileno = "9810722979",
+                //    msg = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL",
+                //    //SendOn = DateTime.Now,
+                //    //MsgType = 0,
+                //    peid= "1701172830092637857",
+                //    tpid= "1707172862932634661"
+                //};
+
+                ////     Create an instance of HttpClient
+                //using (var client = new HttpClient())
+                //{
+                //    string responseBody = "";
+                //    var uri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
+                //    //client.BaseAddress = new Uri(Common.OneDelhiveryCreateURL);
+                //    //client.DefaultRequestHeaders.Accept.Clear();
+                //    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                //    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", Common.OneDelhiveryToken);
+
+                //    var jsonString = Common.ConvertObjectToJson(sendSMSHeader);
+                //    HttpResponseMessage Res = client.PostAsync(uri, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
+                //    //var response = await Res.Content.ReadAsStringAsync();
+
+
+                //    //HttpContent httpContent = new StringContent(json);
+                //    // StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+                //    //var response = await client.PostAsync(OneDelhiveryCreateURL, httpContent);
+                //   // HttpResponseMessage response = await client.PostAsJsonAsync(uri, sendSMSHeader);
+
+                //    //Check if the response is successful
+                //    if (Res.IsSuccessStatusCode)
+                //    {
+                //        responseBody = await Res.Content.ReadAsStringAsync();
+                //    }
+                //    else
+                //    {
+                //        responseBody = Res.StatusCode.ToString();
+                //    }
+
+                //}
+
+
+                //string clientId = "604537213086-2r3o5j2ljn2rpdkhsfsd34vspki0v4nq.apps.googleusercontent.com";
+                //string clientSecret = "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";
+                //string refreshToken = "YourRefreshToken";
+                //string fromEmail = "gurjeet@appi-fy.ai";
+                //string toEmail = "nkolweb@gmail.com";
+
+                //var clientSecrets = new ClientSecrets
+                //{
+                //    ClientId = clientId,
+                //    ClientSecret = clientSecret
+                //};
+
+                //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                //    clientSecrets,
+                //    new[] { "https://mail.google.com/" },
+                //    "user",
+                //    CancellationToken.None);
+
+                //if (credential.Token.IsExpired(credential.Flow.Clock))
+                //{
+                //    await credential.RefreshTokenAsync(CancellationToken.None);
+                //}
 
 
 
@@ -457,7 +553,7 @@ namespace appify.web.api.Controllers
                 //    await client.DisconnectAsync(true);
                 //}
 
-                return Ok(credential.Token);
+                //return Ok(credential.Token);
 
                 //var items = customerBusiness.GetMemberPasswordList();
                 //foreach (var item in items)
@@ -502,9 +598,9 @@ namespace appify.web.api.Controllers
                 //var username = jwtPayload.Email;
 
                 rm.statusCode = StatusCodes.OK;
-                rm.message = "result";
-                //rm.name = orderId;
-                //rm.data = order;
+                rm.message = "SMS HAS BEEN SUCCESSFULLY SENT";
+                rm.name = StatusName.ok;
+                rm.data = responseBody;
 
 
             }
@@ -516,11 +612,129 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
         }
 
+        /// <summary>
+        /// Test BULKSMS
+        /// </summary>
+        /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// SMSTemplateID : 0 (To send OTP), 1 (Successful Sign up), 2 (Order Placement:-Customer), 3 (Order Placement:- Vendor), 4 (Order Confirmation)
+        /// 
+        /// Name: John
+        /// 
+        /// MobileNo: 9898989898
+        /// 
+        /// Description : To test send SMS based on the passed SMSTemplateID
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "smsTemplateID": 0,
+        ///       "name": "Pavan Kumar",
+        ///       "mobileNo": "9898989898"
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost]
+        [Route("testbulksms")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> testbulksms(ParamSMSCredentials item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                string responseBody = "";
+                string mobileno= "";
+                string tpid = "";
+                string msg = "";
+                switch (item.SMSTemplateID)
+                {
+                    case 0:
+                        mobileno = item.MobileNo;
+                        tpid = "1707172881548928624";
+                        msg = "Hi, 123456 is your verification code.";
+                        break;
+                    case 1:
+                        mobileno = item.MobileNo;
+                        tpid = "1707172864367371226";
+                        msg = "Welcome to APPIFY RETAIL, You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.";
+                        break;
+                    case 2:
+                        mobileno = item.MobileNo;
+                        tpid = "1707172899620525278";
+                        msg = "Hi <first_name>, Your order #<order No> is successfully placed! View your order details here.".Replace("<first_name>", item.FirstName).Replace("#<order No>",item.OrderNo);
+                        break;
+                    case 3:
+                        mobileno = item.MobileNo;
+                        tpid = "1707172863062305000";
+                        msg = "Dear <Vendor/Shop>, You have received a new order. click OD40402410001 to view the order details.".Replace("<Vendor/Shop>", item.Name);
+                        break;
+                    case 4:
+                        mobileno = item.MobileNo;
+                        tpid = "1707172863079131622";
+                        msg = "Hi <first_name>, Your order OD40402410001 is successfully Confirmed! View your order details here.".Replace("<first_name>", item.Name);
+                        break;
+                }
+                using (var client = new HttpClient())
+                {
+
+                    var BaseUri = new Uri(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:url").Value);
+                    var parameters = new Dictionary<string, string>();
+                    parameters["userid"] = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:userid").Value;
+                    parameters["password"] = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:password").Value;
+                    parameters["sender"] = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:sender").Value;
+                    parameters["mobileno"] = mobileno;
+                    parameters["msg"] = msg;
+                    parameters["peid"] = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:peid").Value;
+                    parameters["tpid"] = tpid;
+
+                    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        responseBody = await response.Content.ReadAsStringAsync();
+                    }
+                    else
+                    {
+                        responseBody = response.StatusCode.ToString();
+                    }
+
+                }
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "SMS HAS BEEN SENT SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                rm.data = responseBody;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
     }
 }

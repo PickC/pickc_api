@@ -207,6 +207,7 @@ namespace appify.models
         //public Int64 MemberID { get; set; }
 
         public Int64? AddressID { get; set; }
+        public Int64? VAddressID { get; set; }
         public Int16 OrderStatus { get; set; }
 
 

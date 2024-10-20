@@ -126,6 +126,10 @@ namespace appify.web.api
         public long parentID { get; set; }
     }
 
+    public class ParamCatID
+    {
+        public long categoryID { get; set; }
+    }
     public class ParamProductPrice : ParamProduct
     {
         public long priceID { get; set; }
@@ -153,7 +157,13 @@ namespace appify.web.api
 
     public class ParamLookup
     {
-        public short lookupID { get; set; }
+        public long lookupID { get; set; }
+    }
+
+    public class ParamLookupCode
+    {
+        public string lookupCode { get; set; }
+        public string category { get; set; }
     }
 
     public class ParamLookupCategory
@@ -255,5 +265,16 @@ namespace appify.web.api
         public string RazorpayPaymentId { get; set; }
         public string RazorpayOrderId { get; set; }
         public string RazorpaySignature { get; set; }
+    }
+
+    public class ParamSMSCredentials
+    {
+        public Int16 SMSTemplateID { get; set; }
+        public string Name {  get; set; }
+        public string MobileNo { get; set; }
+        public string MessageTitle { get; set; }
+        public string MessageBody { get; set; }
+        public string FirstName {  get; set; }
+        public string OrderNo {  get; set; }
     }
 }

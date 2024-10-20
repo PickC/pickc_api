@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Newtonsoft.Json.Linq;
+using Razorpay.Api;
 using static appify.models.NotificationType;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -33,7 +34,7 @@ namespace appify.web.api.Controllers
         private readonly INotificationBusiness notificationBusiness;
         private ResponseMessage rm;
 
-        public MemberController(IConfiguration configuration,  
+        public MemberController(IConfiguration configuration,
                                 IMemberBusiness iResultData,
                                 IMemberReturnPolicyBusiness memberReturnPolicyBusiness,
                                 IMemberAppSettingBusiness memberAppSettingBusiness,
@@ -51,7 +52,50 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
             this.notificationBusiness = IResultData;
         }
-
+        /// <summary>
+        /// Get a Member List
+        /// </summary>
+        /// <remarks>   
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER LIST",
+        ///       "data": [
+        ///         {
+        ///           "userID": 1008,
+        ///           "emailID": "kvr210885@gmail.com",
+        ///           "mobileNo": "8682944609",
+        ///           "password": "Entombed@25",
+        ///           "firstName": "Kalyan",
+        ///           "lastName": "KVR",
+        ///           "memberType": 1001,
+        ///           "otp": "604174",
+        ///           "isOTPSent": true,
+        ///           "otpSentDate": "2023-09-13T12:35:28.417",
+        ///           "isResendOTP": false,
+        ///           "isOTPVerified": true,
+        ///           "isEmailVerified": true,
+        ///           "isActive": true,
+        ///           "createdOn": "2023-09-13T00:05:29.93",
+        ///           "profilePhoto": "image_cropper_1694677575946.jpg",
+        ///           "token": "¦iät\u0006\tOŸ\u0005c `\u0015\u001f",
+        ///           "platformType": 0,
+        ///           "parentID": 1004,
+        ///           "isRegisteredByMobile": true,
+        ///           "isOnlinePaymentEnabled": true,
+        ///           "isEnterprise": null,
+        ///           "isEcommerce": null,
+        ///           "isWelcomeEmail": null
+        ///         }]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER LIST SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         // GET: api/<MemberController>
         [HttpGet]
         [MapToApiVersion("1.0")]
@@ -100,7 +144,55 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Get a Member
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1860
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER",
+        ///       "data": {
+        ///         "userID": 1860,
+        ///         "emailID": "kalyan@appify.ai",
+        ///         "mobileNo": "6303467186",
+        ///         "password": "Appify@123",
+        ///         "firstName": "sai",
+        ///         "lastName": "Chow",
+        ///         "memberType": 1001,
+        ///         "otp": "637551",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2023-12-02T19:19:36.847",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-05-24T16:01:35.71",
+        ///         "profilePhoto": "",
+        ///         "token": "fw4Fw_AVjEOslW0-Ltv_bX:APA91bEw-ehnGhWHPpgxmu-CS-E9qlBtdQQHnj-xysD_h-///C  gh VQ_hSIMU6G3ceDjUJr_Hj25iHbgzhxd12fxd70791UCm6DI8fmTpAZ1Thg4xFHbp8gMh3cKiE6H_M9YbLxhBbjPV_3X",
+        ///         "platformType": 0,
+        ///         "parentID": 1833,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": true,
+        ///         "isEnterprise": false,
+        ///         "isEcommerce": false,
+        ///         "isWelcomeEmail": false
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         // GET api/<MemberController>/5
         [HttpGet("{userID}")]
         [MapToApiVersion("1.0")]
@@ -212,6 +304,7 @@ namespace appify.web.api.Controllers
                     if(UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
                     {
                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
+                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
@@ -220,6 +313,7 @@ namespace appify.web.api.Controllers
                     if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
                     {
                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
+                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                     }
@@ -275,10 +369,9 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("generateotp")]
         [MapToApiVersion("1.0")]
-        public IActionResult GenerateOTP(string MobileNo)
+        public async Task<IActionResult> GenerateOTP(string MobileNo)
         {
             var reqHeader = Request;
-            string result = "";
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -287,9 +380,9 @@ namespace appify.web.api.Controllers
                 var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
 
                 string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
-                result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                //result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
                 //TODO: to implement the above dashboard information
-
                 if (OTPValue != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -297,7 +390,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = OTPValue;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, null, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -306,7 +399,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO GENERATE OTP", reqHeader, controllerURL, null, result, rm.message));
+                    await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
                 }
 
             }
@@ -316,11 +409,25 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("OTP GERENATED - ERROR", reqHeader, controllerURL, null, result, rm.message));
+                await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// De-Active A Member
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1860
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER DE-ACTIVATED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost,Route("DeActivateMember")]
         [MapToApiVersion("1.0")]
         public IActionResult DeactivateMember(ParamMemberUserID itemData)
@@ -362,7 +469,22 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Delete a Member
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "mobileNo": "6303467186",
+        ///       "password": "Appify@123"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER DELETED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
 
         [HttpPost, Route("DeleteMember")]
         [MapToApiVersion("1.0")]
@@ -405,8 +527,23 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-        
 
+        /// <summary>
+        /// Reset Member Password
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1860,
+        ///       "password": "Appify@123"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">PASSWORD RESET SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost,Route("ResetPassword")]
         [MapToApiVersion("1.0")]
         public IActionResult ResetPassword(ParamMemberResetPassword itemData)
@@ -449,7 +586,58 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Check Member with emailid and mobile no
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "emailID": "rama@appi-fy.ai",
+        ///       "mobileNo": "9959625612",
+        ///       "memberType": 1000,
+        ///       "vendorID": 0
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "MEMBER WITH SIMILAR MOBILE NO. EXISTS!",
+        ///       "data": {
+        ///         "userID": 1937,
+        ///         "emailID": "rama@appi-fy.ai",
+        ///         "mobileNo": "9959625612",
+        ///         "password": "Appify@123",
+        ///         "firstName": "appify",
+        ///         "lastName": "kalyan",
+        ///         "memberType": 1000,
+        ///         "otp": "078862",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2024-09-19T16:40:11.967",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-09-19T16:40:12.643",
+        ///         "profilePhoto": "",
+        ///         "token": "CD9BF9EB-A940-4430-A7DA-D51B02CF4AD7",
+        ///         "platformType": 0,
+        ///         "parentID": 0,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": true,
+        ///         "isEnterprise": null,
+        ///         "isEcommerce": null,
+        ///         "isWelcomeEmail": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER WITH SIMILAR MOBILE NO. EXISTS </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost,Route("CheckMember")]
         public IActionResult CheckMember(ParamCheckMember itemData)
         {
@@ -502,9 +690,30 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-        [MapToApiVersion("1.0")]
-
-
+        /// <summary>
+        /// Get Member Order Count
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1600
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "ORDERS COUNT",
+        ///       "data": 2
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MemberOrderCount SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         // GET api/<MemberController>/5
         [HttpPost,Route("OrdersCount")]
         [MapToApiVersion("1.0")]
@@ -546,7 +755,30 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Check Member Online Payment Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "ONLINE PAYMENT STATUS",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">ONLINE PAYMENT STATUS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         // GET api/<MemberController>/5
         [HttpPost, Route("OnlinePaymentAllowed")]
         [MapToApiVersion("1.0")]
@@ -577,7 +809,58 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
-
+        /// <summary>
+        /// Member Login
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///{
+        ///  "emailID": "rama@appi-fy.ai",
+        ///  "mobileNo": "9959625612",
+        ///  "password": "Appify@123",
+        ///  "parentID": 0
+        ///}
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "MEMBER DATA",
+        ///       "data": {
+        ///         "userID": 1937,
+        ///         "emailID": "rama@appi-fy.ai",
+        ///         "mobileNo": "9959625612",
+        ///         "password": "Appify@123",
+        ///         "firstName": "appify",
+        ///         "lastName": "kalyan",
+        ///         "memberType": 1000,
+        ///         "otp": "078862",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2024-09-19T16:40:11.967",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-09-19T16:40:12.643",
+        ///         "profilePhoto": "",
+        ///         "token": "CD9BF9EB-A940-4430-A7DA-D51B02CF4AD7",
+        ///         "platformType": 0,
+        ///         "parentID": 0,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": false,
+        ///         "isEnterprise": null,
+        ///         "isEcommerce": null,
+        ///         "isWelcomeEmail": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MemberLogIn - SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
 
         [HttpPost, Route("SignIn")]
         [MapToApiVersion("1.0")]
@@ -628,7 +911,22 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Dashboard.
+        /// </summary>
+        /// <remarks>
+        /// Sample Response:
+        /// NOTE : Vendor Dashboard.
+        ///
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response>
         [HttpPost, Route("dashboard")]
         [MapToApiVersion("1.0")]
         public IActionResult MemberDashboard(ParamMemberUserID itemData)
@@ -757,7 +1055,45 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Get Return Policy
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1044
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH RETURN-POLICY",
+        ///       "data": {
+        ///         "memberID": 1044,
+        ///         "maxReturnDays": 0,
+        ///         "isProductDamaged": false,
+        ///         "isDeliveryDelay": false,
+        ///         "isWrongSize": true,
+        ///         "inCompatible": true,
+        ///         "isQualityIssue": false,
+        ///         "isDifferentProduct": false,
+        ///         "isNotNeeded": true,
+        ///         "isOthers": true,
+        ///         "isImage": false,
+        ///         "isVideo": false,
+        ///         "remarks": "",
+        ///         "isActive": false
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH RETURN-POLICY SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("rp/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetReturnPolicy(ParamMemberUserID itemData)
@@ -802,7 +1138,44 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Add/Update a Return Policy
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "memberID": 1044,
+        ///         "maxReturnDays": 0,
+        ///         "isProductDamaged": false,
+        ///         "isDeliveryDelay": false,
+        ///         "isWrongSize": true,
+        ///         "inCompatible": true,
+        ///         "isQualityIssue": false,
+        ///         "isDifferentProduct": false,
+        ///         "isNotNeeded": true,
+        ///         "isOthers": true,
+        ///         "isImage": false,
+        ///         "isVideo": false,
+        ///         "remarks": "",
+        ///         "isActive": false
+        ///       }
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "RETURN POLICY SAVED SUCCESSFULLY",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">RETURN POLICY SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("rp/save")]
         [MapToApiVersion("1.0")]
         public IActionResult AddReturnPolicy(MemberReturnPolicy item)
@@ -846,7 +1219,21 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove a Policy
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1014
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">RETURN POLICY REMOVED </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("rp/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveReturnPolicy(ParamMemberUserID itemData)
@@ -890,7 +1277,40 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Get an App Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1014
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP SETTINGS",
+        ///       "data": {
+        ///         "userID": 1014,
+        ///         "appName": "Megha Store",
+        ///         "appName1": null,
+        ///         "appName2": null,
+        ///         "description": "fashion dress 👗",
+        ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
+        ///         "playStoreID": "",
+        ///         "appStoreID": "",
+        ///         "appIcon": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("appsetting/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetAppSetting(ParamMemberUserID itemData)
@@ -935,7 +1355,48 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Add/Update App Settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1014,
+        ///         "appName": "Megha Store",
+        ///         "appName1": null,
+        ///         "appName2": null,
+        ///         "description": "fashion dress 👗",
+        ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
+        ///         "playStoreID": "",
+        ///         "appStoreID": "",
+        ///         "appIcon": null
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "APP SETTINGS SAVED SUCCESSFULLY",
+        ///       "data": {
+        ///         "userID": 1014,
+        ///         "appName": "Megha Store",
+        ///         "appName1": null,
+        ///         "appName2": null,
+        ///         "description": "fashion dress 👗",
+        ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
+        ///         "playStoreID": "",
+        ///         "appStoreID": "",
+        ///         "appIcon": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">APP SETTINGS SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("appsetting/save")]
         [MapToApiVersion("1.0")]
         public IActionResult AddAppSetting(MemberAppSetting item)
@@ -981,7 +1442,22 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove an App Settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1014,
+        ///       "appName": "Megha Store"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">APP SETTINGS REMOVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("appsetting/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveAppSetting(ParamAppSetting itemData)
@@ -1027,7 +1503,41 @@ namespace appify.web.api.Controllers
         }
 
         //Member Theme APIs
-
+        /// <summary>
+        /// GET THEME SETTING
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "memberID": 1044,
+        ///       "themeID": 1003
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH THEME SETTINGS",
+        ///       "data": {
+        ///         "memberID": 1044,
+        ///         "themeID": 1003,
+        ///         "primaryColor": "0xF7F4AE18",
+        ///         "primaryLightColor": "0xFFF4CA0F",
+        ///         "backgroundBoxColor": "0xB8F8F0E9",
+        ///         "textColor": "0xFF7A7A7A",
+        ///         "secondaryColor": "0xFFE67E22",
+        ///         "scaffoldBgColor": "0xFFFFFFFF",
+        ///         "isDark": false
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH THEME SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("theme/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetMemberTheme(ParamMemberTheme itemData)
@@ -1072,7 +1582,22 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Add/Update Theme Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "memberID": 1044,
+        ///       "themeID": 1003
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">THEME SETTINGS SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("theme/save")]
         [MapToApiVersion("1.0")]
         public IActionResult AddMemberTheme(ParamMemberTheme item)
@@ -1121,7 +1646,22 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove an Theme Settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "memberID": 1044,
+        ///       "themeID": 1003
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">THEME SETTINGS REMOVED </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("theme/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberTheme(ParamMemberTheme itemData)
@@ -1168,7 +1708,47 @@ namespace appify.web.api.Controllers
 
 
         //Member KYC APIs
-
+        /// <summary>
+        /// Get a Member's KYC 
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1008
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH KYC SETTINGS",
+        ///       "data": {
+        ///         "memberID": 1008,
+        ///         "pan": "PHWUV8934R",
+        ///         "gst": "",
+        ///         "aadharNo": "781909458733",
+        ///         "bankName": "HDFC",
+        ///         "bankAccountNo": "9901110",
+        ///         "ifsc": "HDFC000011",
+        ///         "bankAccountType": 3900,
+        ///         "chequeImage": null,
+        ///         "panImage": null,
+        ///         "gstImage": null,
+        ///         "aadharImage": null,
+        ///         "aadharImage2": null,
+        ///         "kvicNo": null,
+        ///         "address": null,
+        ///         "addressImage": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH KYC SETTINGS </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("kyc/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetMemberKYC(ParamMemberUserID itemData)
@@ -1213,7 +1793,36 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Save a Member KYC 
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "memberID": 1008,
+        ///         "pan": "PHWUV8934R",
+        ///         "gst": "",
+        ///         "aadharNo": "781909458733",
+        ///         "bankName": "HDFC",
+        ///         "bankAccountNo": "9901110",
+        ///         "ifsc": "HDFC000011",
+        ///         "bankAccountType": 3900,
+        ///         "chequeImage": null,
+        ///         "panImage": null,
+        ///         "gstImage": null,
+        ///         "aadharImage": null,
+        ///         "aadharImage2": null,
+        ///         "kvicNo": null,
+        ///         "address": null,
+        ///         "addressImage": null
+        ///     }
+        ///      
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">KYC SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("kyc/save")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> AddMemberKYC(MemberKYC item)
@@ -1264,7 +1873,21 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove a KYC
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1000
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">KYC SETTINGS REMOVED </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("kyc/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberKYC(ParamMemberUserID itemData)
@@ -1310,9 +1933,38 @@ namespace appify.web.api.Controllers
         }
 
 
-        //Member Contact APIs
-
-        [HttpPost, Route("contact/get")]
+    //Member Contact APIs
+    /// <summary>
+    /// GET MEMBER CONTACT SETTINGS
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "memberID": 1060,
+    ///       "mobileNo": "9827609876"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH MEMBER CONTACT SETTINGS",
+    ///       "data": {
+    ///         "memberID": 1060,
+    ///         "mobileNo": "9827609876",
+    ///         "contactName": "subbu",
+    ///         "emailID": "asdfgh@gmal.com"
+    ///       }
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH MEMBER CONTACT SETTINGS </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("contact/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetMemberContact(ParamMemberContact itemData)
         {
@@ -1356,7 +2008,55 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// GET MEMBER CONTACT LIST
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER CONTACT LIST",
+        ///       "data": [
+        ///         {
+        ///           "memberID": 1060,
+        ///           "mobileNo": "9827609876",
+        ///           "contactName": "subbu",
+        ///           "emailID": "asdfgh@gmal.com"
+        ///         },
+        ///         {
+        ///           "memberID": 1060,
+        ///           "mobileNo": "9866214563",
+        ///           "contactName": "hanis",
+        ///           "emailID": ""
+        ///         },
+        ///         {
+        ///         "memberID": 1060,
+        ///           "mobileNo": "9866523514",
+        ///           "contactName": "bablu",
+        ///           "emailID": ""
+        ///         },
+        ///         {
+        ///         "memberID": 1060,
+        ///           "mobileNo": "9876543210",
+        ///           "contactName": "kalyan",
+        ///           "emailID": "zxcvb@gmail.com"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH MEMBER CONTACT LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("contact/list")]
         [MapToApiVersion("1.0")]
         public IActionResult ListMemberContact(ParamMemberUserID itemData)
@@ -1401,8 +2101,25 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("contact/save")]
+    /// <summary>
+    /// Save a Member Contact
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///     "memberID": 0,
+    ///     "mobileNo": "6303467186",
+    ///     "contactName": "kvr kalyan",
+    ///     "emailID": "kvrkalyan1985@gmail.com"
+    ///     }  
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">MEMBER CONTACT SAVED SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("contact/save")]
         [MapToApiVersion("1.0")]
         public IActionResult AddMemberContact(MemberContact item)
         {
@@ -1457,7 +2174,26 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Save a Member Contact
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     [
+        ///       {
+        ///         "memberID": 0,
+        ///         "mobileNo": "6303467186",
+        ///         "contactName": "kvr kalyan",
+        ///         "emailID": "kvrkalyan1985@gmail.com"
+        ///       }
+        ///     ]
+        ///     
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER CONTACT SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("contact/bulksave")]
         [MapToApiVersion("1.0")]
         public IActionResult AddMemberContactBulk(List<MemberContact> items)
@@ -1505,8 +2241,23 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("contact/remove")]
+    /// <summary>
+    /// Remove a Member Contact
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "memberID": 1002,
+    ///       "mobileNo": "6303467186"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">MEMBER CONTACT REMOVED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("contact/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberKYC(ParamMemberContact itemData)
         {
@@ -1894,6 +2645,73 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH BY VENDOR MEMBER BANNER - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// gets Member SMS Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "VendorID":1060
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER SMS SETTING!",
+        ///       "data": {
+        ///         "vendorID": 1060,
+        ///         "isFirebase": false
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns MemberBanner Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("getsmssetting")]
+        [MapToApiVersion("1.0")]
+        public IActionResult memberSmsSettingGet(ParamMemberUserID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.memberSMSSettingGet(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH MEMBER SMS SETTING!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET MEMBER SMS SETTING SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET MEMBER SMS SETTING - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET MEMBER SMS SETTING - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);

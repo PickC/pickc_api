@@ -50,7 +50,73 @@ namespace appify.web.api.Controllers
             ////FCM Objects
             notificationModel = new NotificationModel();
         }
-
+        /// <summary>
+        /// Add/Update an Order
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 0,
+        ///       "orderNo": "PO1473150202312150614",
+        ///       "orderDate": "2024-04-08T08:09:13.710Z",
+        ///       "vendorID": 1060,
+        ///       "memberID": 1868,
+        ///       "firstName": "sharma sudarshan",
+        ///       "emailID": "sharma@appi-fy.ai",
+        ///       "mobileNo": "9885217825",
+        ///       "addressID": 1520,
+        ///       "orderAmount": 2000,
+        ///       "discountAmount": 15,
+        ///       "taxAmount": 0,
+        ///       "totalAmount": 0,
+        ///       "currency": "INR",
+        ///       "paidAmount": 2000,
+        ///       "remarks": "string",
+        ///       "receiverName": "string",
+        ///       "receiverMobileNo": "string",
+        ///       "deliveryInstruction": "string",
+        ///       "deliveryCost": 0,
+        ///       "paymentType": 3703,
+        ///       "isSameState": true,
+        ///       "deliveryChannel": 0,
+        ///       "deliveryChannelDescription": "string",
+        ///        "deviceToken": "e1JVr9HPR-SqjaFxf4Ggln:APA91bFdTYVFb5CA0Iqu8C3nfZm0v65rFJTQ0iCd9xXAAUQpQFLyW23uFpnbxXWnRQGYO0zJ5HuENs75-///G  5T piqdYExL4BbqfllMKY3waouaWkdEsSVIswpG31fJiThIHXTA4cESnlK5",
+        ///       "items": [
+        ///         {
+        ///           "itemID": 1,
+        ///           "orderID": 0,
+        ///           "productID": 1217,
+        ///           "sellerID": 1060,
+        ///           "quantity": 2,
+        ///           "unitPrice": 2000,
+        ///           "discountType": 3001,
+        ///           "discountAmount": 15,
+        ///           "sellingPrice": 2000,
+        ///           "priceID": 0
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "order SUCCESSFUL!",
+        ///       "data": {
+        ///         "orderNo": "",
+        ///         "accessKey": "Invalid merchant key.",
+        ///         "orderID": 2016,
+        ///         "errorMsg": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> Add(appify.models.Order order)
@@ -257,7 +323,21 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Remove the Order
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 1003
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">order REMOVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> Remove(Int64 orderID)
@@ -304,7 +384,107 @@ namespace appify.web.api.Controllers
 
         }
 
-
+        /// <summary>
+        /// GENERATE AN ORDER INVOICE
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 1976
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "INVOICE GENERATED",
+        ///       "data": {
+        ///         "invoiceNo": "TX10602409001",
+        ///         "orderNo": "OD10602409001",
+        ///         "orderDate": "2024-09-02T16:36:50.907",
+        ///         "sellerID": 1060,
+        ///         "memberID": 1864,
+        ///         "invoiceAmount": 838.1,
+        ///         "taxAmount": 41.9,
+        ///         "totalAmount": 880,
+        ///         "roundOffAmount": -0.11,
+        ///         "companyName": "I AM BACK",
+        ///         "companyAddress1": "B.29/27-K-1 SANKAT MOCHAN ROAD",
+        ///         "companyAddress2": "VARANASI",
+        ///         "companyState": "TELANGANA",
+        ///         "companyZipCode": "505301",
+        ///         "customerName": "RAMAKRISHNA",
+        ///         "customerAddress1": null,
+        ///         "customerAddress2": null,
+        ///         "customerState": null,
+        ///         "customerZipCode": null,
+        ///         "deliveryCost": 83.11,
+        ///         "deliveryGST": 0,
+        ///         "deliveryGSTPercent": 0,
+        ///         "sellerGSTIN": "",
+        ///         "sellerPAN": "",
+        ///         "memberGSTIN": "",
+        ///         "memberPAN": "",
+        ///         "paymentType": "CASH ON DELIVERY",
+        ///         "paymentReference": "1976",
+        ///         "receiverName": "",
+        ///         "receiverMobileNo": "",
+        ///         "subTotal": 963.11,
+        ///         "grandTotal": 963,
+        ///         "invoiceItems": [
+        ///           {
+        ///             "productID": "1064",
+        ///             "quantity": 1,
+        ///             "unitPrice": 880,
+        ///             "taxAmount": 41.9,
+        ///             "sellingPrice": 838.1,
+        ///             "sellingAmount": 880,
+        ///             "productName": "Men's Slim Fit Casual Shirts",
+        ///             "description": "This Shirt comes in cotton fabric and is perfect for casual and formal wear.",
+        ///             "brand": "I AM BACK ",
+        ///             "discountAmount": 0,
+        ///             "discountPrice": 880,
+        ///             "cgst": 20.95,
+        ///             "sgst": 20.95,
+        ///             "igst": 0,
+        ///             "cgstPercent": null,
+        ///             "sgstPercent": null,
+        ///             "igstPercent": null,
+        ///             "hsnCode": null,
+        ///             "discountTypeDescription": ""
+        ///           },
+        ///           {
+        ///             "productID": "999999",
+        ///             "quantity": 1,
+        ///             "unitPrice": 70.43,
+        ///             "taxAmount": 12.68,
+        ///             "sellingPrice": 70.43,
+        ///             "sellingAmount": 83.11,
+        ///             "productName": "Shipping Charges",
+        ///             "description": "Shipping Charges",
+        ///             "brand": "",
+        ///             "discountAmount": 0,
+        ///             "discountPrice": 0,
+        ///             "cgst": 6.34,
+        ///             "sgst": 6.34,
+        ///             "igst": 0,
+        ///             "cgstPercent": null,
+        ///             "sgstPercent": null,
+        ///             "igstPercent": null,
+        ///             "hsnCode": null,
+        ///             "discountTypeDescription": ""
+        ///           }
+        ///         ]
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">ORDER INVOICE GENERATED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("printinvoice")]
         [MapToApiVersion("1.0")]
         public IActionResult PrintInvoice(Int64 orderID)
@@ -348,8 +528,33 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("updatestatus")]
+    /// <summary>
+    /// Update Order's Status
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "orderID": 1604,
+    ///       "orderStatus": 3577,
+    ///       "remarks": "Order has been Confirmed"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "STATUS UPDATED SUCCESSFULLY!",
+    ///       "data": "1604"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">STATUS UPDATED SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("updatestatus")]
         [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderStatus(ParamOrderStatus statusData)
         {
@@ -373,12 +578,14 @@ namespace appify.web.api.Controllers
                         if (orderUpdateDetail.VendorID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                         }
                         if (orderUpdateDetail.MemberID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
@@ -387,12 +594,14 @@ namespace appify.web.api.Controllers
                         if (orderUpdateDetail.VendorID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                         }
                         if (orderUpdateDetail.MemberID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
@@ -401,12 +610,14 @@ namespace appify.web.api.Controllers
                         if (orderUpdateDetail.VendorID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                         }
                         if (orderUpdateDetail.MemberID != 0)
                         {
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                     }
@@ -438,9 +649,36 @@ namespace appify.web.api.Controllers
 
         }
 
+    /// <summary>
+    /// Update PICKUP STATUS
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "orderID": 1604,
+    ///       "weight": 250.00,
+    ///       "length": 7.00,
+    ///       "width": 5.00,
+    ///       "height": 7.00
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PICKUP STATUS UPDATED SUCCESSFULLY!",
+    ///       "data": "1604"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PICKUP STATUS UPDATED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
 
-
-        [HttpPost, Route("updateorderforpickup")]
+    [HttpPost, Route("updateorderforpickup")]
         [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderForPickup(ParamOrderForPickup statusData)
         {
@@ -483,9 +721,35 @@ namespace appify.web.api.Controllers
 
         }
 
+    /// <summary>
+    /// Update PICKUP STATUS
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "orderID": 1275,
+    ///       "courierRefID": "495983952",
+    ///       "shipmentID": "494137262",
+    ///       "awb": "339942452210"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PICKUP STATUS UPDATED SUCCESSFULLY!",
+    ///       "data": "1275"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PICKUP STATUS UPDATED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
 
-
-        [HttpPost, Route("updateorderawb")]
+    [HttpPost, Route("updateorderawb")]
         [MapToApiVersion("1.0")]
         public IActionResult UpdateOrderAWB(ParamOrderAWB statusData)
         {
@@ -528,9 +792,37 @@ namespace appify.web.api.Controllers
 
         }
 
+    /// <summary>
+    /// GET ORDER TRACKING DETAILS
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "userID": 1005
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "ORDER TRACKING DETAILS FETCHED SUCCESSFULLY!",
+    ///       "data": {
+    ///         "orderID": 1005,
+    ///         "courierRefID": "454503294",
+    ///         "shipmentID": "452671447",
+    ///         "awb": "1504848093812"
+    ///       }
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">ORDER TRACKING DETAILS FETCHED </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
 
-
-        [HttpPost, Route("gettrackingdetails")]
+    [HttpPost, Route("gettrackingdetails")]
         [MapToApiVersion("1.0")]
         public IActionResult GetOrderTrackingDetails(Int64 orderID)
         {
@@ -572,7 +864,93 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
+        /// <summary>
+        /// Get an Order Item
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 1005
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order",
+        ///       "data": {
+        ///         "items": [
+        ///           {
+        ///             "itemID": 6,
+        ///             "orderID": 0,
+        ///             "productID": 0,
+        ///             "sellerID": 0,
+        ///             "quantity": 1,
+        ///             "unitPrice": 599,
+        ///             "discountType": 0,
+        ///             "discountAmount": 0,
+        ///             "sellingPrice": 599,
+        ///             "isCancel": false,
+        ///             "isDelivered": false,
+        ///             "deliveryID": null,
+        ///             "deliverDate": null,
+        ///             "createdOn": null,
+        ///             "modifiedOn": null,
+        ///             "cancelBy": null,
+        ///             "priceID": 0,
+        ///             "size": "",
+        ///             "price": null,
+        ///             "weight": 0,
+        ///             "productDescription": "Geometric Pattern Cotton Shirt Pack of 3",
+        ///             "hsnCode": "",
+        ///             "color": "Mixed colour ",
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701860737832.png"
+        ///           }
+        ///         ],
+        ///         "orderID": 1005,
+        ///         "orderNo": "PO1473240202312161138",
+        ///         "orderDate": "2023-12-16T17:08:23.247",
+        ///         "vendorID": 1473,
+        ///         "memberID": 1563,
+        ///         "orderStatus": 3932,
+        ///         "orderAmount": 599,
+        ///         "discountAmount": 0,
+        ///         "taxAmount": 29.95,
+        ///         "totalAmount": 791.24,
+        ///         "isCancel": false,
+        ///         "isDelivered": false,
+        ///         "remarks": "",
+        ///         "deliveryInstruction": "",
+        ///         "deliveryCost": 0,
+        ///         "orderStatusDescription": "Order Placed",
+        ///         "firstName": null,
+        ///         "lastName": null,
+        ///         "paymentType": 3703,
+        ///         "paymentTypeDescription": "CASH ON DELIVERY",
+        ///         "addressID": 1212,
+        ///         "mobileNo": null,
+        ///         "zipCode": "500081",
+        ///         "address1": "Krishe Emerald",
+        ///         "address2": "Sy. 11, Kondapur, Hi tech city",
+        ///         "city": "Hyderabad",
+        ///         "state": "Telangana",
+        ///         "country": "In",
+        ///         "landmark": "",
+        ///         "alternateNo": "",
+        ///         "productID": 1286,
+        ///         "productDescription": "Geometric Pattern Cotton Shirt Pack of 3",
+        ///         "deliveryChannel": 3921,
+        ///         "deliveryChannelDescription": "SHIP ROCKET"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Get an Order </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
 
         [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
@@ -618,7 +996,79 @@ namespace appify.web.api.Controllers
 
         }
 
-
+        /// <summary>
+        /// Get Order For Delivery
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 1005
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order",
+        ///       "data": {
+        ///         "order_id": "PO1473240202312161138",
+        ///         "order_date": "12/16/2023 5:08:23 PM",
+        ///         "pickup_location": "SHOP_1702623311894",
+        ///         "pickup_address": "NO -24/18, WEST STREET, MUGAIYUR - VILL, Anjalivan Stationery, Mugaiyur viluppuram Mugaiyur,Tamil Nadu,605757",
+        ///         "channel_id": "Reseller: M/s Sooriya Textile",
+        ///         "comment": "",
+        ///         "billing_customer_name": null,
+        ///         "billing_last_name": null,
+        ///         "billing_address": "Krishe Emerald",
+        ///         "billing_address_2": "Sy. 11, Kondapur, Hi tech city",
+        ///         "billing_city": "Hyderabad",
+        ///         "billing_pincode": "500081",
+        ///         "billing_state": "Telangana",
+        ///         "billing_country": "In",
+        ///         "billing_email": null,
+        ///         "billing_phone": null,
+        ///         "shipping_is_billing": true,
+        ///         "shipping_customer_name": null,
+        ///         "shipping_last_name": null,
+        ///         "shipping_address": "Krishe Emerald",
+        ///         "shipping_address_2": "Sy. 11, Kondapur, Hi tech city",
+        ///         "shipping_city": "Hyderabad",
+        ///         "shipping_pincode": "500081",
+        ///         "shipping_country": "In",
+        ///         "shipping_state": "Telangana",
+        ///         "shipping_email": null,
+        ///         "shipping_phone": null,
+        ///         "payment_method": "COD",
+        ///         "shipping_charges": 0,
+        ///         "giftwrap_charges": 0,
+        ///         "transaction_charges": 0,
+        ///         "total_discount": 0,
+        ///         "sub_total": 791.24,
+        ///         "length": 0,
+        ///         "breadth": 0,
+        ///         "height": 0,
+        ///         "weight": 0,
+        ///         "order_items": [
+        ///           {
+        ///             "name": "Geometric Pattern Cotton Shirt Pack of 3",
+        ///             "sku": "1286",
+        ///             "units": 1,
+        ///             "selling_price": 599,
+        ///             "discount": 0,
+        ///             "tax": 0,
+        ///             "hsn": ""
+        ///           }
+        ///         ]
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GetOrderForDelivery IS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("getorderpickup")]
         [MapToApiVersion("1.0")]
         public IActionResult Getorderfordelivery(long orderID)
@@ -662,8 +1112,95 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("list")]
+    /// <summary>
+    /// Get an Order List
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "userID": 1673
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH order LIST",
+    ///       "data": [
+    ///         {
+    ///           "items": [
+    ///             {
+    ///               "itemID": 115,
+    ///               "orderID": 0,
+    ///               "productID": 0,
+    ///               "sellerID": 0,
+    ///               "quantity": 1,
+    ///               "unitPrice": 1198,
+    ///               "discountType": 0,
+    ///               "discountAmount": 0,
+    ///               "sellingPrice": 1198,
+    ///               "isCancel": false,
+    ///               "isDelivered": false,
+    ///               "deliveryID": null,
+    ///               "deliverDate": null,
+    ///               "createdOn": null,
+    ///               "modifiedOn": null,
+    ///               "cancelBy": null,
+    ///               "priceID": 0,
+    ///               "size": "",
+    ///               "price": null,
+    ///               "weight": 0,
+    ///               "productDescription": "Floral Men's Cotton Shirt ",
+    ///               "hsnCode": "",
+    ///               "color": "Blue",
+    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1700720218041.jpg"
+    ///             }
+    ///           ],
+    ///           "orderID": 1113,
+    ///           "orderNo": "PO1422270202401081551",
+    ///           "orderDate": "2024-01-08T21:21:25.927",
+    ///           "vendorID": 1422,
+    ///           "memberID": 1673,
+    ///           "orderStatus": 3932,
+    ///           "orderAmount": 1198,
+    ///           "discountAmount": 0,
+    ///           "taxAmount": 0,
+    ///           "totalAmount": 1381.48,
+    ///           "isCancel": false,
+    ///           "isDelivered": false,
+    ///           "remarks": "",
+    ///           "deliveryInstruction": "",
+    ///           "deliveryCost": 0,
+    ///           "orderStatusDescription": "Order Placed",
+    ///           "firstName": null,
+    ///           "lastName": null,
+    ///           "paymentType": 3704,
+    ///           "paymentTypeDescription": "ONLINE",
+    ///           "addressID": 1340,
+    ///           "mobileNo": null,
+    ///           "zipCode": "560037",
+    ///           "address1": "Subbaiah Reddy Colony",
+    ///           "address2": "Marathahalli Village, Marathahalli",
+    ///           "city": "Bangalore",
+    ///           "state": "Karnataka",
+    ///           "country": "In",
+    ///           "landmark": "",
+    ///           "alternateNo": "",
+    ///           "productID": 1156,
+    ///           "productDescription": "Floral Men's Cotton Shirt ",
+    ///           "deliveryChannel": 3921,
+    ///           "deliveryChannelDescription": "SHIP ROCKET"
+    ///         }]}]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH ORDER LIST SUCCESSFULLY </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> List(ParamMemberUserID itemData)
         {
@@ -710,104 +1247,345 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-        [HttpPost, Route("summarylist")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
+    /// <summary>
+    /// Get a Summarylist
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "userID": 1864,
+    ///       "orderStatus": "CURRENT",
+    ///       "pageNo": 1,
+    ///       "rows": 2
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH order LIST",
+    ///       "data": [
+    ///         {
+    ///           "orderID": 2013,
+    ///           "orderNo": "OD10602409038",
+    ///           "orderDate": "2024-09-26T12:48:02.047",
+    ///           "orderStatus": 3932,
+    ///           "orderAmount": 729
+    ///         },
+    ///         {
+    ///           "orderID": 2012,
+    ///           "orderNo": "OD10602409037",
+    ///           "orderDate": "2024-09-26T12:47:44.24",
+    ///           "orderStatus": 3932,
+    ///           "orderAmount": 599
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH order LIST </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("summarylist")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
+    {
+        //dynamic data = jsonData;
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            //dynamic data = jsonData;
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            rm = new ResponseMessage();
+            List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
+            if (items?.Any() == true)
             {
-                rm = new ResponseMessage();
-                List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH order LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                }
-
-
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH order LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                await Common.UpdateEventLogsNew("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
-            return Ok(rm);
+
 
         }
-
-
-        [HttpPost, Route("vendororderlist")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
+        catch (Exception ex)
         {
-            //dynamic data = jsonData;
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                List<VendorOrderNew> items = orderBusiness.ListByVendorNew(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH VENDOR ORDER LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                }
 
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Fetch Vendor Order List
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "userID": 1060,
+    ///       "orderStatus": "CURRENT",
+    ///       "pageNo": 1,
+    ///       "rows": 2
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH VENDOR ORDER LIST",
+    ///       "data": [
+    ///         {
+    ///           "orderID": 1924,
+    ///           "orderNo": "OD10602408019",
+    ///           "orderDate": "2024-08-08T17:55:37.607",
+    ///           "addressID": 1645,
+    ///           "orderStatus": 3577,
+    ///           "orderAmount": 880,
+    ///           "discountAmount": 0,
+    ///           "taxAmount": 0,
+    ///           "totalAmount": 966.7,
+    ///           "remarks": "",
+    ///           "deliveryInstruction": "",
+    ///           "deliveryCost": 86.7,
+    ///           "firstName": "Ramakrishna",
+    ///           "lastName": "Ganga",
+    ///           "paymentType": 3703,
+    ///           "deliveredOn": null,
+    ///           "settlementStatus": "0",
+    ///           "settlementDate": "2024-08-08T17:55:37.607",
+    ///           "settlementAmount": 966.7,
+    ///           "reason": "",
+    ///           "deliveryChannel": 3922,
+    ///           "deliveryChannelDescription": null,
+    ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
+    ///           "currentRemarks": "order has been confirmed. Pickup Initated",
+    ///           "currentDate": "2024-08-08T18:07:01.717",
+    ///           "items": [
+    ///             {
+    ///               "itemID": 1090,
+    ///               "quantity": 1,
+    ///               "unitPrice": 880,
+    ///               "sellingPrice": 880,
+    ///               "priceID": 5651,
+    ///               "size": "L",
+    ///               "price": 880,
+    ///               "weight": 250,
+    ///               "productDescription": "Men's Slim Fit Casual Shirts",
+    ///               "hsnCode": "t5678",
+    ///               "color": "Beige ",
+    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698825443996.jpg"
+    ///             }
+    ///           ]
+    ///         },
+    ///         {
+    ///         "orderID": 1839,
+    ///           "orderNo": "OD10602407080",
+    ///           "orderDate": "2024-07-16T18:47:59.19",
+    ///           "addressID": 1645,
+    ///           "orderStatus": 3932,
+    ///           "orderAmount": 1200,
+    ///           "discountAmount": 0,
+    ///           "taxAmount": 0,
+    ///           "totalAmount": 1368.1,
+    ///           "remarks": "",
+    ///           "deliveryInstruction": "",
+    ///           "deliveryCost": 168.1,
+    ///           "firstName": "bablu",
+    ///           "lastName": "",
+    ///           "paymentType": 3703,
+    ///           "deliveredOn": null,
+    ///           "settlementStatus": "0",
+    ///           "settlementDate": "2024-07-16T18:47:59.19",
+    ///           "settlementAmount": 1368.1,
+    ///           "reason": "",
+    ///           "deliveryChannel": 3921,
+    ///           "deliveryChannelDescription": null,
+    ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
+    ///           "currentRemarks": "",
+    ///           "currentDate": "2024-07-16T13:18:07.14",
+    ///           "items": [
+    ///             {
+    ///             "itemID": 1005,
+    ///               "quantity": 1,
+    ///               "unitPrice": 1200,
+    ///               "sellingPrice": 1200,
+    ///               "priceID": 5772,
+    ///               "size": "30",
+    ///               "price": 1200,
+    ///               "weight": 0,
+    ///               "productDescription": "ankle fit jeans",
+    ///               "hsnCode": "",
+    ///               "color": "blue",
+    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701830676092.jpg"
+    ///             }
+    ///           ]
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH VENDOR ORDER LIST </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+
+    [HttpPost, Route("vendororderlist")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
+    {
+        //dynamic data = jsonData;
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            List<VendorOrderNew> items = orderBusiness.ListByVendorNew(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH VENDOR ORDER LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                 ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
-            return Ok(rm);
 
         }
+        catch (Exception ex)
+        {
 
-        [HttpPost, Route("vendororderdetail")]
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("FETCH VENDOR ORDER LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+    /// <summary>
+    /// Get Vendor's Order Detail
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "vendorID": 1473,
+    ///       "orderID":1005
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH VENDOR ORDER DETAIL",
+    ///       "data": [
+    ///         {
+    ///           "orderID": 1005,
+    ///           "orderNo": "PO1473240202312161138",
+    ///           "orderDate": "2023-12-16T17:08:23.247",
+    ///           "vendorID": 1473,
+    ///           "memberID": 1563,
+    ///           "addressID": 1201,
+    ///           "orderStatus": 3932,
+    ///           "orderAmount": 599,
+    ///           "discountAmount": 0,
+    ///           "taxAmount": 29.95,
+    ///           "totalAmount": 791.24,
+    ///           "isCancel": false,
+    ///           "isDelivered": false,
+    ///           "remarks": "",
+    ///           "deliveryInstruction": "",
+    ///           "deliveryCost": 0,
+    ///           "orderStatusDescription": "Order Placed",
+    ///           "firstName": null,
+    ///           "lastName": null,
+    ///           "paymentType": 3703,
+    ///           "paymentTypeDescription": "CASH ON DELIVERY",
+    ///           "deliveredOn": null,
+    ///           "settlementStatus": "0",
+    ///           "settlementDescription": "",
+    ///           "settlementDate": "2023-12-16T17:08:23.247",
+    ///           "settlementAmount": 791.24,
+    ///           "reason": "",
+    ///           "deliveryChannel": 3921,
+    ///           "deliveryChannelDescription": "SHIP ROCKET",
+    ///           "shippingAddress": "",
+    ///           "currentRemarks": null,
+    ///           "currentDate": "0001-01-01T00:00:00",
+    ///           "items": [
+    ///             {
+    ///               "itemID": 6,
+    ///               "orderID": 0,
+    ///               "productID": 0,
+    ///               "sellerID": 0,
+    ///               "quantity": 1,
+    ///               "unitPrice": 599,
+    ///               "discountType": 0,
+    ///               "discountAmount": 0,
+    ///               "sellingPrice": 599,
+    ///               "isCancel": false,
+    ///               "isDelivered": false,
+    ///               "deliveryID": null,
+    ///               "deliverDate": null,
+    ///               "createdOn": null,
+    ///               "modifiedOn": null,
+    ///               "cancelBy": null,
+    ///               "priceID": 0,
+    ///               "size": "",
+    ///               "price": null,
+    ///               "weight": 0,
+    ///               "productDescription": "Geometric Pattern Cotton Shirt Pack of 3",
+    ///               "hsnCode": "",
+    ///               "color": "Mixed colour ",
+    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701860737832.png"
+    ///             }
+    ///           ]
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">FETCH VENDOR ORDER DETAIL </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
+    [HttpPost, Route("vendororderdetail")]
         [MapToApiVersion("1.0")]
         public IActionResult GetDetailByVendor(ParamVendorOrder itemData)
         {
@@ -859,14 +1637,16 @@ namespace appify.web.api.Controllers
                 /////FCM Notification AND Email Notification
                 if (orderUpdateDetail.VendorID != 0) //// New Order Placement send Mail and notification to Vendor & Opps
                 {
-                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                     //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                    //PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                 }
                 if (orderUpdateDetail.MemberID != 0)//// New Order Placement send Mail and notification to Customer
                 {
-                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                    //PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                 }
             }
             catch (Exception ex)
@@ -944,7 +1724,7 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="200">RECEIVED WEBHOOK - PHONEPAY RESPONSE SUCCESSFULLY</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
 
         [HttpPost]
@@ -1043,7 +1823,7 @@ namespace appify.web.api.Controllers
         /// </remarks>
         /// <param name="payload"></param>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="200">RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY</response>
         /// <response code="500">ResponseMessage with Error Description</response>
 
         [HttpPost]
@@ -1143,312 +1923,393 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
-        /// <summary>
-        /// ShipRocket WebHook for DeliveryEvents.
-        /// </summary>
-        /// <remarks>
-        /// Sample Response:
-        /// NOTE : ShipRocket WebHook for DeliveryEvents.
-        /// 
-        ///     {
-        ///        "awb":"19041424751540",
-        ///        "courier_name":"Delhivery Surface",
-        ///        "current_status":"IN TRANSIT",
-        ///        "current_status_id":20,
-        ///        "shipment_status":"IN TRANSIT",
-        ///        "shipment_status_id":18,
-        ///        "current_timestamp":"23 05 2023 11:43:52",
-        ///        "order_id":"1373900_150876814",
-        ///        "sr_order_id":348456385,
-        ///        "awb_assigned_date":"2023-05-19 11:59:16",
-        ///        "pickup_scheduled_date":"2023-05-19 11:59:17",
-        ///        "etd":"2023-05-23 15:40:19",
-        ///        "scans":[
-        ///           {
-        ///              "date":"2023-05-19 11:59:16",
-        ///              "status":"X-UCI",
-        ///              "activity":"Manifested - Manifest uploaded",
-        ///              "location":"Chomu_SamodRd_D (Rajasthan)",
-        ///              "sr-status":"5",
-        ///              "sr-status-label":"MANIFEST GENERATED"
-        ///           }
-        ///           ]
-        ///     }
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns the newly created Discount Object</response>
-        /// <response code="500">ResponseMessage with Error Description</response>
+    /// <summary>
+    /// ShipRocket WebHook for DeliveryEvents.
+    /// </summary>
+    /// <remarks>
+    /// Sample Response:
+    /// NOTE : ShipRocket WebHook for DeliveryEvents.
+    /// 
+    ///     {
+    ///        "awb":"19041424751540",
+    ///        "courier_name":"Delhivery Surface",
+    ///        "current_status":"IN TRANSIT",
+    ///        "current_status_id":20,
+    ///        "shipment_status":"IN TRANSIT",
+    ///        "shipment_status_id":18,
+    ///        "current_timestamp":"23 05 2023 11:43:52",
+    ///        "order_id":"1373900_150876814",
+    ///        "sr_order_id":348456385,
+    ///        "awb_assigned_date":"2023-05-19 11:59:16",
+    ///        "pickup_scheduled_date":"2023-05-19 11:59:17",
+    ///        "etd":"2023-05-23 15:40:19",
+    ///        "scans":[
+    ///           {
+    ///              "date":"2023-05-19 11:59:16",
+    ///              "status":"X-UCI",
+    ///              "activity":"Manifested - Manifest uploaded",
+    ///              "location":"Chomu_SamodRd_D (Rajasthan)",
+    ///              "sr-status":"5",
+    ///              "sr-status-label":"MANIFEST GENERATED"
+    ///           }
+    ///           ]
+    ///     }
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY</response>
+    /// <response code="500">ResponseMessage with Error Description</response>
 
-        [HttpPost]
-        [Route("WebhookShipRocket")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> WebhookShipRocket()
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            rm = new ResponseMessage();
-            try { 
-                    // Verify the X-VERIFY header.
-                   string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
+    [HttpPost]
+    [Route("WebhookShipRocket")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> WebhookShipRocket()
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        rm = new ResponseMessage();
+        try { 
+                // Verify the X-VERIFY header.
+                string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
 
-                    //xVerifyHeader = "Appify@1234#";
-                if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
+                //xVerifyHeader = "Appify@1234#";
+            if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
+            {
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok));
+                await Common.UpdateEventLogsNew("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
+                rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Invalid payload";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+                else
                 {
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok));
-                    await Common.UpdateEventLogsNew("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.ERROR;
-                        rm.message = "Invalid payload";
-                        rm.name = StatusName.invalid;
-                        rm.data = null;
-                    }
-                    else
-                    {
-                        using var reader = new StreamReader(HttpContext.Request.Body);
-                        // You now have the body string raw
-                        var body = await reader.ReadToEndAsync();
-
-                        // As well as a bound model
-                        //var request = JsonConvert.DeserializeObject(body);
-                        //var body = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"OD10602406156\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
-
-                        var requestObj = (JObject)JsonConvert.DeserializeObject(body);
-
-                        OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
-                        {
-                            OrderNo = System.String.IsNullOrEmpty((string?)(JValue)requestObj["order_id"]) ? "" : Convert.ToString((JValue)requestObj["order_id"]),
-                            OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
-                            Remarks = System.String.IsNullOrEmpty((string?)(JValue)requestObj["current_status"]) ? "" : Convert.ToString((JValue)requestObj["current_status"]),
-                            CourierRefID = System.String.IsNullOrEmpty((string?)(JValue)requestObj["channel_id"]) ? "" : Convert.ToString((JValue)requestObj["channel_id"]),
-                            ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
-                            AWB = System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : Convert.ToString((JValue)requestObj["awb"]),
-                            DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
-                            CourierName = System.String.IsNullOrEmpty((string?)(JValue)requestObj["courier_name"]) ? "" : Convert.ToString((JValue)requestObj["courier_name"]),
-                            TrackURL = Common.ShiproketDeliveryTrackingURL + (System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : (JValue)requestObj["awb"].ToString())
-                        };
-
-                        var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
-                        if (result>0)
-                        {
-                            rm.statusCode = StatusCodes.OK;
-                            rm.message = "SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY";
-                            rm.name = StatusName.ok;
-                            rm.data = requestObj;
-                            /*
-                            Shiprocket Order Status Table
-
-                            ->	3	Ready To Ship
-                            ->	4	Pickup Scheduled
-                            ->	5	Canceled
-                            ->	6	Shipped
-                            ->	7	Delivered
-                            ->	8	ePayment Failed
-                            ->	9	Returned
-                            ->	19	Out for Delivery
-                            ->	20	In Transit
-                            ->	34	Out For Pickup
-                            ->	51	Picked Up
-                            ->  37  Delivery Delayed
-                            */
-                            OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
-                           /* if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
-                            {
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 6) //// Shipped
-                            {
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 19) //// In Transit
-                            {
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 37) //// Delivery Delayed
-                            {
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(NotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                }
-                            }*/
-                            if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled by Customer
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                        }
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok));
-                    await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
-                }
-
-                }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message));
-                await Common.UpdateEventLogsNew("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message, this.eventLogBusiness);
-            }
-            // Respond with a 200 OK status to acknowledge the receipt of the webhook
-            return Ok(rm);
-        }
-
-        private bool VerifyXVerifyHeaderShipRocket(string xVerifyHeader)
-        {
-            string Secret = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ShipRocketKey:Secret").Value;
-            // TODO: Implement the logic to verify the X-VERIFY header.
-            if (Secret == xVerifyHeader)
-                return true;
-            else
-                return false;
-        }
-
-        /// <summary>
-        /// OneDelhivery WebHook for DeliveryEvents.
-        /// </summary>
-        /// <remarks>
-        /// Sample Response:
-        /// NOTE : OneDelhivery WebHook for DeliveryEvents.
-        /// 
-        ///     {
-        ///        "awb":"19041424751540",
-        ///        "courier_name":"Delhivery Surface",
-        ///        "current_status":"IN TRANSIT",
-        ///        "current_status_id":20,
-        ///        "shipment_status":"IN TRANSIT",
-        ///        "shipment_status_id":18,
-        ///        "current_timestamp":"23 05 2023 11:43:52",
-        ///        "order_id":"1373900_150876814",
-        ///        "sr_order_id":348456385,
-        ///        "awb_assigned_date":"2023-05-19 11:59:16",
-        ///        "pickup_scheduled_date":"2023-05-19 11:59:17",
-        ///        "etd":"2023-05-23 15:40:19",
-        ///        "scans":[
-        ///           {
-        ///              "date":"2023-05-19 11:59:16",
-        ///              "status":"X-UCI",
-        ///              "activity":"Manifested - Manifest uploaded",
-        ///              "location":"Chomu_SamodRd_D (Rajasthan)",
-        ///              "sr-status":"5",
-        ///              "sr-status-label":"MANIFEST GENERATED"
-        ///           }
-        ///           ]
-        ///     }
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns the newly created Discount Object</response>
-        /// <response code="500">ResponseMessage with Error Description</response>
-
-        [HttpPost]
-        [Route("WebhookOneDelhivery")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> WebhookOneDelhivery()
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            rm = new ResponseMessage();
-            try { 
-            // Verify the X-VERIFY header.
-            string xVerifyHeader = reqHeader.Headers["x-api-key"];
-            if (xVerifyHeader == null || xVerifyHeader == "")
-            {
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.ok));
-                await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Received Null Payload", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.invalid, this.eventLogBusiness);
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = "Invalid payload";
-                rm.name = StatusName.invalid;
-                rm.data = null;
-            }
-            else//// if (xVerifyHeader == "Appify@1234#")
-            {
-                using var reader = new StreamReader(HttpContext.Request.Body);
+                    using var reader = new StreamReader(HttpContext.Request.Body);
                     // You now have the body string raw
                     var body = await reader.ReadToEndAsync();
-                //var body = "{    \"Shipment\": {      \"AWB\": \"19041618371282\",      \"ReferenceNo\": \"OD26232407001\",      \"PickUpDate\": \"2024-07-26T17:53:53\",      \"Sortcode\": \"DEL/UDY\",      \"NSLCode\": \"RD-AC\",      \"Status\": {        \"Status\": \"RTO\",        \"StatusDateTime\": \"2024-08-06T18:   27:36.822\",        \"StatusType\": \"DL\",        \"StatusLocation\": \"Pushpavanam_Vedaranyam_D (Tamil Nadu)\",        \"Instructions\": \"RETURN Accepted\"      }    }  }";
-                // As well as a bound model
-                //var request = JsonConvert.DeserializeObject(body);
-                var requestObj = (JObject)JsonConvert.DeserializeObject(body);
 
-                OrderTrackingUpdateDelhivery orderTrackingUpdate = new OrderTrackingUpdateDelhivery
-                {
-                    AWB = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["AWB"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["AWB"]),
-                    Status = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Status"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Status"]),
+                    // As well as a bound model
+                    //var request = JsonConvert.DeserializeObject(body);
+                    //var body = "{\r\n  \"awb\": \"123456\",\r\n  \"courier_name\": \"DTDC Courier\",\r\n  \"current_status\": \"Delivered\",\r\n  \"current_status_id\": 7,\r\n  \"shipment_status\": \"Delivered\",\r\n  \"shipment_status_id\": 7,\r\n  \"current_timestamp\": \"11 06 2024 20:18:24\",\r\n  \"order_id\": \"OD10602406156\",\r\n  \"sr_order_id\": 1234,\r\n  \"etd\": \"2024-06-11 20:18:24\",\r\n  \"scans\": [\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-16 16:18:47\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"new\",\r\n      \"sr-status\": \"NA\",\r\n      \"sr-status-label\": \"NA\"\r\n    },\r\n    {\r\n      \"location\": \"Mumbai_Chndivli_PC (Maharashtra)\",\r\n      \"date\": \"2022-05-17 09:59:03\",\r\n      \"activity\": \"Manifested - Consignment Manifested\",\r\n      \"status\": \"assigned_for_seller_pickup\",\r\n      \"sr-status\": 19,\r\n      \"sr-status-label\": \"OUT FOR PICKUP\"\r\n    }\r\n  ],\r\n  \"is_return\": 0,\r\n  \"channel_id\": 1234\r\n}";
 
-                    StatusType = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusType"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["StatusType"]),
-                    Instructions = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Instructions"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Instructions"]),
-                    ReferenceNo = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["ReferenceNo"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["ReferenceNo"]),
-                    StatusDateTime = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusDateTime"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)requestObj["Shipment"]["Status"]["StatusDateTime"])
-                };
-                         
-                    var result = orderBusiness.UpdateDelhiveryOrderTrackingStatus(orderTrackingUpdate);
+                    var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+
+                    OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
+                    {
+                        OrderNo = System.String.IsNullOrEmpty((string?)(JValue)requestObj["order_id"]) ? "" : Convert.ToString((JValue)requestObj["order_id"]),
+                        OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
+                        Remarks = System.String.IsNullOrEmpty((string?)(JValue)requestObj["current_status"]) ? "" : Convert.ToString((JValue)requestObj["current_status"]),
+                        CourierRefID = System.String.IsNullOrEmpty((string?)(JValue)requestObj["channel_id"]) ? "" : Convert.ToString((JValue)requestObj["channel_id"]),
+                        ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
+                        AWB = System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : Convert.ToString((JValue)requestObj["awb"]),
+                        DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
+                        CourierName = System.String.IsNullOrEmpty((string?)(JValue)requestObj["courier_name"]) ? "" : Convert.ToString((JValue)requestObj["courier_name"]),
+                        TrackURL = Common.ShiproketDeliveryTrackingURL + (System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : (JValue)requestObj["awb"].ToString())
+                    };
+
+                    var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
                     if (result>0)
                     {
                         rm.statusCode = StatusCodes.OK;
-                        rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
+                        rm.message = "SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY";
                         rm.name = StatusName.ok;
                         rm.data = requestObj;
+                        /*
+                        Shiprocket Order Status Table
+
+                        ->	3	Ready To Ship
+                        ->	4	Pickup Scheduled
+                        ->	5	Canceled
+                        ->	6	Shipped
+                        ->	7	Delivered
+                        ->	8	ePayment Failed
+                        ->	9	Returned
+                        ->	19	Out for Delivery
+                        ->	20	In Transit
+                        ->	34	Out For Pickup
+                        ->	51	Picked Up
+                        ->  37  Delivery Delayed
+                        */
                         OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
-                        if (orderTrackingUpdate.Status == "RTO") //// Cancelled by Customer
+                        if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
+                        {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                        }
+                        else if (orderTrackingUpdate.OrderStatus == 6) //// Shipped
+                        {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                        }
+                        else if (orderTrackingUpdate.OrderStatus == 19) //// In Transit
+                        {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                        }
+                        }
+                        else if (orderTrackingUpdate.OrderStatus == 37) //// Delivery Delayed
+                        {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDelayVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDelayCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            }
+                        }
+                        if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled by Customer
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
                                 EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                                 PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
                                 EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
                         }
                     }
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok));
-
-                    //// Need to comment
-                    await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
-                    rm.name = StatusName.ok;
-                    ////rm.data = request;
-                }
-
-        }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message));
-                await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Error", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message, this.eventLogBusiness);
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", request, StatusName.ok));
+                await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
             }
-            // Respond with a 200 OK status to acknowledge the receipt of the webhook
-            return Ok(rm);
-        }
 
+        }
+        catch (Exception ex)
+        {
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message));
+            await Common.UpdateEventLogsNew("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received", null, rm.message, this.eventLogBusiness);
+        }
+        // Respond with a 200 OK status to acknowledge the receipt of the webhook
+        return Ok(rm);
+    }
+
+    private bool VerifyXVerifyHeaderShipRocket(string xVerifyHeader)
+    {
+        string Secret = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ShipRocketKey:Secret").Value;
+        // TODO: Implement the logic to verify the X-VERIFY header.
+        if (Secret == xVerifyHeader)
+            return true;
+        else
+            return false;
+    }
+
+    /// <summary>
+    /// OneDelhivery WebHook for DeliveryEvents.
+    /// </summary>
+    /// <remarks>
+    /// Sample Response:
+    /// NOTE : OneDelhivery WebHook for DeliveryEvents.
+    /// 
+    ///     {
+    ///        "awb":"19041424751540",
+    ///        "courier_name":"Delhivery Surface",
+    ///        "current_status":"IN TRANSIT",
+    ///        "current_status_id":20,
+    ///        "shipment_status":"IN TRANSIT",
+    ///        "shipment_status_id":18,
+    ///        "current_timestamp":"23 05 2023 11:43:52",
+    ///        "order_id":"1373900_150876814",
+    ///        "sr_order_id":348456385,
+    ///        "awb_assigned_date":"2023-05-19 11:59:16",
+    ///        "pickup_scheduled_date":"2023-05-19 11:59:17",
+    ///        "etd":"2023-05-23 15:40:19",
+    ///        "scans":[
+    ///           {
+    ///              "date":"2023-05-19 11:59:16",
+    ///              "status":"X-UCI",
+    ///              "activity":"Manifested - Manifest uploaded",
+    ///              "location":"Chomu_SamodRd_D (Rajasthan)",
+    ///              "sr-status":"5",
+    ///              "sr-status-label":"MANIFEST GENERATED"
+    ///           }
+    ///           ]
+    ///     }
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY</response>
+    /// <response code="500">ResponseMessage with Error Description</response>
+
+    [HttpPost]
+    [Route("WebhookOneDelhivery")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> WebhookOneDelhivery()
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        rm = new ResponseMessage();
+        try { 
+        // Verify the X-VERIFY header.
+        string xVerifyHeader = reqHeader.Headers["x-api-key"];
+        if (xVerifyHeader == null || xVerifyHeader == "")
+        {
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.ok));
+            await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Received Null Payload", reqHeader, controllerURL, "ONEDELHIVERY Webhook Received Null Payload", "Received null payload", StatusName.invalid, this.eventLogBusiness);
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = "Invalid payload";
+            rm.name = StatusName.invalid;
+            rm.data = null;
+        }
+        else//// if (xVerifyHeader == "Appify@1234#")
+        {
+            using var reader = new StreamReader(HttpContext.Request.Body);
+                // You now have the body string raw
+                var body = await reader.ReadToEndAsync();
+            //var body = "{    \"Shipment\": {      \"AWB\": \"19041618371282\",      \"ReferenceNo\": \"OD26232407001\",      \"PickUpDate\": \"2024-07-26T17:53:53\",      \"Sortcode\": \"DEL/UDY\",      \"NSLCode\": \"RD-AC\",      \"Status\": {        \"Status\": \"RTO\",        \"StatusDateTime\": \"2024-08-06T18:   27:36.822\",        \"StatusType\": \"DL\",        \"StatusLocation\": \"Pushpavanam_Vedaranyam_D (Tamil Nadu)\",        \"Instructions\": \"RETURN Accepted\"      }    }  }";
+            // As well as a bound model
+            //var request = JsonConvert.DeserializeObject(body);
+            var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+
+            OrderTrackingUpdateDelhivery orderTrackingUpdate = new OrderTrackingUpdateDelhivery
+            {
+                AWB = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["AWB"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["AWB"]),
+                Status = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Status"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Status"]),
+
+                StatusType = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusType"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["StatusType"]),
+                Instructions = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["Instructions"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["Status"]["Instructions"]),
+                ReferenceNo = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["ReferenceNo"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["ReferenceNo"]),
+                StatusDateTime = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusDateTime"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)requestObj["Shipment"]["Status"]["StatusDateTime"])
+            };
+                         
+                var result = orderBusiness.UpdateDelhiveryOrderTrackingStatus(orderTrackingUpdate);
+                if (result>0)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "ONEDELHIVERY WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
+                    rm.name = StatusName.ok;
+                    rm.data = requestObj;
+                    OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
+                    if (orderTrackingUpdate.Status == "RTO" && orderTrackingUpdate.StatusType == "DL") //// Cancelled by Customer
+                    {
+                        if (orderUpdateDetail.VendorID != 0)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.MemberID != 0)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                        }
+                    }
+                    if (orderTrackingUpdate.Status == "Delivered" && orderTrackingUpdate.StatusType == "DL") //// Delivered 
+                    {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                        }
+                    if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "UD" || orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "UD") //// Shipped
+                    {
+                            if (orderUpdateDetail.VendorID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.MemberID != 0)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                            }
+                        }
+                    //if (orderTrackingUpdate.Status == "RTO" && orderTrackingUpdate.StatusType == "DL") //// Cancelled by Customer
+                    //{
+
+                    //}
+                }
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok));
+
+                //// Need to comment
+                await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "ONEDELHIVERY Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "RECEIVED WEBHOOK - ONEDELHIVERY RESPONSE SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                ////rm.data = request;
+            }
+
+    }
+        catch (Exception ex)
+        {
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message));
+            await Common.UpdateEventLogsNew("ONEDELHIVERY Webhook Error", reqHeader, controllerURL, "ONEDELHIVERY Webhook Error", null, rm.message, this.eventLogBusiness);
+        }
+        // Respond with a 200 OK status to acknowledge the receipt of the webhook
+        return Ok(rm);
+    }
+        /// <summary>
+        /// PAYMENT GATEWAY VALIDATION
+        /// </summary>
+        /// <remarks>    
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "PAYMENT GATEWAY KEY",
+        ///       "data": "{\"status\":false,\"msg\":\"Transaction not found.\"}"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">PAYMENT GATEWAY VALIDATION </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("TestPayment")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> InitiatePaymentAsync()
@@ -1572,70 +2433,70 @@ namespace appify.web.api.Controllers
     /// 
     /// </remarks>
     /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="200">WebApp - Create Order  </response>
     /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("createorderwebapp")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CreateOrderWebApp(OrderCreateWebApp itemData)
+    [HttpPost]
+    [Route("createorderwebapp")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> CreateOrderWebApp(OrderCreateWebApp itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            rm = new ResponseMessage();
+
+            Dictionary<string, object> input = new Dictionary<string, object>();
+            input.Add("amount",itemData.Amount);
+            input.Add("currency", itemData.Currency);
+            input.Add("receipt",itemData.Receipt);
+            input.Add("notes", itemData.note);
+            input.Add("partial_payment", itemData.PartialPayment);
+            input.Add("first_payment_min_amount", itemData.FirstPaymentMinAmount);
+
+            RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+            Razorpay.Api.Order order = client.Order.Create(input);
+
+            var orderId = order["id"].ToString();
+
+            //var items = customerBusiness.GetProductListByVAUA(itemData.userID);
+            if (orderId != null)
             {
-                rm = new ResponseMessage();
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "WebApp - Create Order CREATED";
+                rm.name = StatusName.ok;
+                rm.data = order;
 
-                Dictionary<string, object> input = new Dictionary<string, object>();
-                input.Add("amount",itemData.Amount);
-                input.Add("currency", itemData.Currency);
-                input.Add("receipt",itemData.Receipt);
-                input.Add("notes", itemData.note);
-                input.Add("partial_payment", itemData.PartialPayment);
-                input.Add("first_payment_min_amount", itemData.FirstPaymentMinAmount);
-
-                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-                Razorpay.Api.Order order = client.Order.Create(input);
-
-                var orderId = order["id"].ToString();
-
-                //var items = customerBusiness.GetProductListByVAUA(itemData.userID);
-                if (orderId != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED";
-                    rm.name = StatusName.ok;
-                    rm.data = order;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, itemData, order, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                }
-
-
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                await Common.UpdateEventLogsNew("WebApp - Create Order CREATED", reqHeader, controllerURL, itemData, order, StatusName.ok, this.eventLogBusiness);
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("WebApp - Create Order - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
-            return Ok(rm);
+
 
         }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("WebApp - Create Order - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
 
     /// <summary>
     /// WebApp - Order Items Save
@@ -1671,55 +2532,55 @@ namespace appify.web.api.Controllers
     /// 
     /// </remarks>
     /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="200">RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED </response>
     /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("saveitemsorderwebapp")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> SaveItemsOrderWebApp(ParamOrderItem itemData)
+    [HttpPost]
+    [Route("saveitemsorderwebapp")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> SaveItemsOrderWebApp(ParamOrderItem itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = true;
-                //var items = this.orderBusiness.GetOrderForDelivery(itemData.OrderID);
-                //if (items != null)
-                //{
-                //    rm.statusCode = StatusCodes.OK;
-                //    rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED";
-                //    rm.name = StatusName.ok;
-                //    rm.data = items;
+            rm = new ResponseMessage();
+            rm.statusCode = StatusCodes.OK;
+            rm.message = "WebApp - Order Items SAVED";
+            rm.name = StatusName.ok;
+            rm.data = true;
+            //var items = this.orderBusiness.GetOrderForDelivery(itemData.OrderID);
+            //if (items != null)
+            //{
+            //    rm.statusCode = StatusCodes.OK;
+            //    rm.message = "RAZORPAY ORDER HAS BEEN SUCCESSFULLY SAVED";
+            //    rm.name = StatusName.ok;
+            //    rm.data = items;
 
-                //    await Common.UpdateEventLogsNew("RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                //}
-                //else
-                //{
-                //    rm.statusCode = StatusCodes.ERROR;
-                //    rm.message = "NO CONTENT";
-                //    rm.name = StatusName.invalid;
-                //    rm.data = null;
-                //    await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                //}
+            //    await Common.UpdateEventLogsNew("RAZORPAY ORDER HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            //}
+            //else
+            //{
+            //    rm.statusCode = StatusCodes.ERROR;
+            //    rm.message = "NO CONTENT";
+            //    rm.name = StatusName.invalid;
+            //    rm.data = null;
+            //    await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            //}
 
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                await Common.UpdateEventLogsNew("RAZORPAY CREATE ORDER - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
 
         }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            await Common.UpdateEventLogsNew("WebApp - Order Items - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
         private string InitiatePayment(PaymentTransactionData data)
         {
             var reqHeader = Request;
@@ -1806,9 +2667,26 @@ namespace appify.web.api.Controllers
 
         }
 
+    /// <summary>
+    /// PAYMENT GATEWAY VALIDATION
+    /// </summary>
+    /// <remarks>    
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "PAYMENT GATEWAY KEY",
+    ///       "data": "{\"status\":false,\"msg\":\"Transaction not found.\"}"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">PAYMENT GATEWAY VALIDATION </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    /// 
 
-
-        [HttpPost, Route("TestTransaction")]
+    [HttpPost, Route("TestTransaction")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> TestTransactionAPIAsync()
         {

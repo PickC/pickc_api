@@ -17,6 +17,12 @@ namespace appify.web.api
         public string? FCMSenderID { get; set; }
         public string? FCMServerKey { get; set; }
     }
+    public class SMSNotificationModel
+    {
+        public string? Title { get; set; }
+        [JsonProperty("body")]
+        public string? Body { get; set; }
+    }
 
     public class GoogleNotification
     {
