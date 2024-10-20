@@ -33,7 +33,7 @@ namespace appify.web.api.Controllers
         private readonly INotificationBusiness notificationBusiness;
         private ResponseMessage rm;
 
-        public MemberController(IConfiguration configuration, 
+        public MemberController(IConfiguration configuration,  
                                 IMemberBusiness iResultData,
                                 IMemberReturnPolicyBusiness memberReturnPolicyBusiness,
                                 IMemberAppSettingBusiness memberAppSettingBusiness,
