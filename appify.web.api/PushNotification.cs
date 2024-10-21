@@ -1,7 +1,10 @@
-﻿using appify.Business.Contract;
+﻿using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Microsoft.Extensions.Configuration;
+using Google.Apis.Auth.OAuth2;
 
 namespace appify.web.api
 {
@@ -86,18 +89,22 @@ namespace appify.web.api
                 }
 
                 notificationModel.DeviceId = vendorDetails.Token.Trim();
-                if (IsVendor == false)
+                //if (IsVendor == false)
+                //{
+                //    notificationModel.FCMSenderID = FCMCredentials.FCMSenderID.Trim();
+                //    notificationModel.FCMServerKey = FCMCredentials.FCMServerKey.Trim();
+                //}
+                //else if(IsVendor == true)
+                //{
+                //    notificationModel.FCMSenderID = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:SenderId").Value;
+                //    notificationModel.FCMServerKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:ServerKey").Value;
+                //    VendorID = 0;
+                //}
+                if (IsVendor == true)
                 {
-                    notificationModel.FCMSenderID = FCMCredentials.FCMSenderID.Trim();
-                    notificationModel.FCMServerKey = FCMCredentials.FCMServerKey.Trim();
-                }
-                else if(IsVendor == true)
-                {
-                    notificationModel.FCMSenderID = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:SenderId").Value;
-                    notificationModel.FCMServerKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("FcmNotification:ServerKey").Value;
                     VendorID = 0;
                 }
-                FCMPushNotification(notificationModel);
+                FCMPushNotification_New(notificationModel);
 
                 PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
                 { OrderID= OrderID, SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
@@ -111,6 +118,52 @@ namespace appify.web.api
             }
 
             return result;
+        }
+
+        public static async Task<string> FCMPushNotification_New(NotificationModel notificationModel2)
+        {
+            string returnMessage = "";
+            try
+            {
+                if (FirebaseApp.DefaultInstance == null)
+                {
+                    FirebaseApp.Create(new AppOptions()
+                    {
+                        Credential = GoogleCredential.FromFile(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appify-android-gcp-new.json")),
+                    });
+                }
+                var message = new Message()
+                {
+                    Notification = new Notification
+                    {
+                        Title = notificationModel2.Title,
+                        Body = notificationModel2.Body,
+                    },
+                    Token = notificationModel2.DeviceId
+                };
+
+                var messaging = FirebaseMessaging.DefaultInstance;
+                var result = await messaging.SendAsync(message);
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    // Message was sent successfully
+                    returnMessage="Message sent successfully!";
+                }
+                else
+                {
+                    // There was an error sending the message
+                    returnMessage = "Error sending the message.";
+                }
+            }
+            catch (Exception ex)
+            {
+                returnMessage=ex.Message;
+                throw ex;
+
+            }
+
+            return returnMessage;
         }
 
     }

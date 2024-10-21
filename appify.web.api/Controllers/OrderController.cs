@@ -489,7 +489,7 @@ namespace appify.web.api.Controllers
         [MapToApiVersion("1.0")]
         public IActionResult PrintInvoice(Int64 orderID)
         {
-            //OrderPlace_PushNotification_Email(1976);
+            //OrderPlace_PushNotification_Email(orderID);
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
@@ -612,7 +612,7 @@ namespace appify.web.api.Controllers
                             EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                             SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
                         if (orderUpdateDetail.MemberID != 0)
                         {
@@ -1336,122 +1336,203 @@ namespace appify.web.api.Controllers
         return Ok(rm);
 
     }
-    /// <summary>
-    /// Fetch Vendor Order List
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///       "userID": 1060,
-    ///       "orderStatus": "CURRENT",
-    ///       "pageNo": 1,
-    ///       "rows": 2
-    ///     }
-    ///     
-    /// Sample response JSON :
-    /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "FETCH VENDOR ORDER LIST",
-    ///       "data": [
-    ///         {
-    ///           "orderID": 1924,
-    ///           "orderNo": "OD10602408019",
-    ///           "orderDate": "2024-08-08T17:55:37.607",
-    ///           "addressID": 1645,
-    ///           "orderStatus": 3577,
-    ///           "orderAmount": 880,
-    ///           "discountAmount": 0,
-    ///           "taxAmount": 0,
-    ///           "totalAmount": 966.7,
-    ///           "remarks": "",
-    ///           "deliveryInstruction": "",
-    ///           "deliveryCost": 86.7,
-    ///           "firstName": "Ramakrishna",
-    ///           "lastName": "Ganga",
-    ///           "paymentType": 3703,
-    ///           "deliveredOn": null,
-    ///           "settlementStatus": "0",
-    ///           "settlementDate": "2024-08-08T17:55:37.607",
-    ///           "settlementAmount": 966.7,
-    ///           "reason": "",
-    ///           "deliveryChannel": 3922,
-    ///           "deliveryChannelDescription": null,
-    ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
-    ///           "currentRemarks": "order has been confirmed. Pickup Initated",
-    ///           "currentDate": "2024-08-08T18:07:01.717",
-    ///           "items": [
-    ///             {
-    ///               "itemID": 1090,
-    ///               "quantity": 1,
-    ///               "unitPrice": 880,
-    ///               "sellingPrice": 880,
-    ///               "priceID": 5651,
-    ///               "size": "L",
-    ///               "price": 880,
-    ///               "weight": 250,
-    ///               "productDescription": "Men's Slim Fit Casual Shirts",
-    ///               "hsnCode": "t5678",
-    ///               "color": "Beige ",
-    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698825443996.jpg"
-    ///             }
-    ///           ]
-    ///         },
-    ///         {
-    ///         "orderID": 1839,
-    ///           "orderNo": "OD10602407080",
-    ///           "orderDate": "2024-07-16T18:47:59.19",
-    ///           "addressID": 1645,
-    ///           "orderStatus": 3932,
-    ///           "orderAmount": 1200,
-    ///           "discountAmount": 0,
-    ///           "taxAmount": 0,
-    ///           "totalAmount": 1368.1,
-    ///           "remarks": "",
-    ///           "deliveryInstruction": "",
-    ///           "deliveryCost": 168.1,
-    ///           "firstName": "bablu",
-    ///           "lastName": "",
-    ///           "paymentType": 3703,
-    ///           "deliveredOn": null,
-    ///           "settlementStatus": "0",
-    ///           "settlementDate": "2024-07-16T18:47:59.19",
-    ///           "settlementAmount": 1368.1,
-    ///           "reason": "",
-    ///           "deliveryChannel": 3921,
-    ///           "deliveryChannelDescription": null,
-    ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
-    ///           "currentRemarks": "",
-    ///           "currentDate": "2024-07-16T13:18:07.14",
-    ///           "items": [
-    ///             {
-    ///             "itemID": 1005,
-    ///               "quantity": 1,
-    ///               "unitPrice": 1200,
-    ///               "sellingPrice": 1200,
-    ///               "priceID": 5772,
-    ///               "size": "30",
-    ///               "price": 1200,
-    ///               "weight": 0,
-    ///               "productDescription": "ankle fit jeans",
-    ///               "hsnCode": "",
-    ///               "color": "blue",
-    ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701830676092.jpg"
-    ///             }
-    ///           ]
-    ///         }
-    ///       ]
-    ///     }
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">FETCH VENDOR ORDER LIST </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
+        /// <summary>
+        /// Gets Daily Order Summarylist
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH daily order summary LIST",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 2013,
+        ///           "orderNo": "OD10602409038",
+        ///           "orderDate": "2024-09-26T12:48:02.047",
+        ///           "vendorName":"High On Style",
+        ///           "customerName":"Sri",
+        ///           "mobileNo":"9840793066",
+        ///           "emailID":"Balasri805@gmail.com",
+        ///           "orderStatus":"Declined",
+        ///           "orderAmount":790.00,
+        ///           "paymentType":"CASH ON DELIVERY"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH order LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("dailyordersummarylist")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> DailyOrderSummaryList()
+        {
+            //dynamic data = jsonData;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<DailyOrderSummary> items = orderBusiness.GetDailyOrderSummary();
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("DAILY ORDER SUMMARY LIST IS SUCCESSFULLY", reqHeader, controllerURL, "", items, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("DailyOrderSummaryList - NO CONTENT", reqHeader, controllerURL, "", null, rm.message, this.eventLogBusiness);
+                }
 
-    [HttpPost, Route("vendororderlist")]
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("DailyOrderSummaryList - ERROR", reqHeader, controllerURL, "", null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Fetch Vendor Order List
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060,
+        ///       "orderStatus": "CURRENT",
+        ///       "pageNo": 1,
+        ///       "rows": 2
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH VENDOR ORDER LIST",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 1924,
+        ///           "orderNo": "OD10602408019",
+        ///           "orderDate": "2024-08-08T17:55:37.607",
+        ///           "addressID": 1645,
+        ///           "orderStatus": 3577,
+        ///           "orderAmount": 880,
+        ///           "discountAmount": 0,
+        ///           "taxAmount": 0,
+        ///           "totalAmount": 966.7,
+        ///           "remarks": "",
+        ///           "deliveryInstruction": "",
+        ///           "deliveryCost": 86.7,
+        ///           "firstName": "Ramakrishna",
+        ///           "lastName": "Ganga",
+        ///           "paymentType": 3703,
+        ///           "deliveredOn": null,
+        ///           "settlementStatus": "0",
+        ///           "settlementDate": "2024-08-08T17:55:37.607",
+        ///           "settlementAmount": 966.7,
+        ///           "reason": "",
+        ///           "deliveryChannel": 3922,
+        ///           "deliveryChannelDescription": null,
+        ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
+        ///           "currentRemarks": "order has been confirmed. Pickup Initated",
+        ///           "currentDate": "2024-08-08T18:07:01.717",
+        ///           "items": [
+        ///             {
+        ///               "itemID": 1090,
+        ///               "quantity": 1,
+        ///               "unitPrice": 880,
+        ///               "sellingPrice": 880,
+        ///               "priceID": 5651,
+        ///               "size": "L",
+        ///               "price": 880,
+        ///               "weight": 250,
+        ///               "productDescription": "Men's Slim Fit Casual Shirts",
+        ///               "hsnCode": "t5678",
+        ///               "color": "Beige ",
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698825443996.jpg"
+        ///             }
+        ///           ]
+        ///         },
+        ///         {
+        ///         "orderID": 1839,
+        ///           "orderNo": "OD10602407080",
+        ///           "orderDate": "2024-07-16T18:47:59.19",
+        ///           "addressID": 1645,
+        ///           "orderStatus": 3932,
+        ///           "orderAmount": 1200,
+        ///           "discountAmount": 0,
+        ///           "taxAmount": 0,
+        ///           "totalAmount": 1368.1,
+        ///           "remarks": "",
+        ///           "deliveryInstruction": "",
+        ///           "deliveryCost": 168.1,
+        ///           "firstName": "bablu",
+        ///           "lastName": "",
+        ///           "paymentType": 3703,
+        ///           "deliveredOn": null,
+        ///           "settlementStatus": "0",
+        ///           "settlementDate": "2024-07-16T18:47:59.19",
+        ///           "settlementAmount": 1368.1,
+        ///           "reason": "",
+        ///           "deliveryChannel": 3921,
+        ///           "deliveryChannelDescription": null,
+        ///           "shippingAddress": "001, Kondapur main road, Laxmi Cyber city, Telangana, 500081",
+        ///           "currentRemarks": "",
+        ///           "currentDate": "2024-07-16T13:18:07.14",
+        ///           "items": [
+        ///             {
+        ///             "itemID": 1005,
+        ///               "quantity": 1,
+        ///               "unitPrice": 1200,
+        ///               "sellingPrice": 1200,
+        ///               "priceID": 5772,
+        ///               "size": "30",
+        ///               "price": 1200,
+        ///               "weight": 0,
+        ///               "productDescription": "ankle fit jeans",
+        ///               "hsnCode": "",
+        ///               "color": "blue",
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701830676092.jpg"
+        ///             }
+        ///           ]
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH VENDOR ORDER LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+
+        [HttpPost, Route("vendororderlist")]
     [MapToApiVersion("1.0")]
     public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
     {
@@ -1637,16 +1718,16 @@ namespace appify.web.api.Controllers
                 /////FCM Notification AND Email Notification
                 if (orderUpdateDetail.VendorID != 0) //// New Order Placement send Mail and notification to Vendor & Opps
                 {
-                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                     SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                     //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                    //PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                 }
                 if (orderUpdateDetail.MemberID != 0)//// New Order Placement send Mail and notification to Customer
                 {
-                    //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                     SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                    //PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                 }
             }
             catch (Exception ex)

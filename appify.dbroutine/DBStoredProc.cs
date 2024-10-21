@@ -168,6 +168,8 @@ namespace appify.dbroutine
 
         public const string UPDATEORDERTRACKINGSTATUS = "[Operation].[usp_UpdateOrderStatusShiprocket]";
 
+        public const string DAILYORDERSUMMARY = "[Operation].[usp_DailyOrderSummary]";
+
         //DELIVERY
         public const string UPDATEORDERTRACKINGSTATUSDELHIVERY = "[Operation].[usp_UpdateOrderStatusDelhivery]";
         public const string ORDERDELIVERYHEADER = "[Operation].[usp_OrderHeaderDelivery]";
