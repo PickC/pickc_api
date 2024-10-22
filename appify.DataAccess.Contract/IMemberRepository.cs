@@ -23,7 +23,7 @@ namespace appify.DataAccess.Contract
         public bool DeleteMember(long userID);
           
         public Member IsMemberExist(string emailID,string mobileNo, short memberType, Int64 parentID);
-
+        public MemberExitsCheck IsMemberExistNew(string mobileNo, short memberType);
         public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo);
         public Member MemberLogIn(string emailID, string mobileNo, string password,Int64 parentID);
         public bool MemberLogOut(long userID);

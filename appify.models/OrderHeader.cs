@@ -378,6 +378,10 @@ namespace appify.models
         public Int64 OrderID { get; set; }
         public Int64 VendorID { get; set; }
         public Int64 MemberID { get; set; }
+        public bool IsEmail { get; set; }
+        public bool IsEmailOpps { get; set; }
+        public bool IsSMS { get; set; }
+        public bool IsPush { get; set; }
     }
         public partial class CustomerOrder {
 

@@ -22,6 +22,8 @@ using Twilio.Rest.Api.V2010.Account;
 using System.Management;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.VisualBasic;
+using FirebaseAdmin.Messaging;
+using System.ComponentModel.DataAnnotations;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -430,39 +432,87 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("fortestingfunc")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> fortestingfuc()
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> fortestingfuc()//([Required]IFormFile file)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                string responseBody = "";
-                using (var client = new HttpClient())
-                {
+                string responseBody = "NO FILE OR INVALID FILE FORMAT";
+                //////[FromForm] ParamEmailFields item
+                //if (item.file == null || item.file.Length == 0)
+                //{
+                //    rm.statusCode = StatusCodes.ERROR;
+                //    rm.message = "";
+                //    rm.name = StatusName.invalid;
+                //    rm.data = null;
+                //    return Ok(rm);
+                //}
+                //if (Path.GetExtension(item.file.FileName).ToLower() != ".csv"
+                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xls"
+                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsx"
+                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsb")
+                //{
+                //    rm.statusCode = StatusCodes.ERROR;
+                //    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
+                //    rm.name = StatusName.invalid;
+                //    rm.data = null;
+                //    return Ok(rm);
+                //}
 
-                    var BaseUri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
-                    var parameters = new Dictionary<string, string>();
-                    parameters["userid"] = "appify";
-                    parameters["password"] = "App1fyd3v3l0p3r";
-                    parameters["sender"] = "APFYRT";
-                    parameters["mobileno"] = "9810722979";
-                    parameters["msg"] = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL";
-                    parameters["peid"] = "1701172830092637857";
-                    parameters["tpid"] = "1707172862932634661";
+                //if (item.file.Length > Common.IMAGE_SIZE)
+                //{
+                //    rm.statusCode = StatusCodes.ERROR;
+                //    rm.name = StatusName.invalid;
+                //    rm.message = "FILE SIZE GREATER THAN 5 MB";
+                //    rm.data = null;
+                //    return Ok(rm);
+                //}
 
-                    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+                //Notifications notifications = new Notifications
+                //{
+                //    ToEmailCC = NotificationConfig.TO_BCC,
+                //    ToEmailBCC = NotificationConfig.TO_CC,
+                //    EmailSubject = item.Subject,
+                //    EmailTemplateURL = "wwwroot/EmailTemplates/01-welcome-message-vendor.html",
+                //    ToEmail = item.ToEmail
+                //};
+                //string mailbody = string.Empty;
+                //string path = notifications.EmailTemplateURL;
+                //using (StreamReader sr = new StreamReader(path))
+                //{
+                //    mailbody = sr.ReadToEnd();
+                //}
+                ////notifications.EmailBody = mailbody;
+                //notifications.EmailBody = item.Body;
+                //EmailNotification.SendEmail(notifications, item.file);
+                //using (var client = new HttpClient())
+                //{
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        responseBody = await response.Content.ReadAsStringAsync();
-                    }
-                    else
-                    {
-                        responseBody = response.StatusCode.ToString();
-                    }
+                //    var BaseUri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
+                //    var parameters = new Dictionary<string, string>();
+                //    parameters["userid"] = "appify";
+                //    parameters["password"] = "App1fyd3v3l0p3r";
+                //    parameters["sender"] = "APFYRT";
+                //    parameters["mobileno"] = "9810722979";
+                //    parameters["msg"] = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL";
+                //    parameters["peid"] = "1701172830092637857";
+                //    parameters["tpid"] = "1707172862932634661";
 
-                }
+                //    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+
+                //    if (response.IsSuccessStatusCode)
+                //    {
+                //        responseBody = await response.Content.ReadAsStringAsync();
+                //    }
+                //    else
+                //    {
+                //        responseBody = response.StatusCode.ToString();
+                //    }
+
+                //}
 
                 //SendSMSHeader sendSMSHeader = new SendSMSHeader
                 //{

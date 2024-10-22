@@ -33,6 +33,7 @@ namespace appify.web.api.Controllers
         private readonly IMemberContactBusiness memberContactBusiness;
         private readonly INotificationBusiness notificationBusiness;
         private ResponseMessage rm;
+        private readonly IOrderBusiness orderBusiness;
 
         public MemberController(IConfiguration configuration,
                                 IMemberBusiness iResultData,
@@ -40,7 +41,7 @@ namespace appify.web.api.Controllers
                                 IMemberAppSettingBusiness memberAppSettingBusiness,
                                 IMemberThemeBusiness memberThemeBusiness,
                                 IMemberKYCBusiness memberKYCBusiness,
-                                IMemberContactBusiness memberContactBusiness, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData)
+                                IMemberContactBusiness memberContactBusiness, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData, IOrderBusiness orderBusiness)
         {
             this.configuration = configuration;
             this.memberBusiness = iResultData;
@@ -51,6 +52,7 @@ namespace appify.web.api.Controllers
             this.memberContactBusiness = memberContactBusiness;
             this.eventLogBusiness = eventLogBusiness;
             this.notificationBusiness = IResultData;
+            this.orderBusiness = orderBusiness;
         }
         /// <summary>
         /// Get a Member List
@@ -291,8 +293,14 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-                Int64 UserID = item.UserID;
+
                 rm = new ResponseMessage();
+                MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(item.MobileNo, 1001);
+                if (memberresult != null)
+                {
+                    item.UserID = memberresult.UserID;
+                }
+                Int64 UserID = item.UserID;
                 var memberItem = this.memberBusiness.RegisterMember(item);
                 if (memberItem.UserID>0)
                 {
@@ -300,21 +308,43 @@ namespace appify.web.api.Controllers
                     rm.message = "MEMBER REGISTRATION SUCCESSFUL!";
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
-
-                    if(UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
+                    OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(0);
+                    if (UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
                     {
-                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
-                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
-                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        if (orderUpdateDetail.IsEmail == true)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
+                            if (orderUpdateDetail.IsEmailOpps == true)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
+                            }
+
+                        }
+                        if (orderUpdateDetail.IsSMS == true)
+                        {
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.IsPush == true)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        }
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                     }
 
                     if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
                     {
-                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
-                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        if (orderUpdateDetail.IsEmail == true)
+                        {
+                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.IsSMS == true)
+                        {
+                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        }
+                        if (orderUpdateDetail.IsPush == true)
+                        {
+                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                        }
                         this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                     }
 
@@ -380,8 +410,48 @@ namespace appify.web.api.Controllers
                 var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
 
                 string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
-                //result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
-                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+
+                MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(MobileNo, 1001);
+                if (memberresult == null)
+                {
+                    Member member = new Member
+                    {
+                        UserID = 0,
+                        EmailID = "",
+                        MobileNo = MobileNo,
+                        Password = "",
+                        FirstName = "",
+                        LastName = "",
+                        MemberType = 1001,
+                        OTP = "",
+                        IsOTPSent = false,
+                        OTPSentDate = null,
+                        IsResendOTP = false,
+                        IsOTPVerified = false,
+                        IsEmailVerified = false,
+                        IsActive = true,
+                        CreatedOn = DateTime.Now,
+                        ProfilePhoto = "",
+                        Token = "",
+                        PlatformType = 0,
+                        ParentID = 0,
+                        IsRegisteredByMobile = false,
+                        IsOnlinePaymentEnabled = false,
+                        IsEnterprise = false,
+                        IsEcommerce = false,
+                        IsWelcomeEmail = false
+                    };
+
+                    var memberItem = this.memberBusiness.RegisterMember(member);
+                    if (memberItem.UserID > 0)
+                    {
+                        var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+                    }
+                }
+                else if (memberresult != null)
+                {
+                    var result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
+                }
                 //TODO: to implement the above dashboard information
                 if (OTPValue != null)
                 {

@@ -199,4 +199,9 @@ namespace appify.models
         public string SettingKey { get; set; }
         public string SettingValue { set; get; }
     }
+    public class EmailConfig
+    {
+        public string SettingKey { get; set; }
+        public string SettingValue { set; get; }
+    }
 }

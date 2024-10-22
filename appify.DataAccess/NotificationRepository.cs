@@ -222,5 +222,13 @@ namespace appify.DataAccess
 
             return items;
         }
+        public List<EmailConfig> GetEmailConfig()
+        {
+            List<EmailConfig> items = new List<EmailConfig>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEMAILCONFIGSETTING);
+            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]).ToList();
+
+            return items;
+        }
     }
 }
