@@ -277,11 +277,11 @@ namespace appify.Business
         {
             return orderRepository.UpdateDelhiveryOrderTrackingStatus(item);
         }
-
         public bool OrderPaymentSave(OrderPayment item)
         {
             return orderRepository.OrderPaymentSave(item);
         }
+        
         public List<DailyOrderSummary> GetDailyOrderSummary() { 
             return orderRepository.GetDailyOrderSummary();
         }
