@@ -1245,41 +1245,32 @@ namespace appify.web.api.Controllers
                 await Common.UpdateEventLogsNew("FETCH ORDER LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
-
         }
         /// <summary>
-        /// Get a Summarylist
+        /// Gets Daily Order Summarylist
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
         /// 
-        ///     {
-        ///       "userID": 1864,
-        ///       "orderStatus": "CURRENT",
-        ///       "pageNo": 1,
-        ///       "rows": 2
-        ///     }
         ///     
         /// Sample response JSON :
         /// 
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH order LIST",
+        ///       "message": "FETCH daily order summary LIST",
         ///       "data": [
         ///         {
         ///           "orderID": 2013,
         ///           "orderNo": "OD10602409038",
         ///           "orderDate": "2024-09-26T12:48:02.047",
-        ///           "orderStatus": 3932,
-        ///           "orderAmount": 729
-        ///         },
-        ///         {
-        ///           "orderID": 2012,
-        ///           "orderNo": "OD10602409037",
-        ///           "orderDate": "2024-09-26T12:47:44.24",
-        ///           "orderStatus": 3932,
-        ///           "orderAmount": 599
+        ///           "vendorName":"High On Style",
+        ///           "customerName":"Sri",
+        ///           "mobileNo":"9840793066",
+        ///           "emailID":"Balasri805@gmail.com",
+        ///           "orderStatus":"Declined",
+        ///           "orderAmount":790.00,
+        ///           "paymentType":"CASH ON DELIVERY"
         ///         }
         ///       ]
         ///     }
@@ -1289,6 +1280,53 @@ namespace appify.web.api.Controllers
         /// <response code="200">FETCH order LIST </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
+        [HttpPost, Route("dailyordersummarylist")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> DailyOrderSummaryList()
+        {
+            //dynamic data = jsonData;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<DailyOrderSummary> items = orderBusiness.GetDailyOrderSummary();
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("DAILY ORDER SUMMARY LIST IS SUCCESSFULLY", reqHeader, controllerURL, "", items, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("DailyOrderSummaryList - NO CONTENT", reqHeader, controllerURL, "", null, rm.message, this.eventLogBusiness);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("DailyOrderSummaryList - ERROR", reqHeader, controllerURL, "", null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        } 
         [HttpPost, Route("summarylist")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
