@@ -281,9 +281,5 @@ namespace appify.Business
         {
             return orderRepository.OrderPaymentSave(item);
         }
-        
-        public List<DailyOrderSummary> GetDailyOrderSummary() { 
-            return orderRepository.GetDailyOrderSummary();
-        }
     }
 }
