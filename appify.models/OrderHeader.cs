@@ -557,8 +557,18 @@ namespace appify.models
 
             // Add other relevant fields based on Razorpay's webhook payload structure
         }
-
-        
     }
-
+    public class DailyOrderSummary
+    {
+        public int OrderID { get; set; }
+        public string OrderNo { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string VendorName { get; set; }
+        public string CustomerName { get; set; }
+        public string MobileNo { get; set; }
+        public string EmailID { get; set; }
+        public string OrderStatus { get; set; }
+        public decimal OrderAmount { get; set; }
+        public string PaymentType { get; set; }
+    }
 }
