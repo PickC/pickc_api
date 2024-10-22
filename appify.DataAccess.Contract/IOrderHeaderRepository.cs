@@ -34,7 +34,6 @@ namespace appify.DataAccess.Contract
         public Int64 UpdateOrderTrackingStatus(OrderTrackingUpdate item);
         public Int64 UpdateDelhiveryOrderTrackingStatus(OrderTrackingUpdateDelhivery item);
         public bool OrderPaymentSave(OrderPayment item);
-
         public List<DailyOrderSummary> GetDailyOrderSummary();
     }
 }
