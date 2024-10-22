@@ -1336,8 +1336,6 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-
-
         /// <summary>
         /// Gets Daily Order Summarylist
         /// </summary>
