@@ -295,11 +295,14 @@ namespace appify.web.api.Controllers
             {
 
                 rm = new ResponseMessage();
+
+                ////Checking Member is Already Exits or Not
                 MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(item.MobileNo, 1001);
                 if (memberresult != null)
                 {
                     item.UserID = memberresult.UserID;
                 }
+
                 Int64 UserID = item.UserID;
                 var memberItem = this.memberBusiness.RegisterMember(item);
                 if (memberItem.UserID>0)
@@ -411,6 +414,7 @@ namespace appify.web.api.Controllers
 
                 string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
 
+                ////Checking Member is Already Exits or Not
                 MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(MobileNo, 1001);
                 if (memberresult == null)
                 {
