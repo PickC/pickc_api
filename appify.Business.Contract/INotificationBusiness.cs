@@ -27,7 +27,7 @@ namespace appify.Business.Contract
         public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID);
         public SMSSystemConfigSetting GetSMSSystemConfig();
         public List<SMSConfig> GetSMSConfig();
-
+        public List<EmailConfig> GetEmailConfig();
 
     }
 }

@@ -131,7 +131,14 @@ namespace appify.DataAccess
             return member;
 
         }
+        public MemberExitsCheck IsMemberExistNew(string mobileNo, short memberType)
+        {
+            MemberExitsCheck member = new MemberExitsCheck();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CHECKMEMBEREXITS, mobileNo, memberType);
+            member = DataTableHelper.ConvertDataTable<MemberExitsCheck>(ds.Tables[0]).FirstOrDefault();
 
+            return member;
+        }
         public Member RegisterMember(Member member)
         {
             var result = false;

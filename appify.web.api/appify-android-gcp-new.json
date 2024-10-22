@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "appify-android-gcp",
+  "private_key_id": "f738e06104d0de3d88fb27aca937f3b6b0c53e06",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCV9yVXD9M2xg2X\nOgO3yp5GoBIDYSQ9TUQRDihiQHt+iYzyOf3Da3ewyC/Ij4kfn0A6HiqFAuO5z3j9\nwLcgH1eJCL0nCDxaBmZw+Ioxg0izopo5l/FJhNrdNzMl/6fBNBZv4yuRBpFAAcTn\neNeUsOCm9qztCga0cNHQx7qUee5mwcpneXnAVhodWyKg7CYKJjN7WdoNBORuRf8v\neazhvz5nNrLcO6NLouXfKUzQ6pLfpB2VFIxlKtM1NMbo9zVwj54v4VcHwUOQpdgE\nNGGeK1eoREiPB9w/5xDgW2ZcXO5OM3PqzN2zPAnSQJrW3R6LI2UerxmBLHN8MXUG\nOsEvWeQtAgMBAAECggEAAS9QaCjd7mp4VMj9CbK2u4N68XyGeX0uPQHKenSlIe7z\nYAriJm0Wa4wne0rJjhuFJFW9cga/qwOiRKHFIsBRcNA06XAmotlhh3L/gwtEAana\n9vqOha9tNZRRyK7SYvXvX+mgtbTEj3JqiAYbzpcEbX7fD7hwRmwuw+v2Lm4Xlkea\nV6KZs4o5EHaViQSWo6StDhSLT+JgQqPSk3b2ltSOM0M6aS7YevmlX5CiLEtBH96T\nSN8NupKsf0hN35AJZ9f/xEXlerdFaEACUSK3B9dOJw3urAWSx8PLEDRbJnL/7lqq\nWQr++lfA2VYtjz84QkC2Uonn/VkMfwAQUeRB3QhyEQKBgQC2hf2ajSnZtn7SV6FC\nYXgIWNHXdHEM2B/W8+BaSQo6HfW/Hr37YuT3hW3SAxDNkwg13QNU/7ryXpemW5uh\n7qcEMPprpF3LUaxW+SusPOxn2Zi/SzqffOpzhjt0UhB2j2Xl8uIVuJYySTVZXIMs\nK6zrsuwEGojbb7SCNY1VRNvnvQKBgQDSVeGOGIlfYj8wb8u43jnqdDvbhetSx1f2\nK9tqcm8KuJk1yd9rf29WFOgITwUDwcCnmFLGm2J6V8uqUAuWVdRCamPCFxmb7qxs\nsTuAbM4/BjmgWAJWJcJiI4HN7cd600PmboFzwLQRlavTx5Kg7np/45xS67Egn4wK\n/Uj0MJy9MQKBgHgp2n5HdUf516CPRIE5PhbwsqXP6SV1m/Cd+hQ2hd8hHkrG6Hh5\n8Rfr5hMfJY7Rv9QGP01UVzV9hQVmxh1jytz9icAYJA/ZI0bXICNysIjmPqOh2WRq\njsejlbzM0j3bxlAPCT0XmvpcLB06xLjtwBgkYTGKbpNZBVO8AeIjRUtZAoGABp4p\nIJ1pBRVEQ7PgxwpG7DeIApouE0auX9J1bt323HF+cJDPdMRnrl+uBUTnNX0NILjM\nMe+Fo6/LeqpWEv7UVNqgFOVBKwTRbAIPizThMF5zxbW/LRK3EPtpBB+tHRI0mrVz\nYT7462y4IUuwM1wNgqSYsIs14X7jmxzpBLXa2KECgYAL8Ofp4497pkSGxXv5+QJd\nfXVp+Yx7U8aBKmPmI8jmcinE4zc8nfqwDMsISl0s0fBZZB3HEPNz2z/ZZckEc39a\nQ2b/aR9oJQHy5OyWMn3hSyruY4HcFNo9yPi+8oEAa0UzezEItJFjdOVTerYocwii\nxl+ZZKwxNV/TH2l1tNEwVw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-m95az@appify-android-gcp.iam.gserviceaccount.com",
+  "client_id": "112352942243540168226",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-m95az%40appify-android-gcp.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

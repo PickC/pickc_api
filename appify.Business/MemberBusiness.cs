@@ -26,7 +26,10 @@ namespace appify.Business
         {
             return repository.IsMemberExist(emailID, mobileNo,memberType,parentID);
         }
-
+        public MemberExitsCheck IsMemberExistNew(string mobileNo, short memberType)
+        {
+            return repository.IsMemberExistNew(mobileNo, memberType);
+        }
         public Member RegisterMember(Member member)
         {
             return repository.RegisterMember(member);

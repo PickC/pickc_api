@@ -199,4 +199,12 @@ namespace appify.models
         public Int64 VendorID { get; set; }
         public bool IsFirebase { get; set; }
     }
+    public partial class  MemberExitsCheck
+    {
+        public Int64 UserID { get; set; }
+
+        public string MobileNo { get; set; }
+
+        public Int16 MemberType { get; set; }
+    }
 }

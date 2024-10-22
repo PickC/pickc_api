@@ -21,6 +21,7 @@ namespace appify.dbroutine
         public const string DELETEMEMBERBYMOBILENO = "[Operation].[usp_MemberDeleteByMobileNo]";
         public const string LISTMEMBERFORCOUNT = "[Operation].[usp_MemberListForCount]";
         public const string CHECKMEMBER = "[Operation].[usp_MemberExist]";
+        public const string CHECKMEMBEREXITS = "[Operation].[usp_MemberExistNew]";
         public const string UPDATEPASSWORD = "[Operation].[usp_MemberUpdatePassword]";
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
         public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
@@ -312,6 +313,7 @@ namespace appify.dbroutine
         public const string SELECTEMAILNOTIFICATIONTEMPLATE = "[Utility].[usp_EmailNotificationTemplateSelect]";
         public const string SELECTORDERUPDATEDETAIL = "[Operation].[usp_OrderUpdateDetail]";
         public const string SELECTSMSCONFIGSETTING = "[Utility].[usp_SMSConfigSetting]";
+        public const string SELECTEMAILCONFIGSETTING = "[Utility].[usp_EmailConfigSetting]";
         //// Email Notification - Get Details
         public const string GETMEMBERDETAILS = "[Operation].[usp_MemberDetails]";
 
