@@ -26,13 +26,17 @@ namespace appify.Business
         {
             return repository.IsMemberExist(emailID, mobileNo,memberType,parentID);
         }
-        public MemberExitsCheck IsMemberExistNew(string mobileNo, short memberType)
+        public CheckOTPSent GetOTPSent(string mobileNo)
         {
-            return repository.IsMemberExistNew(mobileNo, memberType);
+            return repository.GetOTPSent(mobileNo);
         }
         public Member RegisterMember(Member member)
         {
             return repository.RegisterMember(member);
+        }
+        public bool RegisterMobileOTP(RegisterOTP item)
+        {
+            return repository.RegisterMobileOTP(item);
         }
         public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail)
         {
@@ -79,7 +83,10 @@ namespace appify.Business
         public Int32 MemberOrderCount(long userID) { 
             return repository.MemberOrderCount(userID);
         }
-
+        public Int32 VendorOrderCount(long userID)
+        {
+            return repository.VendorOrderCount(userID);
+        }
         public MemberBanner memberBannerAdd(MemberBanner memberBanner)
         {
             return repository.memberBannerAdd(memberBanner);

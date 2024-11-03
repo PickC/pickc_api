@@ -128,15 +128,15 @@ namespace appify.models
             DeliveryUpdates = 1005,
             DeliveryConfirmation = 1006,
             DelayedShipmentNotification = 1007,
-            OrderStatusChange = 1008,
-            AbandonedCartReminder = 1009,
+            OrderStatusChange = 1008, //// Requested to Stop this message
+            AbandonedCartReminder = 1009,//// Requested to Stop this message
             OrderCancellationCustomer = 1010,
             OrderCancellationVendor = 1011,
             RefundProcessed = 1012,
-            OrderReceived = 1013,
-            Feedbackorrating = 1014,
-            BackinStock = 1015,
-            OTP = 1016,
+            OrderReceived = 1013,//// Requested to Stop this message
+            Feedbackorrating = 1014,//// Requested to Stop this message
+            BackinStock = 1015,//// Requested to Stop this message
+            OTP = 1016,//// Requested to Stop this message
             SuccessfulSignupCustomer = 1017
         }
     }

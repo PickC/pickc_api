@@ -565,7 +565,6 @@ namespace appify.models
     }
     public class DailyOrderSummary
     {
-
         public int OrderID { get; set; }
         public string OrderNo { get; set; }
         public DateTime OrderDate { get; set; }
@@ -576,8 +575,6 @@ namespace appify.models
         public string OrderStatus { get; set; }
         public decimal OrderAmount { get; set; }
         public string PaymentType { get; set; }
-
-
     }
 
 }

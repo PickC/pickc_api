@@ -3,15 +3,13 @@ using appify.models;
 using FirebaseAdmin.Messaging;
 using System.Net;
 using System.Text;
+using static appify.models.NotificationType;
 
 namespace appify.web.api
 {
     public class SMSNotification
     {
-        public SMSNotification()
-        {
-
-        }
+        public readonly IEventLogBusiness eventLogBusiness;
         public static async Task<string> SendSMSNotificationMessage(Int64 TemplateID, Int64 MemberID, Int64 OrderID, string replaceTitle, INotificationBusiness notificationBusiness, string OTPValue="")
         {
             string responseBody = "";
@@ -113,11 +111,18 @@ namespace appify.web.api
             return responseBody;
         }
 
-        public static string SendSMSNotification(string MobileNo, string OTPCode)
+        public static string SendSMSNotification(string MobileNo, string OTPCode, INotificationBusiness notificationBusiness)
         {
             string myURI = "https://api.bulksms.com/v1/messages";
+            Int64 TemplateID = Convert.ToInt64(PushNotificationTemplateType.OTP);
+            string smsBody = string.Empty;
+            SMSNotificationTemplate notificationTemplate = notificationBusiness.GetSMSNotificationTemplate(TemplateID);
+
+            smsBody = notificationTemplate.MessageBody.Replace("{#var#}", OTPCode).ToString();
+
+
             //string myData = "{ \"to\": \"+919810722979\", \"body\": \"Hello World!\"}";
-            string myData = "{\"to\": \"+91" + MobileNo + "\", \"body\":\"" + OTPCode + " is your verification code.\"}";
+            string myData = "{\"to\": \"+91" + MobileNo + "\", \"body\":\"" + smsBody + "\"}";
             //string myData = "{\"to\": \"+91" + MobileNo + "\", \"body\":\"" + OTPCode + " is your verification code.\", \"routingGroup\":\"ECONOMY\"}";
             ///////////// BULKSMS - USERNAME & PASSWORD
 

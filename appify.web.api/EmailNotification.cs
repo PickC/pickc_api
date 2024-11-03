@@ -7,14 +7,13 @@ using FirebaseAdmin.Messaging;
 using appify.Business.Contract;
 using System.IO;
 using System;
+using System.Reflection.PortableExecutable;
+using appify.Business;
 namespace appify.web.api
 {
     public class EmailNotification
     {
-        public EmailNotification()
-        {
-            
-        }
+        public readonly IEventLogBusiness eventLogBusiness;
 
         public static bool SendEmail(Notifications notifications, IFormFile file=null)
         {
@@ -167,7 +166,7 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1006) ////Order Confirmed by Vendor
                 {
-                    mailbody = mailbody.Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString());
+                    mailbody = mailbody.Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].FirstName.ToString());
                 }
                 if (TemplateID == 1007) ////Order Confirmed by Vendor to Customer
                 {
@@ -221,7 +220,8 @@ namespace appify.web.api
                         .Replace("{{customer_name}}", getEmailNotificationHeader[0].CustomerName.ToString())
                         .Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
-                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString())
+                        .Replace("{{customer_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
                 }
                 if (TemplateID == 1013) ////Order has been cancelled by Customer 
                 {
@@ -243,6 +243,46 @@ namespace appify.web.api
                         .Replace("{{vendor_number}}", getEmailNotificationHeader[0].MobileNo.ToString())
                         .Replace("{{customer_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
                 }
+                if(TemplateID == 1016) //// Order has been Shipped intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1017) //// Order has been Shipped intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1018) //// Order has been Shipped intimate Opps Team about it
+                {
+
+                }
+                if (TemplateID == 1019) //// Out for Delivery intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1020) //// Order has been delivered intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1021) //// Order has been delivered intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1022) //// Order has been delivered intimate Opps Team about it
+                {
+
+                }
+                if (TemplateID == 1023) //// Order has been delayed intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1024) //// Order has been delayed intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1025) //// Order has been delayed intimate Opps Team about it
+                {
+
+                }
                 notifications.EmailBody = mailbody;
                 if(notifications.ToEmail=="")
                 {
@@ -255,6 +295,7 @@ namespace appify.web.api
                 }
 
                 result = true;
+
             }
             catch (Exception ex)
             {
