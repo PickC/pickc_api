@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Newtonsoft.Json.Linq;
 using Razorpay.Api;
+using System.Collections.Generic;
 using static appify.models.NotificationType;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -293,17 +294,8 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-
-                rm = new ResponseMessage();
-
-                ////Checking Member is Already Exits or Not
-                MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(item.MobileNo, 1001);
-                if (memberresult != null)
-                {
-                    item.UserID = memberresult.UserID;
-                }
-
                 Int64 UserID = item.UserID;
+                rm = new ResponseMessage();
                 var memberItem = this.memberBusiness.RegisterMember(item);
                 if (memberItem.UserID>0)
                 {
@@ -401,92 +393,87 @@ namespace appify.web.api.Controllers
     /// <response code="500">ResponseMessage with Error Description</response>
 
     [HttpPost, Route("generateotp")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GenerateOTP(string MobileNo)
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GenerateOTP(string MobileNo)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            // dynamic data = jsondata;
+            rm = new ResponseMessage();
+            var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
+            string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
+
+            ////Checking Member is Already Exits or Not
+            CheckOTPSent getotpresult = this.memberBusiness.GetOTPSent(MobileNo);
+            if (getotpresult == null)
             {
-                // dynamic data = jsondata;
-                rm = new ResponseMessage();
-                var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
-
-                string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
-
-                ////Checking Member is Already Exits or Not
-                MemberExitsCheck memberresult = this.memberBusiness.IsMemberExistNew(MobileNo, 1001);
-                if (memberresult == null)
-                {
-                    Member member = new Member
-                    {
-                        UserID = 0,
-                        EmailID = "",
-                        MobileNo = MobileNo,
-                        Password = "",
-                        FirstName = "",
-                        LastName = "",
-                        MemberType = 1001,
-                        OTP = "",
-                        IsOTPSent = false,
-                        OTPSentDate = null,
-                        IsResendOTP = false,
-                        IsOTPVerified = false,
-                        IsEmailVerified = false,
-                        IsActive = true,
-                        CreatedOn = DateTime.Now,
-                        ProfilePhoto = "",
-                        Token = "",
-                        PlatformType = 0,
-                        ParentID = 0,
-                        IsRegisteredByMobile = false,
-                        IsOnlinePaymentEnabled = false,
-                        IsEnterprise = false,
-                        IsEcommerce = false,
-                        IsWelcomeEmail = false
-                    };
-
-                    var memberItem = this.memberBusiness.RegisterMember(member);
-                    if (memberItem.UserID > 0)
-                    {
-                        var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
-                    }
-                }
-                else if (memberresult != null)
-                {
-                    var result = SMSNotification.SendSMSNotification(MobileNo, OTPValue);
-                }
-                //TODO: to implement the above dashboard information
-                if (OTPValue != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "OTP HAS BEEN SUCCESSFULLY GENERATED & SENT";
-                    rm.name = StatusName.ok;
-                    rm.data = OTPValue;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "UNABLE TO GENERATE OTP";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
-                }
-
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+                 this.RegisterMobileOTP(MobileNo, true, false);
             }
-            catch (Exception ex)
+            else if (getotpresult != null)
+            {
+                    //var result = SMSNotification.SendSMSNotification(MobileNo, OTPValue, this.notificationBusiness);
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+                this.RegisterMobileOTP(MobileNo, false, true);
+            }
+            //TODO: to implement the above dashboard information
+            if (OTPValue != null)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "OTP HAS BEEN SUCCESSFULLY GENERATED & SENT";
+                rm.name = StatusName.ok;
+                rm.data = OTPValue;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
+            }
+            else
             {
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "UNABLE TO GENERATE OTP";
                 rm.name = StatusName.invalid;
                 rm.data = null;
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                 await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
             }
-            return Ok(rm);
+
         }
+        catch (Exception ex)
+        {
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+    }
+
+    private bool RegisterMobileOTP(string MobileNo, bool Issent, bool IsResent)
+    {
+        var result = false;
+        try
+        {
+            RegisterOTP mobileotp = new RegisterOTP
+            {
+                MobileNo = MobileNo,
+                IsSent = Issent,
+                IsResent = IsResent,
+                SentOn = DateTime.Now,
+            };
+
+            var memberItem = this.memberBusiness.RegisterMobileOTP(mobileotp);
+            }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+
+        return result;
+    }
+
         /// <summary>
         /// De-Active A Member
         /// </summary>
@@ -829,6 +816,73 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+
+        /// <summary>
+        /// Get Member Order Count
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "VENDOR ORDERS COUNT",
+        ///       "data": 2
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MemberOrderCount SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost, Route("VendorOrdersCount")]
+        [MapToApiVersion("1.0")]
+        public IActionResult VendorOrdersCount(ParamMemberUserID item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var count = this.memberBusiness.VendorOrderCount(item.userID);
+                if (count > 0)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR ORDERS COUNT";
+                    rm.name = StatusName.ok;
+                    rm.data = count;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VendorOrderCount SUCCESSFULLY", reqHeader, controllerURL, item, count, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "VENDOR NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VendorOrderCount - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VendorOrderCount - ERROR", reqHeader, controllerURL, item, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
         /// <summary>
         /// Check Member Online Payment Status
         /// </summary>

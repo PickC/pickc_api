@@ -199,12 +199,19 @@ namespace appify.models
         public Int64 VendorID { get; set; }
         public bool IsFirebase { get; set; }
     }
-    public partial class  MemberExitsCheck
+    public partial class  CheckOTPSent
     {
-        public Int64 UserID { get; set; }
+        public Int64 RefID { get; set; }
 
         public string MobileNo { get; set; }
 
-        public Int16 MemberType { get; set; }
+        public DateTime SentOn { get; set; }
+    }
+    public partial class RegisterOTP
+    {
+        public string MobileNo { get; set; }
+        public bool IsSent { get; set; }
+        public bool IsResent { get; set; }
+        public DateTime SentOn { get; set; }
     }
 }

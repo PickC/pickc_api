@@ -10,6 +10,7 @@ namespace appify.web.api
 {
     public class PushNotification
     {
+        public readonly IEventLogBusiness eventLogBusiness;
         public static bool FCMPushNotification(NotificationModel notificationModel2)
         {
             bool result = false;
@@ -63,7 +64,7 @@ namespace appify.web.api
                 notificationModel.PlatformType = vendorDetails.PlatformType;
 
                 notificationModel.Title = notificationTemplate.MessageTitle.Replace(replaceTitle, vendorDetails.FirstName).Trim();
-                if (TemplateID == 1008) ////Order Status Change
+                if (TemplateID == 1008) ////Order Status Change //// Requested to Stop this message
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
                         .Replace("<Delivery Date>", vendorDetails.DeliveredOn.ToString()).Trim()
@@ -74,12 +75,12 @@ namespace appify.web.api
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
                        .Replace("<date range>", "").Trim();
                 }
-                else if (TemplateID == 1013) ////Order Received
+                else if (TemplateID == 1013) ////Order Received //// Requested to Stop this message
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("#<order No>", vendorDetails.OrderNo).Trim()
                    .Replace("<Tracking Link>", "").Trim();
                 }
-                else if (TemplateID == 1015) ////Back-in-Stock Notification
+                else if (TemplateID == 1015) ////Back-in-Stock Notification //// Requested to Stop this message
                 {
                     notificationModel.Body = notificationTemplate.MessageBody.Replace("<product page link>", "").Trim();
                 }

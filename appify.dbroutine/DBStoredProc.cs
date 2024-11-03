@@ -17,11 +17,12 @@ namespace appify.dbroutine
         public const string PAGEVIEWMEMBER = "[Operation].[usp_MemberPageView]";
         public const string RECORDCOUNTMEMBER = "[Operation].[usp_MemberRecordCount]";
         public const string SAVEMEMBER = "[Operation].[usp_MemberSave]";
+        public const string SAVEMOBILEOTP = "[Operation].[usp_MobileOTPSave]";
         public const string DELETEMEMBER = "[Operation].[usp_MemberDelete]";
         public const string DELETEMEMBERBYMOBILENO = "[Operation].[usp_MemberDeleteByMobileNo]";
         public const string LISTMEMBERFORCOUNT = "[Operation].[usp_MemberListForCount]";
         public const string CHECKMEMBER = "[Operation].[usp_MemberExist]";
-        public const string CHECKMEMBEREXITS = "[Operation].[usp_MemberExistNew]";
+        public const string CHECKOTPSENT = "[Operation].[usp_GetOTPSent]";
         public const string UPDATEPASSWORD = "[Operation].[usp_MemberUpdatePassword]";
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
         public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
@@ -150,6 +151,7 @@ namespace appify.dbroutine
         public const string PAGEVIEWORDERHEADER = "[Operation].[usp_OrderHeaderPageView]";
         public const string RECORDCOUNTORDERHEADER = "[Operation].[usp_OrderHeaderRecordCount]";
         public const string ORDERCOUNTBYCUSTOMER = "[Operation].[usp_OrderCountByCustomer]";
+        public const string ORDERCOUNTBYVENDOR = "[Operation].[usp_OrderCountByVendor]";
 
         public const string SAVEORDERHEADER = "[Operation].[usp_OrderHeaderSave]";
         public const string DELETEORDERHEADER = "[Operation].[usp_OrderHeaderDelete]";
