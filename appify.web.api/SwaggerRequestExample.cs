@@ -1,5 +1,6 @@
 ﻿using Swashbuckle.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
+using System.ComponentModel.DataAnnotations;
 
 
 namespace appify.web.api
@@ -276,5 +277,16 @@ namespace appify.web.api
         public string MessageBody { get; set; }
         public string FirstName {  get; set; }
         public string OrderNo {  get; set; }
+    }
+    public class ParamEmailFields
+    {
+        [Required]
+        public string ToEmail { get; set; }
+        [Required]
+        public string Subject { get; set; }
+        [Required]
+        public string Body { get; set; }
+        [Required]
+        public IFormFile file { get; set; }
     }
 }

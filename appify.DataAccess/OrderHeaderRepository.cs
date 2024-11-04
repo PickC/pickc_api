@@ -442,10 +442,20 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PaymentReferenceNo", item.PaymentReferenceNo);
                         cmd.Parameters.AddWithValue("@PaymentMode", item.PaymentMode);
                         cmd.Parameters.AddWithValue("@LookupCode", item.LookupCode);
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@RETURNSTATUS";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
-
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            result = Convert.ToBoolean(outPutParameter.Value);
                         con.Close();
+
                     }
 
                 }
@@ -457,6 +467,16 @@ namespace appify.DataAccess
             }
 
             return result;
+
+        }
+        public List<DailyOrderSummary> GetDailyOrderSummary()
+        {
+            List<DailyOrderSummary> items = new List<DailyOrderSummary>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.DAILYORDERSUMMARY);
+            items = DataTableHelper.ConvertDataTable<DailyOrderSummary>(ds.Tables[0]);
+
+            return items;
+
 
         }
     }

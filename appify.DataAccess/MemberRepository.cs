@@ -88,6 +88,39 @@ namespace appify.DataAccess
 
             return result;
         }
+        public bool RegisterMobileOTP(RegisterOTP item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEMOBILEOTP))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@MobileNo", item.MobileNo);
+                        cmd.Parameters.AddWithValue("@IsSent", item.IsSent);
+                        cmd.Parameters.AddWithValue("@IsResent", item.IsResent);
+                        cmd.Parameters.AddWithValue("@SentOn", item.SentOn);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public List<Member> GetAllVendors(int pageNo, int rows)
         {
             List<Member> members = new List<Member>();
@@ -121,6 +154,16 @@ namespace appify.DataAccess
             return count;
 
         }
+        public Int32 VendorOrderCount(long userID)
+        {
+
+            Int32 count = 0;
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERCOUNTBYVENDOR, userID);
+            count = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+
+            return count;
+
+        }
 
         public Member IsMemberExist(string emailID, string mobileNo,short memberType,Int64 parentID)
         {
@@ -131,7 +174,14 @@ namespace appify.DataAccess
             return member;
 
         }
+        public CheckOTPSent GetOTPSent(string mobileNo)
+        {
+            CheckOTPSent member = new CheckOTPSent();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CHECKOTPSENT, mobileNo);
+            member = DataTableHelper.ConvertDataTable<CheckOTPSent>(ds.Tables[0]).FirstOrDefault();
 
+            return member;
+        }
         public Member RegisterMember(Member member)
         {
             var result = false;

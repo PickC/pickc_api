@@ -83,5 +83,9 @@ namespace appify.Business
         {
             return repository.GetSMSConfig();
         }
+        public List<EmailConfig> GetEmailConfig()
+        {
+            return repository.GetEmailConfig();
+        }
     }
 }

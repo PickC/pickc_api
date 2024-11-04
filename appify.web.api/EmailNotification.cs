@@ -6,20 +6,21 @@ using System.Text;
 using FirebaseAdmin.Messaging;
 using appify.Business.Contract;
 using System.IO;
+using System;
+using System.Reflection.PortableExecutable;
+using appify.Business;
 namespace appify.web.api
 {
     public class EmailNotification
     {
-        public EmailNotification()
-        {
-            
-        }
+        public readonly IEventLogBusiness eventLogBusiness;
 
-        public static bool SendEmail(Notifications notifications)
+        public static bool SendEmail(Notifications notifications, IFormFile file=null)
         {
             bool result = false;
             try
             {
+                string filename = file.FileName.ToString();
                 string fromMail = NotificationConfig.GMAIL_ID_FROM;
                 string fromPassword = NotificationConfig.GMAIL_PASSWORD_FROM;
 
@@ -29,11 +30,20 @@ namespace appify.web.api
                 message.To.Add(new MailAddress(notifications.ToEmail));
                 if (notifications.ToEmailCC != null && notifications.ToEmailCC != "")
                 {
-                    message.CC.Add(notifications.ToEmailCC);
+                    //message.CC.Add(notifications.ToEmailCC);
                 }
                 if (notifications.ToEmailBCC != null && notifications.ToEmailBCC != "")
                 {
-                    message.Bcc.Add(notifications.ToEmailBCC);
+                    //message.Bcc.Add(notifications.ToEmailBCC);
+                }
+                if (file != null)
+                {
+                    byte[] data;
+                    using (var br = new BinaryReader(file.OpenReadStream()))
+                        data = br.ReadBytes((int)file.OpenReadStream().Length);
+                    var stream = new MemoryStream(data);
+                    message.Attachments.Add(new Attachment(stream, filename));
+
                 }
 
                 message.Body = notifications.EmailBody;
@@ -156,7 +166,7 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1006) ////Order Confirmed by Vendor
                 {
-                    mailbody = mailbody.Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString());
+                    mailbody = mailbody.Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].FirstName.ToString());
                 }
                 if (TemplateID == 1007) ////Order Confirmed by Vendor to Customer
                 {
@@ -210,7 +220,8 @@ namespace appify.web.api
                         .Replace("{{customer_name}}", getEmailNotificationHeader[0].CustomerName.ToString())
                         .Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
-                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString());
+                        .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString())
+                        .Replace("{{customer_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
                 }
                 if (TemplateID == 1013) ////Order has been cancelled by Customer 
                 {
@@ -232,17 +243,131 @@ namespace appify.web.api
                         .Replace("{{vendor_number}}", getEmailNotificationHeader[0].MobileNo.ToString())
                         .Replace("{{customer_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
                 }
+                if(TemplateID == 1016) //// Order has been Shipped intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1017) //// Order has been Shipped intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1018) //// Order has been Shipped intimate Opps Team about it
+                {
+
+                }
+                if (TemplateID == 1019) //// Out for Delivery intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1020) //// Order has been delivered intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1021) //// Order has been delivered intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1022) //// Order has been delivered intimate Opps Team about it
+                {
+
+                }
+                if (TemplateID == 1023) //// Order has been delayed intimate Vendor about it
+                {
+
+                }
+                if (TemplateID == 1024) //// Order has been delayed intimate Customer about it
+                {
+
+                }
+                if (TemplateID == 1025) //// Order has been delayed intimate Opps Team about it
+                {
+
+                }
                 notifications.EmailBody = mailbody;
                 if(notifications.ToEmail=="")
                 {
-                    notifications.ToEmail = "support@appi-fy.ai";
+                    notifications.ToEmail = NotificationConfig.To_OPPSTeam;
                 }
                 
                 if (notifications.ToEmail!="")
                 {
-                    SendEmail(notifications);
+                    SendEmailNew(notifications, notificationBusiness);
                 }
 
+                result = true;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        public static bool SendEmailNew(Notifications notifications, INotificationBusiness notificationBusiness)
+        {
+            bool result = false;
+            try
+            {
+                List<EmailConfig> EmailSetting = notificationBusiness.GetEmailConfig();
+                var gmailFrom = EmailSetting.Where(x => x.SettingKey == "EMAILUSERID").FirstOrDefault().SettingValue.ToString();
+                var gmailPass = EmailSetting.Where(x => x.SettingKey == "EMAILPASSWORD").FirstOrDefault().SettingValue.ToString();
+                var gmailClient = EmailSetting.Where(x => x.SettingKey == "EMAILCLIENT").FirstOrDefault().SettingValue.ToString();
+                var gmailPort = EmailSetting.Where(x => x.SettingKey == "EMAILPORT").FirstOrDefault().SettingValue.ToString();
+                var gmailToBCC = EmailSetting.Where(x => x.SettingKey == "EMAILTOBCC").FirstOrDefault().SettingValue.ToString();
+                var gmailToCC = EmailSetting.Where(x => x.SettingKey == "EMAILTOCC").FirstOrDefault().SettingValue.ToString();
+                var gmailToOPPS = EmailSetting.Where(x => x.SettingKey == "EMAILTOOPPS").FirstOrDefault().SettingValue.ToString();
+                var isToBCC = Convert.ToBoolean(EmailSetting.Where(x => x.SettingKey == "ISTOBCC").FirstOrDefault().SettingValue.ToString());
+                var isToCC = Convert.ToBoolean(EmailSetting.Where(x => x.SettingKey == "ISTOCC").FirstOrDefault().SettingValue.ToString());
+                var isToOPPS = Convert.ToBoolean(EmailSetting.Where(x => x.SettingKey == "ISTOOPPS").FirstOrDefault().SettingValue.ToString());
+
+                string fromMail = gmailFrom;
+                string fromPassword = gmailPass;
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(fromMail);
+                message.Subject = notifications.EmailSubject;
+                message.To.Add(new MailAddress(notifications.ToEmail));
+                if(isToCC== true)
+                {
+                    if (gmailToCC != null && gmailToCC != "")
+                    {
+                        message.CC.Add(gmailToCC);
+                    }
+                }
+                if (isToBCC == true)
+                {
+                    if (gmailToBCC != null && gmailToBCC != "")
+                    {
+                        message.Bcc.Add(gmailToBCC);
+                    }
+                }
+                message.Body = notifications.EmailBody;
+                message.IsBodyHtml = true;
+                message.SubjectEncoding = Encoding.UTF8;
+                message.BodyEncoding = Encoding.UTF8;
+
+                var smtpClient = new SmtpClient(gmailClient)
+                {
+                    Port = Convert.ToInt16(gmailPort),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(fromMail, fromPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.EnableSsl = true;
+
+
+                //var alternativeView = new AlternateView(Body, new System.Net.Mime.ContentType("text/html"));
+                //string? emailBody = alternativeView.ToString();
+                //emailBody = emailBody.Replace("{{Product}}", "Appify");
+                //alternativeView = emailBody;
+                //message.AlternateViews.Add(alternativeView);
+
+
+                //smtpClient.SendMailAsync(message);
+
+                smtpClient.Send(message);
                 result = true;
             }
             catch (Exception ex)

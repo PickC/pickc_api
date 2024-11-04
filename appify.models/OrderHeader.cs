@@ -378,6 +378,10 @@ namespace appify.models
         public Int64 OrderID { get; set; }
         public Int64 VendorID { get; set; }
         public Int64 MemberID { get; set; }
+        public bool IsEmail { get; set; }
+        public bool IsEmailOpps { get; set; }
+        public bool IsSMS { get; set; }
+        public bool IsPush { get; set; }
     }
         public partial class CustomerOrder {
 
@@ -558,12 +562,9 @@ namespace appify.models
             // Add other relevant fields based on Razorpay's webhook payload structure
         }
 
-        
     }
-
     public class DailyOrderSummary
     {
-
         public int OrderID { get; set; }
         public string OrderNo { get; set; }
         public DateTime OrderDate { get; set; }
@@ -574,8 +575,18 @@ namespace appify.models
         public string OrderStatus { get; set; }
         public decimal OrderAmount { get; set; }
         public string PaymentType { get; set; }
-
-
     }
-
+    public class DailyOrderSummary
+    {
+        public int OrderID { get; set; }
+        public string OrderNo { get; set; }
+        public DateTime OrderDate { get; set; }
+        public string VendorName { get; set; }
+        public string CustomerName { get; set; }
+        public string MobileNo { get; set; }
+        public string EmailID { get; set; }
+        public string OrderStatus { get; set; }
+        public decimal OrderAmount { get; set; }
+        public string PaymentType { get; set; }
+    }
 }
