@@ -285,5 +285,9 @@ namespace appify.Business
         {
             return orderRepository.GetDailyOrderSummary();
         }
+        public List<EmailConfig> GetAlertHeader()
+        {
+            return orderRepository.GetAlertHeader();
+        }
     }
 }

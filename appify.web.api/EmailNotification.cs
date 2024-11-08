@@ -97,8 +97,8 @@ namespace appify.web.api
 
                 Notifications notifications = new Notifications
                 {
-                    ToEmailCC = NotificationConfig.TO_BCC,
-                    ToEmailBCC = NotificationConfig.TO_CC,
+                    //ToEmailCC = NotificationConfig.TO_BCC,
+                    //ToEmailBCC = NotificationConfig.TO_CC,
                     EmailSubject = emailNotificationTemplate.Subject.Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
                     EmailTemplateURL = emailNotificationTemplate.TemplateURL,
                     ToEmail = getEmailNotificationHeader[0].EmailID
@@ -166,7 +166,8 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1006) ////Order Confirmed by Vendor
                 {
-                    mailbody = mailbody.Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].FirstName.ToString());
+                    mailbody = mailbody.Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].FirstName.ToString())
+                                       .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString());
                 }
                 if (TemplateID == 1007) ////Order Confirmed by Vendor to Customer
                 {
@@ -221,7 +222,7 @@ namespace appify.web.api
                         .Replace("{{vendor_name}}", getEmailNotificationHeader[0].FirstName.ToString())
                         .Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString())
                         .Replace("{{vendor_app_name}}", getEmailNotificationHeader[0].AppName.ToString())
-                        .Replace("{{customer_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
+                        .Replace("{{cancel_reason}}", getEmailNotificationHeader[0].Remarks.ToString());
                 }
                 if (TemplateID == 1013) ////Order has been cancelled by Customer 
                 {
@@ -366,6 +367,68 @@ namespace appify.web.api
 
 
                 //smtpClient.SendMailAsync(message);
+
+                smtpClient.Send(message);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+        public static bool SendEmailAlert(ParamDownTimeAlert ItemData, Int64 TemplateID, string ToEmail, INotificationBusiness notificationBusiness)
+        {
+            bool result = false;
+            try
+            {
+                string mailbody = string.Empty;
+                EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(TemplateID);
+                Notifications notifications = new Notifications
+                {
+                    EmailSubject = emailNotificationTemplate.Subject.Replace("{{api_name}}", ItemData.Service.ToString()),
+                    EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                    ToEmail = ToEmail
+                };
+                string path = notifications.EmailTemplateURL;
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    mailbody = reader.ReadToEnd();
+                }
+                if (TemplateID == 1026) ////Server Down Alert
+                {
+                    mailbody = mailbody.Replace("{{api_name}}", ItemData.Service.ToString());
+                }
+                notifications.EmailBody = mailbody;
+
+                List<EmailConfig> EmailSetting = notificationBusiness.GetEmailConfig();
+                var gmailFrom = EmailSetting.Where(x => x.SettingKey == "EMAILUSERID").FirstOrDefault().SettingValue.ToString();
+                var gmailPass = EmailSetting.Where(x => x.SettingKey == "EMAILPASSWORD").FirstOrDefault().SettingValue.ToString();
+                var gmailClient = EmailSetting.Where(x => x.SettingKey == "EMAILCLIENT").FirstOrDefault().SettingValue.ToString();
+                var gmailPort = EmailSetting.Where(x => x.SettingKey == "EMAILPORT").FirstOrDefault().SettingValue.ToString();
+
+                string fromMail = gmailFrom;
+                string fromPassword = gmailPass;
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(fromMail);
+                message.Subject = notifications.EmailSubject;
+                message.To.Add(new MailAddress(notifications.ToEmail));
+
+                message.Body = notifications.EmailBody;
+                message.IsBodyHtml = true;
+                message.SubjectEncoding = Encoding.UTF8;
+                message.BodyEncoding = Encoding.UTF8;
+
+                var smtpClient = new SmtpClient(gmailClient)
+                {
+                    Port = Convert.ToInt16(gmailPort),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(fromMail, fromPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.EnableSsl = true;
 
                 smtpClient.Send(message);
                 result = true;

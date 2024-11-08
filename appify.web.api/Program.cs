@@ -36,7 +36,7 @@ builder.Services.AddSingleton<IProductImageRepository, ProductImageRepository>()
 builder.Services.AddSingleton<IProductPriceRepository, ProductPriceRepository>();//
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();//
 builder.Services.AddSingleton<IThemeMasterRepository, ThemeMasterRepository>();//
-
+builder.Services.AddSingleton<IVendorPaymentRepository, VendorPaymentRepository>();//
 
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
@@ -61,7 +61,7 @@ builder.Services.AddSingleton<IProductBusiness, ProductBusiness>();//
 builder.Services.AddSingleton<IProductImageBusiness, ProductImageBusiness>();//
 builder.Services.AddSingleton<IProductPriceBusiness, ProductPriceBusiness>();//
 builder.Services.AddSingleton<IThemeMasterBusiness, ThemeMasterBusiness>();//
-
+builder.Services.AddSingleton<IVendorPaymentBusiness, VendorPaymentBusiness>();//
 
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 

@@ -173,6 +173,7 @@ namespace appify.dbroutine
 
         public const string DAILYORDERSUMMARY = "[Operation].[usp_DailyOrderSummary]";
 
+        public const string EMAILSERVERALERT = "[Utility].[usp_EmailAlertSetting]";
         //DELIVERY
         public const string UPDATEORDERTRACKINGSTATUSDELHIVERY = "[Operation].[usp_UpdateOrderStatusDelhivery]";
         public const string ORDERDELIVERYHEADER = "[Operation].[usp_OrderHeaderDelivery]";
@@ -194,7 +195,7 @@ namespace appify.dbroutine
         public const string PRINTINVOICEHEADER = "[Report].[usp_InvoiceHeader]";
         public const string PRINTINVOICEDETAIL = "[Report].[usp_InvoiceDetail]";
 
-
+        public const string PRINTVENDORRECEIPT = "[Billing].[usp_VendorPaymentReceipt]";
 
         ///<summary>
         /// [Operation].[OrderPayment]
@@ -319,5 +320,16 @@ namespace appify.dbroutine
         //// Email Notification - Get Details
         public const string GETMEMBERDETAILS = "[Operation].[usp_MemberDetails]";
 
+
+        ///// Vendor Payment
+        public const string SELECTVENDORPAYMENT = "[Billing].[usp_VendorPaymentSelect]";
+        public const string LISTALLVENDORPAYMENT = "[Billing].[usp_VendorPaymentList]";
+        public const string LISTALLROWSVENDORPAYMENT = "[Billing].[usp_VendorPaymentPageView]";
+        public const string SAVEVENDORPAYMENT = "[Billing].[usp_VendorPaymentSave]";
+        public const string REMOVEVENDORPAYMENT = "[Billing].[usp_VendorPaymentDelete]";
+
+        public const string VENDORPAYMENTSTATUS = "[Billing].[usp_VendorPaymentStatus]";
+        public const string UPDATEVENDORPAYMENTREFERENCENO = "[Billing].[usp_UpdateVendorPaymentReference]";
+        public const string LISTALLBYVENDOR = "[Billing].[usp_VendorPaymentStatus]";
     }
 }
