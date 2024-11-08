@@ -467,7 +467,14 @@ namespace appify.DataAccess
 
             return items;
 
+        }
+        public List<EmailConfig> GetAlertHeader()
+        {
+            List<EmailConfig> items = new List<EmailConfig>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.EMAILSERVERALERT);
+            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
 
+            return items;
         }
     }
 }

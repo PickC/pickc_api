@@ -107,9 +107,9 @@ namespace appify.web.api
                 }
                 FCMPushNotification_New(notificationModel);
 
-                PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
-                { OrderID= OrderID, SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
-                notificationBusiness.addNotificationMessage(pushNotificationMessage);
+                //PushNotificationMessage pushNotificationMessage = new PushNotificationMessage
+                //{ OrderID= OrderID, SenderID = VendorID, ReceiverID = MemberID, NotificationTitle = notificationModel.Title, NotificationMessage = notificationModel.Body };
+                //notificationBusiness.addNotificationMessage(pushNotificationMessage);
 
                 result = true;
             }

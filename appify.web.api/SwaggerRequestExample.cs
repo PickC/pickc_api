@@ -28,7 +28,11 @@ namespace appify.web.api
         public short PageNo { get; set; }
         public short Rows { get; set; }
     }
-
+    public class ParamPaymentList
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
 
     public class ParamPageNumber
     {
@@ -267,7 +271,14 @@ namespace appify.web.api
         public string RazorpayOrderId { get; set; }
         public string RazorpaySignature { get; set; }
     }
-
+    public class ParamVendorPayment
+    {
+        public Int64 PaymentID { get; set; }
+    }
+    public class ParamVendor
+    {
+        public Int64 VendorID { get; set; }
+    }
     public class ParamSMSCredentials
     {
         public Int16 SMSTemplateID { get; set; }
@@ -288,5 +299,22 @@ namespace appify.web.api
         public string Body { get; set; }
         [Required]
         public IFormFile file { get; set; }
+    }
+    public class ParamDownTimeAlert
+    {
+        public string Service { get; set; }
+        public Int64 MemberID {  get; set; }
+        public Int32 MemberTyoe {  get; set; }
+        public Int64 OrderID { get; set; }
+        public string AppVersion {  get; set; }
+        public string AppName {  get; set; }
+    }
+
+    public class ParamVerifySignature
+    {
+        public Int64 OrderID { get; set; }
+        public string razorpayPaymentId { get; set; }
+        public string razorpayOrderId { get; set; }
+        public string razorpaySignature {  get; set; }
     }
 }

@@ -96,5 +96,9 @@ namespace appify.Business
             return invoiceheaderrepository.PrintInvoice(orderID);
 
         }
+        public ReceiptReport PrintReceipt(Int64 vendorID)
+        {
+            return invoiceheaderrepository.PrintReceipt(vendorID);
+        }
     }
 }
