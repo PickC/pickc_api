@@ -128,6 +128,13 @@ namespace appify.DataAccess
 
             return invoiceReport;
         }
-        
+        public ReceiptReport PrintReceipt(Int64 vendorID)
+        {
+            ReceiptReport invoiceReport = new ReceiptReport();
+
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRINTVENDORRECEIPT, vendorID);
+            invoiceReport = DataTableHelper.ConvertDataTable<ReceiptReport>(ds.Tables[0]).FirstOrDefault();
+            return invoiceReport;
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace appify.Business.Contract
         public List<Order> VendorInvoices(long customerID);
 
         public InvoiceReport PrintInvoice(Int64 orderID);
-
+        public ReceiptReport PrintReceipt(Int64 vendorID);
         public bool SaveItem(InvoiceDetail item);
         public bool DeleteItem(short itemID,long invoiceID);
 

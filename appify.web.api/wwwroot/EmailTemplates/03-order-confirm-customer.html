@@ -152,15 +152,58 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
           </td>
         </tr>
         <tr>
+          <td class="center-text" Simpli align="center" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;font-weight:400;font-style:normal;color:#333333;text-decoration:none;letter-spacing:0px;text-align: left;">
+              <singleline>
+                <div mc:edit Simpli>
+                  We are exicited to inform you that you order has been confrimed with {{vendor_app_name}}.
+                </div>
+              </singleline>
+          </td>
+        </tr>
+        <tr>
           <td height="15" style="font-size:15px;line-height:15px;" Simpli>&nbsp;</td>
         </tr>
         <tr>
           <td class="center-text" Simpli align="center" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;font-weight:400;font-style:normal;color:#333333;text-decoration:none;letter-spacing:0px;text-align: left;">
               <singleline>
                 <div mc:edit Simpli>
-                  We are exicited to inform you that you order has been confrimed. Here are the details of your order:
+                  Here are the details of your order:
                 </div>
               </singleline>
+          </td>
+        </tr>
+        <tr>
+          <td height="25" style="font-size:25px;line-height:25px;" Simpli>&nbsp;</td>
+        </tr>
+        <tr>
+          <td align="center">
+            <!-- Use Code -->
+            <table border="0" cellspacing="0" cellpadding="0" role="presentation" align="center" class="row" width="480" style="width:480px;max-width:480px;">
+              <tr>
+                <td align="center"  Simpli bgcolor="#1898c2" style="border-radius: 10px;">
+                  <!-- Content -->
+                  <table border="0" cellspacing="0" cellpadding="0" role="presentation" align="center" class="row" width="480" style="width:480px;max-width:480px;">
+                    <tr>
+                      <td height="20" style="font-size:20px;line-height:20px;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td class="center-text" Simpli align="center" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:22px;line-height:26px;font-weight:400;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
+                          <singleline>
+                            <div mc:edit Simpli>
+                              ORDER NUMBER: <strong style="color:#FFFFFF;">{{order_number}}</strong>
+                            </div>
+                          </singleline>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td height="25" style="font-size:25px;line-height:20px;">&nbsp;</td>
+                    </tr>
+                  </table>
+                  <!-- Content -->
+                </td>
+              </tr>
+            </table>
+            <!-- User Code -->
           </td>
         </tr>
 
@@ -192,10 +235,9 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                       <td class="center-text" Simpli align="left" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:20px;font-weight:400;font-style:normal;color:#666666;text-decoration:none;letter-spacing:0px;">
                           <singleline>
                             <div mc:edit Simpli>
-                              Order number: {{order_number}}<br>
-                              Order date: {{order_date}}<br>
-                              Order quantity: {{order_quantity}}<br>
-                              Order price: {{order_price}}
+                              Date: {{order_date}}<br>
+                              Quantity: {{order_quantity}}<br>
+                              Price: {{order_price}}
                             </div>
                           </singleline>
                       </td>
@@ -209,7 +251,7 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                       <td class="center-text" Simpli align="left" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:20px;line-height:24px;font-weight:700;font-style:normal;color:#333333;text-decoration:none;letter-spacing:0px;">
                           <singleline>
                             <div mc:edit Simpli>
-                              Address
+                              Delivery Address
                             </div>
                           </singleline>
                       </td>
@@ -221,7 +263,7 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                       <td class="center-text" Simpli align="left" style="font-family:'Catamaran',Arial,Helvetica,sans-serif;font-size:16px;line-height:20px;font-weight:400;font-style:normal;color:#666666;text-decoration:none;letter-spacing:0px;">
                           <singleline>
                             <div mc:edit Simpli>
-                              Delivery address: {{delivery_address}}
+                              {{delivery_address}}
                             </div>
                           </singleline>
                       </td>
@@ -231,6 +273,9 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
                   <!-- column -->
                   <!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]-->
                 </td>
+              </tr>
+              <tr>
+                <td height="25" style="font-size:25px;line-height:25px;" Simpli>&nbsp;</td>
               </tr>
               <tr>
                 <td height="10" style="font-size:10px;line-height:10px;" Simpli>&nbsp;</td>
@@ -244,15 +289,13 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
 
                       Looking forward to serving you again soon. <br>
                       Happy Shopping. <br><br>
+
                       Best regards,<br>
                       {{vendor_app_name}},<br>
                       Powered by Appify
                     </div>
                   </singleline>
               </td>
-            </tr>
-            <tr>
-              <td height="25" style="font-size:25px;line-height:25px;" Simpli>&nbsp;</td>
             </tr>
             <!-- Content -->
           </td>
@@ -262,6 +305,7 @@ u + #body a {color:inherit;text-decoration:none;font-size:inherit;font-family:in
           <td height="10" style="font-size:40px;line-height:10px;" Simpli>&nbsp;</td>
         </tr>
       </table>
+      
       <!-- content -->
     </td>
   </tr>

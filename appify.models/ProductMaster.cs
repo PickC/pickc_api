@@ -105,6 +105,7 @@ namespace appify.models
         public bool? WareHouse { get; set; }
         public short Products { get; set; }
         public bool? Category { get; set; }
+        public bool? Orders { get; set; }
         public bool? AppDetails { get; set; }
     }
     public partial class MemberProduct
