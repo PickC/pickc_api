@@ -29,7 +29,14 @@ namespace appify.DataAccess
 
             return item;
         }
+        public OrderDiscount GetDiscount(long DiscountID)
+        {
+            OrderDiscount item = new OrderDiscount();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERDISCOUNT, DiscountID);
+            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]).FirstOrDefault();
 
+            return item;
+        }
         public List<DiscountHeader> GetAll()
         {
             List<DiscountHeader> item = new List<DiscountHeader>();
@@ -38,8 +45,30 @@ namespace appify.DataAccess
 
             return item;
         }
+        public List<OrderDiscount> GetDiscountByVendor(Int64 VendorID)
+        {
+            List<OrderDiscount> item = new List<OrderDiscount>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDOR, VendorID);
+            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
 
+            return item;
+        }
+        public List<OrderDiscount> GetDiscountListbyVendorRows(long VendorID, int pageNo, int rows)
+        {
+            List<OrderDiscount> item = new List<OrderDiscount>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDORPAGEVIEW, VendorID, pageNo, rows);
+            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
 
+            return item;
+        }
+        public Int64 GetDiscountCount(Int64 VendorID)
+        {
+            Int64 item = new Int64();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTORDERDISCOUNT, VendorID);
+            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+
+            return item;
+        }
         public List<ProductDiscount> ListByVendor(long vendorID)
         {
             List<ProductDiscount> items = new List<ProductDiscount>();
@@ -132,6 +161,80 @@ namespace appify.DataAccess
             }
 
             return item;
+        }
+
+        public OrderDiscount DiscountSave(OrderDiscount item)
+        {
+            var result = false;
+
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEORDERDISCOUNT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@DiscountID", item.DiscountID);
+                        cmd.Parameters.AddWithValue("@VendorID", item.VendorID);
+                        cmd.Parameters.AddWithValue("@UOM", item.UOM);
+                        cmd.Parameters.AddWithValue("@Qty", item.Qty);
+                        cmd.Parameters.AddWithValue("@EffectiveDate", item.EffectiveDate);
+                        cmd.Parameters.AddWithValue("@ExpiryDate", item.ExpiryDate);
+                        cmd.Parameters.AddWithValue("@DiscountType", item.DiscountType);
+                        cmd.Parameters.AddWithValue("@DiscountAmount", item.DiscountAmount);
+                        cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewDiscountID";
+                        outPutParameter.SqlDbType = SqlDbType.BigInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        item.IsActive = true;
+                        item.DiscountID = Convert.ToInt64(outPutParameter.Value);
+                        con.Close();
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return item;
+        }
+        public bool DiscountRemove(long DiscountID)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.REMOVEORDERDISCOUNT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@DiscountID", DiscountID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return result;
         }
     }
 }

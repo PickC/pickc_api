@@ -443,7 +443,7 @@ namespace appify.models
         public string ProductDescription { get; set; }
         public short? DeliveryChannel { get; set; }
         public string? DeliveryChannelDescription { get; set; }
-
+        public bool CanCancel { get; set; }
 
     }
 

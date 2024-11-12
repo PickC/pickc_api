@@ -20,12 +20,27 @@ namespace appify.Business
             this.repository = repository;
             this.repositoryDetail = repositoryDetail;
         }
+        public List<OrderDiscount> GetDiscountByVendor(Int64 VendorID)
+        {
+            return repository.GetDiscountByVendor(VendorID);
+        }
+        public List<OrderDiscount> GetDiscountListbyVendorRows(long vendorID, int pageNo, int rows)
+        {
+            return repository.GetDiscountListbyVendorRows(vendorID, pageNo, rows);
+        }
         public DiscountHeader Get(long DiscountID)
         {
 
             return repository.Get(DiscountID);
         }
-
+        public OrderDiscount GetDiscount(Int64 DiscountID)
+        {
+            return repository.GetDiscount(DiscountID); 
+        }    
+        public Int64 GetDiscountCount(Int64 VendorID)
+        {
+            return repository.GetDiscountCount(VendorID);
+        }
         public List<DiscountHeader> GetAll()
         {
            return repository.GetAll();
@@ -63,6 +78,14 @@ namespace appify.Business
             //}
 
             return returnItem;
+        }
+        public OrderDiscount DiscountSave(OrderDiscount item)
+        {
+            return repository.DiscountSave(item);
+        }
+        public bool DiscountRemove(Int64 DiscountID)
+        {
+            return repository.DiscountRemove(DiscountID);
         }
     }
 }

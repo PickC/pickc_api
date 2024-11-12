@@ -331,5 +331,13 @@ namespace appify.dbroutine
         public const string VENDORPAYMENTSTATUS = "[Billing].[usp_VendorPaymentStatus]";
         public const string UPDATEVENDORPAYMENTREFERENCENO = "[Billing].[usp_UpdateVendorPaymentReference]";
         public const string LISTALLBYVENDOR = "[Billing].[usp_VendorPaymentStatus]";
+
+        ///// Order Discount
+        public const string SELECTORDERDISCOUNT = "[Operation].[usp_OrderDiscountSelect]";
+        public const string LISTORDERDISCOUNTBYVENDOR = "[Operation].[usp_OrderDiscountList]";
+        public const string LISTORDERDISCOUNTBYVENDORPAGEVIEW = "[Operation].[usp_OrderDiscountPageView]";
+        public const string ROWCOUNTORDERDISCOUNT = "[Operation].[usp_OrderDiscountRecordCount]";
+        public const string SAVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountSave]";
+        public const string REMOVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountDelete]";
     }
 }

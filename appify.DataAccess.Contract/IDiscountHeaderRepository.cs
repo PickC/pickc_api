@@ -10,9 +10,15 @@ namespace appify.DataAccess.Contract
     public interface IDiscountHeaderRepository
     {
         public List<DiscountHeader> GetAll();
+        public List<OrderDiscount> GetDiscountByVendor(Int64 VendorID);
+        public List<OrderDiscount> GetDiscountListbyVendorRows(long vendorID, int pageNo, int rows);
         public DiscountHeader Get(Int64 DiscountID);
+        public OrderDiscount GetDiscount(Int64 DiscountID);
+        public Int64 GetDiscountCount(Int64 VendorID);
         public DiscountHeader Save(DiscountHeader item);
+        public OrderDiscount DiscountSave(OrderDiscount item);
         public bool Remove(Int64 DiscountID, Int64 ProductID);
+        public bool DiscountRemove(Int64 DiscountID);
         public List<ProductDiscount> ListByVendor(long vendorID);
         public List<ProductDiscountList> ListByProduct(long productID);
 
