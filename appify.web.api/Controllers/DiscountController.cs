@@ -1,4 +1,5 @@
-﻿using appify.Business.Contract;
+﻿using appify.Business;
+using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
@@ -491,7 +492,678 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        /// <summary>
+        /// Adds a Order's Discount.
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request:
+        /// NOTE : For a new Order Discount object, send the DiscountID = 0.
+        /// 
+        ///     [
+        ///         {
+        ///           "discountID": 0,
+        ///           "vendorID":1060,
+        ///           "uom": 3501,
+        ///           "qty": 2,
+        ///           "effectiveDate": "2024-11-11T10:16:25.323Z",
+        ///           "expiryDate": "2024-11-30T10:16:25.323Z",
+        ///           "discountType": 3000,
+        ///           "discountAmount": 500,
+        ///           "isActive": true,
+        ///           "createdBy": 1060,
+        ///           "modifiedBy": 1060
+        ///         }
+        ///     ]
+        /// 
+        /// 
+        /// </remarks>
+        /// <param name="orderDiscount"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("DiscountSave")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> orderDiscountAdd(List<OrderDiscount> orderDiscount)
+        {
+            var result = true;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                List<OrderDiscount> returnItem = new List<OrderDiscount>();
 
+                rm = new ResponseMessage();
+
+                foreach (var item in orderDiscount)
+                {
+                    returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
+                }
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "DISCOUNT SAVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = returnItem;
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVED SUCCESSFULLY", reqHeader, controllerURL, orderDiscount, returnItem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVE - NO CONTENT", reqHeader, controllerURL, orderDiscount, returnItem, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("DISCOUNT SAVE - ERROR", reqHeader, controllerURL, orderDiscount, null, rm.message, this.eventLogBusiness);
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("DiscountSave")]
+        [MapToApiVersion("1.1")]
+        public async Task<IActionResult> orderDiscountAdd1(List<OrderDiscount> orderDiscount)
+        {
+            var result = true;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                List<OrderDiscount> returnItem = new List<OrderDiscount>();
+
+                rm = new ResponseMessage();
+
+                foreach (var item in orderDiscount)
+                {
+                    returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
+                }
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "DISCOUNT SAVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = returnItem;
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVED SUCCESSFULLY", reqHeader, controllerURL, orderDiscount, returnItem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("DISCOUNT SAVE - NO CONTENT", reqHeader, controllerURL, orderDiscount, returnItem, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("DISCOUNT SAVE - ERROR", reqHeader, controllerURL, orderDiscount, null, rm.message, this.eventLogBusiness);
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// removes Order's Discount Item
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample Data :
+        /// 
+        ///     {
+        ///         "DiscountID":1015
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Boolean Value </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("DiscountRemove")]
+        [MapToApiVersion("1.0")]
+        public IActionResult orderDiscountRemove(ParamDiscount itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "DISCOUNT REMOVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("DiscountRemove")]
+        [MapToApiVersion("1.1")]
+        public IActionResult orderDiscountRemove1(ParamDiscount itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "DISCOUNT REMOVED SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// gets Order's Discount Item
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "DiscountID":1000
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DISCOUNT ITEM!",
+        ///       "data": {
+        ///         "discountID": 1001,
+        ///         "vendorID": 1060,
+        ///         "uom": 3501,
+        ///         "qty": 2,
+        ///         "effectiveDate": "2024-11-11T10:16:25.323",
+        ///         "expiryDate": "2024-11-30T10:16:25.323",
+        ///         "discountType": 3000,
+        ///         "discountAmount": 500,
+        ///         "isActive": false,
+        ///         "createdBy": 1060,
+        ///         "modifiedBy": 0
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("GetDiscount")]
+        [MapToApiVersion("1.0")]
+        public IActionResult orderDiscountGet(ParamDiscount itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("GetDiscount")]
+        [MapToApiVersion("1.1")]
+        public IActionResult orderDiscountGet1(ParamDiscount itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// gets Order's Discount Items LIST BY Vendor
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "VendorID":1000
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("DiscountListByVendor")]
+        [MapToApiVersion("1.0")]
+        public IActionResult discountListByVendor(ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT ITEMS LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST SUCCESSFULLY", reqHeader, controllerURL, null, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("DiscountListByVendor")]
+        [MapToApiVersion("1.1")]
+        public IActionResult discountListByVendor1(ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT ITEMS LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST SUCCESSFULLY", reqHeader, controllerURL, null, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// gets Order's Discount Items LIST BY Vendor Pagination
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request JSON :
+        ///     {
+        ///       "userID": 1060,
+        ///       "pageNo": 1,
+        ///       "rows": 10
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost]
+        [Route("DiscountListByVendorRow")]
+        [MapToApiVersion("1.0")]
+        public IActionResult discountListByVendorRow(ParamProductList item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST SUCCESSFULLY", reqHeader, controllerURL, item, items, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST - ERROR", reqHeader, controllerURL, item, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost]
+        [Route("DiscountListByVendorRow")]
+        [MapToApiVersion("1.1")]
+        public IActionResult discountListByVendorRow1(ParamProductList item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT ITEMS LIST SUCCESSFULLY", reqHeader, controllerURL, item, items, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH DISCOUNT LIST - ERROR", reqHeader, controllerURL, item, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// gets Order's Discount Count
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "DiscountID":1000
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DISCOUNT COUNT!",
+        ///       "data": 2
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("GetDiscountCount")]
+        [MapToApiVersion("1.0")]
+        public IActionResult orderDiscountCount(ParamVendor itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT COUNT!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("GetDiscountCount")]
+        [MapToApiVersion("1.1")]
+        public IActionResult orderDiscountCount1(ParamVendor itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT COUNT!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
 
         ///////////// Discount Detail
 

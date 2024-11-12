@@ -106,4 +106,18 @@ namespace appify.models
         public string ExpiryDate { get; set; }
 
     }
+    public partial class OrderDiscount
+    {
+        public Int64 DiscountID { get; set; }
+        public Int64 VendorID { get; set; }
+        public Int32 UOM { get; set; }
+        public Int32 Qty { get; set; }
+        public DateTime EffectiveDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public Int32 DiscountType { get; set; }
+        public decimal DiscountAmount { get; set;}
+        public bool IsActive {  get; set; }
+        public Int64 CreatedBy {  get; set; }
+        public Int64 ModifiedBy { get; set; }
+    }
 }
