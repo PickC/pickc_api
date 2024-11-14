@@ -2270,7 +2270,7 @@ namespace appify.web.api.Controllers
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2281,13 +2281,13 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                 //// In App Notification
                                  InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2298,7 +2298,7 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                 //// In App Notification
                                 InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
@@ -2307,7 +2307,7 @@ namespace appify.web.api.Controllers
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2318,14 +2318,14 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                     //// In App Notification
                                   InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
 
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2336,7 +2336,7 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                 //// In App Notification
                                 InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
@@ -2345,7 +2345,7 @@ namespace appify.web.api.Controllers
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2356,13 +2356,13 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                     //// In App Notification
                                   InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2373,7 +2373,7 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                     //// In App Notification
                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                         }
@@ -2605,7 +2605,7 @@ namespace appify.web.api.Controllers
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2616,13 +2616,13 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                     //// In App Notification
                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
-                                /*if (orderUpdateDetail.IsEmail == true)
+                                if (orderUpdateDetail.IsEmail == true)
                                 {
                                     EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                 }
@@ -2633,7 +2633,7 @@ namespace appify.web.api.Controllers
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }*/
+                                }
                                 //// In App Notification
                                 InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                             }
@@ -2642,7 +2642,7 @@ namespace appify.web.api.Controllers
                         {
                                 if (orderUpdateDetail.VendorID != 0)
                                 {
-                                    /*if (orderUpdateDetail.IsEmail == true)
+                                    if (orderUpdateDetail.IsEmail == true)
                                     {
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                     }
@@ -2653,13 +2653,13 @@ namespace appify.web.api.Controllers
                                     if (orderUpdateDetail.IsPush == true)
                                     {
                                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }*/
+                                    }
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
-                                    /*if (orderUpdateDetail.IsEmail == true)
+                                    if (orderUpdateDetail.IsEmail == true)
                                     {
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                     }
@@ -2670,7 +2670,7 @@ namespace appify.web.api.Controllers
                                     if (orderUpdateDetail.IsPush == true)
                                     {
                                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }*/
+                                    }
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }

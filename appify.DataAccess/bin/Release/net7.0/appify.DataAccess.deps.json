@@ -947,7 +947,10 @@
           "appify.models": "1.0.0"
         },
         "runtime": {
-          "appify.Business.Contract.dll": {}
+          "appify.Business.Contract.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "appify.DataAccess.Contract/1.0.0": {
@@ -956,7 +959,10 @@
           "appify.models": "1.0.0"
         },
         "runtime": {
-          "appify.DataAccess.Contract.dll": {}
+          "appify.DataAccess.Contract.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "appify.dbroutine/1.0.0": {
@@ -964,7 +970,10 @@
           "System.Json": "4.7.1"
         },
         "runtime": {
-          "appify.dbroutine.dll": {}
+          "appify.dbroutine.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "appify.models/1.0.0": {
@@ -973,7 +982,10 @@
           "System.Json": "4.7.1"
         },
         "runtime": {
-          "appify.models.dll": {}
+          "appify.models.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "appify.utility/1.0.0": {
@@ -989,7 +1001,10 @@
           "appify.models": "1.0.0"
         },
         "runtime": {
-          "appify.utility.dll": {}
+          "appify.utility.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }
