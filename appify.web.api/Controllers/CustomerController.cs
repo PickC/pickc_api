@@ -433,7 +433,7 @@ namespace appify.web.api.Controllers
         [Route("fortestingfunc")]
         [MapToApiVersion("1.0")]
         //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> fortestingfuc()//([Required]IFormFile file)
+        public async Task<IActionResult> fortestingfuc([FromForm] ParamEmailFields item)//([Required]IFormFile file)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -442,52 +442,54 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 string responseBody = "NO FILE OR INVALID FILE FORMAT";
                 //////[FromForm] ParamEmailFields item
-                //if (item.file == null || item.file.Length == 0)
-                //{
-                //    rm.statusCode = StatusCodes.ERROR;
-                //    rm.message = "";
-                //    rm.name = StatusName.invalid;
-                //    rm.data = null;
-                //    return Ok(rm);
-                //}
-                //if (Path.GetExtension(item.file.FileName).ToLower() != ".csv"
-                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xls"
-                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsx"
-                //    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsb")
-                //{
-                //    rm.statusCode = StatusCodes.ERROR;
-                //    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
-                //    rm.name = StatusName.invalid;
-                //    rm.data = null;
-                //    return Ok(rm);
-                //}
+                if (item.file == null || item.file.Length == 0)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    return Ok(rm);
+                }
+                if (Path.GetExtension(item.file.FileName).ToLower() != ".csv"
+                    && Path.GetExtension(item.file.FileName).ToLower() != ".xls"
+                    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsx"
+                    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsb")
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    return Ok(rm);
+                }
 
-                //if (item.file.Length > Common.IMAGE_SIZE)
-                //{
-                //    rm.statusCode = StatusCodes.ERROR;
-                //    rm.name = StatusName.invalid;
-                //    rm.message = "FILE SIZE GREATER THAN 5 MB";
-                //    rm.data = null;
-                //    return Ok(rm);
-                //}
+                if (item.file.Length > Common.IMAGE_SIZE)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.name = StatusName.invalid;
+                    rm.message = "FILE SIZE GREATER THAN 5 MB";
+                    rm.data = null;
+                    return Ok(rm);
+                }
 
-                //Notifications notifications = new Notifications
-                //{
-                //    ToEmailCC = NotificationConfig.TO_BCC,
-                //    ToEmailBCC = NotificationConfig.TO_CC,
-                //    EmailSubject = item.Subject,
-                //    EmailTemplateURL = "wwwroot/EmailTemplates/01-welcome-message-vendor.html",
-                //    ToEmail = item.ToEmail
-                //};
+                Notifications notifications = new Notifications
+                {
+                    ToEmailCC = "", ////NotificationConfig.TO_BCC,
+                    ToEmailBCC = "", ////NotificationConfig.TO_CC,
+                    EmailSubject = item.Subject,
+                    EmailTemplateURL = "wwwroot/EmailTemplates/01-welcome-message-vendor.html",
+                    ToEmail = item.ToEmail
+                };
                 //string mailbody = string.Empty;
                 //string path = notifications.EmailTemplateURL;
                 //using (StreamReader sr = new StreamReader(path))
                 //{
                 //    mailbody = sr.ReadToEnd();
                 //}
-                ////notifications.EmailBody = mailbody;
-                //notifications.EmailBody = item.Body;
-                //EmailNotification.SendEmail(notifications, item.file);
+                //notifications.EmailBody = mailbody;
+                notifications.EmailBody = item.Body;
+                EmailNotification.SendEmail(notifications, item.file);
+
+
                 //using (var client = new HttpClient())
                 //{
 

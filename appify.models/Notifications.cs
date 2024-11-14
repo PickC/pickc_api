@@ -183,6 +183,7 @@ namespace appify.models
         public string? DeliveryChannelDescription { get; set; }
         public string? CustomerName { get; set; }
         public string? CustomerEmail { get; set; }
+        public string? CustomerMobileNo { get; set; }
         public string CourierName { get; set; }
         public string TrackURL { get; set; }
     }
