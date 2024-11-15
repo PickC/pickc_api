@@ -37,6 +37,14 @@ namespace appify.DataAccess
 
             return item;
         }
+        public List<OrderDiscountDetail> GetOrderDiscountByVendor(Int64 VendorID)
+        {
+            List<OrderDiscountDetail> item = new List<OrderDiscountDetail>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETORDERDISCOUNTSBYVENDOR, VendorID);
+            item = DataTableHelper.ConvertDataTable<OrderDiscountDetail>(ds.Tables[0]);
+
+            return item;
+        }
         public List<DiscountHeader> GetAll()
         {
             List<DiscountHeader> item = new List<DiscountHeader>();

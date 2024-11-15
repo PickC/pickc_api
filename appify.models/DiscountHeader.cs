@@ -68,6 +68,7 @@ namespace appify.models
         public string ProductName { get; set; }
         public string Description { get; set; }
         public string Brand { get; set; }
+        public Int32? Category { get; set; }
         public DateTime EffectiveDate { get; set; }
         public DateTime ExpiryDate { get; set; }
         public decimal? Price { get; set; }
@@ -76,6 +77,7 @@ namespace appify.models
         public string DiscountTypeDescription { get; set; }
 
         public bool IsActive { get; set; }
+        public bool IsNew { get; set; }
         public Int64 ImageID { get; set; }
         public string ImageName { get; set; }
 
@@ -119,5 +121,13 @@ namespace appify.models
         public bool IsActive {  get; set; }
         public Int64 CreatedBy {  get; set; }
         public Int64 ModifiedBy { get; set; }
+    }
+    public partial class OrderDiscountDetail
+    {
+        public Int64 DiscountID { get; set; }
+        public Int32 UOM { get; set; }
+        public Int32 Qty { get; set; }
+        public string DiscountType { get; set; }
+        public decimal DiscountAmount { get; set; }
     }
 }
