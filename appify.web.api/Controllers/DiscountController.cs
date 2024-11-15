@@ -354,6 +354,7 @@ namespace appify.web.api.Controllers
         ///           "productName": "URBAN TRIBE Polyester Plank 23L Gym Bag for Mens and Womens",
         ///           "description": "Easy To OpenCarry: U-shape main zippered compartment for easy packing and viewing.",
         ///           "brand": "Urban",
+        ///           "category": 3713,
         ///           "effectiveDate": "2024-04-25T15:55:06.807",
         ///           "expiryDate": "2024-04-30T15:55:06.807",
         ///           "price": 1200,
@@ -361,6 +362,7 @@ namespace appify.web.api.Controllers
         ///           "discountValue": 1000,
         ///           "discountTypeDescription": "AMOUNT",
         ///           "isActive": true,
+        ///           "isNew": false
         ///           "imageID": 2552,
         ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1713267250886.jpg"
         ///         }
@@ -1160,6 +1162,85 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT COUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get Order's Discount By Vendor
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// version : 1.1
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "VendorID":1060
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DISCOUNT COUNT!",
+        ///       "data": [
+        ///         {
+        ///           "discountID": 1000,
+        ///           "uom": 3501,
+        ///           "qty": 2,
+        ///           "discountType": 3000,
+        ///           "discountAmount": 500
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns DiscountHeader Object </response>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("GetOrderDiscountByVendor")]
+        [MapToApiVersion("1.0")]
+        public IActionResult getOrderDiscountByVendor(ParamVendor itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.discountHeaderBusiness.GetOrderDiscountByVendor(itemData.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DISCOUNT COUNT!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ORDER DISCOUNT ITEMS SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ORDER DISCOUNT ITEMS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ORDER DISCOUNT ITEMS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);

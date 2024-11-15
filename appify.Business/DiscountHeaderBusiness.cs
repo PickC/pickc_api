@@ -36,7 +36,12 @@ namespace appify.Business
         public OrderDiscount GetDiscount(Int64 DiscountID)
         {
             return repository.GetDiscount(DiscountID); 
-        }    
+        }
+
+        public List<OrderDiscountDetail> GetOrderDiscountByVendor(Int64 VendorID)
+        {
+            return repository.GetOrderDiscountByVendor (VendorID);
+        }
         public Int64 GetDiscountCount(Int64 VendorID)
         {
             return repository.GetDiscountCount(VendorID);

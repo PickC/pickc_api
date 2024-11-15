@@ -15,6 +15,7 @@ namespace appify.Business.Contract
         public DiscountHeader Get(Int64 DiscountID);
         public OrderDiscount GetDiscount(Int64 DiscountID);
         public Int64 GetDiscountCount(Int64 VendorID);
+        public List<OrderDiscountDetail> GetOrderDiscountByVendor(Int64 VendorID);
         public DiscountHeader Save(DiscountHeader item);
         public OrderDiscount DiscountSave(OrderDiscount item);
         public bool Remove(Int64 DiscountID, Int64 ProductID);
