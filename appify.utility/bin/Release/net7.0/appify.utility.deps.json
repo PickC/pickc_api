@@ -585,7 +585,10 @@
           "appify.models": "1.0.0"
         },
         "runtime": {
-          "appify.Business.Contract.dll": {}
+          "appify.Business.Contract.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "appify.models/1.0.0": {
@@ -594,7 +597,10 @@
           "System.Json": "4.7.1"
         },
         "runtime": {
-          "appify.models.dll": {}
+          "appify.models.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

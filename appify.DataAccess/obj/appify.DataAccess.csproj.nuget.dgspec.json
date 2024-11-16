@@ -22,8 +22,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -71,7 +75,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     },
@@ -93,8 +101,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -142,7 +154,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     },
@@ -164,8 +180,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -230,7 +250,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     },
@@ -252,8 +276,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -297,7 +325,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     },
@@ -319,8 +351,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -368,7 +404,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     },
@@ -390,8 +430,12 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://www.nuget.org/api/v2/": {}
+=======
+          "https://api.nuget.org/v3/index.json": {}
+>>>>>>> appifygurjeet
         },
         "frameworks": {
           "net7.0": {
@@ -466,7 +510,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+>>>>>>> appifygurjeet
         }
       }
     }

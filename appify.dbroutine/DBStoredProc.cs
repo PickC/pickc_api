@@ -339,5 +339,6 @@ namespace appify.dbroutine
         public const string ROWCOUNTORDERDISCOUNT = "[Operation].[usp_OrderDiscountRecordCount]";
         public const string SAVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountSave]";
         public const string REMOVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountDelete]";
+        public const string GETORDERDISCOUNTSBYVENDOR = "[Operation].[usp_OrderDiscountByVendor]";
     }
 }
