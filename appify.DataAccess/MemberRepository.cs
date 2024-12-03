@@ -1,16 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using appify.utility;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using appify.utility;
-using appify.dbroutine;
-using System.Dynamic;
-using Microsoft.Data.SqlClient;
 
 namespace appify.DataAccess
 {

@@ -1,4 +1,11 @@
-﻿using appify.models;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.models;
 using appify.utility;
 using System.Net.Mail;
 using System.Net;

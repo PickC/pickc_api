@@ -19,11 +19,13 @@ namespace appify.models
         public DateTime CreatedOn { get; set; }
         public string name { get; set; }
         public string receipt {  get; set; }
+
+        public string PaymentSignature { get; set; }
     }
     public partial class VendorPaymentStatus
     {
-        public Int64 PaymentID { get; set; }
-        public Int64 VendorID { get; set; }
+       public Int64 VendorID { get; set; }
         public string ReferenceNo { get; set; }
+        public string PaymentSignature { get; set; }
     }
 }

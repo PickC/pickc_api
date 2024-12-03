@@ -1,4 +1,11 @@
-﻿namespace appify.web.api
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+namespace appify.web.api
 {
     public class ResponseMessage
     {

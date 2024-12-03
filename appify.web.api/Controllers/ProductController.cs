@@ -1,4 +1,10 @@
-﻿using appify.Business;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -9,8 +15,6 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Text.Json.Nodes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]

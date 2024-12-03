@@ -1,4 +1,11 @@
-﻿using CorePush.Google;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using CorePush.Google;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Net;

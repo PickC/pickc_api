@@ -1,4 +1,11 @@
-﻿using appify.Business.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.Business.Contract;
 using appify.models;
 
 namespace appify.web.api

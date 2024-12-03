@@ -129,5 +129,9 @@ namespace appify.models
         public Int32 Qty { get; set; }
         public string DiscountType { get; set; }
         public decimal DiscountAmount { get; set; }
+        public DateTime? EffectiveDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+
+
     }
 }
