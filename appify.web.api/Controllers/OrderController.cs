@@ -1,32 +1,23 @@
-﻿using appify.Business.Contract;
+/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.Business.Contract;
 using appify.models;
+using appify.utility;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using appify.utility;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.Numerics;
-using Microsoft.AspNetCore.Http.Extensions;
-using System.Reflection.PortableExecutable;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static appify.models.NotificationType;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Azure.Core;
-using System.Text.Json.Serialization;
 using Newtonsoft.Json.Linq;
-using System.Net.Http.Headers;
-using Twilio.Http;
-using appify.Business;
 using Razorpay.Api;
-using Asp.Versioning;
-using FirebaseAdmin.Messaging;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using System.Security.Cryptography;
 using System.Text;
-using Twilio.TwiML.Messaging;
+using static appify.models.NotificationType;
 
 namespace appify.web.api.Controllers
 {

@@ -1,4 +1,11 @@
-﻿using Swashbuckle.AspNetCore;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using Swashbuckle.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
 
@@ -296,6 +303,7 @@ namespace appify.web.api
         public string Subject { get; set; }
         [Required]
         public string Body { get; set; }
+
         [Required]
         public IFormFile file { get; set; }
     }

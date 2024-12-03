@@ -15,17 +15,20 @@
           }
         }
       },
-      "System.Json/4.7.1": {
+      "System.Json/4.8.0": {
         "type": "package",
         "compile": {
-          "lib/netstandard2.0/System.Json.dll": {
+          "lib/net6.0/System.Json.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/netstandard2.0/System.Json.dll": {
+          "lib/net6.0/System.Json.dll": {
             "related": ".xml"
           }
+        },
+        "build": {
+          "buildTransitive/net6.0/_._": {}
         }
       },
       "appify.models/1.0.0": {
@@ -75,38 +78,27 @@
         "packageIcon.png"
       ]
     },
-    "System.Json/4.7.1": {
-      "sha512": "XymImdgljgVEkd9trFSKWlNJac1Hr+L9lwFLQSUUQfFMkm88AHI6DINAMhpoiUWQIPLIqEjR702eydUb4Qb3Ng==",
+    "System.Json/4.8.0": {
+      "sha512": "N+++rhhzGQ2gqclJBObp5UpLojpB9njsetq2e2lY+rmdbnANc88dzj3mr05Law+u9h0Wl6sBXqtJl1QUtIxmgQ==",
       "type": "package",
-      "path": "system.json/4.7.1",
+      "path": "system.json/4.8.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/Xamarinmac20/_._",
-        "lib/monoandroid10/_._",
-        "lib/monotouch10/_._",
-        "lib/net461/System.Json.dll",
-        "lib/net461/System.Json.xml",
-        "lib/netstandard1.0/System.Json.dll",
-        "lib/netstandard1.0/System.Json.xml",
+        "PACKAGE.md",
+        "buildTransitive/net461/System.Json.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Json.targets",
+        "lib/net462/System.Json.dll",
+        "lib/net462/System.Json.xml",
+        "lib/net6.0/System.Json.dll",
+        "lib/net6.0/System.Json.xml",
         "lib/netstandard2.0/System.Json.dll",
         "lib/netstandard2.0/System.Json.xml",
-        "lib/xamarinios10/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/Xamarinmac20/_._",
-        "ref/monoandroid10/_._",
-        "ref/monotouch10/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.json.4.7.1.nupkg.sha512",
-        "system.json.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
+        "system.json.4.8.0.nupkg.sha512",
+        "system.json.nuspec"
       ]
     },
     "appify.models/1.0.0": {
@@ -117,24 +109,24 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "System.Json >= 4.7.1",
+      "System.Json >= 4.8.0",
       "appify.models >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\HP\\.nuget\\packages\\": {}
+    "C:\\Users\\sharma\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+      "projectUniqueName": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
       "projectName": "appify.DataAccess.Contract",
-      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
-      "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\obj\\",
+      "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+      "packagesPath": "C:\\Users\\sharma\\.nuget\\packages\\",
+      "outputPath": "D:\\Project\\Appify.API\\appify.api\\appify.DataAccess.Contract\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\sharma\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -142,14 +134,15 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files\\dotnet\\library-packs": {},
+        "https://www.nuget.org/api/v2/": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
+            "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj": {
+              "projectPath": "D:\\Project\\Appify.API\\appify.api\\appify.models\\appify.models.csproj"
             }
           }
         }
@@ -171,7 +164,7 @@
         "dependencies": {
           "System.Json": {
             "target": "Package",
-            "version": "[4.7.1, )"
+            "version": "[4.8.0, )"
           }
         },
         "imports": [
@@ -190,7 +183,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403\\RuntimeIdentifierGraph.json"
       }
     }
   }

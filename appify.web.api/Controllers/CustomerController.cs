@@ -1,29 +1,18 @@
-﻿using appify.Business;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Razorpay.Api;
-using System.Net;
-using System.Text;
-using Asp.Versioning;
-using System.Net.Http.Headers;
-using Twilio;
-using Twilio.Rest.Api.V2010.Account;
-using System.Management;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.VisualBasic;
-using FirebaseAdmin.Messaging;
-using System.ComponentModel.DataAnnotations;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]

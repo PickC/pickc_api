@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 namespace appify.DataAccess
 {
     public partial class VendorPaymentRepository : IVendorPaymentRepository
@@ -38,6 +40,8 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@TotalAmount", item.TotalAmount);
                         cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
                         cmd.Parameters.AddWithValue("@PaymentStatus", item.PaymentStatus);
+                        cmd.Parameters.AddWithValue("@ReceiptNo", item.receipt);
+                        cmd.Parameters.AddWithValue("@PaymentSignature", item.PaymentSignature);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
@@ -122,9 +126,9 @@ namespace appify.DataAccess
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@PaymentID", item.PaymentID);
                         cmd.Parameters.AddWithValue("@VendorID", item.VendorID);
                         cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
+                        cmd.Parameters.AddWithValue("@PaymentSignature", item.PaymentSignature);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 

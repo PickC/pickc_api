@@ -10,7 +10,7 @@
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.2.0",
           "Microsoft.Extensions.Configuration": "8.0.0",
-          "System.Json": "4.7.1",
+          "System.Json": "4.8.0",
           "appify.DataAccess.Contract": "1.0.0",
           "appify.dbroutine": "1.0.0",
           "appify.models": "1.0.0",
@@ -608,11 +608,11 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Json/4.7.1": {
+      "System.Json/4.8.0": {
         "runtime": {
-          "lib/netstandard2.0/System.Json.dll": {
-            "assemblyVersion": "2.0.8.0",
-            "fileVersion": "4.700.20.21406"
+          "lib/net6.0/System.Json.dll": {
+            "assemblyVersion": "4.8.0.0",
+            "fileVersion": "4.800.24.56208"
           }
         }
       },
@@ -943,7 +943,7 @@
       },
       "appify.Business.Contract/1.0.0": {
         "dependencies": {
-          "System.Json": "4.7.1",
+          "System.Json": "4.8.0",
           "appify.models": "1.0.0"
         },
         "runtime": {
@@ -955,7 +955,7 @@
       },
       "appify.DataAccess.Contract/1.0.0": {
         "dependencies": {
-          "System.Json": "4.7.1",
+          "System.Json": "4.8.0",
           "appify.models": "1.0.0"
         },
         "runtime": {
@@ -967,7 +967,7 @@
       },
       "appify.dbroutine/1.0.0": {
         "dependencies": {
-          "System.Json": "4.7.1"
+          "System.Json": "4.8.0"
         },
         "runtime": {
           "appify.dbroutine.dll": {
@@ -979,7 +979,7 @@
       "appify.models/1.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.3",
-          "System.Json": "4.7.1"
+          "System.Json": "4.8.0"
         },
         "runtime": {
           "appify.models.dll": {
@@ -995,7 +995,7 @@
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Newtonsoft.Json": "13.0.3",
           "System.Data.SqlClient": "4.8.6",
-          "System.Json": "4.7.1",
+          "System.Json": "4.8.0",
           "System.Net.Http": "4.3.4",
           "appify.Business.Contract": "1.0.0",
           "appify.models": "1.0.0"
@@ -1449,12 +1449,12 @@
       "path": "system.io.filesystem.primitives/4.3.0",
       "hashPath": "system.io.filesystem.primitives.4.3.0.nupkg.sha512"
     },
-    "System.Json/4.7.1": {
+    "System.Json/4.8.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-XymImdgljgVEkd9trFSKWlNJac1Hr+L9lwFLQSUUQfFMkm88AHI6DINAMhpoiUWQIPLIqEjR702eydUb4Qb3Ng==",
-      "path": "system.json/4.7.1",
-      "hashPath": "system.json.4.7.1.nupkg.sha512"
+      "sha512": "sha512-N+++rhhzGQ2gqclJBObp5UpLojpB9njsetq2e2lY+rmdbnANc88dzj3mr05Law+u9h0Wl6sBXqtJl1QUtIxmgQ==",
+      "path": "system.json/4.8.0",
+      "hashPath": "system.json.4.8.0.nupkg.sha512"
     },
     "System.Linq/4.3.0": {
       "type": "package",

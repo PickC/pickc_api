@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using Newtonsoft.Json;
 
 namespace appify.web.api
 {

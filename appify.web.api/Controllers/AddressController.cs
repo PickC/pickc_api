@@ -1,22 +1,18 @@
-﻿using appify.Business;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Hosting;
-using Newtonsoft.Json.Linq;
-using System.Text.Json.Nodes;
-using System.Net.Http;
-using System.Collections.Generic;
-using static System.Net.WebRequestMethods;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Text;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace appify.web.api.Controllers
 {

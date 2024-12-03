@@ -576,5 +576,5 @@ namespace appify.models
         public decimal OrderAmount { get; set; }
         public string PaymentType { get; set; }
     }
-
+ 
 }
