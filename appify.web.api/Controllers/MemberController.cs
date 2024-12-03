@@ -1,4 +1,10 @@
-﻿using appify.Business;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
 using appify.Business.Contract;
 using appify.DataAccess.Contract;
 using appify.models;
@@ -7,12 +13,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Hosting;
-using Newtonsoft.Json.Linq;
-using Razorpay.Api;
-using System.Collections.Generic;
 using static appify.models.NotificationType;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 

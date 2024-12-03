@@ -469,15 +469,15 @@ namespace appify.DataAccess
             return result;
 
         }
-        public List<DailyOrderSummary> GetDailyOrderSummary()
-        {
-            List<DailyOrderSummary> items = new List<DailyOrderSummary>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.DAILYORDERSUMMARY);
-            items = DataTableHelper.ConvertDataTable<DailyOrderSummary>(ds.Tables[0]);
+        //public List<DailyOrderSummary> GetDailyOrderSummary()
+        //{
+        //    List<DailyOrderSummary> items = new List<DailyOrderSummary>();
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.DAILYORDERSUMMARY);
+        //    items = DataTableHelper.ConvertDataTable<DailyOrderSummary>(ds.Tables[0]);
 
-            return items;
+        //    return items;
 
-        }
+        //}
         public List<EmailConfig> GetAlertHeader()
         {
             List<EmailConfig> items = new List<EmailConfig>();

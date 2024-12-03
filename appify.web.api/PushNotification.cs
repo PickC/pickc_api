@@ -1,4 +1,11 @@
-﻿using FirebaseAdmin;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using appify.Business.Contract;
 using appify.models;
