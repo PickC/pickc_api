@@ -377,11 +377,15 @@ namespace appify.models
     {
         public Int64 OrderID { get; set; }
         public Int64 VendorID { get; set; }
+        public string VendorMobileNo { get; set; }
         public Int64 MemberID { get; set; }
+        public string MemberMobileNo { get; set; }
         public bool IsEmail { get; set; }
         public bool IsEmailOpps { get; set; }
         public bool IsSMS { get; set; }
         public bool IsPush { get; set; }
+        public string SkipNo { get; set; }
+        public bool IsSkipNo { get; set; }
     }
         public partial class CustomerOrder {
 

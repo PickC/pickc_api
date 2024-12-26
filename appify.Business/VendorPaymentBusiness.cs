@@ -16,7 +16,7 @@ namespace appify.Business
             this.repository = vendorPaymentRepository;
         }
 
-        public bool SaveVendorPayment(VendorPayment item)
+        public VendorPayment SaveVendorPayment(VendorPayment item)
         {
             return repository.SaveVendorPayment(item);
         }
@@ -42,7 +42,7 @@ namespace appify.Business
         { 
             return repository.UpdateReferenceNo(item);
         }
-        public decimal GetPaymentStatus(Int64 VendorID)
+        public VendorPayment GetPaymentStatus(Int64 VendorID)
         {
             return repository.GetPaymentStatus(VendorID);
         }

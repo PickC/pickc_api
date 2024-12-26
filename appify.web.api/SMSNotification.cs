@@ -5,9 +5,11 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.Business;
 using appify.Business.Contract;
 using appify.models;
 using FirebaseAdmin.Messaging;
+using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text;
 using static appify.models.NotificationType;
@@ -22,6 +24,7 @@ namespace appify.web.api
             string responseBody = "";
             try
             {
+                var chksmsbal = CheckBulkSMSBalance(notificationBusiness);
                 string MobileNo = string.Empty;
                 SMSNotificationModel notificationModel = new SMSNotificationModel();
                 //////SMSNotification Template
@@ -117,7 +120,79 @@ namespace appify.web.api
 
             return responseBody;
         }
+public static async Task<bool> CheckBulkSMSBalance(INotificationBusiness notificationBusiness)
+{
+    bool resultResponse = false;
+    string responseBody = "";
+    try
+    {
+        List<SMSConfig> SMSSettings = notificationBusiness.GetSMSConfig();
+        var userID = SMSSettings.Where(x => x.SettingKey == "SMSUSERID").FirstOrDefault().SettingValue.ToString();
+        var password = SMSSettings.Where(x => x.SettingKey == "SMSPASSWORD").FirstOrDefault().SettingValue.ToString();
 
+        using (var client = new HttpClient())
+        {
+            var BaseUri = new Uri(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:ckbal_url").Value);
+            var parameters = new Dictionary<string, string>();
+            parameters["userid"] = userID;
+            parameters["password"] = password;
+
+            var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+
+            if (response.IsSuccessStatusCode)
+            {
+                responseBody = await response.Content.ReadAsStringAsync();
+                var result = responseBody.Split(":");
+                if (result[1].ToString() != null || result[1].ToString() != "")
+                {
+                    long smscreditds = System.String.IsNullOrEmpty((string?)result[1].ToString()) ? 0 : Convert.ToInt64(result[1].ToString());
+
+                    if (smscreditds <= 50)
+                    {
+                        var items = false;
+                        ParamDownTimeAlert itemData = new ParamDownTimeAlert
+                        {
+                            Service = "BULKSMS",
+                            MemberID = 0,
+                            MemberType = 0,
+                            OrderID = 0,
+                            AppVersion = "1.1",
+                            AppName = "AppifyRetail API"
+                        };
+                        List<EmailConfig> serverDownAlert = notificationBusiness.GetAlertHeader();
+                        var ToOpps = serverDownAlert.Where(x => x.SettingKey == "ALERTTOOPPS").FirstOrDefault().SettingValue.ToString();
+                        var ToTech = serverDownAlert.Where(x => x.SettingKey == "ALERTTOTECH").FirstOrDefault().SettingValue.ToString();
+                        var IsActiveOpps = Convert.ToBoolean(serverDownAlert.Where(x => x.SettingKey == "IsActiveOpps").FirstOrDefault().SettingValue.ToString());
+                        var IsActiveTech = Convert.ToBoolean(serverDownAlert.Where(x => x.SettingKey == "IsActiveTech").FirstOrDefault().SettingValue.ToString());
+                        var IsSMSAlert = Convert.ToBoolean(serverDownAlert.Where(x => x.SettingKey == "SMSALERT").FirstOrDefault().SettingValue.ToString());
+                        var IsSMSEmail = Convert.ToBoolean(serverDownAlert.Where(x => x.SettingKey == "SMSALERTEMAIL").FirstOrDefault().SettingValue.ToString());
+                        ///// Here we have implemented the logic if IsSMSAlert is true and IsSMSAlertEmail is false then make it reverse and send one time email
+                        if (IsActiveOpps != false && IsSMSAlert != false && IsSMSEmail != true)
+                        {
+                            items = EmailNotification.SendEmailAlert(itemData, Convert.ToInt64(NotificationTemplateType.ServerDownAlert), ToOpps, notificationBusiness);
+                        }
+                        if (IsActiveTech != false && IsSMSAlert != false && IsSMSEmail != true)
+                        {
+                            items = EmailNotification.SendEmailAlert(itemData, Convert.ToInt64(NotificationTemplateType.ServerDownAlert), ToTech, notificationBusiness);
+                        }
+                        resultResponse = false;
+                        notificationBusiness.UpdateSMSAlert(false, true);
+                    }
+                    {
+                        resultResponse = true;
+                        notificationBusiness.UpdateSMSAlert(true, false);
+                    }
+                }
+
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        throw ex;
+    }
+    return resultResponse;
+}
         public static string SendSMSNotification(string MobileNo, string OTPCode, INotificationBusiness notificationBusiness)
         {
             string myURI = "https://api.bulksms.com/v1/messages";

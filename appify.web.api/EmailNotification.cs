@@ -27,7 +27,7 @@ namespace appify.web.api
             bool result = false;
             try
             {
-                string filename = file.FileName.ToString();
+
                 string fromMail = NotificationConfig.GMAIL_ID_FROM;
                 string fromPassword = NotificationConfig.GMAIL_PASSWORD_FROM;
 
@@ -45,6 +45,7 @@ namespace appify.web.api
                 }
                 if (file != null)
                 {
+                    string filename = file.FileName.ToString();
                     byte[] data;
                     using (var br = new BinaryReader(file.OpenReadStream()))
                         data = br.ReadBytes((int)file.OpenReadStream().Length);
@@ -424,9 +425,9 @@ namespace appify.web.api
                 //message.AlternateViews.Add(alternativeView);
 
 
-                //smtpClient.SendMailAsync(message);
+                smtpClient.SendMailAsync(message);
 
-                smtpClient.Send(message);
+                //smtpClient.Send(message);
                 result = true;
             }
             catch (Exception ex)
@@ -455,7 +456,9 @@ namespace appify.web.api
                 }
                 if (TemplateID == 1026) ////Server Down Alert
                 {
-                    mailbody = mailbody.Replace("{{api_name}}", ItemData.Service.ToString());
+                    mailbody = mailbody.Replace("{{api_name}}", ItemData.Service.ToString())
+                                        .Replace("{{app_name}}", ItemData.AppName.ToString())
+                                        .Replace("{{app_version}}", ItemData.AppVersion.ToString());
                 }
                 notifications.EmailBody = mailbody;
 
@@ -488,7 +491,8 @@ namespace appify.web.api
 
                 smtpClient.EnableSsl = true;
 
-                smtpClient.Send(message);
+                //smtpClient.Send(message);
+                smtpClient.SendMailAsync(message);
                 result = true;
             }
             catch (Exception ex)
