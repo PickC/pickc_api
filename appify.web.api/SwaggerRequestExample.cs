@@ -311,7 +311,7 @@ namespace appify.web.api
     {
         public string Service { get; set; }
         public Int64 MemberID {  get; set; }
-        public Int32 MemberTyoe {  get; set; }
+        public Int32 MemberType {  get; set; }
         public Int64 OrderID { get; set; }
         public string AppVersion {  get; set; }
         public string AppName {  get; set; }

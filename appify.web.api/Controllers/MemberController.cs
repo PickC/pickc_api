@@ -298,55 +298,58 @@ namespace appify.web.api.Controllers
                 Int64 UserID = item.UserID;
                 rm = new ResponseMessage();
                 var memberItem = this.memberBusiness.RegisterMember(item);
-                if (memberItem.UserID>0)
+                if (memberItem.UserID > 0)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "MEMBER REGISTRATION SUCCESSFUL!";
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
                     OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(0);
-                    if (UserID>0 && item.MemberType == 1000 && item.IsWelcomeEmail==false) //// Welcome email to Vendor
+                    if (orderUpdateDetail.SkipNo != item.MobileNo)
                     {
-                        if (orderUpdateDetail.IsEmail == true)
+                        if (UserID > 0 && item.MemberType == 1000 && item.IsWelcomeEmail == false) //// Welcome email to Vendor
                         {
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
-                            if (orderUpdateDetail.IsEmailOpps == true)
+                            if (orderUpdateDetail.IsEmail == true)
                             {
-                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), memberItem.UserID, 0, this.notificationBusiness);
+                                if (orderUpdateDetail.IsEmailOpps == true)
+                                {
+                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupOpps), memberItem.UserID, 0, this.notificationBusiness);
+                                }
+
                             }
+                            if (orderUpdateDetail.IsSMS == true)
+                            {
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.IsPush == true)
+                            {
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                            }
+                            this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
+                        }
 
-                        }
-                        if (orderUpdateDetail.IsSMS == true)
+                        if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
                         {
-                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                            if (orderUpdateDetail.IsEmail == true)
+                            {
+                                EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.IsSMS == true)
+                            {
+                                SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                            }
+                            if (orderUpdateDetail.IsPush == true)
+                            {
+                                PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
+                            }
+                            this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
                         }
-                        if (orderUpdateDetail.IsPush == true)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        }
-                        this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
+
+                        //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok));
+                        await Common.UpdateEventLogsNew("MEMBER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
                     }
-
-                    if (UserID > 0 && item.MemberType == 1001 && item.IsWelcomeEmail == false) //// Welcome email to Customer
-                    {
-                        if (orderUpdateDetail.IsEmail == true)
-                        {
-                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, this.notificationBusiness);
-                        }
-                        if (orderUpdateDetail.IsSMS == true)
-                        {
-                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignupCustomer), memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        }
-                        if (orderUpdateDetail.IsPush == true)
-                        {
-                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.SuccessfulSignup), 0, memberItem.UserID, 0, "<first_name>", this.notificationBusiness);
-                        }
-                        this.memberBusiness.UpdateWelcomeEmail(memberItem.UserID, true);
-                    }
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok));
-                    await Common.UpdateEventLogsNew("MEMBER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {

@@ -232,5 +232,46 @@ namespace appify.DataAccess
 
             return items;
         }
+        public List<EmailConfig> GetAlertHeader()
+        {
+            List<EmailConfig> items = new List<EmailConfig>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.EMAILSERVERALERT);
+            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
+
+            return items;
+        }
+        public bool UpdateSMSAlert(bool smsalert, bool smsalertemail)
+        {
+
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATESMSALERT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@SMSALert", smsalert);
+                        cmd.Parameters.AddWithValue("@SMSAlertEMail", smsalertemail);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+
+        }
     }
 }

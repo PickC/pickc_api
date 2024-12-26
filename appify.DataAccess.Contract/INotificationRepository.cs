@@ -30,5 +30,7 @@ namespace appify.DataAccess.Contract
         public SMSSystemConfigSetting GetSMSSystemConfig();
         public List<SMSConfig> GetSMSConfig();
         public List<EmailConfig> GetEmailConfig();
+        public List<EmailConfig> GetAlertHeader();
+        public bool UpdateSMSAlert(bool smsalert, bool smsalertemail);
     }
 }
