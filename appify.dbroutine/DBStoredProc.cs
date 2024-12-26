@@ -330,7 +330,7 @@ namespace appify.dbroutine
 
         public const string VENDORPAYMENTSTATUS = "[Billing].[usp_VendorPaymentStatus]";
         public const string UPDATEVENDORPAYMENTREFERENCENO = "[Billing].[usp_UpdateVendorPaymentReference]";
-        public const string LISTALLBYVENDOR = "[Billing].[usp_VendorPaymentStatus]";
+        public const string LISTALLBYVENDOR = "[Billing].[usp_PaymentListByVendor]";
 
         ///// Order Discount
         public const string SELECTORDERDISCOUNT = "[Operation].[usp_OrderDiscountSelect]";
@@ -340,5 +340,6 @@ namespace appify.dbroutine
         public const string SAVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountSave]";
         public const string REMOVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountDelete]";
         public const string GETORDERDISCOUNTSBYVENDOR = "[Operation].[usp_OrderDiscountByVendor]";
+        public const string UPDATESMSALERT = "[Utility].[usp_SMSAlertUpdate]";
     }
 }

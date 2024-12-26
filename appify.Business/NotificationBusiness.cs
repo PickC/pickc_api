@@ -87,5 +87,13 @@ namespace appify.Business
         {
             return repository.GetEmailConfig();
         }
+        public List<EmailConfig> GetAlertHeader()
+        {
+            return repository.GetAlertHeader();
+        }
+        public bool UpdateSMSAlert(bool smsalert, bool smsalertemail)
+        {
+            return repository.UpdateSMSAlert(smsalert, smsalertemail);
+        }
     }
 }

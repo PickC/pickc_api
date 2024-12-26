@@ -21,7 +21,7 @@ namespace appify.DataAccess
             this.configuration = configuration;
             this.appify_connectionstring = configuration["ConnectionStrings:appify.connectionstring"].ToString();
         }
-        public bool SaveVendorPayment(VendorPayment item)
+        public VendorPayment SaveVendorPayment(VendorPayment item)
         {
             var result = false;
             try
@@ -42,8 +42,18 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PaymentStatus", item.PaymentStatus);
                         cmd.Parameters.AddWithValue("@ReceiptNo", item.receipt);
                         cmd.Parameters.AddWithValue("@PaymentSignature", item.PaymentSignature);
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewPaymentID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+
+                        item.PaymentID = Convert.ToInt64(outPutParameter.Value);
 
                         con.Close();
                     }
@@ -54,7 +64,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return item;
         }
         public bool RemoveVendorPayment(Int64 PaymentID)
         {
@@ -107,11 +117,11 @@ namespace appify.DataAccess
 
             return payments;
         }
-        public decimal GetPaymentStatus(Int64 VendorID)
+        public VendorPayment GetPaymentStatus(Int64 VendorID)
         {
-            decimal item = new decimal();
+            VendorPayment item = new VendorPayment();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.VENDORPAYMENTSTATUS, VendorID);
-            item = Convert.ToDecimal(ds.Tables[0].Rows[0][0].ToString());
+            item = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]).FirstOrDefault();
 
             return item;
         }
@@ -126,6 +136,8 @@ namespace appify.DataAccess
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
+                        
+                        cmd.Parameters.AddWithValue("@PaymentID", item.PaymentID);
                         cmd.Parameters.AddWithValue("@VendorID", item.VendorID);
                         cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
                         cmd.Parameters.AddWithValue("@PaymentSignature", item.PaymentSignature);
@@ -143,10 +155,10 @@ namespace appify.DataAccess
 
             return result;
         }
-        public List<VendorPayment> ListByVendor(Int64 VendorID)
+        public List<VendorPayment> ListByVendor(Int64 VendorID) 
         {
             List<VendorPayment> payments = new List<VendorPayment>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.VENDORPAYMENTSTATUS, VendorID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLBYVENDOR, VendorID);
             payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
 
             return payments;
