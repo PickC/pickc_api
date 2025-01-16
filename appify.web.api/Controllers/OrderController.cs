@@ -690,7 +690,7 @@ namespace appify.web.api.Controllers
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
@@ -2646,7 +2646,7 @@ namespace appify.web.api.Controllers
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
                             }
-                            if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "UD" || orderTrackingUpdate.Status == "In Transit" && orderTrackingUpdate.StatusType == "UD") //// Shipped
+                            if (orderTrackingUpdate.Status == "In Transit" && orderTrackingUpdate.StatusType == "UD" && orderTrackingUpdate.Instructions== "Shipment picked up") //// Shipped
                             {
                                 if (orderUpdateDetail.VendorID != 0)
                                 {
@@ -2683,10 +2683,26 @@ namespace appify.web.api.Controllers
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
                             }
-                            //if (orderTrackingUpdate.Status == "In Transit" && orderTrackingUpdate.StatusType == "RT") //// - RTO INI
-                            //{
-
-                            //}
+                            if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "UD" && orderTrackingUpdate.Instructions == "Out for delivery") //// Out for Delivery
+                            {
+                                if (orderUpdateDetail.MemberID != 0)
+                                {
+                                    if (orderUpdateDetail.IsEmail == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
+                                    if (orderUpdateDetail.IsSMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                    if (orderUpdateDetail.IsPush == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                    //// In App Notification
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                }
+                            }
                             //if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "RT") //// Dispatched for RTO
                             //{
 

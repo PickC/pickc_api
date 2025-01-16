@@ -22,6 +22,7 @@ namespace appify.web.api
         public const string add = "SUCCESS_ADD";
         public const string remove = "SUCCESS_REMOVE";
         public const string invalid = "INVALID TRANSACTION";
+        public const string invalidCred = "INVALID CREDINTIALS";
     }
 
 
