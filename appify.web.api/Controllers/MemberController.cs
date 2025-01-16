@@ -1025,11 +1025,11 @@ namespace appify.web.api.Controllers
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "MEMBER DOES NOT EXIST!";
-                    rm.name = StatusName.invalid;
+                    rm.message = "Invalid Mobile No or Password!";
+                    rm.name = StatusName.invalidCred;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER DOES NOT EXIST", reqHeader, controllerURL, itemData, null, rm.message));
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Invalid MobileNo or Password!", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1037,7 +1037,7 @@ namespace appify.web.api.Controllers
             {
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
+                rm.name = StatusName.invalidCred;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }

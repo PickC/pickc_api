@@ -341,5 +341,16 @@ namespace appify.dbroutine
         public const string REMOVEORDERDISCOUNT = "[Operation].[usp_OrderDiscountDelete]";
         public const string GETORDERDISCOUNTSBYVENDOR = "[Operation].[usp_OrderDiscountByVendor]";
         public const string UPDATESMSALERT = "[Utility].[usp_SMSAlertUpdate]";
+
+
+        //////////// WebAdmin 
+        public const string DELETEUSER = "[Security].[usp_UserDelete]";
+        public const string LISTUSER = "[Security].[usp_UserList]";
+        public const string SAVEUSER = "[Security].[usp_UserSave]";
+        public const string SELECTUSER = "[Security].[usp_UserSelect]";
+        public const string LOGINUSER = "[Security].[usp_UserLogIn]";
+        public const string LOGOUTUSER = "[Security].[usp_UserLogOut]";
+        public const string UPDATEPASSWORDUSER = "[Security].[usp_UserUpdatePassword]";
+        public const string CHECKDUSER = "[Security].[usp_UserCheck]";
     }
 }

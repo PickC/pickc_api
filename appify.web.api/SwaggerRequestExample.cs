@@ -17,6 +17,10 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
+    public class ParamUserID
+    {
+        public Int32 userID { get; set; }
+    }
     public class ParamCategoryID
     {
         public long userID { get; set; }
@@ -124,6 +128,13 @@ namespace appify.web.api
         public string mobileNo { get; set; }
         public string password { get; set; }
         public Int64 parentID { get; set; }
+
+    }
+
+    public class ParamLogIn
+    {
+        public string emailID { get; set; }
+        public string password { get; set; }
 
     }
 

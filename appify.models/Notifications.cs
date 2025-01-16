@@ -138,7 +138,8 @@ namespace appify.models
             Feedbackorrating = 1014,//// Requested to Stop this message
             BackinStock = 1015,//// Requested to Stop this message
             OTP = 1016,//// Requested to Stop this message
-            SuccessfulSignupCustomer = 1017
+            SuccessfulSignupCustomer = 1017,
+            OrderDeclinedByVendor = 1020
         }
     }
 

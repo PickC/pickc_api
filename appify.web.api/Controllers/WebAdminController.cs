@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.Business;
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -12,6 +13,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using static appify.models.NotificationType;
 
 namespace appify.web.api.Controllers
 {
@@ -26,16 +28,554 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly IProductBusiness productBusiness;
         private readonly IMemberBusiness memberBusiness;
+        private readonly IWebAdminBusiness webAdminBusiness;
         private ResponseMessage rm;
 
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness)
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
             this.memberBusiness = memberBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.webAdminBusiness = webAdminBusiness;
 
         }
+
+        /// <summary>
+        /// Add/Update User.
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// NOTE : For a new / update User
+        /// 
+        ///     {
+        ///       "userID": 0,
+        ///       "userName": "Gurjeet",
+        ///       "password": "Singh",
+        ///       "userGroup": 1000,
+        ///       "userDesignation": 10,
+        ///       "employeeID": "ABC001",
+        ///       "icNo": "ICNO001",
+        ///       "emailID": "nkolweb@gmail.com",
+        ///       "contactNo": "9810722979",
+        ///       "isActive": true,
+        ///       "isAllowLogOn": true,
+        ///       "isOperational": true,
+        ///       "createdBy": "SuperAdmin",
+        ///       "createdOn": "2025-01-16T11:28:51.296Z",
+        ///       "modifiedBy": "SuperAdmin",
+        ///       "modifiedOn": "2025-01-16T11:28:51.296Z",
+        ///       "branchID": 1001,
+        ///       "otpNo": "9810722979",
+        ///       "isOTPSent": true,
+        ///       "otpSentDate": "2025-01-16T11:28:51.296Z",
+        ///       "isOTPReSent": true,
+        ///       "otpSentCount": 2,
+        ///       "isOTPVerified": true,
+        ///       "roleCode": "Role001"
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <param name="item"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created User Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+
+        // POST api/<MemberController>
+        [HttpPost, Route("Register")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> Register(appify.models.User item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                Int64 UserID = item.UserID;
+                rm = new ResponseMessage();
+                var memberItem = this.webAdminBusiness.RegisterUser(item);
+                if (memberItem.UserID > 0)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER REGISTRATION SUCCESSFUL!";
+                    rm.name = StatusName.ok;
+                    rm.data = memberItem;
+
+                        await Common.UpdateEventLogsNew("USER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO REGISTER USER";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("UNABLE TO REGISTER USER", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("USER REGISTRATION - ERROR", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Delete an User
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1000
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER DELETED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+
+        [HttpPost, Route("DeleteUser")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DeleteMember(ParamUserID itemData)
+        {
+            //dynamic data = jsondata;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.webAdminBusiness.RemoveUser(itemData.userID);
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER HAS BEEN SUCCESSFULLY DELETED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("USER DELETED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO DELET THE USER";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO DELETED USER", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("USER DELETE - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get a User
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1000
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH USER",
+        ///       "data": {
+        ///         "userID": 1000,
+        ///         "userName": "Gurjeet2",
+        ///         "password": "Singh2",
+        ///         "userGroup": 1000,
+        ///         "userDesignation": 10,
+        ///         "employeeID": "ABC001",
+        ///         "icNo": "ICNO001",
+        ///         "emailID": "nkolweb@gmail.com",
+        ///         "contactNo": "9810722979",
+        ///         "isActive": false,
+        ///         "isAllowLogOn": false,
+        ///         "isOperational": false,
+        ///         "createdBy": "SuperAdmin",
+        ///         "createdOn": "2025-01-16T11:39:00.57",
+        ///         "modifiedBy": "SuperAdmin",
+        ///         "modifiedOn": "2025-01-16T11:52:20.18",
+        ///         "branchID": 1001,
+        ///         "otpNo": "9810722979",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2025-01-16T11:28:51.297",
+        ///         "isOTPReSent": false,
+        ///         "otpSentCount": 20,
+        ///         "isOTPVerified": true,
+        ///         "roleCode": "Role0012"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost, Route("Get")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetMember(ParamUserID ItemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var user = this.webAdminBusiness.GetUser(ItemData.userID);
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH USER";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
+
+                    await Common.UpdateEventLogsNew("FETCH USER SUCCESSFULLY", reqHeader, controllerURL, ItemData, user, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, ItemData, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, ItemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Check a User
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": "nkolweb@gmail.com"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCHED USER DATA",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost, Route("Check")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> CheckUser(string userID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var user = this.webAdminBusiness.CheckUser(userID);
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH USER";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
+                    await Common.UpdateEventLogsNew("FETCHED USER DATA SUCCESSFULLY", reqHeader, controllerURL, userID, user, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCHED USER DATA - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("FETCHED USER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+        ///<summary>
+        /// USER LOGIN
+        /// </summary>
+        ///<remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "emailID": "rama@appi-fy.ai",
+        ///       "password": "Appify@123",
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "MEMBER DATA",
+        ///       "data": {
+        ///         "userID": 1937,
+        ///         "emailID": "rama@appi-fy.ai",
+        ///         "mobileNo": "9959625612",
+        ///         "password": "Appify@123",
+        ///         "firstName": "appify",
+        ///         "lastName": "kalyan",
+        ///         "memberType": 1000,
+        ///         "otp": "078862",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2024-09-19T16:40:11.967",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-09-19T16:40:12.643",
+        ///         "profilePhoto": "",
+        ///         "token": "CD9BF9EB-A940-4430-A7DA-D51B02CF4AD7",
+        ///         "platformType": 0,
+        ///         "parentID": 0,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": false,
+        ///         "isEnterprise": null,
+        ///         "isEcommerce": null,
+        ///         "isWelcomeEmail": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Login - SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response>
+        [HttpPost,Route("Login")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SignIn(ParamLogIn itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            try
+            {
+                rm = new ResponseMessage();
+                var returnData = this.webAdminBusiness.LogIn(itemData.emailID, itemData.password);
+                if (returnData != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "LOGIN DATA";
+                    rm.name = StatusName.ok;
+                    rm.data = returnData;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("WebLogIn - SUCCESSFULLY", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Invalid EmailID or Password!";
+                    rm.name = StatusName.invalidCred;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Invalid EmailID or Password!", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalidCred;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("WebLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Reset an User Password
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1860,
+        ///       "password": "Appify@123"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">PASSWORD RESET SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("ResetPassword")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ResetPassword(ParamMemberResetPassword itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                //dynamic data = jsondata;
+
+                rm = new ResponseMessage();
+                var user = this.webAdminBusiness.ResetPassword(itemData.userID, itemData.password);
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "PASSWORD RESET SUCCESSFULLY!";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PASSWORD RESET SUCCESSFULLY", reqHeader, controllerURL, itemData, user, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO RESET PASSWORD";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO RESET PASSWORD", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PASSWORD RESET - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Forgot User Password
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1860
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER",
+        ///       "data": {
+        ///         "userID": 1860,
+        ///         "emailID": "kalyan@appify.ai",
+        ///         "mobileNo": "6303467186",
+        ///         "password": "Appify@123",
+        ///         "firstName": "sai",
+        ///         "lastName": "Chow",
+        ///         "memberType": 1001,
+        ///         "otp": "637551",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2023-12-02T19:19:36.847",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-05-24T16:01:35.71",
+        ///         "profilePhoto": "",
+        ///         "token": "fw4Fw_AVjEOslW0-Ltv_bX:APA91bEw-ehnGhWHPpgxmu-CS-E9qlBtdQQHnj-xysD_h-///C  gh VQ_hSIMU6G3ceDjUJr_Hj25iHbgzhxd12fxd70791UCm6DI8fmTpAZ1Thg4xFHbp8gMh3cKiE6H_M9YbLxhBbjPV_3X",
+        ///         "platformType": 0,
+        ///         "parentID": 1833,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": true,
+        ///         "isEnterprise": false,
+        ///         "isEcommerce": false,
+        ///         "isWelcomeEmail": false
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpGet("ForgotPassword")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> ForgotPassword(string userID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var user = this.webAdminBusiness.GetUser(Convert.ToInt32(userID));
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH USER";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
+                    await Common.UpdateEventLogsNew("FETCH USER SUCCESSFULLY", reqHeader, controllerURL, userID, user, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
         /// <summary>
         /// FETCH PRODUCT LIST
         /// </summary>
