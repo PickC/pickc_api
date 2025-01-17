@@ -17,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 //Data Access services
 builder.Services.AddSingleton<IAddressRepository, AddressRepository>(); //
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();//
+builder.Services.AddSingleton<ICommonServicesRepository, CommonServicesRepository>();
 builder.Services.AddSingleton<IDiscountDetailRepository, DiscountDetailRepository>();//
 builder.Services.AddSingleton<IDiscountHeaderRepository, DiscountHeaderRepository>();//
 builder.Services.AddSingleton<IEventLogRepository, EventLogRepository>();//
@@ -37,6 +38,7 @@ builder.Services.AddSingleton<IProductPriceRepository, ProductPriceRepository>()
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();//
 builder.Services.AddSingleton<IThemeMasterRepository, ThemeMasterRepository>();//
 builder.Services.AddSingleton<IVendorPaymentRepository, VendorPaymentRepository>();//
+builder.Services.AddSingleton<IWebAdminRepository, WebAdminRepository>();
 
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
@@ -44,6 +46,7 @@ builder.Services.AddSingleton<IVendorPaymentRepository, VendorPaymentRepository>
 //Business services
 builder.Services.AddSingleton<IAddressBusiness, AddressBusiness>();//
 builder.Services.AddSingleton<ICustomerBusiness, CustomerBusiness>();//
+builder.Services.AddSingleton<ICommonServicesBusiness, CommonServicesBusiness>();
 builder.Services.AddSingleton<IDiscountDetailBusiness, DiscountDetailBusiness>();//
 builder.Services.AddSingleton<IDiscountHeaderBusiness, DiscountHeaderBusiness>();//
 builder.Services.AddSingleton<IEventLogBusiness, EventLogBusiness>();//
@@ -62,6 +65,7 @@ builder.Services.AddSingleton<IProductImageBusiness, ProductImageBusiness>();//
 builder.Services.AddSingleton<IProductPriceBusiness, ProductPriceBusiness>();//
 builder.Services.AddSingleton<IThemeMasterBusiness, ThemeMasterBusiness>();//
 builder.Services.AddSingleton<IVendorPaymentBusiness, VendorPaymentBusiness>();//
+builder.Services.AddSingleton<IWebAdminBusiness, WebAdminBusiness>();
 
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 
