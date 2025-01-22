@@ -10,6 +10,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -30,15 +31,15 @@ namespace appify.web.api.Controllers
         private readonly IMemberBusiness memberBusiness;
         private readonly IWebAdminBusiness webAdminBusiness;
         private ResponseMessage rm;
-
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness)
+        private readonly INotificationBusiness notificationBusiness;
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
             this.memberBusiness = memberBusiness;
             this.eventLogBusiness = eventLogBusiness;
             this.webAdminBusiness = webAdminBusiness;
-
+            this.notificationBusiness = notificationBusiness;
         }
 
         /// <summary>
@@ -52,10 +53,9 @@ namespace appify.web.api.Controllers
         ///       "userID": 0,
         ///       "userName": "Gurjeet",
         ///       "password": "Singh",
-        ///       "userGroup": 1000,
+        ///       "Department": 1000,
         ///       "userDesignation": 10,
         ///       "employeeID": "ABC001",
-        ///       "icNo": "ICNO001",
         ///       "emailID": "nkolweb@gmail.com",
         ///       "contactNo": "9810722979",
         ///       "isActive": true,
@@ -65,13 +65,6 @@ namespace appify.web.api.Controllers
         ///       "createdOn": "2025-01-16T11:28:51.296Z",
         ///       "modifiedBy": "SuperAdmin",
         ///       "modifiedOn": "2025-01-16T11:28:51.296Z",
-        ///       "branchID": 1001,
-        ///       "otpNo": "9810722979",
-        ///       "isOTPSent": true,
-        ///       "otpSentDate": "2025-01-16T11:28:51.296Z",
-        ///       "isOTPReSent": true,
-        ///       "otpSentCount": 2,
-        ///       "isOTPVerified": true,
         ///       "roleCode": "Role001"
         ///     }
         /// 
@@ -84,7 +77,7 @@ namespace appify.web.api.Controllers
 
 
         // POST api/<MemberController>
-        [HttpPost, Route("Register")]
+        [HttpPost, Route("User/Register")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> Register(appify.models.User item)
         {
@@ -127,7 +120,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Delete an User
+        /// Delete the User
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -142,7 +135,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
 
-        [HttpPost, Route("DeleteUser")]
+        [HttpPost, Route("User/DeleteUser")]
         [MapToApiVersion("1.0")]
         public IActionResult DeleteMember(ParamUserID itemData)
         {
@@ -185,7 +178,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Get a User
+        /// Get the User
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -202,29 +195,21 @@ namespace appify.web.api.Controllers
         ///       "message": "FETCH USER",
         ///       "data": {
         ///         "userID": 1000,
-        ///         "userName": "Gurjeet2",
-        ///         "password": "Singh2",
-        ///         "userGroup": 1000,
-        ///         "userDesignation": 10,
+        ///         "userName": "Gurjeet222",
+        ///         "password": "Singh222",
+        ///         "department": 1003,
+        ///         "userDesignation": 122,
         ///         "employeeID": "ABC001",
-        ///         "icNo": "ICNO001",
         ///         "emailID": "nkolweb@gmail.com",
-        ///         "contactNo": "9810722979",
+        ///         "contactNo": "981072297922",
         ///         "isActive": false,
-        ///         "isAllowLogOn": false,
+        ///         "isAllowLogOn": true,
         ///         "isOperational": false,
         ///         "createdBy": "SuperAdmin",
-        ///         "createdOn": "2025-01-16T11:39:00.57",
+        ///         "createdOn": "2025-01-20T10:34:24.76",
         ///         "modifiedBy": "SuperAdmin",
-        ///         "modifiedOn": "2025-01-16T11:52:20.18",
-        ///         "branchID": 1001,
-        ///         "otpNo": "9810722979",
-        ///         "isOTPSent": true,
-        ///         "otpSentDate": "2025-01-16T11:28:51.297",
-        ///         "isOTPReSent": false,
-        ///         "otpSentCount": 20,
-        ///         "isOTPVerified": true,
-        ///         "roleCode": "Role0012"
+        ///         "modifiedOn": "2025-01-20T10:36:47.663",
+        ///         "roleCode": "Role00222"
         ///       }
         ///     }
         /// 
@@ -234,7 +219,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         // GET api/<MemberController>/5
-        [HttpPost, Route("Get")]
+        [HttpPost, Route("User/Get")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetMember(ParamUserID ItemData)
         {
@@ -275,7 +260,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Check a User
+        /// Check the User if exists
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -299,7 +284,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         // GET api/<MemberController>/5
-        [HttpPost, Route("Check")]
+        [HttpPost, Route("User/Check")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> CheckUser(string userID)
         {
@@ -338,7 +323,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         ///<summary>
-        /// USER LOGIN
+        /// User Login
         /// </summary>
         ///<remarks>
         /// Sample request JSON :
@@ -353,32 +338,24 @@ namespace appify.web.api.Controllers
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
-        ///       "message": "MEMBER DATA",
+        ///       "message": "LOGIN DATA",
         ///       "data": {
-        ///         "userID": 1937,
-        ///         "emailID": "rama@appi-fy.ai",
-        ///         "mobileNo": "9959625612",
-        ///         "password": "Appify@123",
-        ///         "firstName": "appify",
-        ///         "lastName": "kalyan",
-        ///         "memberType": 1000,
-        ///         "otp": "078862",
-        ///         "isOTPSent": true,
-        ///         "otpSentDate": "2024-09-19T16:40:11.967",
-        ///         "isResendOTP": false,
-        ///         "isOTPVerified": true,
-        ///         "isEmailVerified": false,
+        ///         "userID": 1001,
+        ///         "userName": "Gurjeet2",
+        ///         "password": "Singh2",
+        ///         "department": 1002,
+        ///         "userDesignation": 12,
+        ///         "employeeID": "ABC001",
+        ///         "emailID": "nkolweb@gmail.com",
+        ///         "contactNo": "98107229792",
         ///         "isActive": true,
-        ///         "createdOn": "2024-09-19T16:40:12.643",
-        ///         "profilePhoto": "",
-        ///         "token": "CD9BF9EB-A940-4430-A7DA-D51B02CF4AD7",
-        ///         "platformType": 0,
-        ///         "parentID": 0,
-        ///         "isRegisteredByMobile": true,
-        ///         "isOnlinePaymentEnabled": false,
-        ///         "isEnterprise": null,
-        ///         "isEcommerce": null,
-        ///         "isWelcomeEmail": null
+        ///         "isAllowLogOn": true,
+        ///         "isOperational": true,
+        ///         "createdBy": "SuperAdmin",
+        ///         "createdOn": "2025-01-20T10:35:50.4",
+        ///         "modifiedBy": "SuperAdmin",
+        ///         "modifiedOn": "2025-01-20T10:35:50.4",
+        ///         "roleCode": "Role002"
         ///       }
         ///     }
         /// 
@@ -386,7 +363,7 @@ namespace appify.web.api.Controllers
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">Login - SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response>
-        [HttpPost,Route("Login")]
+        [HttpPost,Route("User/Login")]
         [MapToApiVersion("1.0")]
         public IActionResult SignIn(ParamLogIn itemData)
         {
@@ -429,14 +406,14 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Reset an User Password
+        /// Reset the User Password
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "userID": 1860,
-        ///       "password": "Appify@123"
+        ///       "emailID": "nkolweb@gmail.com",
+        ///       "password": "Singh2"
         ///     }
         /// 
         /// </remarks>
@@ -444,9 +421,9 @@ namespace appify.web.api.Controllers
         /// <response code="200">PASSWORD RESET SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost, Route("ResetPassword")]
+        [HttpPost, Route("User/ResetPassword")]
         [MapToApiVersion("1.0")]
-        public IActionResult ResetPassword(ParamMemberResetPassword itemData)
+        public IActionResult ResetPassword(ParamLogIn itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -455,7 +432,7 @@ namespace appify.web.api.Controllers
                 //dynamic data = jsondata;
 
                 rm = new ResponseMessage();
-                var user = this.webAdminBusiness.ResetPassword(itemData.userID, itemData.password);
+                var user = this.webAdminBusiness.ResetPassword(itemData.emailID, itemData.password);
                 if (user != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -488,13 +465,13 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Forgot User Password
+        /// Forgot User's Password
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "userID": 1860
+        ///       "EmailID": nkolweb@gmail.com
         ///     }
         ///     
         /// Sample response JSON :
@@ -537,23 +514,39 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         // GET api/<MemberController>/5
-        [HttpGet("ForgotPassword")]
+        [HttpPost, Route("User/ForgotPassword")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> ForgotPassword(string userID)
+        public async Task<IActionResult> ForgotPassword(string EmailID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var user = this.webAdminBusiness.GetUser(Convert.ToInt32(userID));
+                string mailbody = string.Empty;
+                EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.ForgotPassword));
+
+                Notifications notifications = new Notifications
+                {
+                    EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
+                    EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                    ToEmail = EmailID
+                };
+                string path = notifications.EmailTemplateURL;
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    mailbody = reader.ReadToEnd();
+                }
+                mailbody = mailbody.Replace("{{name}}", "Gurjeet");
+                notifications.EmailBody = mailbody;
+                var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
                 if (user != null)
                 {
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH USER";
+                    rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
                     rm.name = StatusName.ok;
                     rm.data = user;
-                    await Common.UpdateEventLogsNew("FETCH USER SUCCESSFULLY", reqHeader, controllerURL, userID, user, StatusName.ok, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -561,7 +554,7 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -571,7 +564,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
         }

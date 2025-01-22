@@ -501,5 +501,49 @@ namespace appify.web.api
             }
             return result;
         }
+
+        public static bool SendEmailCommon(Notifications notifications, INotificationBusiness notificationBusiness)
+        {
+            bool result = false;
+            try
+            {
+                List<EmailConfig> EmailSetting = notificationBusiness.GetEmailConfig();
+                var gmailFrom = EmailSetting.Where(x => x.SettingKey == "EMAILUSERID").FirstOrDefault().SettingValue.ToString();
+                var gmailPass = EmailSetting.Where(x => x.SettingKey == "EMAILPASSWORD").FirstOrDefault().SettingValue.ToString();
+                var gmailClient = EmailSetting.Where(x => x.SettingKey == "EMAILCLIENT").FirstOrDefault().SettingValue.ToString();
+                var gmailPort = EmailSetting.Where(x => x.SettingKey == "EMAILPORT").FirstOrDefault().SettingValue.ToString();
+
+                string fromMail = gmailFrom;
+                string fromPassword = gmailPass;
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(fromMail);
+                message.Subject = notifications.EmailSubject;
+                message.To.Add(new MailAddress(notifications.ToEmail));
+                message.Body = notifications.EmailBody;
+                message.IsBodyHtml = true;
+                message.SubjectEncoding = Encoding.UTF8;
+                message.BodyEncoding = Encoding.UTF8;
+
+                var smtpClient = new SmtpClient(gmailClient)
+                {
+                    Port = Convert.ToInt16(gmailPort),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Credentials = new NetworkCredential(fromMail, fromPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.EnableSsl = true;
+                //smtpClient.SendMailAsync(message);
+
+                smtpClient.Send(message);
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
     }
 }

@@ -106,7 +106,8 @@ namespace appify.models
             OrderDelayVendor=1023,
             OrderDelayCustomer=1024,
             OrderDelayOpps=1025,
-            ServerDownAlert=1026
+            ServerDownAlert=1026,
+            ForgotPassword=1027
             //RefundProcessed = 1012,
             //OrderReceived = 1013,
             //Feedbackorrating = 1014,
