@@ -47,10 +47,9 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@UserID", user.UserID);
                         cmd.Parameters.AddWithValue("@UserName", user.UserName);
                         cmd.Parameters.AddWithValue("@Password", user.Password);
-                        cmd.Parameters.AddWithValue("@UserGroup", user.UserGroup);
+                        cmd.Parameters.AddWithValue("@Department", user.Department);
                         cmd.Parameters.AddWithValue("@UserDesignation", user.UserDesignation);
                         cmd.Parameters.AddWithValue("@EmployeeID", user.EmployeeID);
-                        cmd.Parameters.AddWithValue("@ICNo", user.ICNo);
                         cmd.Parameters.AddWithValue("@EmailID", user.EmailID);
                         cmd.Parameters.AddWithValue("@ContactNo", user.ContactNo);
                         cmd.Parameters.AddWithValue("@IsActive", user.IsActive);
@@ -60,13 +59,6 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
                         cmd.Parameters.AddWithValue("@ModifiedBy", user.ModifiedBy);
                         cmd.Parameters.AddWithValue("@ModifiedOn", user.ModifiedOn);
-                        cmd.Parameters.AddWithValue("@BranchID", user.BranchID);
-                        cmd.Parameters.AddWithValue("@OTPNo", user.OTPNo);
-                        cmd.Parameters.AddWithValue("@IsOTPSent", user.IsOTPSent);
-                        cmd.Parameters.AddWithValue("@OTPSentDate", user.OTPSentDate);
-                        cmd.Parameters.AddWithValue("@IsOTPReSent", user.IsOTPReSent);
-                        cmd.Parameters.AddWithValue("@OTPSentCount", user.OTPSentCount);
-                        cmd.Parameters.AddWithValue("@IsOTPVerified", user.IsOTPVerified);
                         cmd.Parameters.AddWithValue("@RoleCode", user.RoleCode);
 
 
@@ -194,7 +186,7 @@ namespace appify.DataAccess
 
 
         }
-        public bool ResetPassword(long userID, string password)
+        public bool ResetPassword(string emailID, string password)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -202,11 +194,11 @@ namespace appify.DataAccess
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEPASSWORD))
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEPASSWORDUSER))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@UserID", userID);
+                        cmd.Parameters.AddWithValue("@EmailID", emailID);
                         cmd.Parameters.AddWithValue("@Password", password);
 
                         con.Open();

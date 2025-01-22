@@ -32,9 +32,9 @@ namespace appify.Business
         {
             return repository.CheckUser(userID);
         }
-        public bool ResetPassword(long userID, string password)
+        public bool ResetPassword(string emailID, string password)
         {
-            return repository.ResetPassword(userID, password);
+            return repository.ResetPassword(emailID, password);
         }
         public User LogIn(string emailID, string password)
         {
