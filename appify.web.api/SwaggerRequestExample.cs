@@ -335,4 +335,16 @@ namespace appify.web.api
         public string razorpayOrderId { get; set; }
         public string razorpaySignature {  get; set; }
     }
+
+    public class ParamPageView
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+
+    public class ParamRole {
+        public string RoleCode { get; set; }
+
+    }
+
 }

@@ -17,4 +17,6 @@ namespace appify.DataAccess.Contract
         public User LogIn(string emailID, string password);
         public bool UserLogOut(long userID);
     }
+
+
 }
