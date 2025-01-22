@@ -40,7 +40,7 @@ namespace appify.models
 
     public partial class Roles
     {
-        public Int16 RoleCode { get; set; }
+        public string RoleCode { get; set; }
         public string RoleDescription { get; set; }
         public bool IsActive { get; set; }
         public Int16 CreatedBy { get; set; }

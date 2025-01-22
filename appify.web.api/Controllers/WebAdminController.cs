@@ -32,15 +32,16 @@ namespace appify.web.api.Controllers
         private readonly IWebAdminBusiness webAdminBusiness;
         private readonly IRolesBusiness rolesBusiness;
         private ResponseMessage rm;
+        private readonly INotificationBusiness notificationBusiness;
 
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness)
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
             this.memberBusiness = memberBusiness;
             this.eventLogBusiness = eventLogBusiness;
             this.webAdminBusiness = webAdminBusiness;
-
+            this.notificationBusiness = notificationBusiness;
         }
 
         /// <summary>
