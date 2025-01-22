@@ -13,7 +13,7 @@ namespace appify.Business.Contract
         public bool RemoveUser(Int32 UserID);
         public User GetUser(Int32 userID);
         public bool CheckUser(string userID);
-        public bool ResetPassword(long userID, string password);
+        public bool ResetPassword(string emailID, string password);
         public User LogIn(string emailID, string password);
         public bool UserLogOut(long userID);
     }

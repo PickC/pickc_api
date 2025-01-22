@@ -38,7 +38,7 @@ namespace appify.Business
             return repository.ListAll();
         }
 
-        public List<OrderDiscount> ListbyPageView(int pageNo, int rows)
+        public List<Roles> ListbyPageView(int pageNo, int rows)
         {
             return repository.ListbyPageView(pageNo, rows);
         }
