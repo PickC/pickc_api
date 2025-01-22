@@ -16,4 +16,6 @@ namespace appify.DataAccess.Contract
 
         public List<MemberTheme> ListAll();
     }
+
+
 }

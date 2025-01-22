@@ -352,5 +352,15 @@ namespace appify.dbroutine
         public const string LOGOUTUSER = "[Security].[usp_UserLogOut]";
         public const string UPDATEPASSWORDUSER = "[Security].[usp_UserUpdatePassword]";
         public const string CHECKDUSER = "[Security].[usp_UserCheck]";
+
+        public const string SELECTROLE  = "[Security].[usp_RolesSelect]";
+        public const string LISTROLE = "[Security].[usp_RolesList]";
+        public const string DELETEROLE = "[Security].[usp_RolesDelete]";
+        public const string SAVEROLE = "[Security].[usp_RolesSave]";
+        public const string PAGEVIEWLISTROLE = "[Security].[usp_RolesPageView]";
+        public const string ROWCOUNTROLE = "[Security].[usp_RolesRecordCount]";
+
+
+
     }
 }
