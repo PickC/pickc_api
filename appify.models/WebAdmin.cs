@@ -36,4 +36,17 @@ namespace appify.models
         public bool IsOTPVerified { get; set; }
         public string RoleCode { get; set; }
     }
+
+
+    public partial class Roles
+    {
+        public Int16 RoleCode { get; set; }
+        public string RoleDescription { get; set; }
+        public bool IsActive { get; set; }
+        public Int16 CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public Int16 ModifiedBy { get; set; }
+        public DateTime ModifiedOn { get; set; }
+
+    }
 }
