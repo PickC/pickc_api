@@ -21,6 +21,7 @@ namespace appify.models
         public string EmailID { get; set; }
         public string ContactNo { get; set; }
         public bool IsActive { get; set; }
+        public bool IsAccepted { get; set; }
         public bool IsAllowLogOn { get; set; }
         public bool IsOperational { get; set; }
         public string CreatedBy { get; set; }
@@ -48,5 +49,18 @@ namespace appify.models
         public Int16 ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
 
+    }
+    public partial class RolesDecativate
+    {
+        public string RoleCode { get; set; }
+        public Int16 ModifiedBy { get; set; }
+
+    }
+    public partial class RolesAccessType
+    {
+        public string LookupCategory {  get; set; }
+        public string LookupCode { get; set; }
+        public string LookupDescription { get; set; }
+        public string MappingCode { get; set; }
     }
 }

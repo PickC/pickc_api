@@ -168,6 +168,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IsAvailable", productmaster.IsAvailable);
                         cmd.Parameters.AddWithValue("@StockQty", productmaster.StockQty);
                         cmd.Parameters.AddWithValue("@HSNCode", productmaster.HSNCode);
+                        cmd.Parameters.AddWithValue("@SKU", productmaster.SKU);
                         //cmd.Parameters.Add(new SqlParameter("@NewProductID",SqlDbType.BigInt).Direction = ParameterDirection.Output);
 
 

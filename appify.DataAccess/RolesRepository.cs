@@ -125,5 +125,13 @@ namespace appify.DataAccess
 
             return item;
         }
+        public List<RolesAccessType> GetAccessType(string LookupCategory)
+        {
+            List<RolesAccessType> item = new List<RolesAccessType>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROLEACCESSTYPE, LookupCategory);
+            item = DataTableHelper.ConvertDataTable<RolesAccessType>(ds.Tables[0]);
+
+            return item;
+        }
     }
 }

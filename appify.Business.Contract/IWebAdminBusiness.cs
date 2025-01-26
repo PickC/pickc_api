@@ -12,6 +12,8 @@ namespace appify.Business.Contract
         public User RegisterUser(User user);
         public bool RemoveUser(Int32 UserID);
         public User GetUser(Int32 userID);
+        public Int64 GetUsersCount();
+        public List<User> ListbyPageView(int pageNo, int rows);
         public bool CheckUser(string userID);
         public bool ResetPassword(string emailID, string password);
         public User LogIn(string emailID, string password);
