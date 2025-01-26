@@ -91,6 +91,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@AppName", item.AppName);
                         cmd.Parameters.AddWithValue("@AppName1", item.AppName1);
                         cmd.Parameters.AddWithValue("@AppName2", item.AppName2);
+                        cmd.Parameters.AddWithValue("@ShortDescription", item.ShortDescription);
                         cmd.Parameters.AddWithValue("@Description", item.Description);
                         cmd.Parameters.AddWithValue("@Logo", item.Logo);
                         cmd.Parameters.AddWithValue("@PlayStoreID", item.PlayStoreID);

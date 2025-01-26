@@ -30,5 +30,6 @@ namespace appify.Business.Contract
         public List<EmailConfig> GetEmailConfig();
         public List<EmailConfig> GetAlertHeader();
         public bool UpdateSMSAlert(bool smsalert, bool smsalertemail);
+        public List<EmailUserHeader> GetUserDetails(string EmailID);
     }
 }

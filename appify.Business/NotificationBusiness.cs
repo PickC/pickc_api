@@ -95,5 +95,9 @@ namespace appify.Business
         {
             return repository.UpdateSMSAlert(smsalert, smsalertemail);
         }
+        public List<EmailUserHeader> GetUserDetails(string EmailID)
+        {
+            return repository.GetUserDetails(EmailID);
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace appify.models
         public DateTime? ModifiedOn { get; set; }
 
         public string HSNCode { get; set; }
+        public string SKU {  get; set; }
 
         public string? ImageName { get; set; }
 
@@ -86,7 +87,7 @@ namespace appify.models
         public bool? IsAvailable { get; set; }
 
         public string HSNCode { get; set; }
-
+        public string SKU { get; set; }
         public bool? IsNew { get; set; }
 
         public List<ProductPriceNew>? prices { get; set; }

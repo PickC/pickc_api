@@ -190,4 +190,10 @@ namespace appify.utility
             return password;
         }
     }
+    public class TokenObject
+    {
+
+        public string UserID { get; set; }
+
+    }
 }

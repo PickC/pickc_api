@@ -53,6 +53,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@EmailID", user.EmailID);
                         cmd.Parameters.AddWithValue("@ContactNo", user.ContactNo);
                         cmd.Parameters.AddWithValue("@IsActive", user.IsActive);
+                        cmd.Parameters.AddWithValue("@IsAccepted", user.IsAccepted);
                         cmd.Parameters.AddWithValue("@IsAllowLogOn", user.IsAllowLogOn);
                         cmd.Parameters.AddWithValue("@IsOperational", user.IsOperational);
                         cmd.Parameters.AddWithValue("@CreatedBy", user.CreatedBy);
@@ -128,6 +129,23 @@ namespace appify.DataAccess
             user = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]).FirstOrDefault();
 
             return user;
+        }
+        public long GetUsersCount()
+        {
+
+            Int64 item = new Int64();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTUSER);
+            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+
+            return item;
+        }
+        public List<User> ListbyPageView(int pageNo, int rows)
+        {
+            List<User> item = new List<User>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWLISTUSER, pageNo, rows);
+            item = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]);
+
+            return item;
         }
         public bool CheckUser(string userID)
         {

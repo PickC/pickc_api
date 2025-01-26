@@ -28,6 +28,14 @@ namespace appify.Business
         {
             return repository.GetUser(userID);
         }
+        public Int64 GetUsersCount()
+        {
+            return repository.GetUsersCount();
+        }
+        public List<User> ListbyPageView(int pageNo, int rows)
+        {
+            return repository.ListbyPageView(pageNo, rows);
+        }
         public bool CheckUser(string userID)
         {
             return repository.CheckUser(userID);
