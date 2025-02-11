@@ -119,11 +119,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
       "projectName": "appify.DataAccess.Contract",
-      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
+      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\obj\\",
+      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess.Contract\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -140,8 +140,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj"
             }
           }
         }

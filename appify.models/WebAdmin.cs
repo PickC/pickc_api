@@ -21,6 +21,7 @@ namespace appify.models
         public string EmailID { get; set; }
         public string ContactNo { get; set; }
         public bool IsActive { get; set; }
+        public bool IsAccepted { get; set; }
         public bool IsAllowLogOn { get; set; }
         public bool IsOperational { get; set; }
         public string CreatedBy { get; set; }
@@ -34,12 +35,13 @@ namespace appify.models
         //public bool IsOTPReSent { get; set; }
         //public Int16 OTPSentCount { get; set; }
         //public bool IsOTPVerified { get; set; }
-        public string RoleCode { get; set; }
+        public Int32 RoleID { get; set; }
     }
 
 
     public partial class Roles
     {
+        public Int32 RoleID { get; set; }
         public string RoleCode { get; set; }
         public string RoleDescription { get; set; }
         public bool IsActive { get; set; }
@@ -47,6 +49,32 @@ namespace appify.models
         public DateTime CreatedOn { get; set; }
         public Int16 ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
+
+    }
+    public partial class RolesDecativate
+    {
+        public string RoleCode { get; set; }
+        public Int16 ModifiedBy { get; set; }
+
+    }
+    public partial class RolesAccessType
+    {
+        public Int32 LookupID { get; set; }
+        public string LookupCategory {  get; set; }
+        public string LookupCode { get; set; }
+        public string LookupDescription { get; set; }
+        public string MappingCode { get; set; }
+    }
+    public partial class SellerList
+    {
+        public Int32 UserID { get; set; }
+        public string Logo { get; set; }
+        public string AppName { get; set; }
+        public DateTime RegDate { get; set; }
+        public string Name { get; set; }
+        public string City { get; set; }
+        public Int32 TotalOrders {  get; set; }
+        public string ContactNo { get; set; }
 
     }
 }

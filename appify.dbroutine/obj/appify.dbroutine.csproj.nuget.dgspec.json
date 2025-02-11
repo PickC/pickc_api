@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj": {}
+    "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj": {}
   },
   "projects": {
-    "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj": {
+    "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj",
+        "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj",
         "projectName": "appify.dbroutine",
-        "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj",
+        "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\obj\\",
+        "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",

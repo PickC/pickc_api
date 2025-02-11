@@ -76,7 +76,8 @@ namespace appify.web.api.Controllers
         ///          	"brand": "Polo",
         ///          	"price": 1429,
         ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
-        ///          	"isNew": false
+        ///          	"isNew": false,
+        ///          	"breadCrumb": "Clothing & Accessories>>Girls>>Unstitched Fabrics>>Trousers"
         ///    	    }
         ///	    ]
         /// 
