@@ -355,6 +355,8 @@ namespace appify.dbroutine
         public const string UPDATEPASSWORDUSER = "[Security].[usp_UserUpdatePassword]";
         public const string CHECKDUSER = "[Security].[usp_UserCheck]";
 
+        public const string LISTSELLER = "[Security].[usp_SellerAppList]";
+
         public const string SELECTROLE  = "[Security].[usp_RolesSelect]";
         public const string LISTROLE = "[Security].[usp_RolesList]";
         public const string DELETEROLE = "[Security].[usp_RolesDelete]";
@@ -364,5 +366,6 @@ namespace appify.dbroutine
         public const string ROLEACCESSTYPE = "[Config].[usp_LookupListByCategory]";
         public const string GETUSERDETAILS = "[Security].[usp_UserDetails]";
 
+        public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
     }
 }

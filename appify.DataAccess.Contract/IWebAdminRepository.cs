@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static appify.models.HomePageProductByCategory;
 
 namespace appify.DataAccess.Contract
 {
@@ -18,6 +19,8 @@ namespace appify.DataAccess.Contract
         public bool ResetPassword(string emailID, string password);
         public User LogIn(string emailID, string password);
         public bool UserLogOut(long userID);
+        public List<SellerList> GetSellerList();
+        public List<ProductMasterByVendor> GetProducts(long userID);
     }
 
 

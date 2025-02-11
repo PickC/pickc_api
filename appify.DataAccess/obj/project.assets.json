@@ -5304,11 +5304,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj",
+      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess\\appify.DataAccess.csproj",
       "projectName": "appify.DataAccess",
-      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\appify.DataAccess.csproj",
+      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess\\appify.DataAccess.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess\\obj\\",
+      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -5325,17 +5325,17 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.DataAccess.Contract\\appify.DataAccess.Contract.csproj"
             },
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.dbroutine\\appify.dbroutine.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.dbroutine\\appify.dbroutine.csproj"
             },
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj"
             },
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.utility\\appify.utility.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.utility\\appify.utility.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.utility\\appify.utility.csproj"
             }
           }
         }
