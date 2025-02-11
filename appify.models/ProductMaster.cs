@@ -44,8 +44,8 @@ namespace appify.models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public string HSNCode { get; set; }
-        public string SKU {  get; set; }
+        public string? HSNCode { get; set; }
+        public string? SKU {  get; set; }
 
         public string? ImageName { get; set; }
 
@@ -128,6 +128,7 @@ namespace appify.models
         public Int16? DiscountType { get; set; }
         public decimal? DiscountValue { get; set; }
         public string? CategoryName {  get; set; }
+        public string? BreadCrumb { get; set; }
 
     }
 
@@ -191,5 +192,30 @@ namespace appify.models
         public List<MemberProduct>? products { get; set; }
 
         //public List<ProductMaster>? productdetails { get; set; }
+        public partial class ProductMasterByVendor
+        {
+            public Int64 ProductID { get; set; }
+
+            public Int64 VendorID { get; set; }
+
+            public string ProductName { get; set; }
+
+            public Int32? Category { get; set; }
+
+            public string? Size { get; set; }
+
+            public string? Color { get; set; }
+
+            public string CategoryName { get; set; }
+
+            public bool IsActive { get; set; }
+
+            public Int32? StockQty { get; set; }
+
+            public string HSNCode { get; set; }
+
+            public string? ImageName { get; set; }
+
+        }
     }
 }

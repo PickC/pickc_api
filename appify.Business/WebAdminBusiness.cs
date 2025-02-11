@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static appify.models.HomePageProductByCategory;
 
 namespace appify.Business
 {
@@ -51,6 +52,14 @@ namespace appify.Business
         public bool UserLogOut(long userID)
         {
             return repository.UserLogOut(userID);
+        }
+        public List<SellerList> GetSellerList()
+        {
+            return repository.GetSellerList();
+        }
+        public List<ProductMasterByVendor> GetProducts(long userID)
+        {
+            return repository.GetProducts(userID);
         }
     }
 }

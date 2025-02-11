@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using IP2Location;
+using static appify.models.HomePageProductByCategory;
 
 namespace appify.DataAccess
 {
@@ -60,7 +61,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
                         cmd.Parameters.AddWithValue("@ModifiedBy", user.ModifiedBy);
                         cmd.Parameters.AddWithValue("@ModifiedOn", user.ModifiedOn);
-                        cmd.Parameters.AddWithValue("@RoleCode", user.RoleCode);
+                        cmd.Parameters.AddWithValue("@RoleID", user.RoleID);
 
 
                         //Add the output parameter to the command object
@@ -234,6 +235,22 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+        public List<SellerList> GetSellerList()
+        {
+            List<SellerList> seller = new List<SellerList>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSELLER);
+            seller = DataTableHelper.ConvertDataTable<SellerList>(ds.Tables[0]);
+
+            return seller;
+        }
+        public List<ProductMasterByVendor> GetProducts(long userID)
+        {
+            List<ProductMasterByVendor> items = new List<ProductMasterByVendor>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTMASTERNEW, userID);
+            items = DataTableHelper.ConvertDataTable<ProductMasterByVendor>(ds.Tables[0]);
+
+            return items;
         }
     }
 }

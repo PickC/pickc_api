@@ -127,11 +127,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj",
+      "projectUniqueName": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.Business.Contract\\appify.Business.Contract.csproj",
       "projectName": "appify.Business.Contract",
-      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\appify.Business.Contract.csproj",
+      "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.Business.Contract\\appify.Business.Contract.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.Business.Contract\\obj\\",
+      "outputPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.Business.Contract\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -148,8 +148,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj": {
-              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_20240401\\appify.models\\appify.models.csproj"
+            "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj": {
+              "projectPath": "C:\\DDrive\\Projects\\Dotnet\\appify_b2c\\appify.models\\appify.models.csproj"
             }
           }
         }
