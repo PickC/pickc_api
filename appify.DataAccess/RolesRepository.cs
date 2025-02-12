@@ -105,13 +105,26 @@ namespace appify.DataAccess
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
 
+                        cmd.Parameters.AddWithValue("@RoleID", item.RoleID);
                         cmd.Parameters.AddWithValue("@RoleCode", item.RoleCode);
                         cmd.Parameters.AddWithValue("@RoleDescription", item.RoleDescription);
                         cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
 
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewRoleID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.SmallInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+                            item.RoleID = Convert.ToInt32(outPutParameter.Value);
+                        else
+                            item.RoleID = 0;
 
                         con.Close();
                     }
@@ -122,6 +135,14 @@ namespace appify.DataAccess
             {
                 throw ex;
             }
+
+            return item;
+        }
+        public List<RolesAccessType> GetAccessType(string LookupCategory)
+        {
+            List<RolesAccessType> item = new List<RolesAccessType>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROLEACCESSTYPE, LookupCategory);
+            item = DataTableHelper.ConvertDataTable<RolesAccessType>(ds.Tables[0]);
 
             return item;
         }

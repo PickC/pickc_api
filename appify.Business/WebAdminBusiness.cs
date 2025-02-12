@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static appify.models.HomePageProductByCategory;
 
 namespace appify.Business
 {
@@ -28,6 +29,14 @@ namespace appify.Business
         {
             return repository.GetUser(userID);
         }
+        public Int64 GetUsersCount()
+        {
+            return repository.GetUsersCount();
+        }
+        public List<User> ListbyPageView(int pageNo, int rows)
+        {
+            return repository.ListbyPageView(pageNo, rows);
+        }
         public bool CheckUser(string userID)
         {
             return repository.CheckUser(userID);
@@ -43,6 +52,14 @@ namespace appify.Business
         public bool UserLogOut(long userID)
         {
             return repository.UserLogOut(userID);
+        }
+        public List<SellerList> GetSellerList()
+        {
+            return repository.GetSellerList();
+        }
+        public List<ProductMasterByVendor> GetProducts(long userID)
+        {
+            return repository.GetProducts(userID);
         }
     }
 }

@@ -64,6 +64,7 @@ namespace appify.web.api.Controllers
         ///       "createdOn": "2024-05-01T12:21:24.754Z",
         ///       "modifiedOn": "2024-05-01T12:21:24.754Z",
         ///       "hsnCode": "string",
+        ///       "SKU":"string",
         ///       "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_B58001A3-2429-486F-A781-///D    B8 3A60E8A33-4419-000004E3B3BF730E.jpg",
         ///       "isNew": true,
         ///       "prices": [

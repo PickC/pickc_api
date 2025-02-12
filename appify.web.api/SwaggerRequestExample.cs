@@ -137,7 +137,10 @@ namespace appify.web.api
         public string password { get; set; }
 
     }
-
+    public class ParamEmail
+    {
+        public string emailID { get; set; }
+    }
     public class ParamProduct
     {
         public long productID { get; set; }

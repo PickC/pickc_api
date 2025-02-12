@@ -534,9 +534,9 @@ namespace appify.web.api
                 };
 
                 smtpClient.EnableSsl = true;
-                //smtpClient.SendMailAsync(message);
+                smtpClient.SendMailAsync(message);
 
-                smtpClient.Send(message);
+                //smtpClient.Send(message);
                 result = true;
             }
             catch (Exception ex)

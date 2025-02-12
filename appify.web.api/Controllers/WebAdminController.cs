@@ -14,6 +14,8 @@ using FirebaseAdmin.Messaging;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Razorpay.Api;
+using static appify.models.HomePageProductByCategory;
 using static appify.models.NotificationType;
 
 namespace appify.web.api.Controllers
@@ -33,8 +35,7 @@ namespace appify.web.api.Controllers
         private readonly IRolesBusiness rolesBusiness;
         private ResponseMessage rm;
         private readonly INotificationBusiness notificationBusiness;
-
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness)
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness, IRolesBusiness rolesBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
@@ -42,6 +43,7 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
             this.webAdminBusiness = webAdminBusiness;
             this.notificationBusiness = notificationBusiness;
+            this.rolesBusiness = rolesBusiness;
         }
 
         /// <summary>
@@ -61,13 +63,14 @@ namespace appify.web.api.Controllers
         ///       "emailID": "nkolweb@gmail.com",
         ///       "contactNo": "9810722979",
         ///       "isActive": true,
+        ///       "isAccepted":false,
         ///       "isAllowLogOn": true,
         ///       "isOperational": true,
         ///       "createdBy": "SuperAdmin",
         ///       "createdOn": "2025-01-16T11:28:51.296Z",
         ///       "modifiedBy": "SuperAdmin",
         ///       "modifiedOn": "2025-01-16T11:28:51.296Z",
-        ///       "roleCode": "Role001"
+        ///       "roleID": 1000
         ///     }
         /// 
         /// 
@@ -97,7 +100,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
 
-                        await Common.UpdateEventLogsNew("USER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("USER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -205,13 +208,14 @@ namespace appify.web.api.Controllers
         ///         "emailID": "nkolweb@gmail.com",
         ///         "contactNo": "981072297922",
         ///         "isActive": false,
+        ///         "isAccepted":true,
         ///         "isAllowLogOn": true,
         ///         "isOperational": false,
         ///         "createdBy": "SuperAdmin",
         ///         "createdOn": "2025-01-20T10:34:24.76",
         ///         "modifiedBy": "SuperAdmin",
         ///         "modifiedOn": "2025-01-20T10:36:47.663",
-        ///         "roleCode": "Role00222"
+        ///         "roleID": 1000
         ///       }
         ///     }
         /// 
@@ -260,6 +264,150 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+        /// <summary>
+        /// Users RecordCount
+        /// </summary>
+        /// <remarks>   
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH USERS COUNT!",
+        ///       "data": 1
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("User/recordcount")]
+        [MapToApiVersion("1.0")]
+        public IActionResult UsersRecordCount()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.webAdminBusiness.GetUsersCount();
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH USERS COUNT!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// User List by PageView
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "pageNo": 1,
+        ///       "rows": 10
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES BY PAGE VIEW!",
+        ///       "data": [
+        ///         {
+        ///           "userID": 1000,
+        ///           "userName": "string",
+        ///           "password": "string",
+        ///           "department": 0,
+        ///           "userDesignation": 0,
+        ///           "employeeID": "string",
+        ///           "emailID": "string",
+        ///           "contactNo": "string",
+        ///           "isActive": false,
+        ///           "isAccepted": false,
+        ///           "isAllowLogOn": false,
+        ///           "isOperational": false,
+        ///           "createdBy": "string",
+        ///           "createdOn": "2025-01-20T17:42:55.19",
+        ///           "modifiedBy": "string",
+        ///           "modifiedOn": "2025-01-23T10:18:05.81",
+        ///           "roleID": 1000
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("User/pageview")]
+        [MapToApiVersion("1.0")]
+        public IActionResult UsersByPageView(ParamPageView itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.webAdminBusiness.ListbyPageView(itemData.PageNo, itemData.Rows);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH ROLES BY PAGE VIEW!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
 
         /// <summary>
         /// Check the User if exists
@@ -288,21 +436,21 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost, Route("User/Check")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CheckUser(string userID)
+        public async Task<IActionResult> CheckUser(ParamEmail itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var user = this.webAdminBusiness.CheckUser(userID);
+                var user = this.webAdminBusiness.CheckUser(itemData.emailID);
                 if (user != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH USER";
                     rm.name = StatusName.ok;
                     rm.data = user;
-                    await Common.UpdateEventLogsNew("FETCHED USER DATA SUCCESSFULLY", reqHeader, controllerURL, userID, user, StatusName.ok, this.eventLogBusiness);
+                    //await Common.UpdateEventLogsNew("FETCHED USER DATA SUCCESSFULLY", reqHeader, controllerURL, itemData, user, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -310,7 +458,7 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    await Common.UpdateEventLogsNew("FETCHED USER DATA - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                    //await Common.UpdateEventLogsNew("FETCHED USER DATA - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -320,7 +468,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                await Common.UpdateEventLogsNew("FETCHED USER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                //await Common.UpdateEventLogsNew("FETCHED USER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
         }
@@ -351,13 +499,14 @@ namespace appify.web.api.Controllers
         ///         "emailID": "nkolweb@gmail.com",
         ///         "contactNo": "98107229792",
         ///         "isActive": true,
+        ///         "isAccepted":false,
         ///         "isAllowLogOn": true,
         ///         "isOperational": true,
         ///         "createdBy": "SuperAdmin",
         ///         "createdOn": "2025-01-20T10:35:50.4",
         ///         "modifiedBy": "SuperAdmin",
         ///         "modifiedOn": "2025-01-20T10:35:50.4",
-        ///         "roleCode": "Role002"
+        ///         "roleID": 1000
         ///       }
         ///     }
         /// 
@@ -365,7 +514,7 @@ namespace appify.web.api.Controllers
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">Login - SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response>
-        [HttpPost,Route("User/Login")]
+        [HttpPost, Route("User/Login")]
         [MapToApiVersion("1.0")]
         public IActionResult SignIn(ParamLogIn itemData)
         {
@@ -467,13 +616,13 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Forgot User's Password
+        /// User's Activation
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "EmailID": nkolweb@gmail.com
+        ///       "EmailID": "nkolweb@gmail.com"
         ///     }
         ///     
         /// Sample response JSON :
@@ -481,33 +630,93 @@ namespace appify.web.api.Controllers
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH MEMBER",
-        ///       "data": {
-        ///         "userID": 1860,
-        ///         "emailID": "kalyan@appify.ai",
-        ///         "mobileNo": "6303467186",
-        ///         "password": "Appify@123",
-        ///         "firstName": "sai",
-        ///         "lastName": "Chow",
-        ///         "memberType": 1001,
-        ///         "otp": "637551",
-        ///         "isOTPSent": true,
-        ///         "otpSentDate": "2023-12-02T19:19:36.847",
-        ///         "isResendOTP": false,
-        ///         "isOTPVerified": true,
-        ///         "isEmailVerified": false,
-        ///         "isActive": true,
-        ///         "createdOn": "2024-05-24T16:01:35.71",
-        ///         "profilePhoto": "",
-        ///         "token": "fw4Fw_AVjEOslW0-Ltv_bX:APA91bEw-ehnGhWHPpgxmu-CS-E9qlBtdQQHnj-xysD_h-///C  gh VQ_hSIMU6G3ceDjUJr_Hj25iHbgzhxd12fxd70791UCm6DI8fmTpAZ1Thg4xFHbp8gMh3cKiE6H_M9YbLxhBbjPV_3X",
-        ///         "platformType": 0,
-        ///         "parentID": 1833,
-        ///         "isRegisteredByMobile": true,
-        ///         "isOnlinePaymentEnabled": true,
-        ///         "isEnterprise": false,
-        ///         "isEcommerce": false,
-        ///         "isWelcomeEmail": false
-        ///       }
+        ///       "message": "THE EMAIL HAS BEEN SENT SUCCESSFULLY",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost, Route("User/Activation")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> Activation(ParamEmail itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                string mailbody = string.Empty;
+                EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.UserActivation));
+                List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(itemData.emailID);
+
+                Notifications notifications = new Notifications
+                {
+                    EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
+                    EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                    ToEmail = itemData.emailID
+                };
+                string path = notifications.EmailTemplateURL;
+                using (StreamReader reader = new StreamReader(path))
+                {
+                    mailbody = reader.ReadToEnd();
+                }
+
+                mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
+                mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+
+
+                notifications.EmailBody = mailbody;
+                var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
+                    //await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Forgot User's Password
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "EmailID": "nkolweb@gmail.com"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "THE EMAIL HAS BEEN SENT SUCCESSFULLY",
+        ///       "data": true
         ///     }
         /// 
         /// </remarks>
@@ -518,7 +727,7 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost, Route("User/ForgotPassword")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> ForgotPassword(string EmailID)
+        public async Task<IActionResult> ForgotPassword(ParamEmail itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -527,19 +736,23 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 string mailbody = string.Empty;
                 EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.ForgotPassword));
+                List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(itemData.emailID);
 
                 Notifications notifications = new Notifications
                 {
                     EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
                     EmailTemplateURL = emailNotificationTemplate.TemplateURL,
-                    ToEmail = EmailID
+                    ToEmail = itemData.emailID
                 };
                 string path = notifications.EmailTemplateURL;
                 using (StreamReader reader = new StreamReader(path))
                 {
                     mailbody = reader.ReadToEnd();
                 }
-                mailbody = mailbody.Replace("{{name}}", "Gurjeet");
+
+                mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
+                mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+
                 notifications.EmailBody = mailbody;
                 var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
                 if (user != null)
@@ -548,7 +761,7 @@ namespace appify.web.api.Controllers
                     rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
                     rm.name = StatusName.ok;
                     rm.data = user;
-                    await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
+                    //await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -556,7 +769,7 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
+                    //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -566,7 +779,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
+                //await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
         }
@@ -804,7 +1017,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("vendordetails")]
         [MapToApiVersion("1.0")]
-        public IActionResult GetVendorDetails(ParamMemberUserID itemData )
+        public IActionResult GetVendorDetails(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -813,7 +1026,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 item = memberBusiness.GetMember(itemData.userID);
-                if (item!=null)
+                if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH VENDOR'S DETAIL";
@@ -887,7 +1100,39 @@ namespace appify.web.api.Controllers
         //    return Ok(rm);
 
         //}
-
+        /// <summary>
+        /// Get Role Details
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "roleCode": "ROLE_SUPER_ADMIN"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES ITEM!",
+        ///       "data": {
+        ///         "roleID": 1000,
+        ///         "roleCode": "ROLE_SUPER_ADMIN",
+        ///         "roleDescription": "Has unrestricted access to all system features, settings, and data. Responsible for managing other a",
+        ///         "isActive": false,
+        ///         "createdBy": 0,
+        ///         "createdOn": "2025-01-23T08:40:21.037",
+        ///         "modifiedBy": 0,
+        ///         "modifiedOn": "0001-01-01T00:00:00"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/get")]
         [MapToApiVersion("1.0")]
         public IActionResult getRole(ParamRole itemData) {
@@ -927,7 +1172,33 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Role List
+        /// </summary>
+        /// <remarks>  
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES ITEM!",
+        ///       "data": {
+        ///         "roleID": 1000,
+        ///         "roleCode": "ROLE_SUPER_ADMIN",
+        ///         "roleDescription": "Has unrestricted access to all system features, settings, and data. Responsible for managing other a",
+        ///         "isActive": false,
+        ///         "createdBy": 0,
+        ///         "createdOn": "2025-01-23T08:40:21.037",
+        ///         "modifiedBy": 0,
+        ///         "modifiedOn": "0001-01-01T00:00:00"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/list")]
         [MapToApiVersion("1.0")]
         public IActionResult ListRoles()
@@ -968,7 +1239,24 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Roles RecordCount
+        /// </summary>
+        /// <remarks>   
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES COUNT!",
+        ///       "data": 1
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/recordcount")]
         [MapToApiVersion("1.0")]
         public IActionResult RolesRecordCount()
@@ -1009,7 +1297,42 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Role List by PageView
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "pageNo": 0,
+        ///       "rows": 0
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES BY PAGE VIEW!",
+        ///       "data": [
+        ///         {
+        ///           "roleID": 1000,
+        ///           "roleCode": "ROLE_SUPER_ADMIN",
+        ///           "roleDescription": "Has unrestricted access to all system features, settings, and data. Responsible for managing other a",
+        ///           "isActive": false,
+        ///           "createdBy": 0,
+        ///           "createdOn": "2025-01-23T08:40:21.037",
+        ///           "modifiedBy": 0,
+        ///           "modifiedOn": "0001-01-01T00:00:00"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/pageview")]
         [MapToApiVersion("1.0")]
         public IActionResult RolesByPageView(ParamPageView itemData)
@@ -1019,7 +1342,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.ListbyPageView(itemData.PageNo,itemData.Rows);
+                var result = this.rolesBusiness.ListbyPageView(itemData.PageNo, itemData.Rows);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1050,7 +1373,46 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Add/Edit Roles
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "roleID":1000,
+        ///       "roleCode": "string",
+        ///       "roleDescription": "string",
+        ///       "isActive": true,
+        ///       "createdBy": 0,
+        ///       "createdOn": "2025-01-23T08:28:46.248Z",
+        ///       "modifiedBy": 0,
+        ///       "modifiedOn": "2025-01-23T08:28:46.248Z"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SAVE ROLES ITEM!",
+        ///       "data": {
+        ///         "roleID": "1000",
+        ///         "roleCode": "ROLE_SUPER_ADMIN",
+        ///         "roleDescription": "Has unrestricted access to all system features, settings, and data. Responsible for managing other admins and o  ve rseeing the ///entire platform.",
+        ///         "isActive": true,
+        ///         "createdBy": 0,
+        ///         "createdOn": "2025-01-23T08:39:51.511Z",
+        ///         "modifiedBy": 0,
+        ///         "modifiedOn": "2025-01-23T08:39:51.511Z"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/save")]
         [MapToApiVersion("1.0")]
         public IActionResult SaveRole(Roles itemData)
@@ -1091,25 +1453,47 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
+        /// <summary>
+        /// Remove Role's
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "roleCode": "string",
+        ///       "modifiedBy": 0
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "REMOVE ROLES ITEM!",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
         [HttpPost, Route("roles/remove")]
         [MapToApiVersion("1.0")]
-        public IActionResult DeleteRole(Roles itemData)
+        public IActionResult DeleteRole(RolesDecativate itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.Delete(itemData.RoleCode,itemData.ModifiedBy);
+                var result = this.rolesBusiness.Delete(itemData.RoleCode, itemData.ModifiedBy);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "REMOVE ROLES ITEM!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                 }
                 else
                 {
@@ -1117,8 +1501,6 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
             }
             catch (Exception ex)
@@ -1127,12 +1509,241 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
             return Ok(rm);
         }
 
+        /// <summary>
+        /// Get the User
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "category": "ROLES"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH USER",
+        ///       "data": [
+        ///         {
+        ///           "lookupCategory": "ROLES",
+        ///           "lookupCode": "ROLE_ADMIN",
+        ///           "lookupDescription": "Has access to most features, including managing users, content, and system settings, but with some restrictions compared to the Super Admin.",
+        ///           "mappingCode": ""
+        ///         },
+        ///         {
+        ///           "lookupCategory": "ROLES",
+        ///           "lookupCode": "ROLE_EDITOR",
+        ///           "lookupDescription": "Manages the creation, editing, and publishing of content, such as blog posts, pages, or articles.",
+        ///           "mappingCode": ""
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">GET MEMBER </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        //
+        [HttpPost, Route("roles/AccessType")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetAccessType(ParamLookupCategory itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var user = this.rolesBusiness.GetAccessType(itemData.category);
+                if (user != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH USER";
+                    rm.name = StatusName.ok;
+                    rm.data = user;
 
+                    //await Common.UpdateEventLogsNew("FETCH USER SUCCESSFULLY", reqHeader, controllerURL, LookupCategory, user, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, LookupCategory, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, LookupCategory, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get Categories List By VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "VendorID": 1060
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///      "statusCode": 200,
+        ///      "name": "SUCCESS_OK",
+        ///      "message": "FETCH PRODUCT LIST",
+        ///      "data": [
+        ///        {
+        ///          "productID": 2436,
+        ///          "vendorID": 1060,
+        ///          "productName": "jeans shirt",
+        ///          "category": 1392,
+        ///          "size": "M, L",
+        ///          "color": "blue",
+        ///          "categoryName": "Men",
+        ///          "isActive": true,
+        ///          "stockQty": 2,
+        ///          "hsnCode": "t5678",
+        ///          "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/1727160529988"
+        ///        }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCH CATEGORIES BY VENDORID!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("Product/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult List(ParamMemberUserID itemData)
+        {
+            //dynamic data = jsonData;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<ProductMasterByVendor> items = this.webAdminBusiness.GetProducts(itemData.userID);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Get Seller List.
+        /// </summary>
+        /// <remarks>
+        /// Sample Response JSON:
+        ///
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SELLER LIST HAS BEEN SUCCESSFULY FETCHED!",
+        ///       "data": [
+        ///         {
+        ///           "userID": 1044,
+        ///           "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/1722947813107",
+        ///           "appName": "dddd",
+        ///           "regDate": "2023-10-19T02:38:24.68",
+        ///           "name": "kusu ku  suma",
+        ///           "city": "Kondapur",
+        ///           "totalOrders": 7,
+        ///           "contactNo": "9701167951"
+        ///         }]
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the Seller List</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("Seller/List")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetSellerList()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<SellerList> items = this.webAdminBusiness.GetSellerList();
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SELLER LIST HAS BEEN SUCCESSFULY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+
+                    await Common.UpdateEventLogsNew("SELLER LIST HAS BEEN SUCCESSFULY FETCHED", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO FETCHED SELLER LIST";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("UNABLE TO FETCHED SELLER LIST", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("SELLER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
     }
 }

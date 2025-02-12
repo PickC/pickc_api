@@ -273,5 +273,13 @@ namespace appify.DataAccess
             return result;
 
         }
+        public List<EmailUserHeader> GetUserDetails(string EmailID)
+        {
+            List<EmailUserHeader> items = new List<EmailUserHeader>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETUSERDETAILS, EmailID);
+            items = DataTableHelper.ConvertDataTable<EmailUserHeader>(ds.Tables[0]);
+
+            return items;
+        }
     }
 }

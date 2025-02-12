@@ -102,7 +102,7 @@ namespace appify.models
         public string AppName { get; set; }
         public string? AppName1 { get; set; }
         public string? AppName2 { get; set; }
-
+        public string? ShortDescription { get; set; }
         public string? Description { get; set; }
 
         public string? Logo { get; set; }

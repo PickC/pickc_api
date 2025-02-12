@@ -348,10 +348,14 @@ namespace appify.dbroutine
         public const string LISTUSER = "[Security].[usp_UserList]";
         public const string SAVEUSER = "[Security].[usp_UserSave]";
         public const string SELECTUSER = "[Security].[usp_UserSelect]";
+        public const string ROWCOUNTUSER = "[Security].[usp_UsersRecordCount]";
+        public const string PAGEVIEWLISTUSER = "[Security].[usp_UsersPageView]";
         public const string LOGINUSER = "[Security].[usp_UserLogIn]";
         public const string LOGOUTUSER = "[Security].[usp_UserLogOut]";
         public const string UPDATEPASSWORDUSER = "[Security].[usp_UserUpdatePassword]";
         public const string CHECKDUSER = "[Security].[usp_UserCheck]";
+
+        public const string LISTSELLER = "[Security].[usp_SellerAppList]";
 
         public const string SELECTROLE  = "[Security].[usp_RolesSelect]";
         public const string LISTROLE = "[Security].[usp_RolesList]";
@@ -359,8 +363,9 @@ namespace appify.dbroutine
         public const string SAVEROLE = "[Security].[usp_RolesSave]";
         public const string PAGEVIEWLISTROLE = "[Security].[usp_RolesPageView]";
         public const string ROWCOUNTROLE = "[Security].[usp_RolesRecordCount]";
+        public const string ROLEACCESSTYPE = "[Config].[usp_LookupListByCategory]";
+        public const string GETUSERDETAILS = "[Security].[usp_UserDetails]";
 
-
-
+        public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
     }
 }

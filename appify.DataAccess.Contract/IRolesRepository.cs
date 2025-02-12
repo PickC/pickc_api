@@ -21,7 +21,7 @@ namespace appify.DataAccess.Contract
 
         public List<Roles> ListbyPageView(int pageNo, int rows);
 
-
+        public List<RolesAccessType> GetAccessType(string LookupCategory);
     }
 
 }

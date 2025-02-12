@@ -47,5 +47,9 @@ namespace appify.Business
         {
             return repository.Save(item);
         }
+        public List<RolesAccessType> GetAccessType(string LookupCategory)
+        {
+            return repository.GetAccessType(LookupCategory);
+        }
     }
 }

@@ -107,7 +107,8 @@ namespace appify.models
             OrderDelayCustomer=1024,
             OrderDelayOpps=1025,
             ServerDownAlert=1026,
-            ForgotPassword=1027
+            ForgotPassword=1027,
+            UserActivation = 1028
             //RefundProcessed = 1012,
             //OrderReceived = 1013,
             //Feedbackorrating = 1014,
@@ -207,5 +208,10 @@ namespace appify.models
     {
         public string SettingKey { get; set; }
         public string SettingValue { set; get; }
+    }
+    public class EmailUserHeader
+    {
+        public Int32 UserID { get; set; }
+        public string UserName { get; set; }
     }
 }
