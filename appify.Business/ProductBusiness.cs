@@ -29,9 +29,9 @@ namespace appify.Business
             this.imageRepository = imageRepository;
 
         }
-        public bool DeleteProduct(long productId)
+        public bool DeleteProduct(long productId, bool? IsActive)
         {
-            return repository.DeleteProduct(productId);
+            return repository.DeleteProduct(productId,IsActive);
         }
 
         public bool UpdateProductImagePrice(long productID)
