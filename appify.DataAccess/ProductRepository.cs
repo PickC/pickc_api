@@ -279,6 +279,7 @@ namespace appify.DataAccess
 
                         cmd.Parameters.AddWithValue("@UserID", vendorCategories.UserID);
                         cmd.Parameters.AddWithValue("@ParentCatID", vendorCategories.ParentCatID);
+                        cmd.Parameters.AddWithValue("@IsDefault", vendorCategories.IsDefault);
                         cmd.Parameters.AddWithValue("@IsActive", vendorCategories.IsActive);
 
                         con.Open();

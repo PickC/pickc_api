@@ -162,6 +162,7 @@ namespace appify.models
     {
         public long UserID { get; set; }
         public long ParentCatID { get; set; }
+        public bool IsDefault { get; set; }
         public bool IsActive { get; set; }
     }
     public partial class ProductCategories
