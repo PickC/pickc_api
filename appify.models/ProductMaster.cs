@@ -216,6 +216,8 @@ namespace appify.models
 
             public string? ImageName { get; set; }
 
+            public decimal? Price { get; set; }
+
         }
     }
 }

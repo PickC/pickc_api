@@ -11,7 +11,7 @@ namespace appify.DataAccess.Contract
     {
         public bool HasProduct(long productId);
         public ProductMaster SaveProduct(ProductMaster product);
-        public bool DeleteProduct(long productId);
+        public bool DeleteProduct(long productId, bool? IsActive);
 
         public ProductMaster GetProduct(long productId);
         public ProductMasterNew GetProductNew(long productId);

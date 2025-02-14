@@ -11,7 +11,7 @@ namespace appify.models
     }
     public partial class User
     {
-        public Int32 UserID { get; set; }
+        public short UserID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public Int16 Department { get; set; }
@@ -24,9 +24,9 @@ namespace appify.models
         public bool IsAccepted { get; set; }
         public bool IsAllowLogOn { get; set; }
         public bool IsOperational { get; set; }
-        public string CreatedBy { get; set; }
+        public Int16? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
-        public string ModifiedBy { get; set; }
+        public Int16? ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
         //public Int64 BranchID { get; set; }
         //public string OTPNo { get; set; }
@@ -36,6 +36,12 @@ namespace appify.models
         //public Int16 OTPSentCount { get; set; }
         //public bool IsOTPVerified { get; set; }
         public Int32 RoleID { get; set; }
+
+        public string? RoleCode { get; set; }
+        public string? RoleDescription { get; set; }
+        
+        public string? UserCreated { get; set; }
+        public string? ModifiedUser { get; set; }
     }
 
 

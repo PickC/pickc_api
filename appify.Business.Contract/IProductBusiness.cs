@@ -13,7 +13,7 @@ namespace appify.Business.Contract
         public ProductMaster SaveProduct(ProductMaster product);
         public ProductMaster SaveProduct(Product product);
 
-        public bool DeleteProduct(long productId);
+        public bool DeleteProduct(long productId,bool? IsActive);
 
         public ProductMaster GetProduct(long productId);
         public ProductMasterNew GetProductNew(long productId);
