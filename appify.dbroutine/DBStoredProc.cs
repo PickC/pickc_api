@@ -367,5 +367,20 @@ namespace appify.dbroutine
         public const string GETUSERDETAILS = "[Security].[usp_UserDetails]";
 
         public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
+        public const string LISTORDER = "[Operation].[usp_OrderListSelect]";
+
+        public const string SELECTORDERSBYORDERID = "[Operation].[usp_OrderHeaderItemNew]";
+
+        public const string SELECTSECURABLE= "[Security].[usp_SecurablesSelect]";
+        public const string LISTSECURABLE = "[Security].[usp_SecurablesList]";
+        public const string SAVESECURABLE = "[Security].[usp_SecurablesSave]";
+        public const string REMOVESECURABLE = "[Security].[usp_SecurablesDelete]";
+
+        public const string SELECTSECURABLEFUNCTION = "[Security].[usp_SecurableFunctionSelect]";
+        public const string LISTSECURABLEFUNCTION = "[Security].[usp_SecurableFunctionList]";
+        public const string LISTALLSECURABLEFUNCTION = "[Security].[usp_SecurableFunctionListAll]";
+        public const string SAVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionSave]";
+        public const string REMOVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionDelete]";
+
     }
 }

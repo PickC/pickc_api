@@ -12,10 +12,11 @@ namespace appify.Business.Contract
         public OrderHeader Save(Order item);
         public bool Delete(long orderID);
 
-        public Order Get(long orderID);
+        public Order Get(long orderID); 
         public List<CustomerOrder> List(long sellerID);
-
+        public List<OrderList> OrderList(long userID, short userType);
         public  CustomerOrder GetCustomerOrder(long orderID);
+        public CustomerOrderNew GetCustomerOrderNew(long orderID);
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows);
         public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks);
 
