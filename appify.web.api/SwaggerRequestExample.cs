@@ -145,6 +145,7 @@ namespace appify.web.api
     {
         public long productID { get; set; }
 
+        public bool? IsActive { get; set; }
     }
 
     public class ParamParent

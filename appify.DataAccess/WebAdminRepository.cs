@@ -75,7 +75,7 @@ namespace appify.DataAccess
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
                         if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
-                            user.UserID = Convert.ToInt32(outPutParameter.Value);
+                            user.UserID = Convert.ToInt16(outPutParameter.Value);
                         else
                             user.UserID =0;
                         con.Close();

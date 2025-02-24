@@ -24,7 +24,7 @@ namespace appify.DataAccess
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
-        public bool DeleteProduct(long productId)
+        public bool DeleteProduct(long productId,bool? IsActive)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -37,6 +37,7 @@ namespace appify.DataAccess
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@ProductID", productId);
+                        cmd.Parameters.AddWithValue("@IsActive", IsActive);
 
 
                         con.Open();

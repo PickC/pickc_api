@@ -259,7 +259,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = productBusiness.DeleteProduct(itemData.productID);
+                var result = productBusiness.DeleteProduct(itemData.productID,itemData.IsActive);
                 if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
