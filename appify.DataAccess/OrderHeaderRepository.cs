@@ -136,7 +136,14 @@ namespace appify.DataAccess
 
             return items;
         }
+        public CustomerOrderNew GetCustomerOrderNew(long orderID)
+        {
+            CustomerOrderNew items = new CustomerOrderNew();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERSBYORDERID, orderID);
+            items = DataTableHelper.ConvertDataTable<CustomerOrderNew>(ds.Tables[0]).FirstOrDefault();
 
+            return items;
+        }
         public List<CustomerOrder> List(long sellerID)
         {
             List<CustomerOrder> items = new List<CustomerOrder>();
@@ -145,7 +152,14 @@ namespace appify.DataAccess
 
             return items;
         }
+        public List<OrderList> OrderList(long userID, short userType)
+        {
+            List<OrderList> items = new List<OrderList>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDER, userID, userType);
+            items = DataTableHelper.ConvertDataTable<OrderList>(ds.Tables[0]);
 
+            return items;
+        }
 
         public List<DailyOrderSummary> GetDailyOrderSummary() {
             List<DailyOrderSummary> items = new List<DailyOrderSummary>();
