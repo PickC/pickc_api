@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Razorpay.Api;
+using System.Json;
 using static appify.models.HomePageProductByCategory;
 using static appify.models.NotificationType;
 
@@ -33,9 +34,10 @@ namespace appify.web.api.Controllers
         private readonly IMemberBusiness memberBusiness;
         private readonly IWebAdminBusiness webAdminBusiness;
         private readonly IRolesBusiness rolesBusiness;
+        private readonly ISecurablesBusiness securablesBusiness;
         private ResponseMessage rm;
         private readonly INotificationBusiness notificationBusiness;
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness, IRolesBusiness rolesBusiness)
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness, IRolesBusiness rolesBusiness, ISecurablesBusiness securablesBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
@@ -44,6 +46,7 @@ namespace appify.web.api.Controllers
             this.webAdminBusiness = webAdminBusiness;
             this.notificationBusiness = notificationBusiness;
             this.rolesBusiness = rolesBusiness;
+            this.securablesBusiness = securablesBusiness;
         }
 
         /// <summary>
@@ -730,45 +733,56 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> ForgotPassword(ParamEmail itemData)
         {
             var reqHeader = Request;
+            string mailbody = string.Empty;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                string mailbody = string.Empty;
-                EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.ForgotPassword));
                 List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(itemData.emailID);
-
-                Notifications notifications = new Notifications
+                if (getEmailUserHeader.Count > 0)
                 {
-                    EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
-                    EmailTemplateURL = emailNotificationTemplate.TemplateURL,
-                    ToEmail = itemData.emailID
-                };
-                string path = notifications.EmailTemplateURL;
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    mailbody = reader.ReadToEnd();
-                }
+                    EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.ForgotPassword));
 
-                mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
-                mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+                    Notifications notifications = new Notifications
+                    {
+                        EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
+                        EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                        ToEmail = itemData.emailID
+                    };
+                    string path = notifications.EmailTemplateURL;
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        mailbody = reader.ReadToEnd();
+                    }
 
-                notifications.EmailBody = mailbody;
-                var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
-                if (user != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
-                    rm.name = StatusName.ok;
-                    rm.data = user;
-                    //await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
+                    mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
+                    mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+
+                    notifications.EmailBody = mailbody;
+                    var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
+                    if (user != null)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
+                        rm.name = StatusName.ok;
+                        rm.data = user;
+                        //await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.ERROR;
+                        rm.message = "NO CONTENT";
+                        rm.name = StatusName.invalid;
+                        rm.data = null;
+                        //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
+                    }
                 }
                 else
                 {
-                    rm.statusCode = StatusCodes.ERROR;
+                    rm.statusCode = 200;
                     rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.name = StatusName.ok;
+                    rm.data = getEmailUserHeader;
                     //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -1744,6 +1758,649 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
 
+        }
+
+        /// <summary>
+        /// Save/Update WebPage
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 1010,
+        ///       "webPageLink": "https://appify-dashboard-green.vercel.app/sellers/1060/products?seller=Rk%20fashion",
+        ///       "accessLevel": 4118,
+        ///       "isActive": true,
+        ///       "createdOn": "2025-02-24T08:49:57.954Z",
+        ///       "modifiedOn": "2025-02-24T08:49:57.954Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "WEBPAGE HAS BEEN SUCCESSFULLY SAVED",
+        ///       "data": {
+        ///         "securableID": 1010,
+        ///         "webPageLink": "https://appify-dashboard-green.vercel.app/sellers/1060/products?seller=Rk%20fashion",
+        ///         "accessLevel": 4119,
+        ///         "isActive": false,
+        ///         "createdOn": "2025-02-24T08:49:57.954Z",
+        ///         "modifiedOn": "2025-02-24T08:49:57.954Z"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">SAVE/UPDATE WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("webpage/save")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SaveSecurables(Securables itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.Save(itemData);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "WEBPAGE HAS BEEN SUCCESSFULLY SAVED";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Remove the WebPage
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 1010
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "WEBPAGE HAS BEEN REMOVED!",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">REMOVE THE WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("webpage/remove")]
+        [MapToApiVersion("1.0")]
+        public IActionResult RemoveSecurables(ParamSecurableID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.Delete(itemData.SecurableID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "WEBPAGE HAS BEEN REMOVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get The WebPage
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 1010
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH WEBPAGE ITEM!",
+        ///       "data": {
+        ///         "securableID": 1010,
+        ///         "webPageLink": "https://appify-dashboard-green.vercel.app/sellers/1060/products?seller=Rk%20fashion",
+        ///         "accessLevel": 4119,
+        ///         "isActive": false,
+        ///         "createdOn": "2025-02-24T09:27:27.847",
+        ///         "modifiedOn": "2025-02-24T09:33:02.783"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET THE WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("webpage/get")]
+        [MapToApiVersion("1.0")]
+        public IActionResult getSecurables(ParamSecurableID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.Get(itemData.SecurableID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH WEBPAGE ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get List Of The WebPage
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH WEBPAGE LIST!",
+        ///       "data": [
+        ///         {
+        ///           "securableID": 1001,
+        ///           "webPageLink": "https://appi-fy.ai/dashboard",
+        ///           "accessLevel": 4118,
+        ///           "isActive": true,
+        ///           "createdOn": "2025-02-21T11:41:36.777",
+        ///           "modifiedOn": "2025-02-21T11:41:36.777"
+        ///         }],
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET LIST OF WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("webpage/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListSecurables()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.ListAll();
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH WEBPAGE LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Save/Update WebPage Function
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "functionID": 0,
+        ///       "securableID": 1010,
+        ///       "functionName": "View",
+        ///       "accessLevel": 4118,
+        ///       "createdOn": "2025-02-24T09:56:35.277Z",
+        ///       "modifiedOn": "2025-02-24T09:56:35.277Z",
+        ///       "isActive": true
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "WEBPAGE FUNCTION HAS BEEN SUCCESSFULLY SAVED",
+        ///       "data": {
+        ///         "functionID": 0,
+        ///         "securableID": 8,
+        ///         "functionName": "View",
+        ///         "accessLevel": 4118,
+        ///         "createdOn": "2025-02-24T09:56:35.277Z",
+        ///         "modifiedOn": "2025-02-24T09:56:35.277Z",
+        ///         "isActive": true
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">SAVE/UPDATE WEBPAGE FUNCTION</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("webpagefunction/save")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SaveSecurablesFunction(SecurablesFunction itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.SFSave(itemData);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "WEBPAGE FUNCTION HAS BEEN SUCCESSFULLY SAVED";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Remove the WebPage Function
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "functionID": 4
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "WEBPAGE FUNCTION HAS BEEN REMOVED!",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">REMOVE THE WEBPAGE FUNCTION</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("webpagefunction/remove")]
+        [MapToApiVersion("1.0")]
+        public IActionResult RemoveSecurablesFunction(ParamFunctionID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.SFDelete(itemData.FunctionID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "WEBPAGE FUNCTION HAS BEEN REMOVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get The WebPage Function
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "functionID": 8
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH WEBPAGE ITEM!",
+        ///       "data": {
+        ///         "functionID": 8,
+        ///         "securableID": 1010,
+        ///         "functionName": "View",
+        ///         "accessLevel": 4118,
+        ///         "createdOn": "2025-02-24T10:02:54.987",
+        ///         "modifiedOn": "0001-01-01T00:00:00",
+        ///         "isActive": false
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET THE WEBPAGE FUNCTION</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("webpagefunction/get")]
+        [MapToApiVersion("1.0")]
+        public IActionResult getSecurablesFunction(ParamFunctionID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.SFGet(itemData.FunctionID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH WEBPAGE ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString(); ;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get List Of The WebPage Function
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 1010
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES LIST!",
+        ///       "data": [
+        ///         {
+        ///           "functionID": 4,
+        ///           "securableID": 1002,
+        ///           "functionName": "View",
+        ///           "accessLevel": 4118,
+        ///           "createdOn": "2025-02-24T05:15:17.43",
+        ///           "modifiedOn": "2025-02-24T05:15:17.43",
+        ///           "isActive": true
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET LIST OF WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("webpagefunction/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListSecurablesFunction(ParamSecurableID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.SFList(itemData.SecurableID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH ROLES LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get List Of The WebPage Function
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ROLES LIST!",
+        ///       "data": [
+        ///         {
+        ///           "functionID": 1,
+        ///           "securableID": 1001,
+        ///           "functionName": "View",
+        ///           "accessLevel": 4118,
+        ///           "createdOn": "2025-02-24T05:15:17.43",
+        ///           "modifiedOn": "2025-02-24T05:15:17.43",
+        ///           "isActive": true
+        ///         }],
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET LIST OF WEBPAGE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("webpagefunction/listall")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListSecurablesAllFunction()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.securablesBusiness.SFListAll();
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH ROLES LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
         }
     }
 }

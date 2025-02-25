@@ -1127,6 +1127,117 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
+        /// Get an Order Item
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "orderID": 2274
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order",
+        ///       "data": {
+        ///         "items": [
+        ///           {
+        ///             "itemID": 1654,
+        ///             "quantity": 1,
+        ///             "unitPrice": 880,
+        ///             "sellingPrice": 880,
+        ///             "priceID": 5657,
+        ///             "size": "M",
+        ///             "price": 880,
+        ///             "weight": 250,
+        ///             "productDescription": "Men's Slim Fit Shirt with Vertical Stripes ",
+        ///             "hsnCode": "t56789",
+        ///             "color": "White and Grey ",
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698825832157.jpg"
+        ///           }
+        ///         ],
+        ///         "orderID": 2274,
+        ///         "orderNo": "OD10602502001",
+        ///         "orderDate": "2025-02-13T16:15:48.253",
+        ///         "addressID": 1592,
+        ///         "orderStatus": 3587,
+        ///         "orderAmount": 880,
+        ///         "discountAmount": 0,
+        ///         "taxAmount": 0,
+        ///         "totalAmount": 966.06,
+        ///         "remarks": "",
+        ///         "deliveryInstruction": "",
+        ///         "deliveryCost": 86.06,
+        ///         "firstName": "user",
+        ///         "lastName": "appify",
+        ///         "paymentType": 3703,
+        ///         "deliveredOn": null,
+        ///         "settlementStatus": 0,
+        ///         "settlementDate": "2025-02-20T08:47:49.57",
+        ///         "settlementAmount": 0,
+        ///         "reason": "",
+        ///         "deliveryChannel": 3922,
+        ///         "deliveryChannelDescription": "DELHIVERY",
+        ///         "shippingAddress": "sy11, we work, krishe emerald, Telangana, 500081",
+        ///         "currentRemarks": "",
+        ///         "currentDate": "2025-02-20T08:47:49.57"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Get an Order </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+
+        [HttpPost, Route("getitemnew")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetOrderNew(long orderID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.orderBusiness.GetCustomerOrderNew(orderID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
         /// Get Order For Delivery
         /// </summary>
         /// <remarks>
@@ -1377,49 +1488,125 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-    /// <summary>
-    /// Get a Summarylist
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///       "userID": 1864,
-    ///       "orderStatus": "CURRENT",
-    ///       "pageNo": 1,
-    ///       "rows": 2
-    ///     }
-    ///     
-    /// Sample response JSON :
-    /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "FETCH order LIST",
-    ///       "data": [
-    ///         {
-    ///           "orderID": 2013,
-    ///           "orderNo": "OD10602409038",
-    ///           "orderDate": "2024-09-26T12:48:02.047",
-    ///           "orderStatus": 3932,
-    ///           "orderAmount": 729
-    ///         },
-    ///         {
-    ///           "orderID": 2012,
-    ///           "orderNo": "OD10602409037",
-    ///           "orderDate": "2024-09-26T12:47:44.24",
-    ///           "orderStatus": 3932,
-    ///           "orderAmount": 599
-    ///         }
-    ///       ]
-    ///     }
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">FETCH order LIST </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
-    [HttpPost, Route("summarylist")]
+
+        /// <summary>
+        /// Get an Order List
+        /// </summary>
+        /// <remarks> 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order LIST",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 1000,
+        ///           "orderNo": "PO1473150202312150614",
+        ///           "orderStatus": 3735,
+        ///           "orderStatusDescription": null,
+        ///           "productID": 1217,
+        ///           "productDescription": "shirt",
+        ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701443047420.jpg"
+        ///         },
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH ORDER LIST SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("listall")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> ListAll(ParamMIDMType itemData)
+        {
+            //dynamic data = jsonData;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<OrderList> items = orderBusiness.OrderList(itemData.userID,itemData.userType);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("FETCH ORDER LIST - NO CONTENT", reqHeader, controllerURL, null, items, rm.message, this.eventLogBusiness);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH ORDER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get a Summarylist
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1864,
+        ///       "orderStatus": "CURRENT",
+        ///       "pageNo": 1,
+        ///       "rows": 2
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order LIST",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 2013,
+        ///           "orderNo": "OD10602409038",
+        ///           "orderDate": "2024-09-26T12:48:02.047",
+        ///           "orderStatus": 3932,
+        ///           "orderAmount": 729
+        ///         },
+        ///         {
+        ///           "orderID": 2012,
+        ///           "orderNo": "OD10602409037",
+        ///           "orderDate": "2024-09-26T12:47:44.24",
+        ///           "orderStatus": 3932,
+        ///           "orderAmount": 599
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH order LIST </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("summarylist")]
     [MapToApiVersion("1.0")]
     public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
     {

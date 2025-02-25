@@ -16,8 +16,9 @@ namespace appify.DataAccess.Contract
 
         public OrderHeader Get(short orderID);
         public List<CustomerOrder> List(long sellerID);
-
+        public List<OrderList> OrderList(long userID, short userType);
         public  CustomerOrder GetCustomerOrder(long orderID);
+        public CustomerOrderNew GetCustomerOrderNew(long orderID);
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows);
 
         public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks);

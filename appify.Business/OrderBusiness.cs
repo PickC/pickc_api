@@ -58,6 +58,18 @@ namespace appify.Business
             return orderItem;
             
         }
+        public CustomerOrderNew GetCustomerOrderNew(long orderID)
+        {
+            CustomerOrderNew orderItem = orderRepository.GetCustomerOrderNew(orderID);
+            List<OrderDetailNew> item = new List<OrderDetailNew>();
+            if (orderItem != null)
+            {
+                item = new List<OrderDetailNew>();
+                orderItem.items = orderDetailRepository.ListNew(orderID);
+            }
+
+            return orderItem;
+        }
 
         public OrderDetail GetItem(long orderID)
         {
@@ -90,7 +102,10 @@ namespace appify.Business
 
             return orders;
         }
-
+        public List<OrderList> OrderList(long userID, short userType)
+        {
+            return orderRepository.OrderList(userID, userType);
+        }
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
             List<CustomerOrderSummary> orders = orderRepository.CustomerSummaryList(sellerID, OrderStatus, PageNo, Rows);

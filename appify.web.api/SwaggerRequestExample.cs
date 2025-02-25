@@ -17,6 +17,12 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
+    public class ParamMIDMType
+    {
+        public long userID { get; set; }
+        public short userType {  get; set; }
+
+    }
     public class ParamUserID
     {
         public Int32 userID { get; set; }
@@ -203,7 +209,6 @@ namespace appify.web.api
         public string userID { get; set; }
 
     }
-
     public class ParamOrderStatus
     {
         public Int64 OrderID { get; set; }
@@ -350,5 +355,14 @@ namespace appify.web.api
         public string RoleCode { get; set; }
 
     }
+    public class ParamSecurableID
+    {
+        public short SecurableID { get; set; }
 
+    }
+
+    public class ParamFunctionID
+    {
+        public short FunctionID { get; set; }
+    }
 }
