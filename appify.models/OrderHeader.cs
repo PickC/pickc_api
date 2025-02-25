@@ -475,7 +475,7 @@ namespace appify.models
         public string LastName { get; set; }
         public short PaymentType { get; set; }
         public DateTime? DeliveredOn { get; set; }
-        public long SettlementStatus { get; set; }
+        public string SettlementStatus { get; set; }
         public DateTime? SettlementDate { get; set; }
         public decimal SettlementAmount { get; set; }
         public string Reason { get; set; }
