@@ -463,6 +463,7 @@ namespace appify.models
         public string OrderNo { get; set; }
         public DateTime OrderDate { get; set; }
         public long AddressID { get; set; }
+        public long VAddressID { get; set; }
         public Int16 OrderStatus { get; set; }
         public decimal OrderAmount { get; set; }
         public decimal DiscountAmount { get; set; }
@@ -475,7 +476,7 @@ namespace appify.models
         public string LastName { get; set; }
         public short PaymentType { get; set; }
         public DateTime? DeliveredOn { get; set; }
-        public long SettlementStatus { get; set; }
+        public string SettlementStatus { get; set; }
         public DateTime? SettlementDate { get; set; }
         public decimal SettlementAmount { get; set; }
         public string Reason { get; set; }
@@ -618,6 +619,7 @@ namespace appify.models
     {
         public int OrderID { get; set; }
         public string OrderNo { get; set; }
+        public DateTime OrderDate { get; set; }
         public Int32 OrderStatus { get; set; }
         public string OrderStatusDescription {  get; set; }
         public Int32 ProductID {  get; set; }
