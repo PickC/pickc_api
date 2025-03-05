@@ -20,6 +20,7 @@ namespace appify.DataAccess.Contract
         public User LogIn(string emailID, string password);
         public bool UserLogOut(long userID);
         public List<SellerList> GetSellerList();
+        public List<SellerOrderList> GetSellerOrderList();
         public List<ProductMasterByVendor> GetProducts(long userID);
     }
 

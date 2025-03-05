@@ -382,5 +382,7 @@ namespace appify.dbroutine
         public const string SAVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionSave]";
         public const string REMOVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionDelete]";
 
+        public const string SELLERORDERLIST = "[Operation].[usp_SellerOrderList]";
+
     }
 }

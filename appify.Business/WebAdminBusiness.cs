@@ -57,6 +57,10 @@ namespace appify.Business
         {
             return repository.GetSellerList();
         }
+        public List<SellerOrderList> GetSellerOrderList()
+        {
+            return repository.GetSellerOrderList();
+        }
         public List<ProductMasterByVendor> GetProducts(long userID)
         {
             return repository.GetProducts(userID);
