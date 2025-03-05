@@ -244,6 +244,14 @@ namespace appify.DataAccess
 
             return seller;
         }
+        public List<SellerOrderList> GetSellerOrderList()
+        {
+            List<SellerOrderList> seller = new List<SellerOrderList>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELLERORDERLIST);
+            seller = DataTableHelper.ConvertDataTable<SellerOrderList>(ds.Tables[0]);
+
+            return seller;
+        }
         public List<ProductMasterByVendor> GetProducts(long userID)
         {
             List<ProductMasterByVendor> items = new List<ProductMasterByVendor>();

@@ -1761,6 +1761,85 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
+        /// Get Orders Seller List.
+        /// </summary>
+        /// <remarks>
+        /// Sample Response JSON:
+        ///
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SELLER LIST HAS BEEN SUCCESSFULY FETCHED!",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 2364,
+        ///           "appName": "RK",
+        ///           "orderDate": "0001-01-01T00:00:00",
+        ///           "price": 966.06,
+        ///           "status": "Declined",
+        ///           "paymentMode": "CASH ON DELIVERY",
+        ///           "settlementStatus": "Processed"
+        ///         },
+        ///         {
+        ///           "orderID": 2363,
+        ///           "appName": "RK",
+        ///           "orderDate": "0001-01-01T00:00:00",
+        ///           "price": 918.86,
+        ///           "status": "Awaiting Payment",
+        ///           "paymentMode": "ONLINE",
+        ///           "settlementStatus": "Processed"
+        ///         }
+        ///            ]
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the Seller List</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+
+        [HttpPost, Route("Seller/OrderList")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetSellerOrderList()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<SellerOrderList> items = this.webAdminBusiness.GetSellerOrderList();
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SELLER LIST HAS BEEN SUCCESSFULY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+
+                    await Common.UpdateEventLogsNew("SELLER LIST HAS BEEN SUCCESSFULY FETCHED", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO FETCHED SELLER LIST";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("UNABLE TO FETCHED SELLER LIST", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("SELLER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
         /// Save/Update WebPage
         /// </summary>
         /// <remarks>

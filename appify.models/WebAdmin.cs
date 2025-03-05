@@ -83,6 +83,16 @@ namespace appify.models
         public string ContactNo { get; set; }
 
     }
+    public partial class SellerOrderList
+    {
+        public int OrderID { get; set; }
+        public string AppName { get; set; }
+        public DateTime OrderDate { get; set; }
+        public decimal Price { get; set; }
+        public string Status { get; set; }
+        public string PaymentMode { get; set; }
+        public string SettlementStatus { get; set; }
+    }
     public partial class Securables
     {
         public Int32 SecurableID { get; set; }
