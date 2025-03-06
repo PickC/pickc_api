@@ -86,6 +86,8 @@ namespace appify.models
     public partial class SellerOrderList
     {
         public int OrderID { get; set; }
+        public string OrderNo { get; set; }
+        public int VendorID { get; set; }
         public string AppName { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal Price { get; set; }
