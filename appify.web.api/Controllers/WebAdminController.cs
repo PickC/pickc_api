@@ -1771,24 +1771,28 @@ namespace appify.web.api.Controllers
         ///       "name": "SUCCESS_OK",
         ///       "message": "SELLER LIST HAS BEEN SUCCESSFULY FETCHED!",
         ///       "data": [
-        ///         {
-        ///           "orderID": 2364,
-        ///           "appName": "RK",
-        ///           "orderDate": "0001-01-01T00:00:00",
-        ///           "price": 966.06,
-        ///           "status": "Declined",
-        ///           "paymentMode": "CASH ON DELIVERY",
-        ///           "settlementStatus": "Processed"
-        ///         },
-        ///         {
-        ///           "orderID": 2363,
-        ///           "appName": "RK",
-        ///           "orderDate": "0001-01-01T00:00:00",
-        ///           "price": 918.86,
-        ///           "status": "Awaiting Payment",
-        ///           "paymentMode": "ONLINE",
-        ///           "settlementStatus": "Processed"
-        ///         }
+        ///             {
+        ///               "orderID": 2371,
+        ///               "orderNo": "OD10602503017",
+        ///               "vendorID": 1060,
+        ///               "appName": "RK",
+        ///               "orderDate": "0001-01-01T00:00:00",
+        ///               "price": 918.86,
+        ///               "status": "Awaiting Payment",
+        ///               "paymentMode": "ONLINE",
+        ///               "settlementStatus": "Processed"
+        ///             },
+        ///             {
+        ///               "orderID": 2370,
+        ///               "orderNo": "OD10602503016",
+        ///               "vendorID": 1060,
+        ///               "appName": "RK",
+        ///               "orderDate": "0001-01-01T00:00:00",
+        ///               "price": 9047.46,
+        ///               "status": "Order Placed",
+        ///               "paymentMode": "CASH ON DELIVERY",
+        ///               "settlementStatus": "Processed"
+        ///             }
         ///            ]
         ///     }
         /// 

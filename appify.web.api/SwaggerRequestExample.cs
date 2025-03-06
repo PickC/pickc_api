@@ -36,7 +36,7 @@ namespace appify.web.api
     }
     public class ParamMemberOrder : ParamMemberUserID
     {
-        public string OrderStatus { get; set; }
+        public string? OrderStatus { get; set; }
         public short PageNo { get; set; }
         public short Rows { get; set; }
     }
