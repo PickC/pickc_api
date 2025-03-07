@@ -365,4 +365,9 @@ namespace appify.web.api
     {
         public short FunctionID { get; set; }
     }
+    public class ParamFilter
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
 }

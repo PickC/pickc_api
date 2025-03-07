@@ -35,9 +35,10 @@ namespace appify.web.api.Controllers
         private readonly IWebAdminBusiness webAdminBusiness;
         private readonly IRolesBusiness rolesBusiness;
         private readonly ISecurablesBusiness securablesBusiness;
+        private readonly IAdminDashboardBusiness adminDashboardBusiness;
         private ResponseMessage rm;
         private readonly INotificationBusiness notificationBusiness;
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness, IRolesBusiness rolesBusiness, ISecurablesBusiness securablesBusiness)
+        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness, IRolesBusiness rolesBusiness, ISecurablesBusiness securablesBusiness, IAdminDashboardBusiness adminDashboardBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = product;
@@ -47,6 +48,7 @@ namespace appify.web.api.Controllers
             this.notificationBusiness = notificationBusiness;
             this.rolesBusiness = rolesBusiness;
             this.securablesBusiness = securablesBusiness;
+            this.adminDashboardBusiness = adminDashboardBusiness;
         }
 
         /// <summary>
@@ -2459,6 +2461,1060 @@ namespace appify.web.api.Controllers
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH ROLES LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Management Dashboard Summary
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MANAGEMENT DASHBOARD SUMMARY LIST!",
+        ///       "data": [
+        ///         {
+        ///           "TotalRevenue": "2344.02",
+        ///           "Percent": "10%"
+        ///         },
+        ///         {
+        ///           "TotalVendors": "119.00",
+        ///           "Percent": "5%"
+        ///         },
+        ///         {
+        ///         "TotalCustomers": "554.00",
+        ///           "Percent": "2%"
+        ///         },
+        ///         {
+        ///         "TotalProducts": "549.00",
+        ///           "Percent": "4%"
+        ///         },
+        ///         {
+        ///         "TotalOrders": "1006.00",
+        ///           "Percent": "5%"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Management Dashboard Summary</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("Management/dashboard/summary")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ManagementDashboardSummary(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<Dictionary<string, object>> dataList = new List<Dictionary<string, object>>();
+
+                var result = this.adminDashboardBusiness.ManagementDashboardSummary(itemData.StartDate, itemData.EndDate);
+                if (result.Any() != null)
+                {
+                    foreach (var summary in result)
+                    {
+                        Dictionary<string, object> itemlist = new Dictionary<string, object>();
+                        itemlist.Add(summary.MetricName, summary.MetricValue);
+                        itemlist.Add("Percent", summary.MetricPercentageValue);
+                        dataList.Add(itemlist);
+                    }
+                }
+                if (dataList != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH MANAGEMENT DASHBOARD SUMMARY LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = dataList;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = dataList;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Top Products
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD TOP PRODUCTS LIST!",
+        ///       "data": [
+        ///         {
+        ///           "productName": "Casual shirtt",
+        ///           "totalSales": 301
+        ///         },
+        ///         {
+        ///           "productName": "shirts ",
+        ///           "totalSales": 277
+        ///         },
+        ///         {
+        ///         "productName": " shirt with full sleeves ",
+        ///           "totalSales": 68
+        ///         },
+        ///         {
+        ///         "productName": "swet t shirt",
+        ///           "totalSales": 56
+        ///         },
+        ///         {
+        ///         "productName": " swet t shirt",
+        ///           "totalSales": 41
+        ///         },
+        ///         {
+        ///         "productName": "ankle fit jeans",
+        ///           "totalSales": 37
+        ///         },
+        ///         {
+        ///         "productName": "ankle length",
+        ///           "totalSales": 34
+        ///         },
+        ///         {
+        ///         "productName": "Cotton Shirt",
+        ///           "totalSales": 33
+        ///         },
+        ///         {
+        ///         "productName": "I AM BACK Men's Casual Wear Shirt ",
+        ///           "totalSales": 28
+        ///         },
+        ///         {
+        ///         "productName": "juzz twill RFD short",
+        ///           "totalSales": 28
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Top Products</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/topproducts")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardTopProducts(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardTopProducts(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD TOP PRODUCTS LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Top Vendors
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD TOP VENDORS LIST!",
+        ///       "data": [
+        ///         {
+        ///           "vendorName": "RK",
+        ///           "totalSales": 1154
+        ///         },
+        ///         {
+        ///           "vendorName": "Beast",
+        ///           "totalSales": 344
+        ///         },
+        ///         {
+        ///         "vendorName": "Beard Bro",
+        ///           "totalSales": 179
+        ///         },
+        ///         {
+        ///         "vendorName": "Tunix",
+        ///           "totalSales": 129
+        ///         },
+        ///         {
+        ///         "vendorName": "STYLE LEAD",
+        ///           "totalSales": 42
+        ///         },
+        ///         {
+        ///         "vendorName": "Appify",
+        ///           "totalSales": 25
+        ///         },
+        ///         {
+        ///         "vendorName": "asds१",
+        ///           "totalSales": 13
+        ///         },
+        ///         {
+        ///         "vendorName": "appi",
+        ///           "totalSales": 7
+        ///         },
+        ///         {
+        ///         "vendorName": "test",
+        ///           "totalSales": 1
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Top Vandors</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/topvendors")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardTopVendors(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardTopVendors(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD TOP VENDORS LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Top Orders By City
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD TOP ORDERS BY CITY LIST!",
+        ///       "data": [
+        ///         {
+        ///           "cityName": "Cyberabad",
+        ///           "totalSales": 1154
+        ///         },
+        ///         {
+        ///           "cityName": "Cuddalore",
+        ///           "totalSales": 346
+        ///         },
+        ///         {
+        ///         "cityName": "string",
+        ///           "totalSales": 179
+        ///         },
+        ///         {
+        ///         "cityName": "Kondapur",
+        ///           "totalSales": 142
+        ///         },
+        ///         {
+        ///         "cityName": "Karaikal",
+        ///           "totalSales": 71
+        ///         },
+        ///         {
+        ///         "cityName": "Hyderabad",
+        ///           "totalSales": 55
+        ///         },
+        ///         {
+        ///         "cityName": "Mugaiyur",
+        ///           "totalSales": 54
+        ///         },
+        ///         {
+        ///         "cityName": "Coimbatore",
+        ///           "totalSales": 17
+        ///         },
+        ///         {
+        ///         "cityName": "Sankarankovil",
+        ///           "totalSales": 8
+        ///         },
+        ///         {
+        ///         "cityName": "Madurai",
+        ///           "totalSales": 6
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Top Orders By City</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/topordersbycity")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardTopOrdersByCity(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardTopOrdersByCity(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD TOP ORDERS BY CITY LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Orders And Delivery Charges
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///         {
+        ///           "statusCode": 200,
+        ///           "name": "SUCCESS_OK",
+        ///           "message": "FETCH DASHBOARD ORDER AND DELIVERY CHARGES LIST!",
+        ///           "data": [
+        ///             {
+        ///               "vendorID": 1044,
+        ///               "appName": "asds१",
+        ///               "totalPrice": 72900,
+        ///               "totalDeliveryCharges": 1506.57,
+        ///               "grandTotal": 74406.57
+        ///             },
+        ///             {
+        ///               "vendorID": 1058,
+        ///               "appName": "Beard Bro",
+        ///               "totalPrice": 168370,
+        ///               "totalDeliveryCharges": 5865.4,
+        ///               "grandTotal": 174235.4
+        ///         },
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Orders and Delivery Charges</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/orderdeliverycharges")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardOrderDeliveryCharges(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardOrderDeliveryCharges(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD ORDER AND DELIVERY CHARGES LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Monthly Sales
+        /// </summary>
+        /// <remarks>
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD MONTHLY SALES!",
+        ///       "data": [
+        ///         {
+        ///           "name": "January",
+        ///           "totalSales": 2
+        ///         },
+        ///         {
+        ///           "name": "February",
+        ///           "totalSales": 35
+        ///         },
+        ///         {
+        ///         "name": "March",
+        ///           "totalSales": 9
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Monthly Sales</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/monthlysales")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardMonthlySales()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardMonthlySales();
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD MONTHLY SALES!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard On-Board Vendors
+        /// </summary>
+        /// <remarks>
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD MONTHLY ON BOARD VENDORS!",
+        ///       "data": [
+        ///         {
+        ///           "name": "January",
+        ///           "totalVendors": 3
+        ///         },
+        ///         {
+        ///           "name": "February",
+        ///           "totalVendors": 39
+        ///         },
+        ///         {
+        ///         "name": "March",
+        ///           "totalVendors": 8
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Monthly Sales</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/onboardvendors")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardOnBoardVendors()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardOnBoardVendors();
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD MONTHLY ON BOARD VENDORS!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Total Revenue
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD TOTAL REVENUE LIST!",
+        ///       "data": [
+        ///         {
+        ///           "vendorID": 1060,
+        ///           "appName": "RK",
+        ///           "totalCOD": 1112459.2,
+        ///           "totalOnline": 90856.19,
+        ///           "totalRevanue": 1203315.39
+        ///         },
+        ///         {
+        ///           "vendorID": 1058,
+        ///           "appName": "Beard Bro",
+        ///           "totalCOD": 172782,
+        ///           "totalOnline": 2180.1,
+        ///           "totalRevanue": 174962.1
+        ///         },
+        ///         {
+        ///         "vendorID": 1833,
+        ///           "appName": "Tunix",
+        ///           "totalCOD": 96663.74,
+        ///           "totalOnline": 74088.71,
+        ///           "totalRevanue": 170752.45
+        ///         },
+        ///         {
+        ///         "vendorID": 1044,
+        ///           "appName": "asds१",
+        ///           "totalCOD": 74406.57,
+        ///           "totalOnline": 0,
+        ///           "totalRevanue": 74406.57
+        ///         },
+        ///         {
+        ///         "vendorID": 1505,
+        ///           "appName": "STYLE LEAD",
+        ///           "totalCOD": 58565.18,
+        ///           "totalOnline": 3492.26,
+        ///           "totalRevanue": 62057.44
+        ///         },
+        ///         {
+        ///         "vendorID": 1684,
+        ///           "appName": "Beast",
+        ///           "totalCOD": 23680.98,
+        ///           "totalOnline": 1435.8,
+        ///           "totalRevanue": 25116.78
+        ///         },
+        ///         {
+        ///         "vendorID": 1804,
+        ///           "appName": "Appify",
+        ///           "totalCOD": 17759.94,
+        ///           "totalOnline": 883.55,
+        ///           "totalRevanue": 18643.49
+        ///         },
+        ///         {
+        ///         "vendorID": 1937,
+        ///           "appName": "appi",
+        ///           "totalCOD": 4481.77,
+        ///           "totalOnline": 0,
+        ///           "totalRevanue": 4481.77
+        ///         },
+        ///         {
+        ///         "vendorID": 1810,
+        ///           "appName": "test",
+        ///           "totalCOD": 1315.68,
+        ///           "totalOnline": 0,
+        ///           "totalRevanue": 1315.68
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Total Revenue</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/totalrevenue")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardTotalRevenue(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardTotalRevenue(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD TOTAL REVENUE LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Order Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH DASHBOARD TOTAL REVENUE LIST!",
+        ///       "data": [
+        ///         {
+        ///           "type": "Delivered",
+        ///           "total": 2344.02
+        ///         },
+        ///         {
+        ///           "type": "Pending",
+        ///           "total": 0
+        ///         },
+        ///         {
+        ///         "type": "Returned",
+        ///           "total": 916.82
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Order Status</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/orderstatus")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardOrderStatus(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardOrderStatus(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD ORDER STATUS";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Operations Dashboard Summary
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH OPERATION DASHBOARD SUMMARY!",
+        ///       "data": [
+        ///         {
+        ///           "TotalRevenue": "2344.02",
+        ///           "Percent": "10%"
+        ///         },
+        ///         {
+        ///           "TotalOrderProcessed": "2",
+        ///           "Percent": "5%"
+        ///         },
+        ///         {
+        ///         "OrderFullfillRate": "2",
+        ///           "Percent": "2%"
+        ///         },
+        ///         {
+        ///         "AvgProcessingTime": "110",
+        ///           "Percent": "4%"
+        ///         },
+        ///         {
+        ///         "PendingShipping": "277",
+        ///           "Percent": "5%"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Operation Dashboard Summary</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("Operations/dashboard/summary")]
+        [MapToApiVersion("1.0")]
+        public IActionResult OperationsDashboardSummary(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                List<Dictionary<string, object>> dataList = new List<Dictionary<string, object>>();
+
+                var result = this.adminDashboardBusiness.OperationsDashboardSummary(itemData.StartDate, itemData.EndDate);
+                if (result.Any() != null)
+                {
+                    foreach (var summary in result)
+                    {
+                        Dictionary<string, object> itemlist = new Dictionary<string, object>();
+                        itemlist.Add(summary.MetricName, summary.MetricValue);
+                        itemlist.Add("Percent", summary.MetricPercentageValue);
+                        dataList.Add(itemlist);
+                    }
+                }
+                if (dataList != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH OPERATION DASHBOARD SUMMARY!";
+                    rm.name = StatusName.ok;
+                    rm.data = dataList;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = dataList;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Dashboard Top Products Vendors
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "startDate": "2022-03-06T19:09:38.018Z",
+        ///       "endDate": "2025-03-06T19:09:38.018Z"
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///         {
+        ///           "statusCode": 200,
+        ///           "name": "SUCCESS_OK",
+        ///           "message": "FETCH DASHBOARD TOP PRODUCTS VENDORS",
+        ///           "data": [
+        ///             {
+        ///               "productID": 1031,
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1697709386207.jpg",
+        ///               "productName": "Multicolor Pure Georgette Gown with Fancy Lace Dup",
+        ///               "stockRemaining": 2
+        ///             },
+        ///             {
+        ///               "productID": 1061,
+        ///               "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698824046743.jpg",
+        ///               "productName": "Embroidered Plane Green Kurti",
+        ///               "stockRemaining": 20
+        ///          },
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Dashboard Top Products Vendors</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("dashboard/topvendorsproducts")]
+        [MapToApiVersion("1.0")]
+        public IActionResult DashboardTopVendorsProducts(ParamFilter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.DashboardTopVendorsProducts(itemData.StartDate, itemData.EndDate);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH DASHBOARD TOP PRODUCTS VENDORS";
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status

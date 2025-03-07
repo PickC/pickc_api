@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -114,5 +115,67 @@ namespace appify.models
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
         public bool IsActive { get; set; }
+    }
+    public partial class ManagementDashboardSummary
+    {
+        public string MetricName { get; set; }
+        public string MetricValue { get; set; }
+        public string MetricPercentage { get; set; }
+        public string MetricPercentageValue {  get; set; }
+
+    }
+
+    public partial class DashboardTopProducts
+    {
+        public string ProductName { get; set; }
+        public Int32 TotalSales { get; set; }
+    }
+    public partial class DashboardTopVendors
+    {
+        public string VendorName { get; set; }
+        public Int32 TotalSales { get; set; }
+    }
+    public partial class DashboardTopOrdersByCity
+    {
+        public string CityName { get; set; }
+        public Int32 TotalSales { get; set; }
+    }
+    public partial class  DashboardOrderDeliveryCharges
+    {
+        public long VendorID { get; set; }
+        public string AppName { get; set; }
+        public decimal TotalPrice {  get; set; }
+        public decimal TotalDeliveryCharges {  get; set; }
+        public decimal GrandTotal {  get; set; }
+    }
+    public partial class  DashboardMonthlySales
+    {
+        public string Name { get; set; }
+        public Int32 TotalSales { get; set; }
+    }
+    public partial class DashboardOnBoardVendors
+    {
+        public string Name { get; set; }
+        public Int32 TotalVendors { get; set; }
+    }
+    public partial class DashboardTotalRevenue
+    {
+        public long VendorID { get; set; }
+        public string AppName { get; set; }
+        public decimal TotalCOD { get; set; }
+        public decimal TotalOnline {  get; set; }
+        public decimal TotalRevenue { get; set; }
+    }
+    public partial class DashboardOrderStatus
+    {
+        public string Type { get; set; }
+        public decimal Total {  get; set; }
+    }
+    public partial class DashboardTopVendorsProducts
+    {
+        public long ProductID { get; set; }
+        public string ImageName { get; set; }
+        public string ProductName { get; set; }
+        public Int32 StockRemaining { get; set; }
     }
 }

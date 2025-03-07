@@ -384,5 +384,18 @@ namespace appify.dbroutine
 
         public const string SELLERORDERLIST = "[Operation].[usp_SellerOrderList]";
 
+
+        public const string LISTMANAGEMENTDASHBOARDSUMMARY = "[Operation].[usp_ManagementDashboardMetrics]";
+        public const string LISTDASHBOARDTOPPRODUCTS = "[Operation].[usp_DashboardTopProducts]";
+        public const string LISTDASHBOARDTOPVENDORS = "[Operation].[usp_DashboardTopVendors]";
+        public const string LISTDASHBOARDTOPORDERSBYCITY = "[Operation].[usp_DashboardTopOrderByCity]";
+        public const string LISTDASHBOARDTOPORDERSCHARGES = "[Operation].[usp_DashboardOrderDeliveryCharges]";
+        public const string LISTDASHBOARDTOTALREVENUE = "[Operation].[usp_DashboardTotalRevenue]";
+        public const string LISTDASHBOARDMONTHLYSALES= "[Operation].[usp_DashboardMonthlySales]";
+        public const string LISTDASHBOARDONBOARDVENDORS = "[Operation].[usp_DashboardOnBoardVendors]";
+        public const string LISTDASHBOARDORDERSTATUS = "[Operation].[usp_DashboardOrderStatus]";
+        public const string LISTOPERATIONDASHBOARDSUMMARY = "[Operation].[usp_OperationDashboardMetrics]";
+        public const string LISTDASHBOARDTOPVENDORSPRODUCTS= "[Operation].[usp_DashboardTopVendorsProducts]";
+
     }
 }

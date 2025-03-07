@@ -67,7 +67,7 @@ builder.Services.AddSingleton<IVendorPaymentRepository, VendorPaymentRepository>
 builder.Services.AddSingleton<IWebAdminRepository, WebAdminRepository>();
 builder.Services.AddSingleton<IRolesRepository, RolesRepository>();
 builder.Services.AddSingleton<ISecurablesRepository, SecurablesRepository>();
-
+builder.Services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
 
@@ -96,7 +96,7 @@ builder.Services.AddSingleton<IVendorPaymentBusiness, VendorPaymentBusiness>();/
 builder.Services.AddSingleton<IWebAdminBusiness, WebAdminBusiness>();
 builder.Services.AddSingleton<IRolesBusiness, RolesBusiness>();
 builder.Services.AddSingleton<ISecurablesBusiness, SecurablesBusiness>();
-
+builder.Services.AddSingleton<IAdminDashboardBusiness, AdminDashboardBusiness>();
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 
 
