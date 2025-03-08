@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Json" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\appify.Business.Contract\appify.Business.Contract.csproj" />
+    <ProjectReference Include="..\appify.DataAccess.Contract\appify.DataAccess.Contract.csproj" />
+    <ProjectReference Include="..\appify.models\appify.models.csproj" />
+    <ProjectReference Include="..\appify.utility\appify.utility.csproj" />
+  </ItemGroup>
+
+</Project>
