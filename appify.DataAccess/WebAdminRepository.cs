@@ -252,6 +252,39 @@ namespace appify.DataAccess
 
             return seller;
         }
+
+        public bool SettlementStatusUpdate(long OrderID, bool Status)
+        {
+
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SELLETMENTSTATUSUPDATE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@OrderID", OrderID);
+                        cmd.Parameters.AddWithValue("@Status", Status);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public List<ProductMasterByVendor> GetProducts(long userID)
         {
             List<ProductMasterByVendor> items = new List<ProductMasterByVendor>();

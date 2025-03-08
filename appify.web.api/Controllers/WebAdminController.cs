@@ -112,7 +112,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "UNABLE TO REGISTER USER";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = memberItem;
                     await Common.UpdateEventLogsNew("UNABLE TO REGISTER USER", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -122,7 +122,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("USER REGISTRATION - ERROR", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -181,7 +181,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("USER DELETE - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
@@ -254,7 +254,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = user;
                     await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, ItemData, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -264,7 +264,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, ItemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -311,7 +311,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -321,7 +321,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -397,7 +397,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -407,7 +407,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -462,7 +462,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = user;
                     //await Common.UpdateEventLogsNew("FETCHED USER DATA - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -472,7 +472,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //await Common.UpdateEventLogsNew("FETCHED USER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -544,7 +544,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "Invalid EmailID or Password!";
                     rm.name = StatusName.invalidCred;
-                    rm.data = null;
+                    rm.data = returnData;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Invalid EmailID or Password!", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -555,7 +555,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalidCred;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("WebLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
@@ -603,7 +603,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "UNABLE TO RESET PASSWORD";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = user;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO RESET PASSWORD", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -614,7 +614,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PASSWORD RESET - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
@@ -689,7 +689,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = user;
                     //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -699,7 +699,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -775,7 +775,7 @@ namespace appify.web.api.Controllers
                         rm.statusCode = StatusCodes.ERROR;
                         rm.message = "NO CONTENT";
                         rm.name = StatusName.invalid;
-                        rm.data = null;
+                        rm.data = user;
                         //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                     }
                 }
@@ -794,7 +794,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //await Common.UpdateEventLogsNew("EMAIL - ERROR", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -869,7 +869,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = items;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
                 }
@@ -882,7 +882,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
             return Ok(rm);
@@ -960,7 +960,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = items;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
                     await Common.UpdateEventLogsNew("FETCH VENDOR LIST - NO CONTENT", reqHeader, controllerURL, null, items, rm.message, this.eventLogBusiness);
@@ -974,7 +974,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, null, null, rm.message));
                 await Common.UpdateEventLogsNew("FETCH VENDOR LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
@@ -1070,7 +1070,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("VENDORDETAILS FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
@@ -1111,7 +1111,7 @@ namespace appify.web.api.Controllers
         //        rm.statusCode = StatusCodes.ERROR;
         //        rm.message = ex.Message.ToString();
         //        rm.name = StatusName.invalid;
-        //        rm.data = null;
+        //        rm.data = ex.Message.ToString();
         //    }
         //    return Ok(rm);
 
@@ -1172,7 +1172,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1182,7 +1182,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -1239,7 +1239,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1249,7 +1249,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -1297,7 +1297,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1307,7 +1307,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -1373,7 +1373,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1383,7 +1383,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -1453,7 +1453,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1463,7 +1463,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
 
@@ -1516,7 +1516,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = result;
                 }
             }
             catch (Exception ex)
@@ -1524,7 +1524,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
             }
 
             return Ok(rm);
@@ -1592,7 +1592,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = user;
                     //await Common.UpdateEventLogsNew("FETCH USER - NO CONTENT", reqHeader, controllerURL, LookupCategory, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -1602,7 +1602,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 //await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, LookupCategory, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -1673,7 +1673,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = items;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
@@ -1686,7 +1686,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
@@ -1745,7 +1745,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "UNABLE TO FETCHED SELLER LIST";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = items;
                     await Common.UpdateEventLogsNew("UNABLE TO FETCHED SELLER LIST", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -1755,7 +1755,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("SELLER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -1828,7 +1828,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "UNABLE TO FETCHED SELLER LIST";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = items;
                     await Common.UpdateEventLogsNew("UNABLE TO FETCHED SELLER LIST", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -1838,8 +1838,77 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("SELLER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Update Settlement Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "orderID": 1452,
+        ///       "status": false
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        ///
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SETTLEMENT STATUS HAS BEEN SUCCESSFULY UPDATED!",
+        ///       "data": true
+        ///     }
+        /// 
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Update Settlement Status</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("Seller/SettlementStatusUpdate")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> SellerSettlement(ParamSettlementStatus itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.webAdminBusiness.SettlementStatusUpdate(itemData.OrderID, itemData.Status);
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SETTLEMENT STATUS HAS BEEN SUCCESSFULY UPDATED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+
+                    await Common.UpdateEventLogsNew("SETTLEMENT STATUS HAS BEEN SUCCESSFULY UPDATED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO FETCHED SELLER LIST";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("UNABLE TO UPDATE SETTLEMENT STATUS", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("SETTLEMENT STATUS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
