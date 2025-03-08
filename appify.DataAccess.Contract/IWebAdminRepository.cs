@@ -21,6 +21,7 @@ namespace appify.DataAccess.Contract
         public bool UserLogOut(long userID);
         public List<SellerList> GetSellerList();
         public List<SellerOrderList> GetSellerOrderList();
+        public bool SettlementStatusUpdate(long OrderID, bool Status);
         public List<ProductMasterByVendor> GetProducts(long userID);
     }
 

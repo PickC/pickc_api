@@ -61,6 +61,10 @@ namespace appify.Business
         {
             return repository.GetSellerOrderList();
         }
+        public bool SettlementStatusUpdate(long OrderID, bool Status)
+        {
+            return repository.SettlementStatusUpdate(OrderID, Status);
+        }
         public List<ProductMasterByVendor> GetProducts(long userID)
         {
             return repository.GetProducts(userID);

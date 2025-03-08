@@ -217,7 +217,12 @@ namespace appify.web.api
 
     }
 
+    public class ParamSettlementStatus
+    {
+        public Int64 OrderID { get; set; }
+        public bool Status { get; set; }
 
+    }
     public class ParamOrderForPickup
     {
         public Int64 OrderID { get; set; }
