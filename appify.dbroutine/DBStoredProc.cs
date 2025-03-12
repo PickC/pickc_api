@@ -296,7 +296,11 @@ namespace appify.dbroutine
         public const string SAVEEVENTLOG = "[Audit].[usp_EventLogSave]";
         public const string SELECTEVENTLOG = "[Audit].[usp_EventLogSelect]";
 
+        
+        /// <summary>
         /// Notification History
+        /// </summary>
+
         public const string LISTNOTIFICATIONBYVENDOR = "[Utility].[usp_NotificationByVendor]";
         public const string LISTNOTIFICATIONBYCUSTOMER = "[Utility].[usp_NotificationByCustomer]";
 
@@ -343,7 +347,10 @@ namespace appify.dbroutine
         public const string UPDATESMSALERT = "[Utility].[usp_SMSAlertUpdate]";
 
 
-        //////////// WebAdmin 
+        /// <summary>
+        /// Web Admin User
+        /// </summary>
+
         public const string DELETEUSER = "[Security].[usp_UserDelete]";
         public const string LISTUSER = "[Security].[usp_UserList]";
         public const string SAVEUSER = "[Security].[usp_UserSave]";
@@ -357,19 +364,45 @@ namespace appify.dbroutine
 
         public const string LISTSELLER = "[Security].[usp_SellerAppList]";
 
-        public const string SELECTROLE  = "[Security].[usp_RolesSelect]";
+
+        /// <summary>
+        /// Roles
+        /// </summary>
+
+        public const string SELECTROLE = "[Security].[usp_RolesSelect]";
         public const string LISTROLE = "[Security].[usp_RolesList]";
         public const string DELETEROLE = "[Security].[usp_RolesDelete]";
         public const string SAVEROLE = "[Security].[usp_RolesSave]";
         public const string PAGEVIEWLISTROLE = "[Security].[usp_RolesPageView]";
         public const string ROWCOUNTROLE = "[Security].[usp_RolesRecordCount]";
+
+
+
+
+        /// <summary>
+        /// RoleRights
+        /// </summary>
+
+        public const string LISTROLERIGHT = "[Security].[usp_RoleRightsList]";
+        public const string SELECTROLERIGHT = "[Security].[usp_RoleRightsSelect]";
+        public const string SAVEROLERIGHT = "[Security].[usp_RoleRightsSave]";
+        public const string DELETEROLERIGHT = "[Security].[usp_RoleRightsDelete]";
+
+
+
+
         public const string ROLEACCESSTYPE = "[Config].[usp_LookupListByCategory]";
+        
         public const string GETUSERDETAILS = "[Security].[usp_UserDetails]";
 
         public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
         public const string LISTORDER = "[Operation].[usp_OrderListSelect]";
 
         public const string SELECTORDERSBYORDERID = "[Operation].[usp_OrderHeaderItemNew]";
+
+        /// <summary>
+        /// Securables
+        /// </summary>
 
         public const string SELECTSECURABLE= "[Security].[usp_SecurablesSelect]";
         public const string LISTSECURABLE = "[Security].[usp_SecurablesList]";
@@ -383,7 +416,12 @@ namespace appify.dbroutine
         public const string REMOVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionDelete]";
 
         public const string SELLERORDERLIST = "[Operation].[usp_SellerOrderList]";
-        public const string SELLETMENTSTATUSUPDATE = "[Operation].[usp_OrderSettlementStatusUpdate]";   
+        public const string SELLETMENTSTATUSUPDATE = "[Operation].[usp_OrderSettlementStatusUpdate]";
+
+
+        /// <summary>
+        /// Web Admin Dashboard
+        /// </summary>
 
         public const string LISTMANAGEMENTDASHBOARDSUMMARY = "[Operation].[usp_ManagementDashboardMetrics]";
         public const string LISTDASHBOARDTOPPRODUCTS = "[Operation].[usp_DashboardTopProducts]";
@@ -396,6 +434,27 @@ namespace appify.dbroutine
         public const string LISTDASHBOARDORDERSTATUS = "[Operation].[usp_DashboardOrderStatus]";
         public const string LISTOPERATIONDASHBOARDSUMMARY = "[Operation].[usp_OperationDashboardMetrics]";
         public const string LISTDASHBOARDTOPVENDORSPRODUCTS= "[Operation].[usp_DashboardTopVendorsProducts]";
+
+
+        /// <summary>
+        /// Category Parameter
+        /// </summary>
+        public const string SELECTCATEGORYPARAMETER = "[Master].[usp_CategoryParameterSelect]";
+        public const string LISTCATEGORYPARAMETER= "[Master].[usp_CategoryParameterList]";
+        public const string SAVECATEGORYPARAMETER= "[Master].[usp_CategoryParameterSave]";
+        public const string REMOVECATEGORYPARAMETER = "[Master].[usp_CategoryParameterDelete]";
+
+
+        /// <summary>
+        /// Parameter Type
+        /// </summary>
+        public const string SELECTPARAMETERTYPE = "[Master].[usp_ParameterTypeSelect]";
+        public const string LISTPARAMETERTYPE = "[Master].[usp_ParameterTypeList]";
+        public const string SAVEPARAMETERTYPE = "[Master].[usp_ParameterTypeSave]";
+        public const string REMOVEPARAMETERTYPE = "[Master].[usp_ParameterTypeDelete]";
+
+
+
 
     }
 }

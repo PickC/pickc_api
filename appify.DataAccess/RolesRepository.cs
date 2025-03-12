@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace appify.DataAccess
+namespace appify.DataAccessML
 {
     public  class RolesRepository : IRolesRepository
     {
