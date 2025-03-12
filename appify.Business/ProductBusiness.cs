@@ -146,9 +146,12 @@ namespace appify.Business
         {
             return repository.GetVendorCategories(VendorID);
         }
+
+
         public List<FeaturedCategories> GetFeaturedategories()
         {
             return repository.GetFeaturedategories();
         }
+
     }
 }

@@ -375,4 +375,22 @@ namespace appify.web.api
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
+
+
+    public class ParamRoleRights {
+        public short RoleID { get; set; }
+        public short SecurableID { get; set; }
+
+    }
+
+
+    public class ParamCategoryParameter
+    {
+        public short ParameterID { get; set; }
+        public short CategoryID { get; set; }
+
+    }
+
+
+
 }
