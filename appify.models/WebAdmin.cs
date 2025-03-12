@@ -40,10 +40,13 @@ namespace appify.models
 
         public string? RoleCode { get; set; }
         public string? RoleDescription { get; set; }
-        
+
         public string? UserCreated { get; set; }
         public string? ModifiedUser { get; set; }
     }
+
+
+
 
 
     public partial class Roles
@@ -67,7 +70,7 @@ namespace appify.models
     public partial class RolesAccessType
     {
         public Int32 LookupID { get; set; }
-        public string LookupCategory {  get; set; }
+        public string LookupCategory { get; set; }
         public string LookupCode { get; set; }
         public string LookupDescription { get; set; }
         public string MappingCode { get; set; }
@@ -80,7 +83,7 @@ namespace appify.models
         public DateTime RegDate { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
-        public Int32 TotalOrders {  get; set; }
+        public Int32 TotalOrders { get; set; }
         public string ContactNo { get; set; }
 
     }
@@ -94,89 +97,96 @@ namespace appify.models
         public decimal Price { get; set; }
         public string Status { get; set; }
         public string PaymentReferenceNo { get; set; }
+
         public string PaymentMode { get; set; }
         public string SettlementStatus { get; set; }
     }
-    public partial class Securables
-    {
-        public Int32 SecurableID { get; set; }
-        public string WebPageLink { get; set; }
-        public Int16 AccessLevel { get; set; }
-        public bool IsActive { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime ModifiedOn { get; set; }
-    }
 
-    public partial class  SecurablesFunction
-    {
-        public Int32 FunctionID { get; set; }
-        public Int32 SecurableID { get; set; }
-        public string FunctionName { get; set; }
-        public Int16 AccessLevel { get; set; }
-        public DateTime CreatedOn { get; set; }
-        public DateTime ModifiedOn { get; set; }
-        public bool IsActive { get; set; }
-    }
-    public partial class ManagementDashboardSummary
-    {
-        public string MetricName { get; set; }
-        public string MetricValue { get; set; }
-        public string MetricPercentage { get; set; }
-        public string MetricPercentageValue {  get; set; }
 
-    }
 
-    public partial class DashboardTopProducts
-    {
-        public string ProductName { get; set; }
-        public Int32 TotalSales { get; set; }
-    }
-    public partial class DashboardTopVendors
-    {
-        public string VendorName { get; set; }
-        public Int32 TotalSales { get; set; }
-    }
-    public partial class DashboardTopOrdersByCity
-    {
-        public string CityName { get; set; }
-        public Int32 TotalSales { get; set; }
-    }
-    public partial class  DashboardOrderDeliveryCharges
-    {
-        public long VendorID { get; set; }
-        public string AppName { get; set; }
-        public decimal TotalPrice {  get; set; }
-        public decimal TotalDeliveryCharges {  get; set; }
-        public decimal GrandTotal {  get; set; }
-    }
-    public partial class  DashboardMonthlySales
-    {
-        public string Name { get; set; }
-        public Int32 TotalSales { get; set; }
-    }
-    public partial class DashboardOnBoardVendors
-    {
-        public string Name { get; set; }
-        public Int32 TotalVendors { get; set; }
-    }
-    public partial class DashboardTotalRevenue
-    {
-        public long VendorID { get; set; }
-        public string AppName { get; set; }
-        public decimal TotalCOD { get; set; }
-        public decimal TotalOnline {  get; set; }
-        public decimal TotalRevenue { get; set; }
-    }
-    public partial class DashboardOrderStatus
-    {
-        public string Type { get; set; }
-        public decimal Total {  get; set; }
-    }
-    public partial class DashboardTopVendorsProducts
-    {
-        public long ProductID { get; set; }
-        public string ImageName { get; set; }
-        public string ProductName { get; set; }
-        public Int32 StockRemaining { get; set; }
-    }
+}
+public partial class Securables
+{
+    public Int32 SecurableID { get; set; }
+    public string PageName { get; set; }
+    public string PageLink { get; set; }
+    public int ParentID { get; set; } 
+}
+
+#region SecurablesFunction (OBOSOLETE)
+
+public partial class SecurablesFunction
+{
+    public Int32 FunctionID { get; set; }
+    public Int32 SecurableID { get; set; }
+    public string FunctionName { get; set; }
+    public Int16 AccessLevel { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime ModifiedOn { get; set; }
+    public bool IsActive { get; set; }
+}
+
+#endregion
+
+public partial class ManagementDashboardSummary
+{
+    public string MetricName { get; set; }
+    public string MetricValue { get; set; }
+    public string MetricPercentage { get; set; }
+    public string MetricPercentageValue { get; set; }
+
+}
+
+public partial class DashboardTopProducts
+{
+    public string ProductName { get; set; }
+    public Int32 TotalSales { get; set; }
+}
+public partial class DashboardTopVendors
+{
+    public string VendorName { get; set; }
+    public Int32 TotalSales { get; set; }
+}
+public partial class DashboardTopOrdersByCity
+{
+    public string CityName { get; set; }
+    public Int32 TotalSales { get; set; }
+}
+public partial class DashboardOrderDeliveryCharges
+{
+    public long VendorID { get; set; }
+    public string AppName { get; set; }
+    public decimal TotalPrice { get; set; }
+    public decimal TotalDeliveryCharges { get; set; }
+    public decimal GrandTotal { get; set; }
+}
+public partial class DashboardMonthlySales
+{
+    public string Name { get; set; }
+    public Int32 TotalSales { get; set; }
+}
+public partial class DashboardOnBoardVendors
+{
+    public string Name { get; set; }
+    public Int32 TotalVendors { get; set; }
+}
+public partial class DashboardTotalRevenue
+{
+    public long VendorID { get; set; }
+    public string AppName { get; set; }
+    public decimal TotalCOD { get; set; }
+    public decimal TotalOnline { get; set; }
+    public decimal TotalRevenue { get; set; }
+}
+public partial class DashboardOrderStatus
+{
+    public string Type { get; set; }
+    public decimal Total { get; set; }
+}
+public partial class DashboardTopVendorsProducts
+{
+    public long ProductID { get; set; }
+    public string ImageName { get; set; }
+    public string ProductName { get; set; }
+    public Int32 StockRemaining { get; set; }
 }

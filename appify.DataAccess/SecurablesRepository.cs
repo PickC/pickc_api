@@ -91,23 +91,14 @@ namespace appify.DataAccess
                         cmd.Connection = con;
 
                         cmd.Parameters.AddWithValue("@SecurableID", item.SecurableID);
-                        cmd.Parameters.AddWithValue("@WebPageLink", item.WebPageLink);
-                        cmd.Parameters.AddWithValue("@AccessLevel", item.AccessLevel);
+                        cmd.Parameters.AddWithValue("@PageName", item.PageName);
+                        cmd.Parameters.AddWithValue("@PageLink", item.PageLink);
+                        cmd.Parameters.AddWithValue("@ParentID", item.ParentID);
+                       
 
-                        //Add the output parameter to the command object
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@NewSecurableID";
-                        outPutParameter.SqlDbType = System.Data.SqlDbType.SmallInt;
-                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
-
-                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
-                            item.SecurableID = Convert.ToInt32(outPutParameter.Value);
-                        else
-                            item.SecurableID = 0;
 
                         con.Close();
                     }
@@ -123,115 +114,117 @@ namespace appify.DataAccess
         }
 
 
-        public bool SFDelete(Int32 FunctionID)
-        {
-            var result = false;
-            try
-            {
-                using (SqlConnection con = new SqlConnection(appify_connectionstring))
-                {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.REMOVESECURABLEFUNCTION))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@FunctionID", FunctionID);
 
-                        con.Open();
-                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+        //public bool SFDelete(Int32 FunctionID)
+        //{
+        //    var result = false;
+        //    try
+        //    {
+        //        using (SqlConnection con = new SqlConnection(appify_connectionstring))
+        //        {
+        //            using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.REMOVESECURABLEFUNCTION))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Connection = con;
+        //                cmd.Parameters.AddWithValue("@FunctionID", FunctionID);
 
-                        con.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+        //                con.Open();
+        //                result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
-            return result;
-        }
+        //                con.Close();
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
 
-        public SecurablesFunction SFGet(Int32 FunctionID)
-        {
-            SecurablesFunction item = new SecurablesFunction();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSECURABLEFUNCTION, FunctionID);
-            item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]).FirstOrDefault();
+        //    return result;
+        //}
 
-            return item;
-        }
+        //public SecurablesFunction SFGet(Int32 FunctionID)
+        //{
+        //    SecurablesFunction item = new SecurablesFunction();
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSECURABLEFUNCTION, FunctionID);
+        //    item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]).FirstOrDefault();
 
-        public Int64 SFGetSecurablesCount()
-        {
+        //    return item;
+        //}
 
-            Int64 item = new Int64();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTROLE);
-            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+        //public Int64 SFGetSecurablesCount()
+        //{
 
-            return item;
-        }
+        //    Int64 item = new Int64();
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTROLE);
+        //    item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
 
-        public List<SecurablesFunction> SFList(Int32 SecurablesID)
-        {
-            List<SecurablesFunction> item = new List<SecurablesFunction>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSECURABLEFUNCTION, SecurablesID);
-            item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]);
+        //    return item;
+        //}
 
-            return item;
-        }
+        //public List<SecurablesFunction> SFList(Int32 SecurablesID)
+        //{
+        //    List<SecurablesFunction> item = new List<SecurablesFunction>();
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSECURABLEFUNCTION, SecurablesID);
+        //    item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]);
 
-        public List<SecurablesFunction> SFListAll()
-        {
-            List<SecurablesFunction> item = new List<SecurablesFunction>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLSECURABLEFUNCTION);
-            item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]);
+        //    return item;
+        //}
 
-            return item;
-        }
+        //public List<SecurablesFunction> SFListAll()
+        //{
+        //    List<SecurablesFunction> item = new List<SecurablesFunction>();
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLSECURABLEFUNCTION);
+        //    item = DataTableHelper.ConvertDataTable<SecurablesFunction>(ds.Tables[0]);
 
-        public SecurablesFunction SFSave(SecurablesFunction item)
-        {
-            var result = false;
+        //    return item;
+        //}
 
-            try
-            {
-                using (SqlConnection con = new SqlConnection(appify_connectionstring))
-                {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVESECURABLEFUNCTION))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
+        //public SecurablesFunction SFSave(SecurablesFunction item)
+        //{
+        //    var result = false;
 
-                        cmd.Parameters.AddWithValue("@FunctionID", item.FunctionID);
-                        cmd.Parameters.AddWithValue("@SecurableID", item.SecurableID);
-                        cmd.Parameters.AddWithValue("@FunctionName", item.FunctionName);
-                        cmd.Parameters.AddWithValue("@AccessLevel", item.AccessLevel);
+        //    try
+        //    {
+        //        using (SqlConnection con = new SqlConnection(appify_connectionstring))
+        //        {
+        //            using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVESECURABLEFUNCTION))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Connection = con;
 
-                        //Add the output parameter to the command object
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@NewFunctionID";
-                        outPutParameter.SqlDbType = System.Data.SqlDbType.SmallInt;
-                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
+        //                cmd.Parameters.AddWithValue("@FunctionID", item.FunctionID);
+        //                cmd.Parameters.AddWithValue("@SecurableID", item.SecurableID);
+        //                cmd.Parameters.AddWithValue("@FunctionName", item.FunctionName);
+        //                cmd.Parameters.AddWithValue("@AccessLevel", item.AccessLevel);
 
-                        con.Open();
-                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+        //                //Add the output parameter to the command object
+        //                SqlParameter outPutParameter = new SqlParameter();
+        //                outPutParameter.ParameterName = "@NewFunctionID";
+        //                outPutParameter.SqlDbType = System.Data.SqlDbType.SmallInt;
+        //                outPutParameter.Direction = System.Data.ParameterDirection.Output;
+        //                cmd.Parameters.Add(outPutParameter);
 
-                        if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
-                            item.SecurableID = Convert.ToInt32(outPutParameter.Value);
-                        else
-                            item.SecurableID = 0;
+        //                con.Open();
+        //                result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
-                        con.Close();
-                    }
-                }
+        //                if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
+        //                    item.SecurableID = Convert.ToInt32(outPutParameter.Value);
+        //                else
+        //                    item.SecurableID = 0;
 
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+        //                con.Close();
+        //            }
+        //        }
 
-            return item;
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+
+        //    return item;
+        //}
+
     }
 }

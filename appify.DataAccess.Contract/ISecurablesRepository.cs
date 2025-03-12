@@ -18,13 +18,16 @@ namespace appify.DataAccess.Contract
 
         public Int64 GetSecurablesCount();
 
-        public SecurablesFunction SFSave(SecurablesFunction item);
-        public bool SFDelete(Int32 FunctionID);
 
-        public SecurablesFunction SFGet(Int32 FunctionID);
-        public List<SecurablesFunction> SFList(Int32 FunctionID);
-        public List<SecurablesFunction> SFListAll();
+        //public SecurablesFunction SFSave(SecurablesFunction item);
+        //public bool SFDelete(Int32 FunctionID);
 
-        public Int64 SFGetSecurablesCount();
+        //public SecurablesFunction SFGet(Int32 FunctionID);
+        //public List<SecurablesFunction> SFList(Int32 FunctionID);
+        //public List<SecurablesFunction> SFListAll();
+
+        //public Int64 SFGetSecurablesCount();
+
+
     }
 }
