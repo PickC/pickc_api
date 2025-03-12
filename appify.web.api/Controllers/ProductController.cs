@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Razorpay.Api;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 namespace appify.web.api.Controllers
@@ -163,7 +164,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> Add(Product product)
+        public async Task<IActionResult> Add(models.Product product)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2093,6 +2094,81 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get Featured Categories
+        /// </summary>
+        /// <remarks>
+        /// Sample response JSON :
+        /// 
+        ///         {
+        ///           "statusCode": 200,
+        ///           "name": "SUCCESS_OK",
+        ///           "message": "FETCH FEATURED CATEGORIES",
+        ///           "data": [
+        ///             {
+        ///               "categoryID": 1000,
+        ///               "category": "Beauty",
+        ///               "parentID": 0,
+        ///               "isEnabled": false,
+        ///               "hierarchyLevel": 1
+        ///             },
+        ///             {
+        ///               "categoryID": 1001,
+        ///               "category": "Health and Personal Care",
+        ///               "parentID": 0,
+        ///               "isEnabled": false,
+        ///               "hierarchyLevel": 1
+        ///             },
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCH FEATURED CATEGORIES!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("getfeaturedcategories")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetFeaturedategories()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.productBusiness.GetFeaturedategories();
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH FEATURED CATEGORIES";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("FETCH FEATURED CATEGORIES", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH FEATURED CATEGORIES - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
