@@ -93,6 +93,7 @@ namespace appify.models
         public DateTime OrderDate { get; set; }
         public decimal Price { get; set; }
         public string Status { get; set; }
+        public string PaymentReferenceNo { get; set; }
         public string PaymentMode { get; set; }
         public string SettlementStatus { get; set; }
     }

@@ -165,6 +165,14 @@ namespace appify.models
         public bool IsDefault { get; set; }
         public bool IsActive { get; set; }
     }
+    public partial class FeaturedCategories
+    {
+        public long CategoryID { get; set; }
+        public string Category { get; set; }
+        public long ParentID { get; set; }
+        public bool IsEnabled { get; set; }
+        public short HierarchyLevel { get; set; }
+    }
     public partial class ProductCategories
     {
         public long CategoryID { get; set; }

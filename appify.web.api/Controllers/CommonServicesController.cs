@@ -16,6 +16,9 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using static appify.models.NotificationType;
 using appify.utility;
+using System.ComponentModel.DataAnnotations;
+using Razorpay.Api;
+using Twilio.Types;
 
 namespace appify.web.api.Controllers
 {
@@ -357,6 +360,282 @@ namespace appify.web.api.Controllers
                 return true;
             else
                 return false;
+        }
+
+        //// <summary>
+        //// 1. Name and email fields are mandatory for each account & phone number is optional
+        //// 2. (50.00 MB Max)
+        //// 3. The number of accounts in the file should not exceed 500.
+        //// </summary>
+        [HttpPost]
+        [Route("RazorPay/Settlement/bulkupload")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> createmerchants([Required] IFormFile file)//([Required]IFormFile file)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                string responseBody = "NO FILE OR INVALID FILE FORMAT";
+                //////[FromForm] ParamEmailFields item
+                if (file == null || file.Length == 0)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    return Ok(rm);
+                }
+                if (Path.GetExtension(file.FileName).ToLower() != ".csv"
+                    && Path.GetExtension(file.FileName).ToLower() != ".xls"
+                    && Path.GetExtension(file.FileName).ToLower() != ".xlsx"
+                    && Path.GetExtension(file.FileName).ToLower() != ".xlsb")
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    return Ok(rm);
+                }
+
+                if (file.Length > Common.IMAGE_SIZE)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.name = StatusName.invalid;
+                    rm.message = "FILE SIZE GREATER THAN 50 MB";
+                    rm.data = null;
+                    return Ok(rm);
+                }
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = responseBody;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/createsubmerchant")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> createsubmerchant(Merchant itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+                Dictionary<string,object> accountRequest = new Dictionary<string,object>();
+                accountRequest.Add("email", itemData.EmailID);
+                accountRequest.Add("phone", itemData.Phone);
+                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
+                accountRequest.Add("business_type", itemData.BusinessType);
+
+                //Dictionary<string,object> profile= new Dictionary<string,object>();
+                //profile.Add("category", itemData.Profile_Category_Name);
+                //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
+
+                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
+                legalInfo.Add("pan", itemData.PAN);
+                legalInfo.Add("gst", itemData.GST);
+
+                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
+                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
+                bankInfo.Add("account_number", itemData.BankAccountNo);
+                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
+
+
+                //accountRequest.Add("profile", profile);
+
+                if((itemData.PAN!=null || itemData.PAN!="" ) || (itemData.GST!=null || itemData.GST!=""))
+                {
+                    accountRequest.Add("legal_info", legalInfo);
+                }
+
+                accountRequest.Add("bank_account",bankInfo);
+
+                Account payment = client.Account.Create(accountRequest);
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = payment;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/updatesubmerchant")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> updatesubmerchant(Merchant itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                string accountId = itemData.RazorPayAccountID;
+
+                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+                Dictionary<string, object> accountRequest = new Dictionary<string, object>();
+                accountRequest.Add("email", itemData.EmailID);
+                accountRequest.Add("phone", itemData.Phone);
+                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
+                accountRequest.Add("business_type", itemData.BusinessType);
+
+                //Dictionary<string, object> profile = new Dictionary<string, object>();
+                //profile.Add("category", itemData.Profile_Category_Name);
+                //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
+
+                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
+                legalInfo.Add("pan", itemData.PAN);
+                legalInfo.Add("gst", itemData.GST);
+
+                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
+                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
+                bankInfo.Add("account_number", itemData.BankAccountNo);
+                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
+
+                //accountRequest.Add("profile", profile);
+                accountRequest.Add("legal_info", legalInfo);
+                accountRequest.Add("bank_account", bankInfo);
+
+                Account accouunt = client.Account.Fetch(accountId).Edit(accountRequest);
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = accouunt;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/deletesubmerchant")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> deletesubmerchant(string AccountID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+                Account accouunt = client.Account.Fetch(AccountID).Delete();
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = accouunt;
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/paymenttosubmerchant")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> paymenttosubmerchant(string PaymentID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+
+                Dictionary<string, object> transferRequest = new Dictionary<string, object>();
+                List<Dictionary<string, object>> transfers = new List<Dictionary<string, object>>();
+                Dictionary<string, object> transferParams = new Dictionary<string, object>();
+                transferParams.Add("account", "acc_I0QRP7PpvaHhpB");
+                transferParams.Add("amount", 100);
+                transferParams.Add("currency", "INR");
+                Dictionary<string, object> notes = new Dictionary<string, object>();
+                notes.Add("name", "Gaurav Kumar");
+                notes.Add("roll_no", "IEC2011025");
+                transferParams.Add("notes", notes);
+                List<string> linkedAccountNotes = new List<string>();
+                linkedAccountNotes.Add("roll_no");
+                transferParams.Add("linked_account_notes", linkedAccountNotes);
+                transferParams.Add("on_hold", true);
+                transfers.Add(transferParams);
+                transferRequest.Add("transfers", transfers);
+
+                List<Transfer> transfer = client.Payment.Fetch(PaymentID).Transfer(transferRequest);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
+                rm.name = StatusName.ok;
+                rm.data = "";
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
         }
     }
 }
