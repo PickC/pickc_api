@@ -307,8 +307,8 @@ namespace appify.DataAccess
 
             return item;
         }
-<<<<<<< HEAD
-=======
+
+
         public List<FeaturedCategories> GetFeaturedategories()
         {
             List<FeaturedCategories> item = new List<FeaturedCategories>();
@@ -317,6 +317,6 @@ namespace appify.DataAccess
 
             return item;
         }
->>>>>>> origin/main
+
     }
 }

@@ -16,12 +16,12 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using static appify.models.NotificationType;
 using appify.utility;
-<<<<<<< HEAD
-=======
+
+
 using System.ComponentModel.DataAnnotations;
 using Razorpay.Api;
 using Twilio.Types;
->>>>>>> origin/main
+
 
 namespace appify.web.api.Controllers
 {
@@ -364,8 +364,8 @@ namespace appify.web.api.Controllers
             else
                 return false;
         }
-<<<<<<< HEAD
-=======
+
+
 
         //// <summary>
         //// 1. Name and email fields are mandatory for each account & phone number is optional
@@ -642,6 +642,6 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
->>>>>>> origin/main
+
     }
 }

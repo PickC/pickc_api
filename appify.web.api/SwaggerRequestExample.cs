@@ -375,7 +375,7 @@ namespace appify.web.api
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
-<<<<<<< HEAD
+
 
     public class ParamRoleRights {
         public short RoleID { get; set; }
@@ -391,6 +391,6 @@ namespace appify.web.api
 
     }
 
-=======
->>>>>>> origin/main
+
+
 }

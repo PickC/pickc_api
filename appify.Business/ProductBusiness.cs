@@ -146,12 +146,12 @@ namespace appify.Business
         {
             return repository.GetVendorCategories(VendorID);
         }
-<<<<<<< HEAD
-=======
+
+
         public List<FeaturedCategories> GetFeaturedategories()
         {
             return repository.GetFeaturedategories();
         }
->>>>>>> origin/main
+
     }
 }

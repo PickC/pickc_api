@@ -10,10 +10,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-<<<<<<< HEAD
-using appify.DataAccessML;
-=======
->>>>>>> origin/main
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,12 +69,12 @@ builder.Services.AddSingleton<IWebAdminRepository, WebAdminRepository>();
 builder.Services.AddSingleton<IRolesRepository, RolesRepository>();
 builder.Services.AddSingleton<ISecurablesRepository, SecurablesRepository>();
 builder.Services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepository>();
-<<<<<<< HEAD
+
 builder.Services.AddSingleton<IRoleRightsRepository, RoleRightsRepository>();
 builder.Services.AddSingleton<ICategoryParameterRepository, CategoryParameterRepository>();
 builder.Services.AddSingleton<IParameterTypeRepository, ParameterTypeRepository>();
-=======
->>>>>>> origin/main
+
+
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
 
@@ -107,12 +104,12 @@ builder.Services.AddSingleton<IWebAdminBusiness, WebAdminBusiness>();
 builder.Services.AddSingleton<IRolesBusiness, RolesBusiness>();
 builder.Services.AddSingleton<ISecurablesBusiness, SecurablesBusiness>();
 builder.Services.AddSingleton<IAdminDashboardBusiness, AdminDashboardBusiness>();
-<<<<<<< HEAD
+
 builder.Services.AddSingleton<IRoleRightsBusiness, RoleRightsBusiness>();
 builder.Services.AddSingleton<ICategoryParameterBusiness, CategoryParameterBusiness>();
 builder.Services.AddSingleton<IParameterTypeBusiness, ParameterTypeBusiness>();
-=======
->>>>>>> origin/main
+
+
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 
 

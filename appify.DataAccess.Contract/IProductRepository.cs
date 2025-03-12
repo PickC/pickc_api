@@ -30,9 +30,9 @@ namespace appify.DataAccess.Contract
         public List<ProductCategoryName> GetCategorieName(long categoryID);
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories);
         public List<ParentCategories> GetVendorCategories(long VendorID);
-<<<<<<< HEAD
-=======
+
+
         public List<FeaturedCategories> GetFeaturedategories();
->>>>>>> origin/main
+
     }
 }
