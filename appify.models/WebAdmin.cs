@@ -44,6 +44,11 @@ namespace appify.models
         public string? UserCreated { get; set; }
         public string? ModifiedUser { get; set; }
     }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/main
     public partial class Roles
     {
         public Int32 RoleID { get; set; }
@@ -91,10 +96,37 @@ namespace appify.models
         public DateTime OrderDate { get; set; }
         public decimal Price { get; set; }
         public string Status { get; set; }
+<<<<<<< HEAD
         public string PaymentMode { get; set; }
         public string SettlementStatus { get; set; }
     }
 
+=======
+        public string PaymentReferenceNo { get; set; }
+        public string PaymentMode { get; set; }
+        public string SettlementStatus { get; set; }
+    }
+    public partial class Securables
+    {
+        public Int32 SecurableID { get; set; }
+        public string WebPageLink { get; set; }
+        public Int16 AccessLevel { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
+    }
+
+    public partial class  SecurablesFunction
+    {
+        public Int32 FunctionID { get; set; }
+        public Int32 SecurableID { get; set; }
+        public string FunctionName { get; set; }
+        public Int16 AccessLevel { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime ModifiedOn { get; set; }
+        public bool IsActive { get; set; }
+    }
+>>>>>>> origin/main
     public partial class ManagementDashboardSummary
     {
         public string MetricName { get; set; }

@@ -18,6 +18,7 @@ namespace appify.Business.Contract
 
         public Int64 GetSecurablesCount();
 
+<<<<<<< HEAD
         //public SecurablesFunction SFSave(SecurablesFunction item);
         //public bool SFDelete(Int32 FunctionID);
 
@@ -26,5 +27,15 @@ namespace appify.Business.Contract
         //public List<SecurablesFunction> SFListAll();
 
         //public Int64 SFGetSecurablesCount();
+=======
+        public SecurablesFunction SFSave(SecurablesFunction item);
+        public bool SFDelete(Int32 FunctionID);
+
+        public SecurablesFunction SFGet(Int32 FunctionID);
+        public List<SecurablesFunction> SFList(Int32 SecurablesID);
+        public List<SecurablesFunction> SFListAll();
+
+        public Int64 SFGetSecurablesCount();
+>>>>>>> origin/main
     }
 }

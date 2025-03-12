@@ -13,7 +13,11 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 
+<<<<<<< HEAD
 namespace appify.DataAccessML
+=======
+namespace appify.DataAccess
+>>>>>>> origin/main
 {
     public  class RolesRepository : IRolesRepository
     {

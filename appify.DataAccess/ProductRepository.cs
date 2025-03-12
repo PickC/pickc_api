@@ -307,5 +307,16 @@ namespace appify.DataAccess
 
             return item;
         }
+<<<<<<< HEAD
+=======
+        public List<FeaturedCategories> GetFeaturedategories()
+        {
+            List<FeaturedCategories> item = new List<FeaturedCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES);
+            item = DataTableHelper.ConvertDataTable<FeaturedCategories>(ds.Tables[0]);
+
+            return item;
+        }
+>>>>>>> origin/main
     }
 }

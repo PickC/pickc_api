@@ -108,6 +108,10 @@ namespace appify.dbroutine
         public const string CATEGORIESNAME = "[Operation].[usp_CategorieName]";
         public const string SAVEPARENTCATEGORIES = "[Operation].[usp_MemberCategorySave]";
         public const string PARENTCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
+<<<<<<< HEAD
+=======
+        public const string FEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesList]";
+>>>>>>> origin/main
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>
@@ -296,11 +300,15 @@ namespace appify.dbroutine
         public const string SAVEEVENTLOG = "[Audit].[usp_EventLogSave]";
         public const string SELECTEVENTLOG = "[Audit].[usp_EventLogSelect]";
 
+<<<<<<< HEAD
         
         /// <summary>
         /// Notification History
         /// </summary>
 
+=======
+        /// Notification History
+>>>>>>> origin/main
         public const string LISTNOTIFICATIONBYVENDOR = "[Utility].[usp_NotificationByVendor]";
         public const string LISTNOTIFICATIONBYCUSTOMER = "[Utility].[usp_NotificationByCustomer]";
 
@@ -347,10 +355,14 @@ namespace appify.dbroutine
         public const string UPDATESMSALERT = "[Utility].[usp_SMSAlertUpdate]";
 
 
+<<<<<<< HEAD
         /// <summary>
         /// Web Admin User
         /// </summary>
 
+=======
+        //////////// WebAdmin 
+>>>>>>> origin/main
         public const string DELETEUSER = "[Security].[usp_UserDelete]";
         public const string LISTUSER = "[Security].[usp_UserList]";
         public const string SAVEUSER = "[Security].[usp_UserSave]";
@@ -364,17 +376,22 @@ namespace appify.dbroutine
 
         public const string LISTSELLER = "[Security].[usp_SellerAppList]";
 
+<<<<<<< HEAD
 
         /// <summary>
         /// Roles
         /// </summary>
 
         public const string SELECTROLE = "[Security].[usp_RolesSelect]";
+=======
+        public const string SELECTROLE  = "[Security].[usp_RolesSelect]";
+>>>>>>> origin/main
         public const string LISTROLE = "[Security].[usp_RolesList]";
         public const string DELETEROLE = "[Security].[usp_RolesDelete]";
         public const string SAVEROLE = "[Security].[usp_RolesSave]";
         public const string PAGEVIEWLISTROLE = "[Security].[usp_RolesPageView]";
         public const string ROWCOUNTROLE = "[Security].[usp_RolesRecordCount]";
+<<<<<<< HEAD
 
 
 
@@ -393,6 +410,9 @@ namespace appify.dbroutine
 
         public const string ROLEACCESSTYPE = "[Config].[usp_LookupListByCategory]";
         
+=======
+        public const string ROLEACCESSTYPE = "[Config].[usp_LookupListByCategory]";
+>>>>>>> origin/main
         public const string GETUSERDETAILS = "[Security].[usp_UserDetails]";
 
         public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
@@ -400,10 +420,13 @@ namespace appify.dbroutine
 
         public const string SELECTORDERSBYORDERID = "[Operation].[usp_OrderHeaderItemNew]";
 
+<<<<<<< HEAD
         /// <summary>
         /// Securables
         /// </summary>
 
+=======
+>>>>>>> origin/main
         public const string SELECTSECURABLE= "[Security].[usp_SecurablesSelect]";
         public const string LISTSECURABLE = "[Security].[usp_SecurablesList]";
         public const string SAVESECURABLE = "[Security].[usp_SecurablesSave]";
@@ -416,12 +439,16 @@ namespace appify.dbroutine
         public const string REMOVESECURABLEFUNCTION = "[Security].[usp_SecurableFunctionDelete]";
 
         public const string SELLERORDERLIST = "[Operation].[usp_SellerOrderList]";
+<<<<<<< HEAD
         public const string SELLETMENTSTATUSUPDATE = "[Operation].[usp_OrderSettlementStatusUpdate]";
 
 
         /// <summary>
         /// Web Admin Dashboard
         /// </summary>
+=======
+        public const string SELLETMENTSTATUSUPDATE = "[Operation].[usp_OrderSettlementStatusUpdate]";   
+>>>>>>> origin/main
 
         public const string LISTMANAGEMENTDASHBOARDSUMMARY = "[Operation].[usp_ManagementDashboardMetrics]";
         public const string LISTDASHBOARDTOPPRODUCTS = "[Operation].[usp_DashboardTopProducts]";
@@ -435,6 +462,7 @@ namespace appify.dbroutine
         public const string LISTOPERATIONDASHBOARDSUMMARY = "[Operation].[usp_OperationDashboardMetrics]";
         public const string LISTDASHBOARDTOPVENDORSPRODUCTS= "[Operation].[usp_DashboardTopVendorsProducts]";
 
+<<<<<<< HEAD
 
         /// <summary>
         /// Category Parameter
@@ -456,5 +484,7 @@ namespace appify.dbroutine
 
 
 
+=======
+>>>>>>> origin/main
     }
 }
