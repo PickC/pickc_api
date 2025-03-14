@@ -30,9 +30,9 @@ namespace appify.Business
         }
 
 
-        public List<RoleRights> ListAll(short securableID)
+        public List<RoleRights> ListAll(short roleID)
         {
-            return repository.ListAll(securableID);
+            return repository.ListAll(roleID);
         }
          
 

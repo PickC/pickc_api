@@ -8,7 +8,6 @@
 using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Azure;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -29,7 +28,7 @@ namespace appify.DataAccess
             this.appify_connectionstring = configuration["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public bool Delete(string roleCode, short userID)
+        public bool Delete(short roleID, short userID)
         {
             var result = false;
             try
@@ -40,7 +39,7 @@ namespace appify.DataAccess
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@RoleCode", roleCode);
+                        cmd.Parameters.AddWithValue("@RoleID", roleID);
                         cmd.Parameters.AddWithValue("@ModifiedBy", userID);
 
                         con.Open();
@@ -58,10 +57,10 @@ namespace appify.DataAccess
             return result;
         }
 
-        public Roles Get(string roleCode)
+        public Roles Get(short roleID)
         {
             Roles item = new Roles();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTROLE, roleCode);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTROLE, roleID);
             item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]).FirstOrDefault();
 
             return item;
@@ -125,7 +124,7 @@ namespace appify.DataAccess
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
                         if (outPutParameter.Value != null && outPutParameter.Value != "" && outPutParameter.Value != System.DBNull.Value)
-                            item.RoleID = Convert.ToInt32(outPutParameter.Value);
+                            item.RoleID = Convert.ToInt16(outPutParameter.Value);
                         else
                             item.RoleID = 0;
 
