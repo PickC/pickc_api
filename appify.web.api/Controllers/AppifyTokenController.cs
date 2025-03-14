@@ -30,7 +30,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("gettoken")]
-        public IActionResult GetToken(TokenObject item)
+        public IActionResult GetToken()
         {
 
             try
@@ -41,7 +41,7 @@ namespace appify.web.api.Controllers
 
                 new Claim(JwtRegisteredClaimNames.Sub,config["Jwt:Subject"]),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                new Claim("userID",item.UserID),
+                //new Claim("userID",item.UserID.ToString()),
 
             };
 

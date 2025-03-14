@@ -2103,6 +2103,14 @@ namespace appify.web.api.Controllers
         /// Get Featured Categories
         /// </summary>
         /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///         "vendorID": 1060
+        ///     }
+        ///     
         /// Sample response JSON :
         /// 
         ///         {
@@ -2111,18 +2119,16 @@ namespace appify.web.api.Controllers
         ///           "message": "FETCH FEATURED CATEGORIES",
         ///           "data": [
         ///             {
-        ///               "categoryID": 1000,
-        ///               "category": "Beauty",
-        ///               "parentID": 0,
-        ///               "isEnabled": false,
-        ///               "hierarchyLevel": 1
+        ///               "categoryID": 1007,
+        ///               "categoryBreadCrumb": "Jewellery>>Boys",
+        ///               "parentID": 1002,
+        ///               "seqNo": 1
         ///             },
         ///             {
-        ///               "categoryID": 1001,
-        ///               "category": "Health and Personal Care",
-        ///               "parentID": 0,
-        ///               "isEnabled": false,
-        ///               "hierarchyLevel": 1
+        ///               "categoryID": 1389,
+        ///               "categoryBreadCrumb": "Clothing and Accessories>>Baby",
+        ///               "parentID": 1003,
+        ///               "seqNo": 2
         ///             },
         ///       ]
         ///     }
@@ -2134,7 +2140,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getfeaturedcategories")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetFeaturedategories()
+        public async Task<IActionResult> GetFeaturedategories(ParamVendor itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2142,7 +2148,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = this.productBusiness.GetFeaturedategories();
+                var item = this.productBusiness.GetFeaturedategories(itemData.VendorID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -2169,6 +2175,102 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Save/Update Featured Categories
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     [
+        ///       {
+        ///         "vendorID": 1060,
+        ///         "parentID": 1002,
+        ///         "categoryID": 1007,
+        ///         "seqNo": 1
+        ///       },
+        ///         {
+        ///         "vendorID": 1060,
+        ///         "parentID": 1003,
+        ///         "categoryID": 1389,
+        ///         "seqNo": 2
+        ///       }
+        ///     ]
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///         {
+        ///           "statusCode": 200,
+        ///           "name": "SUCCESS_OK",
+        ///           "message": "FEATURED CATEGORIES HAVE BEEN SAVED!",
+        ///           "data": [
+        ///             {
+        ///               "vendorID": 1060,
+        ///               "parentID": 1002,
+        ///               "categoryID": 1007,
+        ///               "seqNo": 1
+        ///             },
+        ///             {
+        ///               "vendorID": 1060,
+        ///               "parentID": 1003,
+        ///               "categoryID": 1389,
+        ///               "seqNo": 2
+        ///             },
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FEATURED CATEGORIES HAVE BEEN SAVED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response>
+        [HttpPost, Route("savefeaturedcategories")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> SaveUpdateFeaturedategories(List<MemberFeaturedCategory> itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                List<MemberFeaturedCategory> returnItems = new List<MemberFeaturedCategory>();
+                foreach (var items in itemData)
+                {
+                    returnItems.Add(this.productBusiness.SaveFeaturedCategory(items));
+                }
+
+                if (returnItems != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FEATURED CATEGORIES HAVE BEEN SAVED";
+                    rm.name = StatusName.ok;
+                    rm.data = returnItems;
+                    await Common.UpdateEventLogsNew("FEATURED CATEGORIES HAVE BEEN SAVED", reqHeader, controllerURL, returnItems, returnItems, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES - NO CONTENT", reqHeader, controllerURL, returnItems, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

@@ -309,14 +309,48 @@ namespace appify.DataAccess
         }
 
 
-        public List<FeaturedCategories> GetFeaturedategories()
+        public List<FeaturedCategories> GetFeaturedategories(long VendorID)
         {
             List<FeaturedCategories> item = new List<FeaturedCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES, VendorID);
             item = DataTableHelper.ConvertDataTable<FeaturedCategories>(ds.Tables[0]);
 
             return item;
         }
 
+        public MemberFeaturedCategory SaveFeaturedCategory(MemberFeaturedCategory itemData)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEFEATUREDCATEGORIES))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@VendorID", itemData.VendorID);
+                        cmd.Parameters.AddWithValue("@ParentID", itemData.ParentID);
+                        cmd.Parameters.AddWithValue("@CategoryID", itemData.CategoryID);
+                        cmd.Parameters.AddWithValue("@SeqNo", itemData.SeqNo);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return itemData;
+        }
     }
 }
