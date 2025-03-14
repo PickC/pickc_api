@@ -7,7 +7,7 @@
 */
 using appify.DataAccess.Contract;
 using appify.models;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 

@@ -1,7 +1,6 @@
 ﻿using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Azure;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -57,10 +56,10 @@ namespace appify.DataAccess
             return item;
         }
          
-        public List<RoleRights> ListAll(short securableID)
+        public List<RoleRights> ListAll(short roleID)
         {
             List<RoleRights> item = new List<RoleRights>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLERIGHT,securableID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLERIGHT,roleID);
             item = DataTableHelper.ConvertDataTable<RoleRights>(ds.Tables[0]);
 
             return item;
