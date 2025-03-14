@@ -36,7 +36,7 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "roleCode": "ROLE_SUPER_ADMIN"
+        ///       "roleID": 1000
         ///     }
         ///     
         /// Sample response JSON :
@@ -54,6 +54,40 @@ namespace appify.web.api.Controllers
         ///         "createdOn": "2025-01-23T08:40:21.037",
         ///         "modifiedBy": 0,
         ///         "modifiedOn": "0001-01-01T00:00:00"
+        ///         "roleRights": [
+        ///             {
+        ///               "roleID": 1005,
+        ///               "securableID": 1001,
+        ///               "isAdd": false,
+        ///               "isEdit": false,
+        ///               "isView": true,
+        ///               "isDelete": false,
+        ///               "isDownload": false,
+        ///               "createdBy": 0,
+        ///               "createdOn": "0001-01-01T00:00:00",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "pageLink": "https://appify-dashboard-green.vercel.app/overview",
+        ///               "pageName": "Overview",
+        ///               "parentName": null
+        ///             },
+        ///             {
+        ///               "roleID": 1005,
+        ///               "securableID": 1002,
+        ///               "isAdd": false,
+        ///               "isEdit": false,
+        ///               "isView": false,
+        ///               "isDelete": false,
+        ///               "isDownload": false,
+        ///               "createdBy": 0,
+        ///               "createdOn": "0001-01-01T00:00:00",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "pageLink": "https://appify-dashboard-green.vercel.app/sellers",
+        ///               "pageName": "Sellers",
+        ///               "parentName": null
+        ///             }
+        ///            ]
         ///       }
         ///     }
         /// 
@@ -71,9 +105,11 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.Get(itemData.RoleCode);
+                var result = this.rolesBusiness.Get(itemData.RoleID);
                 if (result != null)
                 {
+                    
+
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH ROLES ITEM!";
                     rm.name = StatusName.ok;
@@ -335,6 +371,40 @@ namespace appify.web.api.Controllers
         ///         "createdOn": "2025-01-23T08:39:51.511Z",
         ///         "modifiedBy": 0,
         ///         "modifiedOn": "2025-01-23T08:39:51.511Z"
+        ///         "roleRights": [
+        ///             {
+        ///               "roleID": 1005,
+        ///               "securableID": 1001,
+        ///               "isAdd": false,
+        ///               "isEdit": false,
+        ///               "isView": true,
+        ///               "isDelete": false,
+        ///               "isDownload": false,
+        ///               "createdBy": 0,
+        ///               "createdOn": "0001-01-01T00:00:00",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "pageLink": "https://appify-dashboard-green.vercel.app/overview",
+        ///               "pageName": "Overview",
+        ///               "parentName": null
+        ///             },
+        ///             {
+        ///               "roleID": 1005,
+        ///               "securableID": 1002,
+        ///               "isAdd": false,
+        ///               "isEdit": false,
+        ///               "isView": false,
+        ///               "isDelete": false,
+        ///               "isDownload": false,
+        ///               "createdBy": 0,
+        ///               "createdOn": "0001-01-01T00:00:00",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "pageLink": "https://appify-dashboard-green.vercel.app/sellers",
+        ///               "pageName": "Sellers",
+        ///               "parentName": null
+        ///             }
+        ///            ]
         ///       }
         ///     }
         /// 
@@ -390,8 +460,8 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "roleCode": "string",
-        ///       "modifiedBy": 0
+        ///       "roleID": 1000,
+        ///       "modifiedBy": 1000
         ///     }
         ///     
         /// Sample response JSON :
@@ -417,7 +487,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.Delete(itemData.RoleCode, itemData.ModifiedBy);
+                var result = this.rolesBusiness.Delete(itemData.RoleID, itemData.ModifiedBy);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1073,14 +1143,14 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("rolerights/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListRoleRights(ParamSecurableID itemData)
+        public IActionResult ListRoleRights(ParamRoleRights itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.roleRightsBusiness.ListAll(itemData.SecurableID);
+                var result = this.roleRightsBusiness.ListAll(itemData.RoleID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

@@ -357,7 +357,7 @@ namespace appify.web.api
     }
 
     public class ParamRole {
-        public string RoleCode { get; set; }
+        public short RoleID { get; set; }
 
     }
     public class ParamSecurableID

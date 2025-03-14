@@ -10,9 +10,9 @@ namespace appify.Business.Contract
     public  interface IRolesBusiness
     {
         public Roles Save(Roles item);
-        public bool Delete(string roleCode, short userID);
+        public bool Delete(short roleID, short userID);
 
-        public Roles Get(string roleCode);
+        public Roles Get(short roleID);
 
         public List<Roles> ListAll();
 
