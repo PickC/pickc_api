@@ -391,6 +391,13 @@ namespace appify.web.api
 
     }
 
+    public class ParamSubscription
+    {
+        public short SubscriptionID { get; set; }
+        public short? VendorID { get; set; }
+
+    }
+
 
 
 }
