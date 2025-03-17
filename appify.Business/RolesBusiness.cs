@@ -41,9 +41,9 @@ namespace appify.Business
             return repository.GetRolesCount();
         }
 
-        public List<Roles> ListAll()
+        public List<Roles> ListAll(string? roleCode, string? roleDescription)
         {
-            return repository.ListAll();
+            return repository.ListAll(roleCode, roleDescription);
         }
 
         public List<Roles> ListbyPageView(int pageNo, int rows)

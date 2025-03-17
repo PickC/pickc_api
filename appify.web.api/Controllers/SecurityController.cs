@@ -142,6 +142,20 @@ namespace appify.web.api.Controllers
         /// Role List
         /// </summary>
         /// <remarks>  
+        /// Sample request JSON : with Role Code 
+        /// 
+        ///     {
+        ///       "roleCode": "admin",
+        ///       "roleDescription": null
+        ///     }
+        ///     
+        /// Sample request JSON : with Role Description
+        /// 
+        ///     {
+        ///       "roleCode": null,
+        ///       "roleDescription": "create"
+        ///     }
+        ///     
         /// Sample response JSON :
         /// 
         ///     {
@@ -167,14 +181,14 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("roles/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListRoles()
+        public IActionResult ListRoles(ParamRoleSearch itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.ListAll();
+                var result = this.rolesBusiness.ListAll(itemData.RoleCode,itemData.RoleDescription);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1101,7 +1115,7 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "securableID": 1001
+        ///       "roleID": 1001
         ///     }
         /// 
         /// (To Create a New Roles-rights )
@@ -1109,7 +1123,7 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "securableID": 0
+        ///       "roleID": 0
         ///     }
         /// 
         /// 
