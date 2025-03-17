@@ -356,8 +356,16 @@ namespace appify.web.api
         public short Rows { get; set; }
     }
 
-    public class ParamRole {
-        public string RoleCode { get; set; }
+    public class ParamRole
+    {
+        public short RoleID { get; set; }
+
+    }
+    public class ParamRoleSearch
+    {
+        public string? RoleCode { get; set; }
+        public string? RoleDescription { get; set; }
+
 
     }
     public class ParamSecurableID
@@ -388,6 +396,13 @@ namespace appify.web.api
     {
         public short ParameterID { get; set; }
         public short CategoryID { get; set; }
+
+    }
+
+    public class ParamSubscription
+    {
+        public short SubscriptionID { get; set; }
+        public short? VendorID { get; set; }
 
     }
 

@@ -16,7 +16,7 @@ namespace appify.DataAccess.Contract
 
         public RoleRights Get(short roleID,short securableID);
 
-        public List<RoleRights> ListAll(short securableID);
+        public List<RoleRights> ListAll(short roleID);
           
          
     }

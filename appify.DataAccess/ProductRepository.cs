@@ -1,10 +1,4 @@
-﻿/*
- * Company: AppifyRetail.
- * Author: Gurjeet
- * Version: 1.1
- * Date: 2024-09-01
- * Description:
-*/
+﻿
 using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
@@ -309,14 +303,22 @@ namespace appify.DataAccess
         }
 
 
-        public List<FeaturedCategories> GetFeaturedategories()
+        public List<FeaturedCategories> GetFeaturedCategories(long vendorID)
         {
             List<FeaturedCategories> item = new List<FeaturedCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES,vendorID);
             item = DataTableHelper.ConvertDataTable<FeaturedCategories>(ds.Tables[0]);
 
             return item;
         }
+
+        public bool UpdateFeaturedCategories() { 
+            throw new NotImplementedException();
+        }
+        public bool DeleteFeaturedCategories() {
+            throw new NotImplementedException();
+        }
+
 
     }
 }

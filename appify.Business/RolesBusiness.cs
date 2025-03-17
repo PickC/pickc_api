@@ -12,20 +12,28 @@ namespace appify.Business
     public class RolesBusiness : IRolesBusiness
     {
         private IRolesRepository repository;
+        private IRoleRightsRepository rightsRepository;
 
 
-        public RolesBusiness(IRolesRepository repository)
+        public RolesBusiness(IRolesRepository repository, IRoleRightsRepository rightsRepository)
         {
             this.repository = repository;
+            this.rightsRepository = rightsRepository;
         }
-        public bool Delete(string roleCode, short userID)
+        public bool Delete(short roleID, short userID)
         {
-            return repository.Delete(roleCode, userID);
+            return repository.Delete(roleID, userID);
         }
 
-        public Roles Get(string roleCode)
+        public Roles Get(short roleID)
         {
-            return repository.Get(roleCode);
+            Roles item = new Roles();   
+            item= repository.Get(roleID);
+
+            item.RoleRights = rightsRepository.ListAll(item.RoleID);
+
+
+            return item;        
         }
 
         public long GetRolesCount()
@@ -33,9 +41,9 @@ namespace appify.Business
             return repository.GetRolesCount();
         }
 
-        public List<Roles> ListAll()
+        public List<Roles> ListAll(string? roleCode, string? roleDescription)
         {
-            return repository.ListAll();
+            return repository.ListAll(roleCode, roleDescription);
         }
 
         public List<Roles> ListbyPageView(int pageNo, int rows)
@@ -45,7 +53,17 @@ namespace appify.Business
 
         public Roles Save(Roles item)
         {
-            return repository.Save(item);
+            var result= repository.Save(item);
+
+            foreach (var roleRight in item.RoleRights)
+            {
+                roleRight.RoleID = result.RoleID;
+
+                rightsRepository.Save(roleRight);
+            }
+
+            return result;
+
         }
         public List<RolesAccessType> GetAccessType(string LookupCategory)
         {

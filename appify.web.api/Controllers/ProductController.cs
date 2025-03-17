@@ -2134,7 +2134,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getfeaturedcategories")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetFeaturedategories()
+        public async Task<IActionResult> GetFeaturedategories(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2142,7 +2142,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = this.productBusiness.GetFeaturedategories();
+                var item = this.productBusiness.GetFeaturedCategories(itemData.userID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
