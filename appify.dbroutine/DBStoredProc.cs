@@ -109,7 +109,16 @@ namespace appify.dbroutine
         public const string SAVEPARENTCATEGORIES = "[Operation].[usp_MemberCategorySave]";
         public const string PARENTCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
 
+        /// <summary>
+        /// [Operation].[MemberFeatureCategory]
+        /// </summary>
+
+
+
         public const string FEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesList]";
+        public const string SAVEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySave]";
+        public const string DELETEFEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesDelete]";
+        public const string SELECTFEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesSelect]";
 
         /// <summary>
         /// [Operation].[ProductImage]

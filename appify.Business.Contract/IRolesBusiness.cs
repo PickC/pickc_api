@@ -14,7 +14,7 @@ namespace appify.Business.Contract
 
         public Roles Get(short roleID);
 
-        public List<Roles> ListAll();
+        public List<Roles> ListAll(string? roleCode, string? roleDescription);
 
         public Int64 GetRolesCount();
 
