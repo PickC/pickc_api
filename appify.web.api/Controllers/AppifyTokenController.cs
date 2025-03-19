@@ -51,7 +51,8 @@ namespace appify.web.api.Controllers
                     issuer:config["Jwt:Issuer"],
                     audience:config["Jwt.Audience"],
                     claims:claims,
-                    expires: DateTime.Now.AddDays(7),
+                    //expires: DateTime.Now.AddDays(7),
+                    expires: DateTime.Now.AddMinutes(10),   // the expiry date/time is updated to 10 minutes for testing purpose.
                     signingCredentials: signIn
                     );
 

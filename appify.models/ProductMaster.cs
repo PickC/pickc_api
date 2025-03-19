@@ -179,13 +179,16 @@ namespace appify.models
     //}
 
     #endregion
-    public partial class FeaturedCategories
+    public partial class FeaturedCategories 
     {
         public long VendorID { get; set; }
         public long ParentID { get; set; }
         public long CategoryID { get; set; }
-        public string CategoryBreadCrumb { get; set; }
+        public string? CategoryBreadCrumb { get; set; }
         public short SeqNo { get; set; }
+        public string? Category { get; set; }
+        public string? ParentCategory { get; set; }
+
     }
 
     public partial class ProductCategories
