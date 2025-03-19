@@ -30,6 +30,16 @@ namespace appify.Business
             Roles item = new Roles();   
             item= repository.Get(roleID);
 
+            if (item==null)
+            {
+               item = new Roles { 
+                RoleID=roleID,
+                RoleCode="",
+                RoleDescription=""
+               };
+                
+            }
+
             item.RoleRights = rightsRepository.ListAll(item.RoleID);
 
 

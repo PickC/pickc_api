@@ -35,7 +35,7 @@ namespace appify.Business.Contract
 
         public List<FeaturedCategories> GetFeaturedCategories(long VendorID);
 
-        //public bool updatefeaturedcategories();
+        public bool UpdateFeaturedCategories(FeaturedCategories item);
         //public bool deletefeaturedcategories();
 
 

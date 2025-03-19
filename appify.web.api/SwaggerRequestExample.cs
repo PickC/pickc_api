@@ -361,6 +361,10 @@ namespace appify.web.api
         public short RoleID { get; set; }
 
     }
+
+    public class ParamRoleDeactivate : ParamRole {
+        public short ModifiedBy { get; set; }
+    }
     public class ParamRoleSearch
     {
         public string? RoleCode { get; set; }

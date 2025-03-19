@@ -158,9 +158,10 @@ namespace appify.Business
         //}
 
 
-        //public bool UpdateFeaturedCategories() { 
-        //    throw new NotImplementedException();
-        //}
+        public bool UpdateFeaturedCategories(FeaturedCategories item)
+        {
+            return repository.UpdateFeaturedCategories(item);
+        }
 
     }
 }

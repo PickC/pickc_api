@@ -117,8 +117,8 @@ namespace appify.dbroutine
 
         public const string FEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesList]";
         public const string SAVEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySave]";
-        public const string DELETEFEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesDelete]";
-        public const string SELECTFEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesSelect]";
+        public const string DELETEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategoryDelete]";
+        public const string SELECTFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySelect]";
 
         /// <summary>
         /// [Operation].[ProductImage]

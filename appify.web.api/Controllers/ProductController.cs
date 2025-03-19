@@ -2132,7 +2132,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">FETCH FEATURED CATEGORIES!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
-        [HttpPost, Route("getfeaturedcategories")]
+        [HttpPost, Route("featuredcategories/get")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetFeaturedategories(ParamMemberVendorID itemData)
         {
@@ -2169,6 +2169,96 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get Featured Categories
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///   [
+        ///     {
+        ///        "vendorID": 1060,
+        ///        "parentID": 1002,
+        ///        "categoryID": 1007,
+        ///        "seqNo": 1
+        ///      },
+        ///      {
+        ///        "vendorID": 1060,
+        ///        "parentID": 1003,
+        ///        "categoryID": 1389,
+        ///        "seqNo": 2
+        ///      },
+        ///      {
+        ///      "vendorID": 1060,
+        ///        "parentID": 1003,
+        ///        "categoryID": 1390,
+        ///        "seqNo": 3
+        ///     } 
+        ///   ]        
+        ///     
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
+        ///         "message": "SAVE FEATURED CATEGORIES",
+        ///         "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">SAVE FEATURED CATEGORIES!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("featuredcategories/save")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UpdateFeaturedCategories(List<FeaturedCategories> itemData)
+        {
+            var reqHeader = Request;
+            bool result = false;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                foreach (var item in itemData)
+                {
+                    result = this.productBusiness.UpdateFeaturedCategories(item);
+
+                }
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SAVE FEATURED CATEGORIES";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

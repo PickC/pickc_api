@@ -34,7 +34,7 @@ namespace appify.DataAccess.Contract
 
         public List<FeaturedCategories> GetFeaturedCategories(long VendorID);
 
-        public bool UpdateFeaturedCategories();
+        public bool UpdateFeaturedCategories(FeaturedCategories item);
         public bool DeleteFeaturedCategories();
 
 
