@@ -30,6 +30,16 @@ namespace appify.Business
             Roles item = new Roles();   
             item= repository.Get(roleID);
 
+            if (item==null)
+            {
+               item = new Roles { 
+                RoleID=roleID,
+                RoleCode="",
+                RoleDescription=""
+               };
+                
+            }
+
             item.RoleRights = rightsRepository.ListAll(item.RoleID);
 
 
@@ -41,9 +51,9 @@ namespace appify.Business
             return repository.GetRolesCount();
         }
 
-        public List<Roles> ListAll()
+        public List<Roles> ListAll(string? roleCode, string? roleDescription)
         {
-            return repository.ListAll();
+            return repository.ListAll(roleCode, roleDescription);
         }
 
         public List<Roles> ListbyPageView(int pageNo, int rows)

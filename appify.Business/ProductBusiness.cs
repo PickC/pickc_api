@@ -148,14 +148,20 @@ namespace appify.Business
         }
 
 
-        public List<FeaturedCategories> GetFeaturedategories(long VendorID)
+        public List<FeaturedCategories> GetFeaturedCategories(long vendorID)
         {
-            return repository.GetFeaturedategories(VendorID);
+            return repository.GetFeaturedCategories(vendorID);
         }
 
-        public MemberFeaturedCategory SaveFeaturedCategory(MemberFeaturedCategory itemData)
+        //public bool DeleteFeaturedCategories(long vendorID) {
+        //    throw new NotImplementedException();
+        //}
+
+
+        public bool UpdateFeaturedCategories(FeaturedCategories item)
         {
-            return repository.SaveFeaturedCategory(itemData);
+            return repository.UpdateFeaturedCategories(item);
         }
+
     }
 }

@@ -76,10 +76,10 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<Roles> ListAll()
+        public List<Roles> ListAll(string? roleCode,string? roleDescription)
         {
             List<Roles> item = new List<Roles>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLE);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLE,roleCode,roleDescription);
             item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]);
 
             return item;

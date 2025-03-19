@@ -166,21 +166,29 @@ namespace appify.models
         public bool IsActive { get; set; }
     }
 
+    #region FeaturedCategories (OBSOLETE)
 
-    public partial class FeaturedCategories
-    {
-        public long CategoryID { get; set; }
-        public string CategoryBreadCrumb { get; set; }
-        public long ParentID { get; set; }
-        public short SeqNo { get; set; }
-    }
 
-    public partial class MemberFeaturedCategory
+    //public partial class FeaturedCategories
+    //{
+    //    public long CategoryID { get; set; }
+    //    public string Category { get; set; }
+    //    public long ParentID { get; set; }
+    //    public bool IsEnabled { get; set; }
+    //    public short HierarchyLevel { get; set; }
+    //}
+
+    #endregion
+    public partial class FeaturedCategories 
     {
         public long VendorID { get; set; }
         public long ParentID { get; set; }
         public long CategoryID { get; set; }
+        public string? CategoryBreadCrumb { get; set; }
         public short SeqNo { get; set; }
+        public string? Category { get; set; }
+        public string? ParentCategory { get; set; }
+
     }
 
     public partial class ProductCategories
