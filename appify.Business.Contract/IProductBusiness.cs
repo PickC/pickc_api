@@ -33,7 +33,11 @@ namespace appify.Business.Contract
         public List<ParentCategories> GetVendorCategories(long VendorID);
 
 
-        public List<FeaturedCategories> GetFeaturedategories();
+        public List<FeaturedCategories> GetFeaturedCategories(long VendorID);
+
+        public bool UpdateFeaturedCategories(FeaturedCategories item);
+        //public bool deletefeaturedcategories();
+
 
     }
 }

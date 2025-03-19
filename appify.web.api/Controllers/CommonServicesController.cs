@@ -365,8 +365,9 @@ namespace appify.web.api.Controllers
                 return false;
         }
 
+        #region Razorpay Split Payment
 
-
+        
         //// <summary>
         //// 1. Name and email fields are mandatory for each account & phone number is optional
         //// 2. (50.00 MB Max)
@@ -642,6 +643,9 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+        #endregion
 
     }
 }

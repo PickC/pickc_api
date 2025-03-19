@@ -1,10 +1,4 @@
-﻿/*
- * Company: AppifyRetail.
- * Author: Gurjeet
- * Version: 1.1
- * Date: 2024-09-01
- * Description:
-*/
+﻿
 using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
@@ -308,15 +302,74 @@ namespace appify.DataAccess
             return item;
         }
 
+        #region Featured Categories
+       
 
-        public List<FeaturedCategories> GetFeaturedategories()
+        /// <summary>
+        /// Retrieves a list of featured categories for a specific vendor.
+        /// </summary>
+        /// <param name="vendorID">The unique identifier of the vendor for whom featured categories are to be retrieved.</param>
+        /// <returns>A list of <see cref="FeaturedCategories"/> objects representing the featured categories for the specified vendor.</returns>
+        /// <remarks>
+        /// This method queries the database using a stored procedure to fetch featured categories for the given vendor.
+        /// The result is returned as a list of <see cref="FeaturedCategories"/> objects.
+        /// </remarks>
+        public List<FeaturedCategories> GetFeaturedCategories(long vendorID)
         {
+            // Initialize an empty list to store the featured categories.
             List<FeaturedCategories> item = new List<FeaturedCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES);
+
+            // Execute the stored procedure to fetch featured categories for the specified vendor.
+            // The result is stored in a DataSet.
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.FEATUREDCATEGORIES, vendorID);
+
+            // Convert the first table in the DataSet to a list of FeaturedCategories objects.
             item = DataTableHelper.ConvertDataTable<FeaturedCategories>(ds.Tables[0]);
 
+            // Return the list of featured categories.
             return item;
         }
+
+
+
+        public bool UpdateFeaturedCategories(FeaturedCategories item) {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEFEATUREDCATEGORIES))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@VendorID", item.VendorID);
+                        cmd.Parameters.AddWithValue("@ParentID", item.ParentID);
+                        cmd.Parameters.AddWithValue("@CategoryID", item.CategoryID);
+                        cmd.Parameters.AddWithValue("@SeqNo", item.SeqNo);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+        public bool DeleteFeaturedCategories() {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
     }
 }

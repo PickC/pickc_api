@@ -93,7 +93,7 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns ROLE's details along with Role-rights against the RoleID </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/get")]
@@ -142,6 +142,20 @@ namespace appify.web.api.Controllers
         /// Role List
         /// </summary>
         /// <remarks>  
+        /// Sample request JSON : with Role Code 
+        /// 
+        ///     {
+        ///       "roleCode": "admin",
+        ///       "roleDescription": null
+        ///     }
+        ///     
+        /// Sample request JSON : with Role Description
+        /// 
+        ///     {
+        ///       "roleCode": null,
+        ///       "roleDescription": "create"
+        ///     }
+        ///     
         /// Sample response JSON :
         /// 
         ///     {
@@ -162,19 +176,19 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns ROLEs List against the Role Code or Role Description </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListRoles()
+        public IActionResult ListRoles(ParamRoleSearch itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.rolesBusiness.ListAll();
+                var result = this.rolesBusiness.ListAll(itemData.RoleCode,itemData.RoleDescription);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -215,12 +229,12 @@ namespace appify.web.api.Controllers
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH ROLES COUNT!",
-        ///       "data": 1
+        ///       "data": 6
         ///     }
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns total Roles Count. </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/recordcount")]
@@ -281,22 +295,34 @@ namespace appify.web.api.Controllers
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH ROLES BY PAGE VIEW!",
         ///       "data": [
-        ///         {
-        ///           "roleID": 1000,
-        ///           "roleCode": "ROLE_SUPER_ADMIN",
-        ///           "roleDescription": "Has unrestricted access to all system features, settings, and data. Responsible for managing other a",
-        ///           "isActive": false,
-        ///           "createdBy": 0,
-        ///           "createdOn": "2025-01-23T08:40:21.037",
-        ///           "modifiedBy": 0,
-        ///           "modifiedOn": "0001-01-01T00:00:00"
-        ///         }
-        ///       ]
+        ///             {
+        ///               "roleID": 1007,
+        ///               "roleCode": "Tester",
+        ///               "roleDescription": "Tester can create any Role users",
+        ///               "isActive": true,
+        ///               "createdBy": 0,
+        ///               "createdOn": "2025-03-17T10:08:42.81",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "roleRights": null
+        ///             },
+        ///             {
+        ///               "roleID": 1005,
+        ///               "roleCode": "VIEWER",
+        ///               "roleDescription": "VIEWER",
+        ///               "isActive": true,
+        ///               "createdBy": 1000,
+        ///               "createdOn": "2025-01-27T10:57:43.87",
+        ///               "modifiedBy": 0,
+        ///               "modifiedOn": "0001-01-01T00:00:00",
+        ///               "roleRights": null
+        ///             }
+        ///           ]
         ///     }
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns List of Roles. </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/pageview")]
@@ -410,7 +436,7 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns Updated Roles object based on the given input </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/save")]
@@ -475,12 +501,12 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns VENDOR'S DETAILS against the VendorID </response>
+        /// <response code="200">Returns a BOOLEAN response if the Delete is successful/failed </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         [HttpPost, Route("roles/remove")]
         [MapToApiVersion("1.0")]
-        public IActionResult DeleteRole(RolesDecativate itemData)
+        public IActionResult DeleteRole(ParamRoleDeactivate itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -592,8 +618,14 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+
+
+        #region Securables ( ONLY FOR INTERNAL TESTING)
+
+        
+
         /// <summary>
-        /// Save/Update Securable
+        /// Save/Update Securable (To be used for Internal / API testing. and not to be exposed to the module functionalities)
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -668,7 +700,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         /// <summary>
-        /// Remove the Securable
+        /// Remove the Securable(To be used for Internal / API testing. and not to be exposed to the module functionalities)
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -731,7 +763,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Get The WebPage
+        /// Remove Securables (To be used for Internal / API testing. and not to be exposed to the module functionalities)
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -759,7 +791,7 @@ namespace appify.web.api.Controllers
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">GET THE SECURABLE </response>
+        /// <response code="200">GET THE SECURABLE Item </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("securable/get")]
         [MapToApiVersion("1.0")]
@@ -802,7 +834,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         /// <summary>
-        /// Get List Of The WebPage
+        /// Get List Of Securable items (To be used for Internal / API testing. and not to be exposed to the module functionalities)
         /// </summary>
         /// <remarks>
         /// 
@@ -829,7 +861,7 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>Boolean value</returns>
-        /// <response code="200">GET LIST OF WEBPAGE </response>
+        /// <response code="200">GET LIST OF SECURABLES </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("securable/list")]
         [MapToApiVersion("1.0")]
@@ -871,6 +903,13 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+        #endregion
+
+        #region Role-Rights
+
+        
+
         /// <summary>
         /// Save/Update Role-Rights
         /// </summary>
@@ -1101,7 +1140,7 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "securableID": 1001
+        ///       "roleID": 1001
         ///     }
         /// 
         /// (To Create a New Roles-rights )
@@ -1109,7 +1148,7 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "securableID": 0
+        ///       "roleID": 0
         ///     }
         /// 
         /// 
@@ -1182,6 +1221,6 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
-
+        #endregion
     }
 }
