@@ -464,7 +464,13 @@ namespace appify.dbroutine
         public const string SAVEPARAMETERTYPE = "[Master].[usp_ParameterTypeSave]";
         public const string REMOVEPARAMETERTYPE = "[Master].[usp_ParameterTypeDelete]";
 
+        /// <summary>
+        /// Subscription
+        /// </summary>
+        public const string SELECTSUBSCRIPTION = "[Master].[usp_SubscriptionSelect]";
+        public const string LISTSUBSCRIPTION = "[Master].[usp_SubscriptionList]";
+        public const string SAVESUBSCRIPTION = "[Master].[usp_SubscriptionSave]";
+        public const string REMOVESUBSCRIPTION = "[Master].[usp_SubscriptionDelete]";
 
-         
     }
 }

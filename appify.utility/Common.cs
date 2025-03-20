@@ -194,6 +194,7 @@ namespace appify.utility
     {
 
         public long UserID { get; set; }
+        public string DeviceID { get; set; }
 
     }
 }
