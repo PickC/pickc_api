@@ -2175,33 +2175,33 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Get Featured Categories
+        /// Save/Update Featured Categories by VendorID
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
         ///     Method Type : POST
         ///     
-        ///   [
-        ///     {
+        ///     [
+        ///       {
+        ///          "vendorID": 1060,
+        ///          "parentID": 1002,
+        ///          "categoryID": 1007,
+        ///          "seqNo": 1
+        ///        },
+        ///        {
+        ///          "vendorID": 1060,
+        ///          "parentID": 1003,
+        ///          "categoryID": 1389,
+        ///          "seqNo": 2
+        ///        },
+        ///        {
         ///        "vendorID": 1060,
-        ///        "parentID": 1002,
-        ///        "categoryID": 1007,
-        ///        "seqNo": 1
-        ///      },
-        ///      {
-        ///        "vendorID": 1060,
-        ///        "parentID": 1003,
-        ///        "categoryID": 1389,
-        ///        "seqNo": 2
-        ///      },
-        ///      {
-        ///      "vendorID": 1060,
-        ///        "parentID": 1003,
-        ///        "categoryID": 1390,
-        ///        "seqNo": 3
-        ///     } 
-        ///   ]        
+        ///          "parentID": 1003,
+        ///          "categoryID": 1390,
+        ///          "seqNo": 3
+        ///         } 
+        ///     ]        
         ///     
         /// Sample response:
         /// 
