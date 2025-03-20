@@ -186,8 +186,6 @@ namespace appify.models
         public long CategoryID { get; set; }
         public string? CategoryBreadCrumb { get; set; }
         public short SeqNo { get; set; }
-        public string? Category { get; set; }
-        public string? ParentCategory { get; set; }
 
     }
 
