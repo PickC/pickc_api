@@ -109,17 +109,8 @@ namespace appify.dbroutine
         public const string SAVEPARENTCATEGORIES = "[Operation].[usp_MemberCategorySave]";
         public const string PARENTCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
 
-        /// <summary>
-        /// [Operation].[MemberFeatureCategory]
-        /// </summary>
-
-
-
         public const string FEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesList]";
         public const string SAVEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySave]";
-        public const string DELETEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategoryDelete]";
-        public const string SELECTFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySelect]";
-
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>
@@ -473,7 +464,6 @@ namespace appify.dbroutine
         public const string SAVEPARAMETERTYPE = "[Master].[usp_ParameterTypeSave]";
         public const string REMOVEPARAMETERTYPE = "[Master].[usp_ParameterTypeDelete]";
 
-
         /// <summary>
         /// Subscription
         /// </summary>
@@ -481,9 +471,6 @@ namespace appify.dbroutine
         public const string LISTSUBSCRIPTION = "[Master].[usp_SubscriptionList]";
         public const string SAVESUBSCRIPTION = "[Master].[usp_SubscriptionSave]";
         public const string REMOVESUBSCRIPTION = "[Master].[usp_SubscriptionDelete]";
-        
-
-
 
     }
 }

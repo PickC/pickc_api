@@ -193,7 +193,8 @@ namespace appify.utility
     public class TokenObject
     {
 
-        public string UserID { get; set; }
+        public long UserID { get; set; }
+        public string DeviceID { get; set; }
 
     }
 }
