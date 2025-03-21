@@ -10,9 +10,20 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-
+using System.Net;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["AppifyCache:Server"]; // Replace with your Redis server connection string
+    options.InstanceName = builder.Configuration["AppifyCache:InstanceName"]; // Optional: Add a prefix to all keys
+});
+
+// Add Redis connection
+var redisConnection = ConnectionMultiplexer.Connect(builder.Configuration["AppifyCache:Server"]);
+builder.Services.AddSingleton<IConnectionMultiplexer>(redisConnection);
 
 // Add services to the container.
 
@@ -177,8 +188,18 @@ builder.Services.AddApiVersioning(o =>
 });
 
 builder.Services.AddAuthorization();
-
+//ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
+ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 var app = builder.Build();
+
+// Example: Use Redis in a controller or service
+app.MapGet("/redis-test", async (IConnectionMultiplexer redis) =>
+{
+    var db = redis.GetDatabase();
+    await db.StringSetAsync("mykey", "Hello, Redis!");
+    var value = await db.StringGetAsync("mykey");
+    return value.ToString();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())

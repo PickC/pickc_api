@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +19,7 @@ namespace appify.web.api.Controllers
     {
         private readonly IConfiguration config;
         private readonly IDistributedCache cache;
+        private ResponseMessage rm;
         public AppifyTokenController(IConfiguration config, IDistributedCache cache)
         {
             this.config = config;
@@ -26,86 +28,109 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getuser")]
         [Authorize]
-        public IActionResult GetUser(TokenObject item)
+        public IActionResult GetUser()
         {
 
-            return Ok(item);
-        }
-
-        [HttpPost, Route("gettoken")]
-        public IActionResult GetToken(TokenObject item)
-        {
-
-            try
-            {
-                var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Sub,config["Jwt:Subject"]),
-                ////new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-                new Claim("userID",item.UserID.ToString()),
-                new Claim("deviceID",item.DeviceID.ToString()),
-
-            };
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
-                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-                var token = new JwtSecurityToken(
-                    issuer:config["Jwt:Issuer"],
-                    audience:config["Jwt.Audience"],
-                    claims:claims,
-                    //expires: DateTime.Now.AddDays(7),
-                    expires: DateTime.Now.AddMinutes(10),   // the expiry date/time is updated to 10 minutes for testing purpose.
-                    signingCredentials: signIn
-                    );
-                
-                string tokenvalue = new JwtSecurityTokenHandler().WriteToken(token);
-                return Ok(new { token = tokenvalue });
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Ok("Token validation successful. You may proceed to use this API endpoint.");
         }
 
         [HttpPost, Route("generatetoken")]
-        public async Task<string> GetOrGenerateToken(TokenObject item)
+        public IActionResult GenerateJwtTokenlogic(TokenObject item)
         {
-            var cacheKey = $"Token_{item.UserID}";
-            var existingToken = await cache.GetStringAsync(cacheKey);
-            if (!string.IsNullOrEmpty(existingToken))
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
             {
-                return existingToken; // Return existing valid token
+                rm = new ResponseMessage();
+
+                // Redis connection string (replace with your Redis server details)
+                string redisConnectionString = config["AppifyCache:Server"];//"localhost:5000";
+
+                // JWT configuration
+                string secretKey = config["Jwt:Key"];
+                string issuer = config["Jwt:Issuer"];
+                string audience = config["Jwt.Audience"];
+
+                // Create instances of RedisCacheService and JwtTokenService
+                var redisCacheService = new RedisCacheService(redisConnectionString);
+                var jwtTokenService = new JwtTokenService(secretKey, issuer, audience);
+
+                // Customer ID (for demonstration purposes)
+                string customerId = item.UserID.ToString();
+                string deviceID = item.DeviceID.ToString();
+                // Check if the token exists in Redis
+                string token = redisCacheService.GetToken(customerId, deviceID);
+
+                if (string.IsNullOrEmpty(token) || !jwtTokenService.IsTokenValid(token))
+                {
+                    // Token is expired or doesn't exist, generate a new one
+                    token = jwtTokenService.GenerateToken(customerId, deviceID, 7);
+                    redisCacheService.SaveToken(customerId, deviceID, token, TimeSpan.FromDays(7));
+                    Console.WriteLine("New token generated and saved in Redis.");
+                }
+                else
+                {
+                    Console.WriteLine("Token is valid and retrieved from Redis.");
+                }
+
+                var result = ($"Token:{token}");
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "TOKEN HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
             }
-
-            var newToken = GenerateJwtToken(item);
-            await cache.SetStringAsync(cacheKey, newToken, new DistributedCacheEntryOptions
+            catch (Exception ex)
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
-            });
-
-            return newToken;
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+            }
+            return Ok(rm);
         }
 
-        private string GenerateJwtToken(TokenObject item)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //[HttpPost, Route("gettoken")]
+        //public IActionResult GetToken(TokenObject item)
+        //{
 
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, item.UserID.ToString()),
-            new Claim(JwtRegisteredClaimNames.UniqueName, item.DeviceID.ToString()),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+        //    try
+        //    {
+        //        var claims = new[] {
+        //        new Claim(JwtRegisteredClaimNames.Sub,config["Jwt:Subject"]),
+        //        ////new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+        //        new Claim("userID",item.UserID.ToString()),
+        //        new Claim("deviceID",item.DeviceID.ToString()),
 
-            var token = new JwtSecurityToken(
-                issuer: config["Jwt:Issuer"],
-                audience: config["Jwt.Audience"],
-                claims: claims,
-                ////expires: DateTime.UtcNow.AddDays(7), // 7-day expiration
-                expires: DateTime.Now.AddMinutes(10), 
-                signingCredentials: credentials);
+        //    };
+        //        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]));
+        //        var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //        var token = new JwtSecurityToken(
+        //            issuer:config["Jwt:Issuer"],
+        //            audience:config["Jwt.Audience"],
+        //            claims:claims,
+        //            //expires: DateTime.Now.AddDays(7),
+        //            expires: DateTime.Now.AddMinutes(10),   // the expiry date/time is updated to 10 minutes for testing purpose.
+        //            signingCredentials: signIn
+        //            );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        //        string tokenvalue = new JwtSecurityTokenHandler().WriteToken(token);
+        //        return Ok(new { token = tokenvalue });
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
     }
 }

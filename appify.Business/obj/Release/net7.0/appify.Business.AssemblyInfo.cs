@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("appify.Business")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dddc70313a10efdc9650f1bc6dd4edb7e077b8a3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef2064ee08433bd8b95f52a01a2e0005791efd1c")]
 [assembly: System.Reflection.AssemblyProductAttribute("appify.Business")]
 [assembly: System.Reflection.AssemblyTitleAttribute("appify.Business")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
