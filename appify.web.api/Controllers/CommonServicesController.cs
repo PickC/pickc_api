@@ -21,6 +21,11 @@ using appify.utility;
 using System.ComponentModel.DataAnnotations;
 using Razorpay.Api;
 using Twilio.Types;
+using System.Text.Json;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection;
+using System.Text;
+using System.Net;
 
 
 namespace appify.web.api.Controllers
@@ -39,6 +44,7 @@ namespace appify.web.api.Controllers
 
         public CommonServicesController(IConfiguration configuration, IEventLogBusiness eventLogBusiness, IOrderBusiness orderBusiness, INotificationBusiness notificationBusiness)
         {
+            //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             this.configuration = configuration;
             this.eventLogBusiness = eventLogBusiness;
             this.orderBusiness = orderBusiness;
@@ -445,37 +451,45 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
+                Main();
+                //Main2();
+                var rr = ($"🔍 Current Security Protocol: {ServicePointManager.SecurityProtocol}");
                 rm = new ResponseMessage();
-
-                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
+                //RazorpayClient rr = new RazorpayClient()
+                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                //RazorpayClient client = new RazorpayClient(Common.RazorPayCreateAccount,Common.RazorPayKey, Common.RazorPaySecret);
+                RazorpayClient client = new RazorpayClient(authValue);
                 Dictionary<string,object> accountRequest = new Dictionary<string,object>();
                 accountRequest.Add("email", itemData.EmailID);
                 accountRequest.Add("phone", itemData.Phone);
                 accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
                 accountRequest.Add("business_type", itemData.BusinessType);
-
+                accountRequest.Add("contact_name", "Gaurav Kumar");
                 //Dictionary<string,object> profile= new Dictionary<string,object>();
                 //profile.Add("category", itemData.Profile_Category_Name);
                 //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
 
-                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                legalInfo.Add("pan", itemData.PAN);
-                legalInfo.Add("gst", itemData.GST);
+                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
+                //legalInfo.Add("pan", itemData.PAN);
+                //legalInfo.Add("gst", itemData.GST);
 
-                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                bankInfo.Add("account_number", itemData.BankAccountNo);
-                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
+                //Dictionary<string, object> bankInfo = new Dictionary<string, object>();
+                //bankInfo.Add("ifsc_code", itemData.IFSCCODE);
+                //bankInfo.Add("account_number", itemData.BankAccountNo);
+                //bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
 
 
-                //accountRequest.Add("profile", profile);
+                ////accountRequest.Add("profile", profile);
 
-                if((itemData.PAN!=null || itemData.PAN!="" ) || (itemData.GST!=null || itemData.GST!=""))
-                {
-                    accountRequest.Add("legal_info", legalInfo);
-                }
+                //if((itemData.PAN!=null || itemData.PAN!="" ) || (itemData.GST!=null || itemData.GST!=""))
+                //{
+                //    accountRequest.Add("legal_info", legalInfo);
+                //}
 
-                accountRequest.Add("bank_account",bankInfo);
+                //accountRequest.Add("bank_account",bankInfo);
+
+                string json = System.Text.Json.JsonSerializer.Serialize(accountRequest, new JsonSerializerOptions { WriteIndented = true });
+                Console.WriteLine(json);
 
                 Account payment = client.Account.Create(accountRequest);
 
@@ -497,6 +511,84 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
 
+        }
+        static async Task Main()
+        {
+            string apiKey = Common.RazorPayKey;
+            string apiSecret = Common.RazorPaySecret;
+
+            using (HttpClient client = new HttpClient())
+            {
+                // ✅ Add Basic Authentication
+                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{apiKey}:{apiSecret}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+
+                // ✅ Order Request Data
+                var orderData = new
+                {
+                    amount = 50000,  // ₹500 (Amount in paise)
+                    currency = "INR",
+                    receipt = "order_rcptid_11",
+                    payment_capture = 1
+                };
+
+                // ✅ Convert to JSON
+                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(orderData), Encoding.UTF8, "application/json");
+
+                // ✅ Make API Call
+                HttpResponseMessage response = await client.PostAsync("https://api.razorpay.com/v1/orders", jsonContent);
+
+                // ✅ Read Response
+                string responseBody = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(responseBody);
+
+                // ✅ Check for Errors
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
+                }
+            }
+
+        }
+
+        static async Task Main2()
+        {
+            string partnerApiKey = Common.RazorPayKey;
+            string partnerApiSecret = Common.RazorPaySecret;
+            string url = "https://api.razorpay.com/v2/accounts";
+        
+            using (HttpClient client = new HttpClient())
+            {
+                // ✅ Add Authentication
+                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{partnerApiKey}:{partnerApiSecret}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+
+                // ✅ Sub-Merchant Data
+                var subMerchantData = new
+                {
+                    email = "nkolweb@gmail.com",
+                    phone = "9810722979",
+                    legal_business_name = "APPIFY Enterprises",
+                    business_type = "individual",
+                    contact_name = "Gurjeet Singh"
+                };
+
+                // ✅ Convert to JSON
+                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(subMerchantData), Encoding.UTF8, "application/json");
+
+                // ✅ Call API
+                HttpResponseMessage response = await client.PostAsync(url, jsonContent);
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // ✅ Print Response
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                Console.WriteLine($"Response Body: {responseBody}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
+                }
+            }
         }
 
         [HttpPost]
@@ -610,7 +702,7 @@ namespace appify.web.api.Controllers
                 Dictionary<string, object> transferRequest = new Dictionary<string, object>();
                 List<Dictionary<string, object>> transfers = new List<Dictionary<string, object>>();
                 Dictionary<string, object> transferParams = new Dictionary<string, object>();
-                transferParams.Add("account", "acc_I0QRP7PpvaHhpB");
+                transferParams.Add("account", "acc_Q94MHO8YXtMgzO");
                 transferParams.Add("amount", 100);
                 transferParams.Add("currency", "INR");
                 Dictionary<string, object> notes = new Dictionary<string, object>();
@@ -644,6 +736,58 @@ namespace appify.web.api.Controllers
 
         }
 
+        [HttpPost]
+        [Route("RazorPay/Settlement/splitpayment")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> SplitPayment()
+        {
+            rm = new ResponseMessage();
+            string apiKey = Common.RazorPayKey;
+            string apiSecret = Common.RazorPaySecret;
+            string url = "https://api.razorpay.com/v1/orders";
+
+            using (HttpClient client = new HttpClient())
+            {
+                // ✅ Set Basic Authentication
+                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{apiKey}:{apiSecret}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
+
+                // ✅ Create Payment Order with Split Payments
+                var orderData = new
+                {
+                    amount = 10000,  // ₹100.00 in paisa
+                    currency = "INR",
+                    receipt = "order_rcpt_123",
+                    payment_capture = 1,  // Auto-capture
+                    notes = new { custom_note = "Order for multiple vendors" },
+                    transfers = new[]
+                    {
+                    new { account = "acc_Q94MHO8YXtMgzO", amount = 6000, currency = "INR", on_hold = false },
+                    new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+                }
+                };
+
+                string json = System.Text.Json.JsonSerializer.Serialize(orderData, new JsonSerializerOptions { WriteIndented = true });
+                Console.WriteLine(json);
+
+                // ✅ Convert to JSON
+                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(orderData), Encoding.UTF8, "application/json");
+
+                // ✅ Call API
+                HttpResponseMessage response = await client.PostAsync(url, jsonContent);
+                string responseBody = await response.Content.ReadAsStringAsync();
+
+                // ✅ Print Response
+                Console.WriteLine($"Response Status: {response.StatusCode}");
+                Console.WriteLine($"Response Body: {responseBody}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
+                }
+            }
+            return Ok(rm);
+        }
 
         #endregion
 
