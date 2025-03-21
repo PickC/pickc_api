@@ -451,8 +451,6 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-                Main();
-                //Main2();
                 var rr = ($"🔍 Current Security Protocol: {ServicePointManager.SecurityProtocol}");
                 rm = new ResponseMessage();
                 //RazorpayClient rr = new RazorpayClient()
@@ -465,28 +463,28 @@ namespace appify.web.api.Controllers
                 accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
                 accountRequest.Add("business_type", itemData.BusinessType);
                 accountRequest.Add("contact_name", "Gaurav Kumar");
-                //Dictionary<string,object> profile= new Dictionary<string,object>();
+                //Dictionary<string, object> profile = new Dictionary<string, object>();
                 //profile.Add("category", itemData.Profile_Category_Name);
                 //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
 
-                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                //legalInfo.Add("pan", itemData.PAN);
-                //legalInfo.Add("gst", itemData.GST);
+                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
+                legalInfo.Add("pan", itemData.PAN);
+                legalInfo.Add("gst", itemData.GST);
 
-                //Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                //bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                //bankInfo.Add("account_number", itemData.BankAccountNo);
-                //bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
+                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
+                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
+                bankInfo.Add("account_number", itemData.BankAccountNo);
+                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
 
 
-                ////accountRequest.Add("profile", profile);
+                //accountRequest.Add("profile", profile);
 
-                //if((itemData.PAN!=null || itemData.PAN!="" ) || (itemData.GST!=null || itemData.GST!=""))
-                //{
-                //    accountRequest.Add("legal_info", legalInfo);
-                //}
+                if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
+                {
+                    accountRequest.Add("legal_info", legalInfo);
+                }
 
-                //accountRequest.Add("bank_account",bankInfo);
+                accountRequest.Add("bank_account", bankInfo);
 
                 string json = System.Text.Json.JsonSerializer.Serialize(accountRequest, new JsonSerializerOptions { WriteIndented = true });
                 Console.WriteLine(json);
@@ -511,84 +509,6 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
 
-        }
-        static async Task Main()
-        {
-            string apiKey = Common.RazorPayKey;
-            string apiSecret = Common.RazorPaySecret;
-
-            using (HttpClient client = new HttpClient())
-            {
-                // ✅ Add Basic Authentication
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{apiKey}:{apiSecret}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
-
-                // ✅ Order Request Data
-                var orderData = new
-                {
-                    amount = 50000,  // ₹500 (Amount in paise)
-                    currency = "INR",
-                    receipt = "order_rcptid_11",
-                    payment_capture = 1
-                };
-
-                // ✅ Convert to JSON
-                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(orderData), Encoding.UTF8, "application/json");
-
-                // ✅ Make API Call
-                HttpResponseMessage response = await client.PostAsync("https://api.razorpay.com/v1/orders", jsonContent);
-
-                // ✅ Read Response
-                string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseBody);
-
-                // ✅ Check for Errors
-                if (!response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
-                }
-            }
-
-        }
-
-        static async Task Main2()
-        {
-            string partnerApiKey = Common.RazorPayKey;
-            string partnerApiSecret = Common.RazorPaySecret;
-            string url = "https://api.razorpay.com/v2/accounts";
-        
-            using (HttpClient client = new HttpClient())
-            {
-                // ✅ Add Authentication
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{partnerApiKey}:{partnerApiSecret}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
-
-                // ✅ Sub-Merchant Data
-                var subMerchantData = new
-                {
-                    email = "nkolweb@gmail.com",
-                    phone = "9810722979",
-                    legal_business_name = "APPIFY Enterprises",
-                    business_type = "individual",
-                    contact_name = "Gurjeet Singh"
-                };
-
-                // ✅ Convert to JSON
-                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(subMerchantData), Encoding.UTF8, "application/json");
-
-                // ✅ Call API
-                HttpResponseMessage response = await client.PostAsync(url, jsonContent);
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                // ✅ Print Response
-                Console.WriteLine($"Response Status: {response.StatusCode}");
-                Console.WriteLine($"Response Body: {responseBody}");
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
-                }
-            }
         }
 
         [HttpPost]
@@ -736,57 +656,241 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost]
-        [Route("RazorPay/Settlement/splitpayment")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> SplitPayment()
+        private static readonly string RazorpayKeyId = Common.RazorPayKey;
+        private static readonly string RazorpayKeySecret = Common.RazorPaySecret;
+        private static readonly string RazorpayApiUrl = "https://api.razorpay.com/v1/orders";
+
+        public static async Task CreateSplitPaymentOrderAsync()
         {
-            rm = new ResponseMessage();
-            string apiKey = Common.RazorPayKey;
-            string apiSecret = Common.RazorPaySecret;
-            string url = "https://api.razorpay.com/v1/orders";
-
-            using (HttpClient client = new HttpClient())
+            // Define the order payload with split payments
+            var orderData = new
             {
-                // ✅ Set Basic Authentication
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{apiKey}:{apiSecret}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authValue);
-
-                // ✅ Create Payment Order with Split Payments
-                var orderData = new
+                amount = 10000, // Amount in paise (e.g., 10000 = ₹100)
+                currency = "INR",
+                receipt = "order_rcpt_123",
+                payment_capture = 1, // Auto-capture payment
+                notes = new { description = "Order for multiple vendors" },
+                transfers = new[]
                 {
-                    amount = 10000,  // ₹100.00 in paisa
-                    currency = "INR",
-                    receipt = "order_rcpt_123",
-                    payment_capture = 1,  // Auto-capture
-                    notes = new { custom_note = "Order for multiple vendors" },
-                    transfers = new[]
-                    {
-                    new { account = "acc_Q94MHO8YXtMgzO", amount = 6000, currency = "INR", on_hold = false },
-                    new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+                new { account = "acc_Q9N1ccfvK0eFMm", amount = 6000, currency = "INR", on_hold = false },
+                new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+            }
+            };
+
+            // Serialize the order data to JSON
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(orderData);
+
+            // Create HttpClient instance
+            using (var client = new HttpClient())
+            {
+                // Set up Basic Authentication
+                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId}:{RazorpayKeySecret}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                // Set up the request content
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                // Send the POST request to Razorpay API
+                HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl, content);
+
+                // Handle the response
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Order created successfully:");
+                    Console.WriteLine(responseBody);
                 }
-                };
-
-                string json = System.Text.Json.JsonSerializer.Serialize(orderData, new JsonSerializerOptions { WriteIndented = true });
-                Console.WriteLine(json);
-
-                // ✅ Convert to JSON
-                var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(orderData), Encoding.UTF8, "application/json");
-
-                // ✅ Call API
-                HttpResponseMessage response = await client.PostAsync(url, jsonContent);
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                // ✅ Print Response
-                Console.WriteLine($"Response Status: {response.StatusCode}");
-                Console.WriteLine($"Response Body: {responseBody}");
-
-                if (!response.IsSuccessStatusCode)
+                else
                 {
-                    Console.WriteLine($"❌ Error: {response.StatusCode} - {responseBody}");
+                    string errorResponse = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine("Error creating order:");
+                    Console.WriteLine(errorResponse);
                 }
             }
-            return Ok(rm);
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/OrderBaseSplitPayment")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> OrderBaseSplitPayment()
+        {
+            await CreateSplitPaymentOrderAsync();
+            return Ok("");
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/PaymentBaseSplitPayment")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> PaymentBaseSplitPayment()
+        {
+            // Replace with the actual payment ID
+            string paymentId = "pay_ABC1234567890";
+            await CreateTransferSplitPaymentAsync(paymentId);
+            return Ok("");
+        }
+
+        private static readonly string RazorpayKeyId2 = Common.RazorPayKey;
+        private static readonly string RazorpayKeySecret2 = Common.RazorPaySecret;
+        private static readonly string RazorpayApiUrl2 = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
+
+        public static async Task CreateTransferSplitPaymentAsync(string paymentId)
+        {
+            // Define the transfer payload for split payments
+            var transferData = new
+            {
+                transfers = new[]
+                {
+                new { account = "acc_Q9N1ccfvK0eFMm", amount = 6000, currency = "INR", on_hold = false },
+                new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+            }
+            };
+
+            // Serialize the transfer data to JSON
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(transferData);
+
+            // Create HttpClient instance
+            using (var client = new HttpClient())
+            {
+                // Set up Basic Authentication
+                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId2}:{RazorpayKeySecret2}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                // Set up the request content
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    // Send the POST request to Razorpay API
+                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl2.Replace("PAYMENT_ID", paymentId), content);
+
+                    // Handle the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Transfer created successfully:");
+                        Console.WriteLine(responseBody);
+                    }
+                    else
+                    {
+                        string errorResponse = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Error creating transfer:");
+                        Console.WriteLine(errorResponse);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception occurred:");
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
+        [HttpPost]
+        [Route("RazorPay/Settlement/CreateAnAccount")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> CreateAnAccount()
+        {
+            await CreateSubMerchantAccountAsync();
+            return Ok(0);
+        }
+
+        private static readonly string RazorpayKeyId3 = Common.RazorPayKey;
+        private static readonly string RazorpayKeySecret3 = Common.RazorPaySecret;
+        private static readonly string RazorpayApiUrl3 = "https://api.razorpay.com/v2/accounts";
+
+        public static async Task CreateSubMerchantAccountAsync()
+        {
+            // Define the sub-merchant account payload
+            var accountData = new
+            {
+                email = "submerchant@example.com",
+                phone = "9876543210",
+                legal_business_name = "Sub Merchant Business",
+                business_type = "partnership",
+                customer_facing_business_name = "Sub Merchant Store",
+                profile = new
+                {
+                    category = "health_beauty",
+                    subcategory = "health_beauty",
+                    description = "Health and beauty products"
+                },
+                legal_info = new
+                {
+                    pan = "ABCDE1234F",
+                    gst = "22ABCDE1234F1Z5"
+                },
+                brand = new
+                {
+                    color = "#FFFFFF"
+                },
+                notes = new
+                {
+                    internal_ref_id = "123456"
+                },
+                contact_info = new
+                {
+                    chargeback = new
+                    {
+                        email = "chargeback@example.com",
+                        phone = "9876543210"
+                    },
+                    refund = new
+                    {
+                        email = "refund@example.com",
+                        phone = "9876543210"
+                    },
+                    support = new
+                    {
+                        email = "support@example.com",
+                        phone = "9876543210"
+                    }
+                },
+                apps = new
+                {
+                    websites = new[] { "https://www.submerchantstore.com" },
+                    android = new[] { "https://play.google.com/store/apps/details?id=com.submerchantstore" },
+                    ios = new[] { "https://apps.apple.com/in/app/submerchantstore/id123456789" }
+                }
+            };
+
+            // Serialize the account data to JSON
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(accountData);
+
+            // Create HttpClient instance
+            using (var client = new HttpClient())
+            {
+                // Set up Basic Authentication
+                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId3}:{RazorpayKeySecret3}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                // Set up the request content
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    // Send the POST request to Razorpay API
+                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl3, content);
+
+                    // Handle the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Sub-merchant account created successfully:");
+                        Console.WriteLine(responseBody);
+                    }
+                    else
+                    {
+                        string errorResponse = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Error creating sub-merchant account:");
+                        Console.WriteLine(errorResponse);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception occurred:");
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
         #endregion
