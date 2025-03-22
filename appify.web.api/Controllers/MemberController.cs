@@ -1450,18 +1450,35 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            MemberAppSettingLite itemLite;
+
             //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.GetAppSettingList(itemData.userID).FirstOrDefault();
+                var item = memberAppSettingBusiness.GetMemberAppSetting(itemData.userID);
 
                 if (item != null)
                 {
+                    itemLite = new MemberAppSettingLite
+                    {
+                        UserID = item.UserID,
+                        AppName = item.AppName,
+                        AppName1 = item.AppName1,
+                        AppName2 = item.AppName2,
+                        ShortDescription = item.ShortDescription,
+                        Description = item.LongDescription,
+                        Logo = item.AppLogo,
+                        AppIcon = item.AppIcon,
+                        PlayStoreID = item.AndroidBundleID,
+                        AppStoreID = item.AppleAppID
+                    };
+
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH APP SETTINGS";
                     rm.name = StatusName.ok;
-                    rm.data = item;
+                    rm.data = itemLite;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
@@ -1534,17 +1551,31 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("appsetting/save")]
         [MapToApiVersion("1.0")]
-        public IActionResult AddAppSetting(MemberAppSetting item)
+        public IActionResult AddAppSetting(MemberAppSettingLite item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
+                var itemData = new MemberAppSetting
+                    {
+                        UserID = item.UserID,
+                        AppName = item.AppName,
+                        AppName1 = item.AppName1,
+                        AppName2 = item.AppName2,
+                        ShortDescription = item.ShortDescription,
+                        LongDescription = item.Description,
+                        AppLogo = item.Logo,
+                        AppIcon = item.AppIcon,
+                        AndroidBundleID = item.PlayStoreID,
+                        AppleAppID = item.AppStoreID
+                    };
+
                 rm = new ResponseMessage();
-                var result = memberAppSettingBusiness.saveAppSetting(item);
+                var result = memberAppSettingBusiness.SaveMemberAppSetting(itemData);
                 if (result)
                 {
-                    var returndata = memberAppSettingBusiness.GetAppSetting(item.UserID, item.AppName);
+                    var returndata = memberAppSettingBusiness.GetMemberAppSetting(item.UserID);
 
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "APP SETTINGS SAVED SUCCESSFULLY";
@@ -1603,7 +1634,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = memberAppSettingBusiness.DeleteAppSetting(itemData.userID,itemData.appName);
+                var result = memberAppSettingBusiness.DeleteMemberAppSetting(itemData.userID);
 
                 if (result)
                 {
