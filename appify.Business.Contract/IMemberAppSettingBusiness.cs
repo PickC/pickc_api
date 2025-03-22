@@ -9,9 +9,15 @@ namespace appify.Business.Contract
 {
     public interface IMemberAppSettingBusiness
     {
-        public MemberAppSetting GetAppSetting(long userID, string appName);
-        public List<MemberAppSetting> GetAppSettingList(long userID);
-        public bool DeleteAppSetting(long userID, string appName);
-        public bool saveAppSetting(MemberAppSetting item);
+
+        public MemberAppSetting GetMemberAppSetting(long userID);
+
+        public List<MemberAppSetting> ListMemberAppSetting(long userID);
+
+        public bool SaveMemberAppSetting(MemberAppSetting item);
+
+        public bool DeleteMemberAppSetting(long userID);
+
+
     }
 }

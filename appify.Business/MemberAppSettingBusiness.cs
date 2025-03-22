@@ -17,24 +17,24 @@ namespace appify.Business
             this.memberAppSettingRepository = repository;
         }
 
-        public bool DeleteAppSetting(long userID,string appName)
+        public bool DeleteMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.DeleteAppSetting(userID, appName);
+            return memberAppSettingRepository.DeleteMemberAppSetting(userID);
         }
 
-        public MemberAppSetting GetAppSetting(long userID,string appName)
+        public MemberAppSetting GetMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.GetAppSetting(userID, appName);
+            return memberAppSettingRepository.GetMemberAppSetting(userID);
         }
 
-        public List<MemberAppSetting> GetAppSettingList(long userID)
+        public List<MemberAppSetting> ListMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.GetAppSettingList(userID);
+            return memberAppSettingRepository.ListMemberAppSetting(userID);
         }
 
-        public bool saveAppSetting(MemberAppSetting item)
+        public bool SaveMemberAppSetting(MemberAppSetting item)
         {
-            return memberAppSettingRepository.saveAppSetting(item);
+            return memberAppSettingRepository.SaveMemberAppSetting(item);
         }
     }
 }

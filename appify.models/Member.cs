@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace appify.models
+﻿namespace appify.models
 {
     public partial class Member
     {
@@ -89,30 +83,6 @@ namespace appify.models
         public string? Remarks { get; set; }
 
         public bool IsActive { get; set; }
-    }
-
-
-    public class MemberAppSetting  
-    {
-        
-		// Public Members 
-
-		public Int64 UserID { get; set; }
-
-        public string AppName { get; set; }
-        public string? AppName1 { get; set; }
-        public string? AppName2 { get; set; }
-        public string? ShortDescription { get; set; }
-        public string? Description { get; set; }
-
-        public string? Logo { get; set; }
-
-        public string? PlayStoreID { get; set; }
-
-        public string? AppStoreID { get; set; }
-        public string? AppIcon { get; set; }
-
-
     }
 
     public partial class MemberDashboard {
