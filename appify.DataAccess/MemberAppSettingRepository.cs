@@ -138,5 +138,102 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        public MemberAppSetting GetMemberAppSettingWeb(long userID)
+        {
+            MemberAppSetting item = new MemberAppSetting();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+
+        public List<MemberAppSetting> ListMemberAppSettingWeb()
+        {
+            List<MemberAppSetting> items = new List<MemberAppSetting>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPSETTING);
+            items = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]);
+
+            return items;
+        }
+        public MemberAppStatus GetAppStatusWeb(long userID)
+        {
+            MemberAppStatus item = new MemberAppStatus();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAppStatus>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+        public bool SaveMemberAppSettingWeb(MemberAppSetting item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEMEMBERAPPSETTING))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", item.UserID);
+                        cmd.Parameters.AddWithValue("@AppName", item.AppName);
+                        cmd.Parameters.AddWithValue("@AndroidBundleID", item.AndroidBundleID);
+                        cmd.Parameters.AddWithValue("@AppleBuldleID", item.AppleBuldleID);
+                        cmd.Parameters.AddWithValue("@AppleAppID", item.AppleAppID);
+                        cmd.Parameters.AddWithValue("@AppLogo", item.AppLogo);
+                        cmd.Parameters.AddWithValue("@FireBaseProjectID", item.FireBaseProjectID);
+                        cmd.Parameters.AddWithValue("@AppIcon", item.AppIcon);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+        public bool UpdateMemberAppSettingWeb(MemberAppSettingUpdate item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEMEMBERAPPSETTING))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", item.VendorID);
+                        cmd.Parameters.AddWithValue("@AppName", item.AppName);
+                        cmd.Parameters.AddWithValue("@DeploymentStatusAndroid", item.DeploymentStatusAndroid);
+                        cmd.Parameters.AddWithValue("@DeploymentStatusApple", item.DeploymentStatusApple);
+                        cmd.Parameters.AddWithValue("@AndroidAppURL", item.AndroidAppURL);
+                        cmd.Parameters.AddWithValue("@AppleAppURL", item.AppleAppURL);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
     }
 }

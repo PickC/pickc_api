@@ -129,6 +129,7 @@ namespace appify.models
         public decimal? DiscountValue { get; set; }
         public string? CategoryName {  get; set; }
         public string? BreadCrumb { get; set; }
+        public Int16? Stock { get; set; }
 
     }
 

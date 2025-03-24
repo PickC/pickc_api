@@ -488,5 +488,13 @@ namespace appify.DataAccess
 
             return item;
         }
+        public MemberAppLinks getAppLinks(long VendorID)
+        {
+            MemberAppLinks item = new MemberAppLinks();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETAPPLINKSBYUSER, VendorID);
+            item = DataTableHelper.ConvertDataTable<MemberAppLinks>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
     }
 }

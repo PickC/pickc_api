@@ -68,7 +68,35 @@ namespace appify.models
         public string AppIcon { get; set; }
 
     }
+    public partial class  MemberAppStatus
+    {
+        public short DeploymentStatusAndroid { get; set; }
+        public short DeploymentStatusApple { get; set; }
+        public string AndroidAppURL { get; set; }
+        public string AppleAppURL { get; set; }
+    }
 
+    public partial class MemberAppSettingSave
+    {
+        public long VendorID { get; set; }
+        public string AppName { get; set; }
+        public string AndroidBundleID { get; set; }
+        public string AppleBuldleID { get; set; }
+        public string AppleAppID { get; set; }
+        public string AppLogo { get; set; }
+        public string FireBaseProjectID { get; set; }
+        public string AppIcon { get; set; }
+    }
+
+    public partial class MemberAppSettingUpdate
+    {
+        public long VendorID { get; set; }
+        public string AppName { get; set; }
+        public short DeploymentStatusAndroid { get; set; }
+        public short DeploymentStatusApple { get; set; }
+        public string AndroidAppURL { get; set; }
+        public string AppleAppURL { get; set; }
+    }
 }
 
 
