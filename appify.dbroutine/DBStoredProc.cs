@@ -54,10 +54,10 @@ namespace appify.dbroutine
         /// [Operation].[MemberAppSetting]
         /// </summary>
 
-        public const string SELECTMEMBERAPPSETTING = "[Operation].[usp_SelectMemberAppSetting]";
-        public const string LISTMEMBERAPPSETTING = "[Operation].[usp_ListMemberAppSetting]";
-        public const string SAVEMEMBERAPPSETTING = "[Operation].[usp_SaveMemberAppSetting]";
-        public const string DELETEMEMBERAPPSETTING = "[Operation].[usp_DeleteMemberAppSetting]";
+        public const string SELECTMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingSelect]";
+        public const string LISTMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingList]";
+        public const string SAVEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingSave]";
+        public const string DELETEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingDelete]";
 
         /// <summary>
         /// [Operation].[MemberKYC]
@@ -472,5 +472,6 @@ namespace appify.dbroutine
         public const string SAVESUBSCRIPTION = "[Master].[usp_SubscriptionSave]";
         public const string REMOVESUBSCRIPTION = "[Master].[usp_SubscriptionDelete]";
 
+        public const string GETAPPLINKSBYUSER = "[Operation].[usp_GetAppLinksByUserID]";
     }
 }

@@ -114,5 +114,9 @@ namespace appify.Business
         {
             return repository.memberSMSSettingGet(VendorID);
         }
+        public MemberAppLinks getAppLinks(long VendorID)
+        {
+            return repository.getAppLinks(VendorID);
+        }
     }
 }

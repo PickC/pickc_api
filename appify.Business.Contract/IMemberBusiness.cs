@@ -35,5 +35,6 @@ namespace appify.Business.Contract
         public List<MemberBanner> memberBannerList();
         public List<MemberBanner> memberBannerListByVendor(long VendorID);
         public MemberSMSSetting memberSMSSettingGet(long VendorID);
+        public MemberAppLinks getAppLinks(long VendorID);
     }
 }
