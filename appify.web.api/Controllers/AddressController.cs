@@ -10,6 +10,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -34,70 +35,71 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
         }
 
-    /// <summary>
-    /// Adds/Update an Address
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///       "addressID": 0,
-    ///       "linkID": 1060,
-    ///       "addressType": 3517,
-    ///       "houseNo": "B.29/27-k-1",
-    ///       "address1": "sankat mochan road",
-    ///       "address2": "varanasi",
-    ///       "landmark": "Royal GYM",
-    ///       "city": "Bonala",
-    ///       "zipCode": "505301",
-    ///       "alternateNo": "string",
-    ///       "state": "Telangana",
-    ///       "country": "India",
-    ///       "latitude": 0.0,
-    ///       "longitude": 0.0,
-    ///       "isDefault": true,
-    ///       "isActive": true,
-    ///       "createdOn": "2024-09-30T11:32:23.830Z",
-    ///       "modifiedOn": "2024-09-30T11:32:23.830Z",
-    ///       "locationID": "3517_1727669597784"
-    ///     }
-    ///     
-    /// Sample response JSON :
-    /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "ADDRESS SAVED SUCCESSFULLY!",
-    ///       "data": {
-    ///         "addressID": 1602,
-    ///         "linkID": 1060,
-    ///         "addressType": 3517,
-    ///         "houseNo": "B.29/27-k-1",
-    ///         "address1": "sankat mochan road",
-    ///         "address2": "varanasi",
-    ///         "landmark": "Royal GYM",
-    ///         "city": "Bonala",
-    ///         "zipCode": "505301",
-    ///         "alternateNo": "string",
-    ///         "state": "Telangana",
-    ///         "country": "India",
-    ///         "latitude": 0,
-    ///         "longitude": 0,
-    ///         "isDefault": true,
-    ///         "isActive": true,
-    ///         "createdOn": "2024-09-30T11:32:23.83Z",
-    ///         "modifiedOn": "2024-09-30T11:32:23.83Z",
-    ///         "locationID": "3517_1727669597784"
-    ///       }
-    ///     }
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns Address Item against the AddressID </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <summary>
+        /// Adds/Update an Address
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "addressID": 0,
+        ///       "linkID": 1060,
+        ///       "addressType": 3517,
+        ///       "houseNo": "B.29/27-k-1",
+        ///       "address1": "sankat mochan road",
+        ///       "address2": "varanasi",
+        ///       "landmark": "Royal GYM",
+        ///       "city": "Bonala",
+        ///       "zipCode": "505301",
+        ///       "alternateNo": "string",
+        ///       "state": "Telangana",
+        ///       "country": "India",
+        ///       "latitude": 0.0,
+        ///       "longitude": 0.0,
+        ///       "isDefault": true,
+        ///       "isActive": true,
+        ///       "createdOn": "2024-09-30T11:32:23.830Z",
+        ///       "modifiedOn": "2024-09-30T11:32:23.830Z",
+        ///       "locationID": "3517_1727669597784"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "ADDRESS SAVED SUCCESSFULLY!",
+        ///       "data": {
+        ///         "addressID": 1602,
+        ///         "linkID": 1060,
+        ///         "addressType": 3517,
+        ///         "houseNo": "B.29/27-k-1",
+        ///         "address1": "sankat mochan road",
+        ///         "address2": "varanasi",
+        ///         "landmark": "Royal GYM",
+        ///         "city": "Bonala",
+        ///         "zipCode": "505301",
+        ///         "alternateNo": "string",
+        ///         "state": "Telangana",
+        ///         "country": "India",
+        ///         "latitude": 0,
+        ///         "longitude": 0,
+        ///         "isDefault": true,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-09-30T11:32:23.83Z",
+        ///         "modifiedOn": "2024-09-30T11:32:23.83Z",
+        ///         "locationID": "3517_1727669597784"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Address Item against the AddressID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
 
-    [HttpPost, Route("save")]
+        [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> Add(Address item)
         {
             var reqHeader = Request;
@@ -170,7 +172,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
-
+        [Authorize]
         public IActionResult Remove(ParamAddress itemData)
         {
             var reqHeader = Request;
@@ -260,6 +262,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("getaddress")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetAddress(ParamAddress itemData)
         {
             var reqHeader = Request;
@@ -349,6 +352,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("getdefaultaddress")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetAddress(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -481,6 +485,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult List(ParamMemberUserID itemData)
         {
             var reqHeader = Request;

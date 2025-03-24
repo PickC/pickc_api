@@ -40,15 +40,17 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "roleID": 1010,
-        ///       "securableID": 1010,
-        ///       "isAdd": true,
-        ///       "isEdit": true,
-        ///       "isView": true,
-        ///       "isDownload": true,
-        ///       "isDelete": true,
-        ///       "createdBy": 1000,
-        ///       "modifiedBy": 1000
+        ///       "parameterID": 0,
+        ///       "categoryID": 0,
+        ///       "parameterName": "string",
+        ///       "isActive": true,
+        ///       "createdBy": 0,
+        ///       "createdOn": "2025-03-24T04:57:01.080Z",
+        ///       "modifiedBy": 0,
+        ///       "modifiedOn": "2025-03-24T04:57:01.080Z",
+        ///       "category": "string",
+        ///       "parentID": 0,
+        ///       "parentCategory": "string"
         ///     }
         /// 
         /// Sample response JSON :ML
@@ -112,11 +114,9 @@ namespace appify.web.api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     Method Type : POST
-        ///     
         ///     {
-        ///       "roleID": 1010,  
-        ///       "securableID": 1010
+        ///       "parameterID": 0,
+        ///       "categoryID": 0
         ///     }
         /// 
         /// Sample response JSON :
@@ -176,11 +176,9 @@ namespace appify.web.api.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     Method Type : POST
-        ///     
         ///     {
-        ///       "roleID": 1000,  
-        ///       "securableID": 1001
+        ///       "parameterID": 0,
+        ///       "categoryID": 0
         ///     }
         /// 
         /// Sample response JSON :
@@ -189,21 +187,6 @@ namespace appify.web.api.Controllers
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH CATEGORY PARAMETER ITEM!",
-        ///       "data": {
-        ///       "roleID": 1000,
-        ///       "securableID": 1001,
-        ///       "isAdd": true,
-        ///       "isEdit": true,
-        ///       "isView": true,
-        ///       "isDelete": true,
-        ///       "isDownload": true,
-        ///       "createdBy": 0,
-        ///       "createdOn": "0001-01-01T00:00:00",
-        ///       "modifiedBy": 0,
-        ///       "modifiedOn": "0001-01-01T00:00:00",
-        ///       "pageLink": "https://appi-fy.ai/dashboard",
-        ///       "pageName": "Dashboard",
-        ///       "parentName": null
         ///     }
         /// 
         /// </remarks>
@@ -256,45 +239,17 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request: 
-        /// (Existing Roles-rights for the Role)
-        /// 
-        ///     Method Type : POST
-        ///     
         ///     {
-        ///       "securableID": 1001
+        ///       "parameterID": 0,
+        ///       "categoryID": 0
         ///     }
-        /// 
-        /// (To Create a New Roles-rights )
-        /// 
-        ///     Method Type : POST
         ///     
-        ///     {
-        ///       "securableID": 0
-        ///     }
-        /// 
-        /// 
         /// Sample response JSON :
         /// 
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH CATEGORY PARAMETER LIST!",
-        ///       "data": [
-        ///         "roleID": 1000,
-        ///         "securableID": 1001,
-        ///         "isAdd": false,
-        ///         "isEdit": false,
-        ///         "isView": false,
-        ///         "isDelete": false,
-        ///         "isDownload": false,
-        ///         "createdBy": 1000,
-        ///         "createdOn": "0001-01-01T00:00:00",
-        ///         "modifiedBy": 1000,
-        ///         "modifiedOn": "0001-01-01T00:00:00",
-        ///         "pageLink": "https://appi-fy.ai/dashboard",
-        ///         "pageName": "Dashboard",
-        ///         "parentName": null
-        ///         ],
         ///     }
         /// 
         /// </remarks>
@@ -358,15 +313,9 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "roleID": 1010,
-        ///       "securableID": 1010,
-        ///       "isAdd": true,
-        ///       "isEdit": true,
-        ///       "isView": true,
-        ///       "isDownload": true,
-        ///       "isDelete": true,
-        ///       "createdBy": 1000,
-        ///       "modifiedBy": 1000
+        ///       "parameterID": 0,
+        ///       "isMultipleValue": true,
+        ///       "parameterName": "string"
         ///     }
         /// 
         /// Sample response JSON :ML
@@ -433,8 +382,8 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "roleID": 1010,  
-        ///       "securableID": 1010
+        ///       "parameterID": 0,
+        ///       "parameterValue": "string"
         ///     }
         /// 
         /// Sample response JSON :
@@ -497,8 +446,8 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "roleID": 1000,  
-        ///       "securableID": 1001
+        ///       "parameterID": 0,
+        ///       "parameterValue": "string"
         ///     }
         /// 
         /// Sample response JSON :
@@ -507,21 +456,6 @@ namespace appify.web.api.Controllers
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH PARAMETER TYPE ITEM!",
-        ///       "data": {
-        ///       "roleID": 1000,
-        ///       "securableID": 1001,
-        ///       "isAdd": true,
-        ///       "isEdit": true,
-        ///       "isView": true,
-        ///       "isDelete": true,
-        ///       "isDownload": true,
-        ///       "createdBy": 0,
-        ///       "createdOn": "0001-01-01T00:00:00",
-        ///       "modifiedBy": 0,
-        ///       "modifiedOn": "0001-01-01T00:00:00",
-        ///       "pageLink": "https://appi-fy.ai/dashboard",
-        ///       "pageName": "Dashboard",
-        ///       "parentName": null
         ///     }
         /// 
         /// </remarks>
@@ -570,24 +504,16 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         /// <summary>
-        /// Get List Of The WebPage
+        /// Get List Of The Parameter Type
         /// </summary>
         /// <remarks>
         /// Sample request: 
-        /// (Existing Roles-rights for the Role)
         /// 
         ///     Method Type : POST
         ///     
         ///     {
-        ///       "securableID": 1001
-        ///     }
-        /// 
-        /// (To Create a New Roles-rights )
-        /// 
-        ///     Method Type : POST
-        ///     
-        ///     {
-        ///       "securableID": 0
+        ///       "parameterID": 0,
+        ///       "categoryID": 0
         ///     }
         /// 
         /// 
@@ -597,22 +523,6 @@ namespace appify.web.api.Controllers
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
         ///       "message": "FETCH CATEGORY PARAMETER LIST!",
-        ///       "data": [
-        ///         "roleID": 1000,
-        ///         "securableID": 1001,
-        ///         "isAdd": false,
-        ///         "isEdit": false,
-        ///         "isView": false,
-        ///         "isDelete": false,
-        ///         "isDownload": false,
-        ///         "createdBy": 1000,
-        ///         "createdOn": "0001-01-01T00:00:00",
-        ///         "modifiedBy": 1000,
-        ///         "modifiedOn": "0001-01-01T00:00:00",
-        ///         "pageLink": "https://appi-fy.ai/dashboard",
-        ///         "pageName": "Dashboard",
-        ///         "parentName": null
-        ///         ],
         ///     }
         /// 
         /// </remarks>
