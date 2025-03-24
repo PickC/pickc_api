@@ -13,6 +13,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Razorpay.Api;
 using static appify.models.NotificationType;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -1667,7 +1668,352 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+        /// <summary>
+        /// Get an App Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP SETTINGS",
+        ///       "data": {
+        ///         "userID": 1060,
+        ///         "appName": "I AM BACK",
+        ///         "shortDescription": "",
+        ///         "longDescription": "",
+        ///         "appName1": "",
+        ///         "appName2": "",
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "androidBundleID": "com.appifyai.iAmBack",
+        ///         "appleBuldleID": "com.appifyai.iAmBack",
+        ///         "appleAppID": "6471469501",
+        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
+        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501",
+        ///         "fireBaseProjectID": "appify-android-gcp",
+        ///         "website": "",
+        ///         "keywords": "",
+        ///         "deploymentStatusAndroid": 4127,
+        ///         "deploymentStatusApple": 4127,
+        ///         "mobileLink": null,
+        ///         "tabLink": null,
+        ///         "imageLink": null,
+        ///         "kycLink": null,
+        ///         "companyDescription": null,
+        ///         "playstoreDescription": null,
+        ///         "appstoreWords": null,
+        ///         "subtitle": null,
+        ///         "isEmailSent": null,
+        ///         "comments": null,
+        ///         "onboardedBy": null,
+        ///         "createdBy": 1000,
+        ///         "createdOn": "2025-03-21T09:18:32.053",
+        ///         "modifiedBy": 1000,
+        ///         "modifiedOn": "2025-03-21T09:18:32.053"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/get")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetMemberAppSettingWeb(ParamMemberUserID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
 
+            MemberAppSettingLite itemLite;
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.GetMemberAppSettingWeb(itemData.userID);
+
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH APP SETTINGS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Get The List Of App Setting
+        /// </summary>
+        /// <remarks>
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP SETTINGS",
+        ///       "data": {
+        ///         "userID": 1060,
+        ///         "appName": "I AM BACK",
+        ///         "shortDescription": "",
+        ///         "longDescription": "",
+        ///         "appName1": "",
+        ///         "appName2": "",
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "androidBundleID": "com.appifyai.iAmBack",
+        ///         "appleBuldleID": "com.appifyai.iAmBack",
+        ///         "appleAppID": "6471469501",
+        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
+        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501",
+        ///         "fireBaseProjectID": "appify-android-gcp",
+        ///         "website": "",
+        ///         "keywords": "",
+        ///         "deploymentStatusAndroid": 4127,
+        ///         "deploymentStatusApple": 4127,
+        ///         "mobileLink": null,
+        ///         "tabLink": null,
+        ///         "imageLink": null,
+        ///         "kycLink": null,
+        ///         "companyDescription": null,
+        ///         "playstoreDescription": null,
+        ///         "appstoreWords": null,
+        ///         "subtitle": null,
+        ///         "isEmailSent": null,
+        ///         "comments": null,
+        ///         "onboardedBy": null,
+        ///         "createdBy": 1000,
+        ///         "createdOn": "2025-03-21T09:18:32.053",
+        ///         "modifiedBy": 1000,
+        ///         "modifiedOn": "2025-03-21T09:18:32.053"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH LIST APP SETTINGS SUCCESSFULLY</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListMemberAppSettingWeb()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            MemberAppSettingLite itemLite;
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.ListMemberAppSettingWeb();
+
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH APP SETTINGS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH LIST APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, item, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = item;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP LIST SETTINGS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Add App Settings
+        /// </summary>
+        /// <remarks>
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "APP SETTINGS SAVED SUCCESSFULLY",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">APP SETTINGS UPDATED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/save")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SaveMemberAppSettingWeb(MemberAppSetting itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = memberAppSettingBusiness.SaveMemberAppSettingWeb(itemData);
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "APP SETTINGS SAVED SUCCESSFULLY";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get an App Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP STATUS",
+        ///       "data": {
+        ///         "deploymentStatusAndroid": 4127,
+        ///         "deploymentStatusApple": 4127,
+        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
+        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/getappstatus")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetAppStatusWeb(ParamMemberUserID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            MemberAppSettingLite itemLite;
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.GetAppStatusWeb(itemData.userID);
+
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH APP STATUS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP STATUS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP STATUS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP STATUS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
         //Member Theme APIs
         /// <summary>
         /// GET THEME SETTING
@@ -2883,5 +3229,71 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        /// <summary>
+        /// Get Share My App Links By Vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "VendorID":1060
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "APP LINKS HAVE BEEN SUCCESSFULLY FETCHED!",
+        ///       "data": {
+        ///         "appStoreLink": "https://apps.apple.com/in/app/id6471469501",
+        ///         "playstoreLink": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns MemberBanner Object </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("getapplinks")]
+        [MapToApiVersion("1.0")]
+        public IActionResult getAppLinks(ParamMemberUserID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.memberBusiness.getAppLinks(itemData.userID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "APP LINKS HAVE BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP LINKS HAVE BEEN SUCCESSFULLY FETCHED!", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
     }
 }

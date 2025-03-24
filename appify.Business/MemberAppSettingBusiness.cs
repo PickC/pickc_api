@@ -36,5 +36,21 @@ namespace appify.Business
         {
             return memberAppSettingRepository.SaveMemberAppSetting(item);
         }
+        public MemberAppSetting GetMemberAppSettingWeb(long userID)
+        {
+            return memberAppSettingRepository.GetMemberAppSettingWeb(userID);
+        }
+        public List<MemberAppSetting> ListMemberAppSettingWeb()
+        {
+            return memberAppSettingRepository.ListMemberAppSettingWeb();
+        }
+        public MemberAppStatus GetAppStatusWeb(long userID)
+        {
+            return memberAppSettingRepository.GetAppStatusWeb(userID);
+        }
+        public bool SaveMemberAppSettingWeb(MemberAppSetting item)
+        {
+            return memberAppSettingRepository.SaveMemberAppSetting(item);
+        }
     }
 }

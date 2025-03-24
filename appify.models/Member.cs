@@ -169,6 +169,12 @@
         public Int64 VendorID { get; set; }
         public bool IsFirebase { get; set; }
     }
+
+    public partial class MemberAppLinks
+    {
+        public string? appStoreLink { get; set; }
+        public string? playstoreLink { get; set; }
+    }
     public partial class  CheckOTPSent
     {
         public Int64 RefID { get; set; }
