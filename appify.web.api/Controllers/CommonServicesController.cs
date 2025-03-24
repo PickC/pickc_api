@@ -463,9 +463,6 @@ namespace appify.web.api.Controllers
                 accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
                 accountRequest.Add("business_type", itemData.BusinessType);
                 accountRequest.Add("contact_name", "Gaurav Kumar");
-                //Dictionary<string, object> profile = new Dictionary<string, object>();
-                //profile.Add("category", itemData.Profile_Category_Name);
-                //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
 
                 Dictionary<string, object> legalInfo = new Dictionary<string, object>();
                 legalInfo.Add("pan", itemData.PAN);
