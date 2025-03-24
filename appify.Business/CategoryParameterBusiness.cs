@@ -29,8 +29,8 @@ namespace appify.Business
             return repository.Get(parameterID, categoryID);
         }
 
-        public List<CategoryParameter> ListAll(long parameterID) { 
-            return repository.ListAll(parameterID);
+        public List<CategoryParameter> ListAll(long categoryID) { 
+            return repository.ListAll(categoryID);
         }
 
 

@@ -28,10 +28,11 @@ namespace appify.web.api.Controllers
             this.parameterTypeBusiness = parameterTypeBusiness;
         }
 
+        #region Category Parameters
 
-
+        
         /// <summary>
-        /// Save/Update Role-Rights
+        /// Save/Update Category Parameter
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -62,10 +63,10 @@ namespace appify.web.api.Controllers
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">SAVE/UPDATE WEBPAGE </response>
+        /// <response code="200">SAVE/UPDATE CATEGORY PARAMETERS </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
-        [HttpPost, Route("save")]
+        [HttpPost, Route("categoryparameter/save")]
         [MapToApiVersion("1.0")]
         public IActionResult SaveCategoryParameter(CategoryParameter itemData)
         {
@@ -106,7 +107,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         /// <summary>
-        /// Remove the Role-Right
+        /// Remove the Category Parameter
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -123,17 +124,17 @@ namespace appify.web.api.Controllers
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
-        ///       "message": "PARAMETER REMOVED!",
+        ///       "message": "CATEGORY PARAMETER REMOVED!",
         ///       "data": true
         ///     }
         /// 
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">REMOVE THE WEBPAGE </response>
+        /// <response code="200">REMOVE THE CATEGORY PARAMETERS </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
 
-        [HttpPost, Route("remove")]
+        [HttpPost, Route("categoryparameter/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveCategoryParameter(ParamCategoryParameter itemData)
         {
@@ -170,7 +171,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// Get The Role-Right
+        /// Get The Category Parameter
         /// </summary>
         /// <remarks>
         /// Sample request:
@@ -208,9 +209,9 @@ namespace appify.web.api.Controllers
         /// </remarks>
         /// <param name="itemData"></param>
         /// <returns>Boolean value</returns>
-        /// <response code="200">GET THE WEBPAGE </response>
+        /// <response code="200">GET THE CATEGORY PARAMETER </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
-        [HttpPost, Route("get")]
+        [HttpPost, Route("categoryparameter/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetCategoryParameter(ParamCategoryParameter itemData)
         {
@@ -224,6 +225,324 @@ namespace appify.web.api.Controllers
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH CATEGORY PARAMETER ITEM!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get List Of The CATEGORY PARAMETERS
+        /// </summary>
+        /// <remarks>
+        /// Sample request: 
+        /// (Existing Roles-rights for the Role)
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 1001
+        ///     }
+        /// 
+        /// (To Create a New Roles-rights )
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "securableID": 0
+        ///     }
+        /// 
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH CATEGORY PARAMETER LIST!",
+        ///       "data": [
+        ///         "roleID": 1000,
+        ///         "securableID": 1001,
+        ///         "isAdd": false,
+        ///         "isEdit": false,
+        ///         "isView": false,
+        ///         "isDelete": false,
+        ///         "isDownload": false,
+        ///         "createdBy": 1000,
+        ///         "createdOn": "0001-01-01T00:00:00",
+        ///         "modifiedBy": 1000,
+        ///         "modifiedOn": "0001-01-01T00:00:00",
+        ///         "pageLink": "https://appi-fy.ai/dashboard",
+        ///         "pageName": "Dashboard",
+        ///         "parentName": null
+        ///         ],
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET LIST OF CATEGORY PARAMETERS </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("categoryparameter/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListCategoryParameters(ParamCategoryParameter itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.categoryParameterBusiness.ListAll(itemData.CategoryID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH CATEGORY PARAMETER LIST!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        #endregion
+
+
+        #region Parameter Types
+
+
+        
+        /// <summary>
+        /// Save/Update Parameter Type
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "roleID": 1010,
+        ///       "securableID": 1010,
+        ///       "isAdd": true,
+        ///       "isEdit": true,
+        ///       "isView": true,
+        ///       "isDownload": true,
+        ///       "isDelete": true,
+        ///       "createdBy": 1000,
+        ///       "modifiedBy": 1000
+        ///     }
+        /// 
+        /// Sample response JSON :ML
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "PARAMETER TYPE SUCCESSFULLY SAVED",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">SAVE/UPDATE PARAMETER TYPE</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("parametertype/save")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SaveParameterType(ParameterType itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.parameterTypeBusiness.Save(itemData);
+                if (result == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "PARAMETER TYPE SUCCESSFULLY SAVED";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Remove the Parameter Type
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "roleID": 1010,  
+        ///       "securableID": 1010
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "PARAMETER REMOVED!",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">REMOVE THE PARAMETER TYPE</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("parametertype/remove")]
+        [MapToApiVersion("1.0")]
+        public IActionResult RemoveParameterType(ParamCategoryParameterTypes itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.parameterTypeBusiness.Delete(itemData.ParameterID, itemData.ParameterValue);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "PARAMETER TYPE REMOVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get The Parameter Type
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "roleID": 1000,  
+        ///       "securableID": 1001
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH PARAMETER TYPE ITEM!",
+        ///       "data": {
+        ///       "roleID": 1000,
+        ///       "securableID": 1001,
+        ///       "isAdd": true,
+        ///       "isEdit": true,
+        ///       "isView": true,
+        ///       "isDelete": true,
+        ///       "isDownload": true,
+        ///       "createdBy": 0,
+        ///       "createdOn": "0001-01-01T00:00:00",
+        ///       "modifiedBy": 0,
+        ///       "modifiedOn": "0001-01-01T00:00:00",
+        ///       "pageLink": "https://appi-fy.ai/dashboard",
+        ///       "pageName": "Dashboard",
+        ///       "parentName": null
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">GET THE PARAMETER TYPE </response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("parametertype/get")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetParameterType(ParamCategoryParameterTypes itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = this.parameterTypeBusiness.Get(itemData.ParameterID, itemData.ParameterValue);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PARAMETER TYPE ITEM!";
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
@@ -298,22 +617,22 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>Boolean value</returns>
-        /// <response code="200">GET LIST OF WEBPAGE </response>
+        /// <response code="200">GET LIST OF PARAMETER TYPES </response>
         /// <response code="500">Returns Error ResponseMessages </response> 
-        [HttpPost, Route("list")]
+        [HttpPost, Route("parametertype/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListCategoryParameters(ParamCategoryParameter itemData)
+        public IActionResult ListParameterType(ParamCategoryParameter itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.categoryParameterBusiness.ListAll(itemData.ParameterID);
+                var result = this.parameterTypeBusiness.ListAll(itemData.ParameterID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH CATEGORY PARAMETER LIST!";
+                    rm.message = "FETCH PARAMETER TYPES LIST!";
                     rm.name = StatusName.ok;
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
@@ -340,6 +659,8 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+        #endregion
 
     }
 }

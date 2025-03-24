@@ -15,7 +15,7 @@ namespace appify.Business.Contract
 
         public CategoryParameter Get(long parameterID, long categoryID);
 
-        public List<CategoryParameter> ListAll(long parameterID);
+        public List<CategoryParameter> ListAll(long categoryID);
 
     }
 
