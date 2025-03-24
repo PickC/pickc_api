@@ -403,6 +403,14 @@ namespace appify.web.api
 
     }
 
+
+    public class ParamCategoryParameterTypes
+    {
+        public short ParameterID { get; set; }
+        public string ParameterValue { get; set; }
+
+    }
+
     public class ParamSubscription
     {
         public short SubscriptionID { get; set; }
