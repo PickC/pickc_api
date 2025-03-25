@@ -57,11 +57,11 @@ namespace appify.utility
 
         public static readonly string RazorPayCreateAccount = "https://api.razorpay.com/v2/accounts";
         public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";////"rzp_live_uSkTSnmcPZUeVA";
-        public static readonly string RazorPaySecret ="f0RBriXVQMJ5dwxphwDGlskH";////"nU2y93R7YEJv4QgWuKt3eptV";
+        public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";////"nU2y93R7YEJv4QgWuKt3eptV";
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
                                                 string? eventLogStatus)
         {
-             
+
 
             EventLogs eventLog;
             try
@@ -101,7 +101,7 @@ namespace appify.utility
                                         string? eventLogStatus, IEventLogBusiness eventLogBusiness)
         {
 
-            bool result=false;
+            bool result = false;
             EventLogs eventLog;
             try
             {
@@ -171,16 +171,16 @@ namespace appify.utility
             {
                 result = ex.ToString();
             }
-            return result + "-"+ Convert.ToString(ipAddress);
+            return result + "-" + Convert.ToString(ipAddress);
         }
 
 
-        
+
         public static string GenerateOTP(string secretKey)
         {
             //
             var OTPSecretKey = secretKey;
-            
+
             var password = "";
             Random r = new Random();
             int keyLength = OTPSecretKey.Length;

@@ -21,23 +21,26 @@ namespace appify.web.api
         }
 
         // Generate a JWT token
-        public string GenerateToken(string customerId, string deviceID, int expiryDays)
+        public string GenerateToken(string customerID, string deviceID, int expiryDays)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, customerId),
-            new Claim(JwtRegisteredClaimNames.Name, deviceID),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim("UserID", customerID),
+            new Claim("DeviceID", deviceID),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            //new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddDays(7)).ToUnixTimeSeconds().ToString()) // Token expiry
         };
 
             var token = new JwtSecurityToken(
                 issuer: _issuer,
                 audience: _audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddDays(expiryDays),
+                //expires: DateTime.UtcNow.AddDays(expiryDays),DateTime.Now.AddMinutes(2)
+                expires: DateTime.Now.AddSeconds(60),
+
                 signingCredentials: credentials
             );
 
@@ -56,6 +59,7 @@ namespace appify.web.api
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _issuer,
                 ValidAudience = _audience,
+                ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey))
             };
 

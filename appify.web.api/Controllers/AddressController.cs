@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace appify.web.api.Controllers
 {
@@ -488,6 +489,14 @@ namespace appify.web.api.Controllers
         [Authorize]
         public IActionResult List(ParamMemberUserID itemData)
         {
+
+            var handler = new JwtSecurityTokenHandler();
+            string Token = string.Empty;
+            Request.Headers.TryGetValue("Authorization", out var token);
+            Token = token.ToString().Replace("Bearer ", "");
+            var jwt1 = handler.ReadJwtToken(Token);
+
+
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
