@@ -119,6 +119,8 @@ namespace appify.models
         public string? OnBoarderBy { get; set; }
 
         public Int16? ModifiedBy { get; set; }
+
+        public string? ShortDescription { get; set; }
     }
 
 

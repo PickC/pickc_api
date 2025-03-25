@@ -485,7 +485,7 @@ namespace appify.dbroutine
         /// <summary>
         /// Vendor App Publish Settings
         /// </summary>
-        public const string PAGEVIEWMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishPageView]";
+        public const string LISTMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishList]";
         public const string RECORDCOUNTMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishRecordCount]";
         public const string SELECTMEMBERAPPPUBLISHSETTINGS  = "[Operation].[usp_MemberAppSettingPublishSelect]";
         public const string UPDATEMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishUpdate]";
