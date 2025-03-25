@@ -281,6 +281,8 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);
                         cmd.Parameters.AddWithValue("@ShortDescription", item.ShortDescription);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@PrivacyPolicyLink", item.PrivacyPolicyLink);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
