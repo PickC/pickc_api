@@ -473,5 +473,24 @@ namespace appify.dbroutine
         public const string REMOVESUBSCRIPTION = "[Master].[usp_SubscriptionDelete]";
 
         public const string GETAPPLINKSBYUSER = "[Operation].[usp_GetAppLinksByUserID]";
+
+        /// <summary>
+        /// Vendor App Settings CICD
+        /// </summary>
+        public const string PAGEVIEWMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDPageView]";
+        public const string RECORDCOUNTMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDRecordCount]";
+        public const string SELECTMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDSelect]";
+        public const string UPDATEMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDUpdate]";
+
+        /// <summary>
+        /// Vendor App Publish Settings
+        /// </summary>
+        public const string PAGEVIEWMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishPageView]";
+        public const string RECORDCOUNTMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishRecordCount]";
+        public const string SELECTMEMBERAPPPUBLISHSETTINGS  = "[Operation].[usp_MemberAppSettingPublishSelect]";
+        public const string UPDATEMEMBERAPPPUBLISHSETTINGS = "[Operation].[usp_MemberAppSettingPublishUpdate]";
+
+
+
     }
 }

@@ -36,21 +36,56 @@ namespace appify.Business
         {
             return memberAppSettingRepository.SaveMemberAppSetting(item);
         }
-        public MemberAppSetting GetMemberAppSettingWeb(long userID)
-        {
-            return memberAppSettingRepository.GetMemberAppSettingWeb(userID);
-        }
-        public List<MemberAppSetting> ListMemberAppSettingWeb()
-        {
-            return memberAppSettingRepository.ListMemberAppSettingWeb();
-        }
         public MemberAppStatus GetAppStatusWeb(long userID)
         {
             return memberAppSettingRepository.GetAppStatusWeb(userID);
         }
-        public bool SaveMemberAppSettingWeb(MemberAppSetting item)
+
+        #region Member App CICD Settings
+
+        public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
         {
-            return memberAppSettingRepository.SaveMemberAppSetting(item);
+            return memberAppSettingRepository.GetMemberAppSettingCICD(userID);
         }
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo,short rows)
+        {
+            return memberAppSettingRepository.ListMemberAppSettingCICD(pageNo,rows);
+        }
+        public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item)
+        {
+            return memberAppSettingRepository.UpdateMemberAppSettingCICD(item);
+        }
+
+        //public short RecordCountMemberAppSettingCICD() { 
+        //    throw new NotImplementedException();
+
+        //}
+
+        #endregion
+
+        #region Member App Publish Settings
+
+        public MemberAppPublishSetting GetMemberAppPublishSetting(long userID)
+        {
+            return memberAppSettingRepository.GetMemberAppPublishSetting(userID);
+        }
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows)
+        {
+            return memberAppSettingRepository.ListMemberAppPublishSetting(pageNo, rows);
+        }
+        public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item)
+        {
+            return memberAppSettingRepository.UpdateMemberAppPublishSetting(item);
+        }
+
+        //public short RecordCountMemberAppSettingCICD() { 
+        //    throw new NotImplementedException();
+
+        //}
+
+        #endregion
+
+
+
     }
 }

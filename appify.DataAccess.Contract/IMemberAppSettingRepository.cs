@@ -12,9 +12,23 @@ namespace appify.DataAccess.Contract
 		public bool SaveMemberAppSetting(MemberAppSetting item);
 
 		public bool DeleteMemberAppSetting(long userID);
-        public MemberAppSetting GetMemberAppSettingWeb(long userID);
-        public List<MemberAppSetting> ListMemberAppSettingWeb();
+        public MemberAppSettingCICD GetMemberAppSettingCICD(long userID);
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo, short rows);
+        //public Int16 RecordCountMemberAppSettingCICD();
+        public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item);
         public MemberAppStatus GetAppStatusWeb(long userID);
-        public bool SaveMemberAppSettingWeb(MemberAppSetting item);
+
+        #region Member App Publish Settings
+
+        public MemberAppPublishSetting GetMemberAppPublishSetting(long userID);
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows);
+        public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item);
+
+
+
+
+        #endregion
+
+
     }
 }
