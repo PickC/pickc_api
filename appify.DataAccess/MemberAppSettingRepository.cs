@@ -155,7 +155,7 @@ namespace appify.DataAccess
         public List<MemberAppSettingCICD> ListMemberAppSettingCICD()
         {
             List<MemberAppSettingCICD> items = new List<MemberAppSettingCICD>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPSETTINGSCICD);
             items = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]);
 
             return items;
