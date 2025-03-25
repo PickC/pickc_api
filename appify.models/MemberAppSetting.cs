@@ -49,6 +49,9 @@ namespace appify.models
         public DateTime CreatedOn { get; set; }
         public Int16 ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
+
+        public string? PrivacyPolicyLink { get; set; }
+
     }
 
 
@@ -129,6 +132,8 @@ namespace appify.models
         public string? ShortDescription { get; set; }
         public string? Categories { get; set; }
         public string? WarehouseAddress { get; set; }
+
+        public string? PrivacyPolicyLink { get; set; }
 
 
     }
