@@ -11,6 +11,7 @@ using appify.utility;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Xml.Linq;
 
 namespace appify.DataAccess
 {
@@ -139,32 +140,35 @@ namespace appify.DataAccess
             return result;
         }
 
-        public MemberAppSetting GetMemberAppSettingWeb(long userID)
+        #region Member App Settings CICD
+
+        
+        public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
         {
-            MemberAppSetting item = new MemberAppSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
+            MemberAppSettingCICD item = new MemberAppSettingCICD();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGSCICD, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]).FirstOrDefault();
 
             return item;
         }
 
-        public List<MemberAppSetting> ListMemberAppSettingWeb()
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo, short rows)
         {
-            List<MemberAppSetting> items = new List<MemberAppSetting>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPSETTING);
-            items = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]);
+            List<MemberAppSettingCICD> items = new List<MemberAppSettingCICD>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD, pageNo, rows);
+            items = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]);
 
             return items;
         }
-        public MemberAppStatus GetAppStatusWeb(long userID)
-        {
-            MemberAppStatus item = new MemberAppStatus();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppStatus>(ds.Tables[0]).FirstOrDefault();
+        //public Int16 RecordCountMemberAppSettingCICD()
+        //{
+        //    short count;
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.RECORDCOUNTMEMBERAPPSETTINGSCICD);
+        //    count = Convert.ToInt16(ds.Tables[0]);
 
-            return item;
-        }
-        public bool SaveMemberAppSettingWeb(MemberAppSetting item)
+        //    return count;
+        //}
+        public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -172,7 +176,7 @@ namespace appify.DataAccess
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.SAVEMEMBERAPPSETTING))
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEMEMBERAPPSETTINGSCICD))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
@@ -201,6 +205,106 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        #endregion
+
+
+        #region Member App Publish Settings  
+
+
+        public MemberAppPublishSetting GetMemberAppPublishSetting(long userID)
+        {
+            MemberAppPublishSetting item = new MemberAppPublishSetting();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGSCICD, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows)
+        {
+            List<MemberAppPublishSetting> items = new List<MemberAppPublishSetting>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD, pageNo, rows);
+            items = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]);
+
+            return items;
+        }
+        //public Int16 RecordCountMemberAppSettingCICD()
+        //{
+        //    short count;
+        //    DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.RECORDCOUNTMEMBERAPPSETTINGSCICD);
+        //    count = Convert.ToInt16(ds.Tables[0]);
+
+        //    return count;
+        //}
+        public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEMEMBERAPPSETTINGSCICD))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", item.UserID);
+                        cmd.Parameters.AddWithValue("@AppName", item.AppName);
+                        cmd.Parameters.AddWithValue("@MobileNo", item.MobileNo);
+                        cmd.Parameters.AddWithValue("@Password", item.Password);
+                        cmd.Parameters.AddWithValue("@IsEmailSent", item.IsEmailSent);
+                        cmd.Parameters.AddWithValue("@AndroidAppURL", item.AndroidAppURL);
+                        cmd.Parameters.AddWithValue("@AppleAppURL", item.AppleAppURL);
+                        cmd.Parameters.AddWithValue("@DeploymentStatusAndroid", item.DeploymentStatusAndroid);
+                        cmd.Parameters.AddWithValue("@DeploymentStatusApple", item.DeploymentStatusApple);
+                        cmd.Parameters.AddWithValue("@AppLogo", item.AppLogo);
+                        cmd.Parameters.AddWithValue("@AppIcon", item.AppIcon);
+                        cmd.Parameters.AddWithValue("@Website", item.Website);
+                        cmd.Parameters.AddWithValue("@MobileLink", item.MobileLink);
+                        cmd.Parameters.AddWithValue("@TabLink", item.TabLink);
+                        cmd.Parameters.AddWithValue("@ImageLink", item.ImageLink);
+                        cmd.Parameters.AddWithValue("@KycLink", item.KycLink);
+                        cmd.Parameters.AddWithValue("@CompanyDescription", item.CompanyDescription);
+                        cmd.Parameters.AddWithValue("@PlayStoreDescription", item.PlayStoreDescription);
+                        cmd.Parameters.AddWithValue("@AppstoreWords", item.AppstoreWords);
+                        cmd.Parameters.AddWithValue("@Subtitle", item.Subtitle);
+                        cmd.Parameters.AddWithValue("@Comments", item.Comments);
+                        cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
+        #endregion
+
+
+
+
+        public MemberAppStatus GetAppStatusWeb(long userID)
+        {
+            MemberAppStatus item = new MemberAppStatus();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
+            item = DataTableHelper.ConvertDataTable<MemberAppStatus>(ds.Tables[0]).FirstOrDefault();
+
+            return item;
+        }
+
+
+
         public bool UpdateMemberAppSettingWeb(MemberAppSettingUpdate item)
         {
             var result = false;

@@ -1,4 +1,5 @@
 using appify.models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -68,6 +69,59 @@ namespace appify.models
         public string AppIcon { get; set; }
 
     }
+
+    public partial class MemberAppSettingCICD {
+
+        public Int64 UserID { get; set; }
+        public string AppName { get; set; }
+        public string AndroidBundleID { get; set; }
+        public string AppleBuldleID { get; set; }
+        public string AppleAppID { get; set; }
+
+        public string MobileNo { get; set; }
+        public string FireBaseProjectID { get; set; }
+
+        public string AppLogo { get; set; }
+        public string AppIcon { get; set; }
+        public string AppIconTransparent { get; set; }
+
+        public short ModifiedBy { get; set; }
+        public DateTime? ModifiedOn { get; set; }
+
+
+    }
+
+
+    public partial class MemberAppPublishSetting
+    {
+        public Int64 UserID { get; set; }
+        public string AppName { get; set; }
+        public string MobileNo { get; set; }
+        public string? Password { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public bool? IsEmailSent { get; set; }
+        public string AndroidAppURL { get; set; }
+        public string AppleAppURL { get; set; }
+        public int? DeploymentStatusAndroid { get; set; }
+        public int? DeploymentStatusApple { get; set; }
+        public string? AppLogo { get; set; }
+        public string? AppIcon { get; set; }
+        public string? Website { get; set; }
+        public string? MobileLink { get; set; }
+        public string? TabLink { get; set; }
+        public string? ImageLink { get; set; }
+        public string? KycLink { get; set; }
+        public string? CompanyDescription { get; set; }
+        public string? PlayStoreDescription { get; set; }
+        public string? AppstoreWords { get; set; }
+        public string? Subtitle { get; set; }       
+        public string? Comments { get; set; }
+        public string? OnBoarderBy { get; set; }
+
+        public Int16? ModifiedBy { get; set; }
+    }
+
+
     public partial class  MemberAppStatus
     {
         public short DeploymentStatusAndroid { get; set; }
