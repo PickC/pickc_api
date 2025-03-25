@@ -69,7 +69,7 @@ namespace appify.Business
         {
             return memberAppSettingRepository.GetMemberAppPublishSetting(userID);
         }
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting()
+        public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting()
         {
             return memberAppSettingRepository.ListMemberAppPublishSetting();
         }
