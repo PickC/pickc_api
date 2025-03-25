@@ -107,8 +107,9 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
                 var result = addressBusiness.SaveAddress(item);
                 if (result!=null)
                 {
@@ -182,8 +183,9 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
                 var result = addressBusiness.DeleteAddress(itemData.addressID, itemData.userID);
                 if (result)
                 {
@@ -273,9 +275,8 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var item = addressBusiness.GetAddress(itemData.addressID,itemData.userID);
 
                 if (item != null)
