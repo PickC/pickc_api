@@ -142,7 +142,7 @@ namespace appify.DataAccess
 
         #region Member App Settings CICD
 
-        
+
         public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
         {
             MemberAppSettingCICD item = new MemberAppSettingCICD();
@@ -182,12 +182,20 @@ namespace appify.DataAccess
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@UserID", item.UserID);
                         cmd.Parameters.AddWithValue("@AppName", item.AppName);
-                        cmd.Parameters.AddWithValue("@AndroidBundleID", item.AndroidBundleID);
-                        cmd.Parameters.AddWithValue("@AppleBuldleID", item.AppleBuldleID);
-                        cmd.Parameters.AddWithValue("@AppleAppID", item.AppleAppID);
                         cmd.Parameters.AddWithValue("@AppLogo", item.AppLogo);
-                        cmd.Parameters.AddWithValue("@FireBaseProjectID", item.FireBaseProjectID);
                         cmd.Parameters.AddWithValue("@AppIcon", item.AppIcon);
+                        cmd.Parameters.AddWithValue("@AppIconTransparent", item.AppIconTransparent);
+                        cmd.Parameters.AddWithValue("@AndroidBundleID", item.AndroidBundleID);
+                        cmd.Parameters.AddWithValue("@AppleBundleID", item.AppleBundleID);
+                        cmd.Parameters.AddWithValue("@AppleAppID", item.AppleAppID);
+                        cmd.Parameters.AddWithValue("@AndroidAppURL", item.AndroidAppURL);
+                        cmd.Parameters.AddWithValue("@AppleAppURL", item.AppleAppURL);
+                        cmd.Parameters.AddWithValue("@FireBaseProjectID", item.FireBaseProjectID);
+                        cmd.Parameters.AddWithValue("@MobileNo", item.MobileNo);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+
+
+
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
@@ -221,11 +229,11 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting()
+        public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting()
         {
-            List<MemberAppPublishSetting> items = new List<MemberAppPublishSetting>();
+            List<MemberAppPublishSettingLite> items = new List<MemberAppPublishSettingLite>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPPUBLISHSETTINGS);
-            items = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]);
+            items = DataTableHelper.ConvertDataTable<MemberAppPublishSettingLite>(ds.Tables[0]);
 
             return items;
         }
@@ -270,8 +278,8 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@AppstoreWords", item.AppstoreWords);
                         cmd.Parameters.AddWithValue("@Subtitle", item.Subtitle);
                         cmd.Parameters.AddWithValue("@Comments", item.Comments);
-                        cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);  
-                        cmd.Parameters.AddWithValue("@ShortDescription", item.ShortDescription); 
+                        cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);
+                        cmd.Parameters.AddWithValue("@ShortDescription", item.ShortDescription);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
