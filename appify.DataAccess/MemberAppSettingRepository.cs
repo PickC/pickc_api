@@ -152,10 +152,10 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo, short rows)
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD()
         {
             List<MemberAppSettingCICD> items = new List<MemberAppSettingCICD>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD, pageNo, rows);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD);
             items = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]);
 
             return items;
@@ -215,16 +215,16 @@ namespace appify.DataAccess
         public MemberAppPublishSetting GetMemberAppPublishSetting(long userID)
         {
             MemberAppPublishSetting item = new MemberAppPublishSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGSCICD, userID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPPUBLISHSETTINGS, userID);
             item = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]).FirstOrDefault();
 
             return item;
         }
 
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows)
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting()
         {
             List<MemberAppPublishSetting> items = new List<MemberAppPublishSetting>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBERAPPSETTINGSCICD, pageNo, rows);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPPUBLISHSETTINGS);
             items = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]);
 
             return items;
@@ -245,7 +245,7 @@ namespace appify.DataAccess
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEMEMBERAPPSETTINGSCICD))
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEMEMBERAPPPUBLISHSETTINGS))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
@@ -270,7 +270,8 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@AppstoreWords", item.AppstoreWords);
                         cmd.Parameters.AddWithValue("@Subtitle", item.Subtitle);
                         cmd.Parameters.AddWithValue("@Comments", item.Comments);
-                        cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);
+                        cmd.Parameters.AddWithValue("@OnBoardedBy", item.OnBoarderBy);  
+                        cmd.Parameters.AddWithValue("@ShortDescription", item.ShortDescription); 
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());

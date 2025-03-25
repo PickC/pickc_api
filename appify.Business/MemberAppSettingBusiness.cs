@@ -47,9 +47,9 @@ namespace appify.Business
         {
             return memberAppSettingRepository.GetMemberAppSettingCICD(userID);
         }
-        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo,short rows)
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD()
         {
-            return memberAppSettingRepository.ListMemberAppSettingCICD(pageNo,rows);
+            return memberAppSettingRepository.ListMemberAppSettingCICD();
         }
         public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item)
         {
@@ -69,9 +69,9 @@ namespace appify.Business
         {
             return memberAppSettingRepository.GetMemberAppPublishSetting(userID);
         }
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows)
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting()
         {
-            return memberAppSettingRepository.ListMemberAppPublishSetting(pageNo, rows);
+            return memberAppSettingRepository.ListMemberAppPublishSetting();
         }
         public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item)
         {
