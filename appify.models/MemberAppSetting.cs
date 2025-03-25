@@ -156,6 +156,9 @@ namespace appify.models
         public string? Categories { get; set; }
         public string? WarehouseAddress { get; set; }
 
+        public string? PrivacyPolicyLink { get; set; }
+
+
     }
 
 
