@@ -19,7 +19,7 @@ namespace appify.Business.Contract
         public bool DeleteMemberAppSetting(long userID);
 
         public MemberAppSettingCICD GetMemberAppSettingCICD(long userID);
-        public List<MemberAppSettingCICD> ListMemberAppSettingCICD(short pageNo,short rows);
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD();
         //public Int16 RecordCountMemberAppSettingCICD();
         public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item);
         public MemberAppStatus GetAppStatusWeb(long userID);
@@ -29,7 +29,7 @@ namespace appify.Business.Contract
         #region Member App Publish Settings
 
         public MemberAppPublishSetting GetMemberAppPublishSetting(long userID);
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting(short pageNo, short rows);
+        public List<MemberAppPublishSetting> ListMemberAppPublishSetting();
         public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item);
 
 

@@ -1806,7 +1806,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("appsetting/web/cicd/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListMemberAppSettingCICD(ParamPageView itemData)
+        public IActionResult ListMemberAppSettingCICD()
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1817,7 +1817,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.ListMemberAppSettingCICD(itemData.PageNo, itemData.Rows);
+                var item = memberAppSettingBusiness.ListMemberAppSettingCICD();
 
                 if (item != null)
                 {
@@ -3431,7 +3431,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("appsetting/web/publish/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListMemberAppPublishSetting(ParamPageView itemData)
+        public IActionResult ListMemberAppPublishSetting()
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -3441,7 +3441,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.ListMemberAppPublishSetting(itemData.PageNo, itemData.Rows);
+                var item = memberAppSettingBusiness.ListMemberAppPublishSetting();
 
                 if (item != null)
                 {
