@@ -477,7 +477,7 @@ namespace appify.dbroutine
         /// <summary>
         /// Vendor App Settings CICD
         /// </summary>
-        public const string PAGEVIEWMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDPageView]";
+        public const string LISTMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDList]";
         public const string RECORDCOUNTMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDRecordCount]";
         public const string SELECTMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDSelect]";
         public const string UPDATEMEMBERAPPSETTINGSCICD = "[Operation].[usp_MemberAppSettingCICDUpdate]";
