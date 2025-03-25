@@ -111,7 +111,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                
+
                 var items = this.memberBusiness.GetAllMembers();
 
                 if (items?.Any() == true)
@@ -209,7 +209,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 var member = this.memberBusiness.GetMember(Convert.ToInt64(userID));
-                if (member !=null)
+                if (member != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH MEMBER";
@@ -288,7 +288,7 @@ namespace appify.web.api.Controllers
 
 
         // POST api/<MemberController>
-        [HttpPost,Route("Register")]
+        [HttpPost, Route("Register")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> Register(appify.models.Member item)
         {
@@ -390,94 +390,94 @@ namespace appify.web.api.Controllers
         ///       "message": "OTP HAS BEEN SUCCESSFULLY GENERATED",
         ///       "data": "yryl1A"
         ///     }
-    ///
-    /// </remarks>
-    /// <param name="itemData"></param>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns the newly created Discount Object</response>
-    /// <response code="500">ResponseMessage with Error Description</response>
+        ///
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns the newly created Discount Object</response>
+        /// <response code="500">ResponseMessage with Error Description</response>
 
-    [HttpPost, Route("generateotp")]
-    [MapToApiVersion("1.0")]
-    public async Task<IActionResult> GenerateOTP(string MobileNo)
-    {
-        var reqHeader = Request;
-        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        try
+        [HttpPost, Route("generateotp")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GenerateOTP(string MobileNo)
         {
-            // dynamic data = jsondata;
-            rm = new ResponseMessage();
-            var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
-            string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                // dynamic data = jsondata;
+                rm = new ResponseMessage();
+                var OTPSecretKey = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("AppifyOTPKey:SecretKey").Value;
+                string OTPValue = utility.Common.GenerateOTP(OTPSecretKey);
 
-            ////Checking Member is Already Exits or Not
-            CheckOTPSent getotpresult = this.memberBusiness.GetOTPSent(MobileNo);
-            if (getotpresult == null)
-            {
-                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
-                 this.RegisterMobileOTP(MobileNo, true, false);
-            }
-            else if (getotpresult != null)
-            {
+                ////Checking Member is Already Exits or Not
+                CheckOTPSent getotpresult = this.memberBusiness.GetOTPSent(MobileNo);
+                if (getotpresult == null)
+                {
+                    var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+                    this.RegisterMobileOTP(MobileNo, true, false);
+                }
+                else if (getotpresult != null)
+                {
                     //var result = SMSNotification.SendSMSNotification(MobileNo, OTPValue, this.notificationBusiness);
-                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
-                this.RegisterMobileOTP(MobileNo, false, true);
+                    var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OTP), 0, 0, MobileNo, this.notificationBusiness, OTPValue);
+                    this.RegisterMobileOTP(MobileNo, false, true);
+                }
+                //TODO: to implement the above dashboard information
+                if (OTPValue != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "OTP HAS BEEN SUCCESSFULLY GENERATED & SENT";
+                    rm.name = StatusName.ok;
+                    rm.data = OTPValue;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "UNABLE TO GENERATE OTP";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
+                }
+
             }
-            //TODO: to implement the above dashboard information
-            if (OTPValue != null)
-            {
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "OTP HAS BEEN SUCCESSFULLY GENERATED & SENT";
-                rm.name = StatusName.ok;
-                rm.data = OTPValue;
-                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                await Common.UpdateEventLogsNew("OTP HAS BEEN SUCCESSFULLY GENERATED & SENT", reqHeader, controllerURL, MobileNo, OTPValue, StatusName.ok, this.eventLogBusiness);
-            }
-            else
+            catch (Exception ex)
             {
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = "UNABLE TO GENERATE OTP";
+                rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                 await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
             }
-
+            return Ok(rm);
         }
-        catch (Exception ex)
-        {
-            rm.statusCode = StatusCodes.ERROR;
-            rm.message = ex.Message.ToString();
-            rm.name = StatusName.invalid;
-            rm.data = null;
-            await Common.UpdateEventLogsNew("UNABLE TO GENERATE OTP", reqHeader, controllerURL, MobileNo, rm.message, StatusName.ok, this.eventLogBusiness);
-        }
-        return Ok(rm);
-    }
 
-    private bool RegisterMobileOTP(string MobileNo, bool Issent, bool IsResent)
-    {
-        var result = false;
-        try
+        private bool RegisterMobileOTP(string MobileNo, bool Issent, bool IsResent)
         {
-            RegisterOTP mobileotp = new RegisterOTP
+            var result = false;
+            try
             {
-                MobileNo = MobileNo,
-                IsSent = Issent,
-                IsResent = IsResent,
-                SentOn = DateTime.Now,
-            };
+                RegisterOTP mobileotp = new RegisterOTP
+                {
+                    MobileNo = MobileNo,
+                    IsSent = Issent,
+                    IsResent = IsResent,
+                    SentOn = DateTime.Now,
+                };
 
-            var memberItem = this.memberBusiness.RegisterMobileOTP(mobileotp);
+                var memberItem = this.memberBusiness.RegisterMobileOTP(mobileotp);
             }
-        catch (Exception ex)
-        {
+            catch (Exception ex)
+            {
 
-            throw ex;
+                throw ex;
+            }
+
+            return result;
         }
-
-        return result;
-    }
 
         /// <summary>
         /// De-Active A Member
@@ -494,7 +494,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">MEMBER DE-ACTIVATED SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost,Route("DeActivateMember")]
+        [HttpPost, Route("DeActivateMember")]
         [MapToApiVersion("1.0")]
         public IActionResult DeactivateMember(ParamMemberUserID itemData)
         {
@@ -562,7 +562,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.memberBusiness.RemoveMemberByMobileNo(itemData.mobileNo,itemData.password);
+                var result = this.memberBusiness.RemoveMemberByMobileNo(itemData.mobileNo, itemData.password);
                 if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -610,7 +610,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">PASSWORD RESET SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost,Route("ResetPassword")]
+        [HttpPost, Route("ResetPassword")]
         [MapToApiVersion("1.0")]
         public IActionResult ResetPassword(ParamMemberResetPassword itemData)
         {
@@ -621,7 +621,7 @@ namespace appify.web.api.Controllers
                 //dynamic data = jsondata;
 
                 rm = new ResponseMessage();
-                var member = this.memberBusiness.ResetPassword(itemData.userID,itemData.password);
+                var member = this.memberBusiness.ResetPassword(itemData.userID, itemData.password);
                 if (member != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -704,7 +704,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">MEMBER WITH SIMILAR MOBILE NO. EXISTS </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost,Route("CheckMember")]
+        [HttpPost, Route("CheckMember")]
         public IActionResult CheckMember(ParamCheckMember itemData)
         {
             var reqHeader = Request;
@@ -722,8 +722,8 @@ namespace appify.web.api.Controllers
 
 
                 rm = new ResponseMessage();
-                Member result = this.memberBusiness.IsMemberExist(itemData.emailID,itemData.mobileNo,itemData.memberType,itemData.vendorID);
-                if (result !=null)
+                Member result = this.memberBusiness.IsMemberExist(itemData.emailID, itemData.mobileNo, itemData.memberType, itemData.vendorID);
+                if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "MEMBER WITH SIMILAR MOBILE NO. EXISTS!";
@@ -781,7 +781,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
         // GET api/<MemberController>/5
-        [HttpPost,Route("OrdersCount")]
+        [HttpPost, Route("OrdersCount")]
         [MapToApiVersion("1.0")]
         public IActionResult OrdersCount(ParamMemberUserID item)
         {
@@ -791,7 +791,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 var count = this.memberBusiness.MemberOrderCount(item.userID);
-                if (count >0 )
+                if (count > 0)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "ORDERS COUNT";
@@ -923,11 +923,11 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 bool isAllowed = this.memberBusiness.CheckMemberOnlinePaymentStatus(item.userID);
-                 
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "ONLINE PAYMENT STATUS";
-                    rm.name = StatusName.ok;
-                    rm.data = isAllowed;
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "ONLINE PAYMENT STATUS";
+                rm.name = StatusName.ok;
+                rm.data = isAllowed;
                 //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ONLINE PAYMENT STATUS SUCCESSFULLY", reqHeader, controllerURL, item, isAllowed, StatusName.ok));
             }
@@ -1013,7 +1013,7 @@ namespace appify.web.api.Controllers
                 //};
 
                 rm = new ResponseMessage();
-                var returnData = this.memberBusiness.MemberLogIn(itemData.emailID,itemData.mobileNo, itemData.password,itemData.parentID);
+                var returnData = this.memberBusiness.MemberLogIn(itemData.emailID, itemData.mobileNo, itemData.password, itemData.parentID);
                 if (returnData != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1152,9 +1152,9 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
-               // dynamic data = jsondata;
+                // dynamic data = jsondata;
                 rm = new ResponseMessage();
-                var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID),itemData.dateFrom, itemData.dateTo);
+                var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID), itemData.dateFrom, itemData.dateTo);
 
                 //TODO: to implement the above dashboard information
 
@@ -1379,7 +1379,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 var result = memberReturnPolicyBusiness.Remove(itemData.userID);
 
-                if (result!=null)
+                if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "RETURN POLICY REMOVED";
@@ -1410,6 +1410,11 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+
+
+
         /// <summary>
         /// Get an App Setting
         /// </summary>
@@ -1559,18 +1564,18 @@ namespace appify.web.api.Controllers
             try
             {
                 var itemData = new MemberAppSetting
-                    {
-                        UserID = item.UserID,
-                        AppName = item.AppName,
-                        AppName1 = item.AppName1,
-                        AppName2 = item.AppName2,
-                        ShortDescription = item.ShortDescription,
-                        LongDescription = item.Description,
-                        AppLogo = item.Logo,
-                        AppIcon = item.AppIcon,
-                        AndroidBundleID = item.PlayStoreID,
-                        AppleAppID = item.AppStoreID
-                    };
+                {
+                    UserID = item.UserID,
+                    AppName = item.AppName,
+                    AppName1 = item.AppName1,
+                    AppName2 = item.AppName2,
+                    ShortDescription = item.ShortDescription,
+                    LongDescription = item.Description,
+                    AppLogo = item.Logo,
+                    AppIcon = item.AppIcon,
+                    AndroidBundleID = item.PlayStoreID,
+                    AppleAppID = item.AppStoreID
+                };
 
                 rm = new ResponseMessage();
                 var result = memberAppSettingBusiness.SaveMemberAppSetting(itemData);
@@ -1668,6 +1673,9 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+        #region APPSettings/web/cicd
+
         /// <summary>
         /// Get an App Setting
         /// </summary>
@@ -1687,38 +1695,16 @@ namespace appify.web.api.Controllers
         ///       "data": {
         ///         "userID": 1060,
         ///         "appName": "I AM BACK",
-        ///         "shortDescription": "",
-        ///         "longDescription": "",
-        ///         "appName1": "",
-        ///         "appName2": "",
-        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
-        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
-        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
         ///         "androidBundleID": "com.appifyai.iAmBack",
         ///         "appleBuldleID": "com.appifyai.iAmBack",
         ///         "appleAppID": "6471469501",
-        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
-        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501",
+        ///         "mobileNo": "7995995962",
         ///         "fireBaseProjectID": "appify-android-gcp",
-        ///         "website": "",
-        ///         "keywords": "",
-        ///         "deploymentStatusAndroid": 4127,
-        ///         "deploymentStatusApple": 4127,
-        ///         "mobileLink": null,
-        ///         "tabLink": null,
-        ///         "imageLink": null,
-        ///         "kycLink": null,
-        ///         "companyDescription": null,
-        ///         "playstoreDescription": null,
-        ///         "appstoreWords": null,
-        ///         "subtitle": null,
-        ///         "isEmailSent": null,
-        ///         "comments": null,
-        ///         "onboardedBy": null,
-        ///         "createdBy": 1000,
-        ///         "createdOn": "2025-03-21T09:18:32.053",
-        ///         "modifiedBy": 1000,
-        ///         "modifiedOn": "2025-03-21T09:18:32.053"
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "modifiedBy:1001,
+        ///         "modifiedOn:null
         ///       }
         ///     }
         /// 
@@ -1727,20 +1713,18 @@ namespace appify.web.api.Controllers
         /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost, Route("appsetting/web/get")]
+        [HttpPost, Route("appsetting/web/cicd/get")]
         [MapToApiVersion("1.0")]
-        public IActionResult GetMemberAppSettingWeb(ParamMemberUserID itemData)
+        public IActionResult GetMemberAppSettingCICD(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-
-            MemberAppSettingLite itemLite;
 
             //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.GetMemberAppSettingWeb(itemData.userID);
+                var item = memberAppSettingBusiness.GetMemberAppSettingCICD(itemData.userID);
 
                 if (item != null)
                 {
@@ -1781,67 +1765,59 @@ namespace appify.web.api.Controllers
         ///     
         /// Sample response JSON :
         /// 
+        /// {
+        ///   "statusCode": 200,
+        ///   "name": "SUCCESS_OK",
+        ///   "message": "FETCH APP SETTINGS",
+        ///   "data": [
         ///     {
-        ///       "statusCode": 200,
-        ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH APP SETTINGS",
-        ///       "data": {
-        ///         "userID": 1060,
-        ///         "appName": "I AM BACK",
-        ///         "shortDescription": "",
-        ///         "longDescription": "",
-        ///         "appName1": "",
-        ///         "appName2": "",
-        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
-        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
-        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
-        ///         "androidBundleID": "com.appifyai.iAmBack",
-        ///         "appleBuldleID": "com.appifyai.iAmBack",
-        ///         "appleAppID": "6471469501",
-        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
-        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501",
-        ///         "fireBaseProjectID": "appify-android-gcp",
-        ///         "website": "",
-        ///         "keywords": "",
-        ///         "deploymentStatusAndroid": 4127,
-        ///         "deploymentStatusApple": 4127,
-        ///         "mobileLink": null,
-        ///         "tabLink": null,
-        ///         "imageLink": null,
-        ///         "kycLink": null,
-        ///         "companyDescription": null,
-        ///         "playstoreDescription": null,
-        ///         "appstoreWords": null,
-        ///         "subtitle": null,
-        ///         "isEmailSent": null,
-        ///         "comments": null,
-        ///         "onboardedBy": null,
-        ///         "createdBy": 1000,
-        ///         "createdOn": "2025-03-21T09:18:32.053",
-        ///         "modifiedBy": 1000,
-        ///         "modifiedOn": "2025-03-21T09:18:32.053"
-        ///       }
+        ///       "userID": 1044,
+        ///       "appName": "REKHAS DESIGNS",
+        ///       "androidBundleID": "com.appi_fy_ai.rekhas_designs",
+        ///       "appleBuldleID": "com.appi-fy-ai.rekhas-designs",
+        ///       "appleAppID": "6475161371",
+        ///       "mobileNo": "9701167951",
+        ///       "fireBaseProjectID": "appify-android-gcp",
+        ///       "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/logo.png",
+        ///       "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/icon.png",
+        ///       "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/icon_tr.png",
+        ///       "modifiedBy:1001,
+        ///       "modifiedOn:null
+        ///     },
+        ///     {
+        ///       "userID": 1049,
+        ///       "appName": "BAKM lifestyle",
+        ///       "androidBundleID": "com.appi_fy_ai.bakm_lifestyle",
+        ///       "appleBuldleID": "com.appifyai.bakmLifestyle",
+        ///       "appleAppID": "6471470575",
+        ///       "mobileNo": "9994853833",
+        ///       "fireBaseProjectID": "appify-android-gcp",
+        ///       "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/logo.png",
+        ///       "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/icon.png",
+        ///       "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/icon_tr.png"
+        ///       "modifiedBy:1001,
+        ///       "modifiedOn:null
         ///     }
-        /// 
+        /// ]        /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">FETCH LIST APP SETTINGS SUCCESSFULLY</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost, Route("appsetting/web/list")]
+        [HttpPost, Route("appsetting/web/cicd/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListMemberAppSettingWeb()
+        public IActionResult ListMemberAppSettingCICD(ParamPageView itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
 
-            MemberAppSettingLite itemLite;
+            MemberAppSettingCICD itemLite;
 
             //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.ListMemberAppSettingWeb();
+                var item = memberAppSettingBusiness.ListMemberAppSettingCICD(itemData.PageNo, itemData.Rows);
 
                 if (item != null)
                 {
@@ -1870,7 +1846,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message));
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP CICD LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message));
             }
             return Ok(rm);
 
@@ -1879,13 +1855,28 @@ namespace appify.web.api.Controllers
         /// Add App Settings
         /// </summary>
         /// <remarks>
+        /// sample Request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1060,
+        ///         "appName": "I AM BACK",
+        ///         "androidBundleID": "com.appifyai.iAmBack",
+        ///         "appleBuldleID": "com.appifyai.iAmBack",
+        ///         "appleAppID": "6471469501",
+        ///         "mobileNo": "7995995962",
+        ///         "fireBaseProjectID": "appify-android-gcp",
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "modifiedBy:1001
+        ///     }
         ///     
         /// Sample response JSON :
         /// 
         ///     {
         ///       "statusCode": 200,
         ///       "name": "SUCCESS_OK",
-        ///       "message": "APP SETTINGS SAVED SUCCESSFULLY",
+        ///       "message": "APP CICD SETTINGS SAVED SUCCESSFULLY",
         ///       "data": true
         ///     }
         /// 
@@ -1894,16 +1885,16 @@ namespace appify.web.api.Controllers
         /// <response code="200">APP SETTINGS UPDATED SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost, Route("appsetting/web/save")]
+        [HttpPost, Route("appsetting/web/cicd/update")]
         [MapToApiVersion("1.0")]
-        public IActionResult SaveMemberAppSettingWeb(MemberAppSetting itemData)
+        public IActionResult SaveMemberAppSettingCICD(MemberAppSettingCICD itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = memberAppSettingBusiness.SaveMemberAppSettingWeb(itemData);
+                var result = memberAppSettingBusiness.UpdateMemberAppSettingCICD(itemData);
                 if (result)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1937,6 +1928,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+        #endregion
 
         /// <summary>
         /// Get an App Status
@@ -1967,7 +1959,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// 
-        [HttpPost, Route("appsetting/web/getappstatus")]
+        [HttpPost, Route("appsetting/web/cicd/getappstatus")]
         [MapToApiVersion("1.0")]
         public IActionResult GetAppStatusWeb(ParamMemberUserID itemData)
         {
@@ -2014,6 +2006,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
         //Member Theme APIs
         /// <summary>
         /// GET THEME SETTING
@@ -2060,7 +2053,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = memberThemeBusiness.Get(itemData.MemberID,itemData.ThemeID);
+                var item = memberThemeBusiness.Get(itemData.MemberID, itemData.ThemeID);
 
                 if (item != null)
                 {
@@ -2125,7 +2118,7 @@ namespace appify.web.api.Controllers
                 memberTheme.MemberID = item.MemberID;
 
                 var result = memberThemeBusiness.Save(memberTheme);
-                if (result!=null)
+                if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "THEME SETTINGS SAVED SUCCESSFULLY";
@@ -2217,6 +2210,8 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+        #region Member KYC 
 
 
         //Member KYC APIs
@@ -2444,39 +2439,41 @@ namespace appify.web.api.Controllers
 
         }
 
+        #endregion
 
-    //Member Contact APIs
-    /// <summary>
-    /// GET MEMBER CONTACT SETTINGS
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///       "memberID": 1060,
-    ///       "mobileNo": "9827609876"
-    ///     }
-    ///     
-    /// Sample response JSON :
-    /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "FETCH MEMBER CONTACT SETTINGS",
-    ///       "data": {
-    ///         "memberID": 1060,
-    ///         "mobileNo": "9827609876",
-    ///         "contactName": "subbu",
-    ///         "emailID": "asdfgh@gmal.com"
-    ///       }
-    ///     }
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">FETCH MEMBER CONTACT SETTINGS </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
-    [HttpPost, Route("contact/get")]
+
+        //Member Contact APIs
+        /// <summary>
+        /// GET MEMBER CONTACT SETTINGS
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "memberID": 1060,
+        ///       "mobileNo": "9827609876"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH MEMBER CONTACT SETTINGS",
+        ///       "data": {
+        ///         "memberID": 1060,
+        ///         "mobileNo": "9827609876",
+        ///         "contactName": "subbu",
+        ///         "emailID": "asdfgh@gmal.com"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH MEMBER CONTACT SETTINGS </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("contact/get")]
         [MapToApiVersion("1.0")]
         public IActionResult GetMemberContact(ParamMemberContact itemData)
         {
@@ -2486,7 +2483,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = memberContactBusiness.Get(itemData.MemberID,itemData.MobileNo);
+                var item = memberContactBusiness.Get(itemData.MemberID, itemData.MobileNo);
 
                 if (item != null)
                 {
@@ -2613,25 +2610,25 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-    /// <summary>
-    /// Save a Member Contact
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///     "memberID": 0,
-    ///     "mobileNo": "6303467186",
-    ///     "contactName": "kvr kalyan",
-    ///     "emailID": "kvrkalyan1985@gmail.com"
-    ///     }  
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">MEMBER CONTACT SAVED SUCCESSFULLY </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
-    [HttpPost, Route("contact/save")]
+        /// <summary>
+        /// Save a Member Contact
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///     "memberID": 0,
+        ///     "mobileNo": "6303467186",
+        ///     "contactName": "kvr kalyan",
+        ///     "emailID": "kvrkalyan1985@gmail.com"
+        ///     }  
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER CONTACT SAVED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("contact/save")]
         [MapToApiVersion("1.0")]
         public IActionResult AddMemberContact(MemberContact item)
         {
@@ -2641,7 +2638,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                if (item.MemberID==0)
+                if (item.MemberID == 0)
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "INVALID MEMBER ID";
@@ -2753,23 +2750,23 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-    /// <summary>
-    /// Remove a Member Contact
-    /// </summary>
-    /// <remarks>
-    /// Sample request JSON :
-    /// 
-    ///     {
-    ///       "memberID": 1002,
-    ///       "mobileNo": "6303467186"
-    ///     }
-    /// 
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">MEMBER CONTACT REMOVED </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
-    [HttpPost, Route("contact/remove")]
+        /// <summary>
+        /// Remove a Member Contact
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "memberID": 1002,
+        ///       "mobileNo": "6303467186"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER CONTACT REMOVED </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("contact/remove")]
         [MapToApiVersion("1.0")]
         public IActionResult RemoveMemberKYC(ParamMemberContact itemData)
         {
@@ -3295,5 +3292,273 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+
+
+
+
+
+
+        #region APPSettings/web/publish
+
+        /// <summary>
+        /// Get an App Publish Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP SETTINGS",
+        ///       "data": {
+        ///         "userID": 1060,
+        ///         "appName": "I AM BACK",
+        ///         "androidBundleID": "com.appifyai.iAmBack",
+        ///         "appleBuldleID": "com.appifyai.iAmBack",
+        ///         "appleAppID": "6471469501",
+        ///         "mobileNo": "7995995962",
+        ///         "fireBaseProjectID": "appify-android-gcp",
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "modifiedBy:1001,
+        ///         "modifiedOn:null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH APP PUBLISH SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/publish/get")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GetMemberAppPublishSetting(ParamMemberUserID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.GetMemberAppPublishSetting(itemData.userID);
+
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH APP PUBLISH SETTINGS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Get The List Of App Publish Setting
+        /// </summary>
+        /// <remarks>
+        ///     
+        /// Sample response JSON :
+        /// 
+        /// {
+        ///   "statusCode": 200,
+        ///   "name": "SUCCESS_OK",
+        ///   "message": "FETCH APP PUBLISH SETTINGS",
+        ///   "data": [
+        ///     {
+        ///       "userID": 1044,
+        ///       "appName": "REKHAS DESIGNS",
+        ///       "androidBundleID": "com.appi_fy_ai.rekhas_designs",
+        ///       "appleBuldleID": "com.appi-fy-ai.rekhas-designs",
+        ///       "appleAppID": "6475161371",
+        ///       "mobileNo": "9701167951",
+        ///       "fireBaseProjectID": "appify-android-gcp",
+        ///       "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/logo.png",
+        ///       "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/icon.png",
+        ///       "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1044/icon_tr.png",
+        ///       "modifiedBy:1001,
+        ///       "modifiedOn:null
+        ///     },
+        ///     {
+        ///       "userID": 1049,
+        ///       "appName": "BAKM lifestyle",
+        ///       "androidBundleID": "com.appi_fy_ai.bakm_lifestyle",
+        ///       "appleBuldleID": "com.appifyai.bakmLifestyle",
+        ///       "appleAppID": "6471470575",
+        ///       "mobileNo": "9994853833",
+        ///       "fireBaseProjectID": "appify-android-gcp",
+        ///       "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/logo.png",
+        ///       "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/icon.png",
+        ///       "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1049/icon_tr.png"
+        ///       "modifiedBy:1001,
+        ///       "modifiedOn:null
+        ///     }
+        /// ]        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH LIST APP PUBLISH SETTINGS SUCCESSFULLY</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/publish/list")]
+        [MapToApiVersion("1.0")]
+        public IActionResult ListMemberAppPublishSetting(ParamPageView itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.ListMemberAppPublishSetting(itemData.PageNo, itemData.Rows);
+
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH APP PUBLISH SETTINGS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH LIST APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, item, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = item;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP LIST SETTINGS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP CICD LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Add App Publish Settings
+        /// </summary>
+        /// <remarks>
+        /// sample Request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1060,
+        ///         "appName": "I AM BACK",
+        ///         "androidBundleID": "com.appifyai.iAmBack",
+        ///         "appleBuldleID": "com.appifyai.iAmBack",
+        ///         "appleAppID": "6471469501",
+        ///         "mobileNo": "7995995962",
+        ///         "fireBaseProjectID": "appify-android-gcp",
+        ///         "appLogo": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/logo.png",
+        ///         "appIcon": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon.png",
+        ///         "appIconTransparent": "https://appify-assets.s3.ap-south-2.amazonaws.com/1060/icon_tr.png",
+        ///         "modifiedBy:1001
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "APP PUBLISH SETTINGS SAVED SUCCESSFULLY",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">APP PUBLISH SETTINGS UPDATED SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/publish/update")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SaveMemberAppPublishSetting(MemberAppPublishSetting itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                var result = memberAppSettingBusiness.UpdateMemberAppPublishSetting(itemData);
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "APP PUBLISH SETTINGS SAVED SUCCESSFULLY";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        #endregion
+
+
+
+
+
+
     }
 }
