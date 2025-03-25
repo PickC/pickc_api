@@ -107,6 +107,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
                 var result = addressBusiness.SaveAddress(item);
                 if (result!=null)
@@ -181,6 +182,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
                 var result = addressBusiness.DeleteAddress(itemData.addressID, itemData.userID);
                 if (result)
@@ -271,6 +273,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
 
                 var item = addressBusiness.GetAddress(itemData.addressID,itemData.userID);
@@ -361,6 +364,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
 
                 var item = addressBusiness.GetDefaultAddress(itemData.userID);
@@ -490,18 +494,12 @@ namespace appify.web.api.Controllers
         public IActionResult List(ParamMemberUserID itemData)
         {
 
-            var handler = new JwtSecurityTokenHandler();
-            string Token = string.Empty;
-            Request.Headers.TryGetValue("Authorization", out var token);
-            Token = token.ToString().Replace("Bearer ", "");
-            var jwt1 = handler.ReadJwtToken(Token);
-
-
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
                 List<Address> items = addressBusiness.GetList(itemData.userID);
                 if (items?.Any() == true)
