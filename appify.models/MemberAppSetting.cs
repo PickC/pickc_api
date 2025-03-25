@@ -75,7 +75,7 @@ namespace appify.models
         public Int64 UserID { get; set; }
         public string AppName { get; set; }
         public string AndroidBundleID { get; set; }
-        public string AppleBuldleID { get; set; }
+        public string AppleBundleID { get; set; }
         public string AppleAppID { get; set; }
 
         public string MobileNo { get; set; }
@@ -88,8 +88,14 @@ namespace appify.models
         public short ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
 
+        public string? AppleAppURL { get; set; }
+        public string? AndroidAppURL { get; set; }
+
+
 
     }
+
+
 
 
     public partial class MemberAppPublishSetting
@@ -114,13 +120,37 @@ namespace appify.models
         public string? CompanyDescription { get; set; }
         public string? PlayStoreDescription { get; set; }
         public string? AppstoreWords { get; set; }
-        public string? Subtitle { get; set; }       
+        public string? Subtitle { get; set; }
         public string? Comments { get; set; }
         public string? OnBoarderBy { get; set; }
 
         public Int16? ModifiedBy { get; set; }
 
         public string? ShortDescription { get; set; }
+        public string? Categories { get; set; }
+        public string? WarehouseAddress { get; set; }
+
+
+    }
+
+
+
+
+
+    public partial class MemberAppPublishSettingLite
+    {
+        public Int64 UserID { get; set; }
+        public string? AppLogo { get; set; }
+        public string AppName { get; set; }
+        public int? DeploymentStatusAndroid { get; set; }
+        public int? DeploymentStatusApple { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string MobileNo { get; set; }
+        public string? ShortDescription { get; set; }
+    
+        public string? Categories { get; set; }
+        public string? WarehouseAddress { get; set; }
+
     }
 
 
