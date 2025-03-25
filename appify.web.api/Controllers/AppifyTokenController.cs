@@ -32,8 +32,20 @@ namespace appify.web.api.Controllers
         [Authorize]
         public IActionResult GetUser(TokenObject item)
         {
-            CheckToken.IsValidToken(Request, config);
-            return Ok("Token validation successful. You may proceed to use this API endpoint.");
+            rm = new ResponseMessage();
+            try
+            {
+                CheckToken.IsValidToken(Request, config);
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            //return Ok("Token validation successful. You may proceed to use this API endpoint.");
+            return Ok(rm);
         }
 
         [HttpPost, Route("generatetoken")]
@@ -67,7 +79,7 @@ namespace appify.web.api.Controllers
                 {
                     // Token is expired or doesn't exist, generate a new one
                     token = jwtTokenService.GenerateToken(customerId, deviceID, 7);
-                    redisCacheService.SaveToken(customerId, deviceID, token, TimeSpan.FromMinutes(2)); ////TimeSpan.FromDays(7)
+                    redisCacheService.SaveToken(customerId, deviceID, token, TimeSpan.FromDays(7)); ////TimeSpan.FromMinutes(2)
                     Console.WriteLine("New token generated and saved in Redis.");
                 }
                 else

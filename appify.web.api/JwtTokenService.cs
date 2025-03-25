@@ -38,8 +38,8 @@ namespace appify.web.api
                 issuer: _issuer,
                 audience: _audience,
                 claims: claims,
-                //expires: DateTime.UtcNow.AddDays(expiryDays),DateTime.Now.AddMinutes(2)
-                expires: DateTime.Now.AddSeconds(60),
+                expires: DateTime.UtcNow.AddDays(expiryDays),
+                //expires: DateTime.Now.AddSeconds(60),
 
                 signingCredentials: credentials
             );
