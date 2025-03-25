@@ -1,4 +1,5 @@
-﻿using appify.utility;
+﻿using appify.models;
+using appify.utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
+using Razorpay.Api;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -28,10 +30,22 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getuser")]
         [Authorize]
-        public IActionResult GetUser()
+        public IActionResult GetUser(TokenObject item)
         {
-
-            return Ok("Token validation successful. You may proceed to use this API endpoint.");
+            rm = new ResponseMessage();
+            try
+            {
+                CheckToken.IsValidToken(Request, config);
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            //return Ok("Token validation successful. You may proceed to use this API endpoint.");
+            return Ok(rm);
         }
 
         [HttpPost, Route("generatetoken")]
@@ -65,7 +79,7 @@ namespace appify.web.api.Controllers
                 {
                     // Token is expired or doesn't exist, generate a new one
                     token = jwtTokenService.GenerateToken(customerId, deviceID, 7);
-                    redisCacheService.SaveToken(customerId, deviceID, token, TimeSpan.FromDays(7));
+                    redisCacheService.SaveToken(customerId, deviceID, token, TimeSpan.FromDays(7)); ////TimeSpan.FromMinutes(2)
                     Console.WriteLine("New token generated and saved in Redis.");
                 }
                 else

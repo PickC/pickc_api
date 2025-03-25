@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace appify.web.api.Controllers
 {
@@ -107,6 +108,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
                 var result = addressBusiness.SaveAddress(item);
                 if (result!=null)
                 {
@@ -181,6 +184,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
                 var result = addressBusiness.DeleteAddress(itemData.addressID, itemData.userID);
                 if (result)
                 {
@@ -271,7 +276,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var item = addressBusiness.GetAddress(itemData.addressID,itemData.userID);
 
                 if (item != null)
@@ -360,6 +365,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
 
                 var item = addressBusiness.GetDefaultAddress(itemData.userID);
@@ -488,11 +494,13 @@ namespace appify.web.api.Controllers
         [Authorize]
         public IActionResult List(ParamMemberUserID itemData)
         {
+
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
             {
+                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
                 List<Address> items = addressBusiness.GetList(itemData.userID);
                 if (items?.Any() == true)

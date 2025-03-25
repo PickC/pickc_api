@@ -48,7 +48,7 @@ options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:key"])),
-        //ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -84,7 +84,7 @@ builder.Services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepositor
 builder.Services.AddSingleton<IRoleRightsRepository, RoleRightsRepository>();
 builder.Services.AddSingleton<ICategoryParameterRepository, CategoryParameterRepository>();
 builder.Services.AddSingleton<IParameterTypeRepository, ParameterTypeRepository>();
-
+builder.Services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
 
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
@@ -119,7 +119,7 @@ builder.Services.AddSingleton<IAdminDashboardBusiness, AdminDashboardBusiness>()
 builder.Services.AddSingleton<IRoleRightsBusiness, RoleRightsBusiness>();
 builder.Services.AddSingleton<ICategoryParameterBusiness, CategoryParameterBusiness>();
 builder.Services.AddSingleton<IParameterTypeBusiness, ParameterTypeBusiness>();
-
+builder.Services.AddSingleton<ISubscriptionBusiness , SubscriptionBusiness>();
 
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 
