@@ -21,7 +21,7 @@ namespace appify.DataAccess.Contract
         #region Member App Publish Settings
 
         public MemberAppPublishSetting GetMemberAppPublishSetting(long userID);
-        public List<MemberAppPublishSetting> ListMemberAppPublishSetting();
+        public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting();
         public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item);
 
 

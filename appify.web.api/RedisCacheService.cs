@@ -47,4 +47,42 @@ namespace appify.web.api
             return _redisDb.KeyDelete(key);
         }
     }
+    public static class CheckToken
+    {
+
+        public static void IsValidToken(HttpRequest request, IConfiguration config)
+        {
+            try
+            {
+                string redisConnectionString = config["AppifyCache:Server"];
+                var redisCacheService = new RedisCacheService(redisConnectionString);
+                string Token = string.Empty;
+                string UserId = string.Empty;
+                string DeviceId = string.Empty;
+                request.Headers.TryGetValue("Authorization", out var token);
+                request.Headers.TryGetValue("UserId", out var userId);
+                request.Headers.TryGetValue("DeviceId", out var deviceId);
+                if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(deviceId))
+                {
+                    //return BadRequest("Missing required headers: Token, UserId, or DeviceId.");
+                    throw new Exception("Missing required headers: Token, UserId, or DeviceId.");
+                }
+                Token = token.ToString().Replace("Bearer ", "");
+                UserId = userId.ToString();
+                DeviceId = deviceId.ToString();
+                string tokenRedis = redisCacheService.GetToken(UserId, DeviceId);
+
+                if (Token != tokenRedis)
+                {
+                    //return BadRequest("Invalid Token.");
+                    throw new Exception("Invalid Token.");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+    }
 }
