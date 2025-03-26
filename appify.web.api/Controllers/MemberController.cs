@@ -1972,7 +1972,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var item = memberAppSettingBusiness.GetAppStatusWeb(itemData.userID);
+                var item = memberAppSettingBusiness.GetAppStatusCICD(itemData.userID);
 
                 if (item != null)
                 {
@@ -2006,6 +2006,92 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+        /// <summary>
+        /// Get an App Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1060,
+        ///         "deploymentStatusAndroid": 4127,
+        ///         "deploymentStatusApple": 4127,
+        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
+        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH APP STATUS",
+        ///       "data": {
+        ///         "deploymentStatusAndroid": 4127,
+        ///         "deploymentStatusApple": 4127,
+        ///         "androidAppURL": "https://play.google.com/store/apps/details?id=com.appifyai.iAmBack",
+        ///         "appleAppURL": "https://apps.apple.com/in/app/id6471469501"
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH APP SETTINGS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("appsetting/web/cicd/updateappstatus")]
+        [MapToApiVersion("1.0")]
+        public IActionResult UpdateMemberAppStatus(MemberAppSettingUpdate itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            MemberAppSettingLite itemLite;
+
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = memberAppSettingBusiness.UpdateMemberAppStatus(itemData);
+
+                if (item ==true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "UPDATE APP STATUS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UPDATED APP STATUS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP STATUS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP STATUS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+
+
+
 
         //Member Theme APIs
         /// <summary>

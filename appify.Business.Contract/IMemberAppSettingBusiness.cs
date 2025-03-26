@@ -22,7 +22,9 @@ namespace appify.Business.Contract
         public List<MemberAppSettingCICD> ListMemberAppSettingCICD();
         //public Int16 RecordCountMemberAppSettingCICD();
         public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item);
-        public MemberAppStatus GetAppStatusWeb(long userID);
+        public MemberAppStatus GetAppStatusCICD(long userID);
+
+        public bool UpdateMemberAppStatus(MemberAppSettingUpdate item);
 
 
 
