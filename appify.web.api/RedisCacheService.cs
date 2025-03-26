@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 using System;
@@ -54,6 +55,7 @@ namespace appify.web.api
         {
             try
             {
+                var checkurl = request.GetDisplayUrl().Contains("swagger");
                 string redisConnectionString = config["AppifyCache:Server"];
                 var redisCacheService = new RedisCacheService(redisConnectionString);
                 string Token = string.Empty;

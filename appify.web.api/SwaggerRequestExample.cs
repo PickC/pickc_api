@@ -67,6 +67,10 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
+    public class ParamPriceID
+    {
+        public string PriceID { get; set; }
+    }
 
     public class ParamVendorCategories : ParamMemberVendorID
     {

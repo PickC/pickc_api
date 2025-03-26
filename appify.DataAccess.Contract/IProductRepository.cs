@@ -37,6 +37,6 @@ namespace appify.DataAccess.Contract
         public bool UpdateFeaturedCategories(FeaturedCategories item);
         public bool DeleteFeaturedCategories();
 
-
+        public StockByPriceID GetStockByPriceID(long PriceID);
     }
 }
