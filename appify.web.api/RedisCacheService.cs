@@ -55,7 +55,6 @@ namespace appify.web.api
         {
             try
             {
-                var checkurl = request.GetDisplayUrl().Contains("swagger");
                 string redisConnectionString = config["AppifyCache:Server"];
                 var redisCacheService = new RedisCacheService(redisConnectionString);
                 string Token = string.Empty;
