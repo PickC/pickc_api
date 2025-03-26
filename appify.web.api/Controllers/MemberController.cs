@@ -2966,8 +2966,6 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns MemberBanner Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
 
-
-
         [HttpPost, Route("banner/get")]
         [MapToApiVersion("1.0")]
         public IActionResult memberBannerGet(ParamMemberUserID itemData)
@@ -3292,10 +3290,6 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
-
-
-
-
 
 
 
