@@ -305,7 +305,7 @@ namespace appify.DataAccess
 
 
 
-        public MemberAppStatus GetAppStatusWeb(long userID)
+        public MemberAppStatus GetAppStatusCICD(long userID)
         {
             MemberAppStatus item = new MemberAppStatus();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
@@ -314,9 +314,11 @@ namespace appify.DataAccess
             return item;
         }
 
+     
 
 
-        public bool UpdateMemberAppSettingWeb(MemberAppSettingUpdate item)
+
+        public bool UpdateMemberAppStatus(MemberAppSettingUpdate item)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);

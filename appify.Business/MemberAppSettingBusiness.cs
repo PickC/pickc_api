@@ -36,11 +36,6 @@ namespace appify.Business
         {
             return memberAppSettingRepository.SaveMemberAppSetting(item);
         }
-        public MemberAppStatus GetAppStatusWeb(long userID)
-        {
-            return memberAppSettingRepository.GetAppStatusWeb(userID);
-        }
-
         #region Member App CICD Settings
 
         public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
@@ -60,6 +55,18 @@ namespace appify.Business
         //    throw new NotImplementedException();
 
         //}
+
+        public MemberAppStatus GetAppStatusCICD(long userID)
+        {
+            return memberAppSettingRepository.GetAppStatusCICD(userID);
+        }
+
+
+        public bool UpdateMemberAppStatus(MemberAppSettingUpdate item) { 
+            return memberAppSettingRepository.UpdateMemberAppStatus(item);
+        }
+
+
 
         #endregion
 
