@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using Razorpay.Api;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Cryptography.Xml;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -2259,6 +2260,97 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
                 //await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get Product Stock by Price
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///         "priceID": "1019, 1020, 1021, 1022"
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH STOCK BY PRICEID",
+        ///       "data": [
+        ///         {
+        ///           "stock": 6,
+        ///           "priceID": 1019
+        ///         },
+        ///         {
+        ///           "stock": 4,
+        ///           "priceID": 1020
+        ///         },
+        ///         {
+        ///         "stock": 7,
+        ///           "priceID": 1021
+        ///         },
+        ///         {
+        ///         "stock": 6,
+        ///           "priceID": 1022
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCH STOCK BY PRICEID!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("stock/getbyprice")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetStockByPriceID(ParamPriceID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                foreach (var priceid in PriceIDs)
+                {
+                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                }
+
+                if (stockitem != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH STOCK BY PRICEID";
+                    rm.name = StatusName.ok;
+                    rm.data = stockitem;
+                    await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID", reqHeader, controllerURL, stockitem, stockitem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID - NO CONTENT", reqHeader, controllerURL, stockitem, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

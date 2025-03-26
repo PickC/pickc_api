@@ -131,6 +131,7 @@ namespace appify.dbroutine
         public const string LISTPRODUCTPRICENEW = "[Operation].[usp_ProductPriceListNew]";
         public const string SAVEPRODUCTPRICE = "[Operation].[usp_ProductPriceSave]";
         public const string DELETEPRODUCTPRICE = "[Operation].[usp_ProductPriceDelete]";
+        public const string SELECTSTOCKBYPRICE = "[Operation].[usp_ProductStockByPrice]";
 
         /// <summary>
         /// [Config].[Lookup]

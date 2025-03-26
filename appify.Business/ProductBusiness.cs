@@ -163,5 +163,9 @@ namespace appify.Business
             return repository.UpdateFeaturedCategories(item);
         }
 
+        public StockByPriceID GetStockByPriceID(long PriceID)
+        {
+            return repository.GetStockByPriceID(PriceID);
+        }
     }
 }

@@ -369,7 +369,14 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
-        #endregion
+        public StockByPriceID GetStockByPriceID(long PriceID)
+        {
+            StockByPriceID item = new StockByPriceID();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
+            item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+            return item;
+        }
+            #endregion
 
+        }
     }
-}

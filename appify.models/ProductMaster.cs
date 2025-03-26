@@ -190,6 +190,11 @@ namespace appify.models
 
     }
 
+    public partial class StockByPriceID
+    {
+        public short Stock { get; set; }
+        public long PriceID {  get; set; }
+    }
     public partial class ProductCategories
     {
         public long CategoryID { get; set; }
