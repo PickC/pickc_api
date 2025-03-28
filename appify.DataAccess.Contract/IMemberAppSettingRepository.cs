@@ -31,9 +31,6 @@ namespace appify.DataAccess.Contract
         public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting();
         public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item);
 
-
-
-
         #endregion
 
 
