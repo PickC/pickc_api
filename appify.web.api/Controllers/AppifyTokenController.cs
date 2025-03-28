@@ -29,7 +29,7 @@ namespace appify.web.api.Controllers
         }
 
         [HttpPost, Route("getuser")]
-        [Authorize]
+        [Authorize(Roles ="1000,1001")]
         public IActionResult GetUser(TokenObject item)
         {
             rm = new ResponseMessage();

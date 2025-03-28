@@ -8,6 +8,7 @@
 using appify.Business.Contract;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -99,6 +100,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("notificationlistbyvendor")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetNotificationByVendor(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -106,6 +108,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID);
                 if (result != null)
                 {
@@ -141,6 +144,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("notificationlistbyvendor")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult GetNotificationByVendorPagination(ParamMemberVendorIDPagination itemData)
         {
             var reqHeader = Request;
@@ -148,6 +152,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
@@ -244,6 +249,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("notificationlistbyuser")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetNotificationByUser(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -251,6 +257,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.GetNotificationByUser(itemData.userID);
                 if (result != null)
                 {
@@ -335,6 +342,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("notificationlistbyuser")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult GetNotificationByUserPagination(ParamMemberVendorIDPagination itemData)
         {
             var reqHeader = Request;
@@ -342,6 +350,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.GetNotificationByUser(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
@@ -393,6 +402,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("IsRead")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult isReadNotification(ParamMemberNotificationID itemData)
         {
             var reqHeader = Request;
@@ -400,6 +410,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.IsReadNotification(itemData.NotificationID);
                 if (result != null)
                 {
@@ -449,6 +460,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("UnReadCount")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult unReadCountNotification(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -456,6 +468,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.notificationBusiness.unReadCountNotification(itemData.userID);
                 if (result != null)
                 {

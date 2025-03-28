@@ -9,9 +9,11 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace appify.web.api.Controllers
 {
@@ -26,11 +28,13 @@ namespace appify.web.api.Controllers
         private readonly INotificationBusiness notificationBusiness;
         public readonly IEventLogBusiness eventLogBusiness;
         public readonly IVendorPaymentBusiness vendorPaymentBusiness;
-        public VendorPaymentController(INotificationBusiness IResultData, IEventLogBusiness eventLogBusiness, IVendorPaymentBusiness vendorPaymentBusiness)
+        private readonly IConfiguration configuration;
+        public VendorPaymentController(IConfiguration configuration, INotificationBusiness IResultData, IEventLogBusiness eventLogBusiness, IVendorPaymentBusiness vendorPaymentBusiness)
         {
             this.notificationBusiness = IResultData;
             this.eventLogBusiness = eventLogBusiness;
             this.vendorPaymentBusiness = vendorPaymentBusiness;
+            this.configuration = configuration;
         }
 
         /// <summary>
@@ -61,6 +65,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> Add(VendorPayment item)
         {
             var reqHeader = Request;
@@ -68,6 +73,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.SaveVendorPayment(item);
                 if (result != null)
                 {
@@ -102,6 +108,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public async Task<IActionResult> Add1(VendorPayment item)
         {
             var reqHeader = Request;
@@ -109,6 +116,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.SaveVendorPayment(item);
                 if (result != null)
                 {
@@ -156,6 +164,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Remove(ParamVendorPayment itemData)
         {
             var reqHeader = Request;
@@ -163,6 +172,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.RemoveVendorPayment(itemData.PaymentID);
                 if (result != null)
                 {
@@ -196,6 +206,7 @@ namespace appify.web.api.Controllers
         }
         [HttpPost, Route("Remove")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult Remove1(ParamVendorPayment itemData)
         {
             var reqHeader = Request;
@@ -203,6 +214,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.RemoveVendorPayment(itemData.PaymentID);
                 if (result != null)
                 {
@@ -254,6 +266,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Get(ParamVendorPayment itemData)
         {
             var reqHeader = Request;
@@ -261,6 +274,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.Get(itemData.PaymentID);
                 if (result != null)
                 {
@@ -294,6 +308,7 @@ namespace appify.web.api.Controllers
         }
         [HttpPost, Route("Get")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult Get1(ParamVendorPayment itemData)
         {
             var reqHeader = Request;
@@ -301,6 +316,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.Get(itemData.PaymentID);
                 if (result != null)
                 {
@@ -341,6 +357,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("ListAll")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListAll()
         {
             var reqHeader = Request;
@@ -348,6 +365,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.GetAll();
                 if (result != null)
                 {
@@ -381,6 +399,7 @@ namespace appify.web.api.Controllers
         }
         [HttpPost, Route("ListAll")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult ListAll1()
         {
             var reqHeader = Request;
@@ -388,6 +407,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.GetAll();
                 if (result != null)
                 {
@@ -441,6 +461,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("ListAllByRows")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListAllByRows(ParamPaymentList itemData)
         {
             var reqHeader = Request;
@@ -448,7 +469,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 List<VendorPayment> items = vendorPaymentBusiness.PaymentListbyRows(itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -487,6 +508,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("ListAllByRows")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult ListAllByRows1(ParamPaymentList itemData)
         {
             var reqHeader = Request;
@@ -494,7 +516,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 List<VendorPayment> items = vendorPaymentBusiness.PaymentListbyRows(itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -549,6 +571,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetPaymentStatus")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetPaymentStatus(ParamVendor itemData)
         {
             var reqHeader = Request;
@@ -556,6 +579,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.GetPaymentStatus(itemData.VendorID);
                 if (result != null)
                 {
@@ -589,6 +613,7 @@ namespace appify.web.api.Controllers
         }
         [HttpPost, Route("GetPaymentStatus")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult GetPaymentStatus1(ParamVendor itemData)
         {
             var reqHeader = Request;
@@ -596,6 +621,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.GetPaymentStatus(itemData.VendorID);
                 if (result != null)
                 {
@@ -647,6 +673,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateReferenceNo")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> UpdateReferenceNo(VendorPaymentStatus item)
         {
             var reqHeader = Request;
@@ -654,6 +681,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.UpdateReferenceNo(item);
                 if (result != null)
                 {
@@ -687,6 +715,7 @@ namespace appify.web.api.Controllers
         }
         [HttpPost, Route("UpdateReferenceNo")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public async Task<IActionResult> UpdateReferenceNo1(VendorPaymentStatus item)
         {
             var reqHeader = Request;
@@ -694,6 +723,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = vendorPaymentBusiness.UpdateReferenceNo(item);
                 if (result != null)
                 {
@@ -743,6 +773,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("ListByVendor")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListByVndor(ParamVendor item)
         {
             var reqHeader = Request;
@@ -750,6 +781,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.ListByVendor(item.VendorID);
                 if (result != null)
                 {
@@ -784,6 +816,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("ListByVendor")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult ListByVndor1(ParamVendor item)
         {
             var reqHeader = Request;
@@ -791,6 +824,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.vendorPaymentBusiness.ListByVendor(item.VendorID);
                 
                 if (result != null)

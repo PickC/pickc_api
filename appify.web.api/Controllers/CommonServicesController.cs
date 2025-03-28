@@ -26,6 +26,8 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.DataProtection;
 using System.Text;
 using System.Net;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace appify.web.api.Controllers
@@ -89,6 +91,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("WebhookShipRocket")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> WebhookShipRocket()
         {
             var body = "";
@@ -462,11 +465,11 @@ namespace appify.web.api.Controllers
                 accountRequest.Add("phone", itemData.Phone);
                 accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
                 accountRequest.Add("business_type", itemData.BusinessType);
-                accountRequest.Add("contact_name", "Gaurav Kumar");
+                accountRequest.Add("contact_name", "Gurjeet Singh");
 
-                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                legalInfo.Add("pan", itemData.PAN);
-                legalInfo.Add("gst", itemData.GST);
+                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
+                //legalInfo.Add("pan", itemData.PAN);
+                //legalInfo.Add("gst", itemData.GST);
 
                 Dictionary<string, object> bankInfo = new Dictionary<string, object>();
                 bankInfo.Add("ifsc_code", itemData.IFSCCODE);
@@ -476,10 +479,10 @@ namespace appify.web.api.Controllers
 
                 //accountRequest.Add("profile", profile);
 
-                if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
-                {
-                    accountRequest.Add("legal_info", legalInfo);
-                }
+                //if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
+                //{
+                //    accountRequest.Add("legal_info", legalInfo);
+                //}
 
                 accountRequest.Add("bank_account", bankInfo);
 
@@ -619,7 +622,7 @@ namespace appify.web.api.Controllers
                 Dictionary<string, object> transferRequest = new Dictionary<string, object>();
                 List<Dictionary<string, object>> transfers = new List<Dictionary<string, object>>();
                 Dictionary<string, object> transferParams = new Dictionary<string, object>();
-                transferParams.Add("account", "acc_Q94MHO8YXtMgzO");
+                transferParams.Add("account", "acc_QBOuFMPEh3zBGm");
                 transferParams.Add("amount", 100);
                 transferParams.Add("currency", "INR");
                 Dictionary<string, object> notes = new Dictionary<string, object>();
@@ -653,67 +656,67 @@ namespace appify.web.api.Controllers
 
         }
 
-        private static readonly string RazorpayKeyId = Common.RazorPayKey;
-        private static readonly string RazorpayKeySecret = Common.RazorPaySecret;
-        private static readonly string RazorpayApiUrl = "https://api.razorpay.com/v1/orders";
+        //private static readonly string RazorpayKeyId = Common.RazorPayKey;
+        //private static readonly string RazorpayKeySecret = Common.RazorPaySecret;
+        //private static readonly string RazorpayApiUrl = "https://api.razorpay.com/v1/orders";
 
-        public static async Task CreateSplitPaymentOrderAsync()
-        {
-            // Define the order payload with split payments
-            var orderData = new
-            {
-                amount = 10000, // Amount in paise (e.g., 10000 = ₹100)
-                currency = "INR",
-                receipt = "order_rcpt_123",
-                payment_capture = 1, // Auto-capture payment
-                notes = new { description = "Order for multiple vendors" },
-                transfers = new[]
-                {
-                new { account = "acc_Q9N1ccfvK0eFMm", amount = 6000, currency = "INR", on_hold = false },
-                new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
-            }
-            };
+        //public static async Task CreateSplitPaymentOrderAsync()
+        //{
+        //    // Define the order payload with split payments
+        //    var orderData = new
+        //    {
+        //        amount = 1000, // Amount in paise (e.g., 10000 = ₹100)
+        //        currency = "INR",
+        //        receipt = "order_rcpt_123",
+        //        payment_capture = 1, // Auto-capture payment
+        //        notes = new { description = "Order for multiple vendors" },
+        //        transfers = new[]
+        //        {
+        //        new { account = "acc_Q9N1ccfvK0eFMm", amount = 1000, currency = "INR", on_hold = false },
+        //        //new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+        //    }
+        //    };
 
-            // Serialize the order data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(orderData);
+        //    // Serialize the order data to JSON
+        //    string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(orderData);
 
-            // Create HttpClient instance
-            using (var client = new HttpClient())
-            {
-                // Set up Basic Authentication
-                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId}:{RazorpayKeySecret}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+        //    // Create HttpClient instance
+        //    using (var client = new HttpClient())
+        //    {
+        //        // Set up Basic Authentication
+        //        var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId}:{RazorpayKeySecret}"));
+        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
 
-                // Set up the request content
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+        //        // Set up the request content
+        //        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                // Send the POST request to Razorpay API
-                HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl, content);
+        //        // Send the POST request to Razorpay API
+        //        HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl, content);
 
-                // Handle the response
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Order created successfully:");
-                    Console.WriteLine(responseBody);
-                }
-                else
-                {
-                    string errorResponse = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine("Error creating order:");
-                    Console.WriteLine(errorResponse);
-                }
-            }
-        }
+        //        // Handle the response
+        //        if (response.IsSuccessStatusCode)
+        //        {
+        //            string responseBody = await response.Content.ReadAsStringAsync();
+        //            Console.WriteLine("Order created successfully:");
+        //            Console.WriteLine(responseBody);
+        //        }
+        //        else
+        //        {
+        //            string errorResponse = await response.Content.ReadAsStringAsync();
+        //            Console.WriteLine("Error creating order:");
+        //            Console.WriteLine(errorResponse);
+        //        }
+        //    }
+        //}
 
-        [HttpPost]
-        [Route("RazorPay/Settlement/OrderBaseSplitPayment")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> OrderBaseSplitPayment()
-        {
-            await CreateSplitPaymentOrderAsync();
-            return Ok("");
-        }
+        //[HttpPost]
+        //[Route("RazorPay/Settlement/OrderBaseSplitPayment")]
+        //[MapToApiVersion("1.0")]
+        //public async Task<IActionResult> OrderBaseSplitPayment()
+        //{
+        //    await CreateSplitPaymentOrderAsync();
+        //    return Ok("");
+        //}
 
         [HttpPost]
         [Route("RazorPay/Settlement/PaymentBaseSplitPayment")]
@@ -721,7 +724,7 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> PaymentBaseSplitPayment()
         {
             // Replace with the actual payment ID
-            string paymentId = "pay_ABC1234567890";
+            string paymentId = "pay_QBO6jc1IqTCOXi";
             await CreateTransferSplitPaymentAsync(paymentId);
             return Ok("");
         }
@@ -737,8 +740,8 @@ namespace appify.web.api.Controllers
             {
                 transfers = new[]
                 {
-                new { account = "acc_Q9N1ccfvK0eFMm", amount = 6000, currency = "INR", on_hold = false },
-                new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+                new { account = "acc_QBOuFMPEh3zBGm", amount = 1000, currency = "INR", on_hold = false },
+                ////new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
             }
             };
 
@@ -787,7 +790,12 @@ namespace appify.web.api.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> CreateAnAccount()
         {
-            await CreateSubMerchantAccountAsync();
+            //await CreateSubMerchantAccountAsync();
+
+            string orderId = await CreateOrderAsync(500, "INR", "ORD_12345");
+
+            Console.WriteLine("Order ID: " + orderId);
+
             return Ok(0);
         }
 
@@ -890,7 +898,63 @@ namespace appify.web.api.Controllers
             }
         }
 
-        #endregion
 
+        private string KeyId = Common.RazorPayKey;       // 🔹 Replace with Razorpay Key ID
+        private string KeySecret = Common.RazorPaySecret; // 🔹 Replace with Razorpay Secret
+        private const string RazorpayOrderUrl = "https://api.razorpay.com/v1/orders"; // ✅ Razorpay API URL
+
+        private async Task<string> CreateOrderAsync(int amount, string currency, string receipt)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // 🔹 Encode API credentials (Basic Authentication)
+                    string auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{KeyId}:{KeySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+
+                    // 🔹 Order request payload
+                    var orderData = new
+                    {
+                        amount = amount * 100,  // Amount in paise (₹10 = 1000 paise)
+                        currency = currency,
+                        receipt = receipt,
+                        payment_capture = 1  // Auto capture payment
+                    };
+
+                    // 🔹 Convert payload to JSON
+                    string jsonBody = JsonConvert.SerializeObject(orderData);
+                    HttpContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                    // 🔹 Send HTTP POST request to Razorpay API
+                    HttpResponseMessage response = await client.PostAsync(RazorpayOrderUrl, content);
+                    string responseContent = await response.Content.ReadAsStringAsync();
+
+                    // 🔹 Check if response is successful
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // ✅ Order Created Successfully, Extract Order ID
+                        var jsonResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContent);
+                        return jsonResponse["id"].ToString();
+                    }
+                    else
+                    {
+                        // ❌ Error Response from Razorpay
+                        return $"Error: {responseContent}";
+                    }
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                return $"HTTP Request Error: {httpEx.Message}";
+            }
+            catch (Exception ex)
+            {
+                return $"Exception: {ex.Message}";
+            }
+        }
     }
+    #endregion
+
+
 }
