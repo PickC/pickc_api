@@ -365,8 +365,9 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
 
                 var item = addressBusiness.GetDefaultAddress(itemData.userID);
 
@@ -500,8 +501,9 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                CheckToken.IsValidToken(Request, configuration);
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+
                 List<Address> items = addressBusiness.GetList(itemData.userID);
                 if (items?.Any() == true)
                 {

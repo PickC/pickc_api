@@ -9,6 +9,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +17,14 @@ using Newtonsoft.Json.Linq;
 using Razorpay.Api;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Cryptography.Xml;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     public class ProductController : Controller
     {
         public readonly IEventLogBusiness eventLogBusiness;
@@ -164,6 +167,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> Add(models.Product product)
         {
             var reqHeader = Request;
@@ -171,7 +175,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();////To Do Need to check internal - price, image is empty then return exception message
-
+                CheckToken.IsValidToken(Request, configuration);
                 if (product.prices?.Any() == true && product.images?.Any() == true)
                 {
                     var productMaster = this.productBusiness.SaveProduct(product);
@@ -252,6 +256,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Remove(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -260,6 +265,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = productBusiness.DeleteProduct(itemData.productID, itemData.IsActive);
                 if (result)
                 {
@@ -340,6 +346,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetProduct(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -348,6 +355,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.productBusiness.GetProduct(itemData.productID);
                 if (item != null)
                 {
@@ -501,6 +509,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
         /// <summary>
         /// Get Product List by UserID
         /// </summary>
@@ -573,6 +582,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -581,6 +591,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<ProductMaster> items = productBusiness.GetProducts(itemData.userID);
                 if (items?.Any() == true)
                 {
@@ -684,6 +695,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("listall")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListAll()
         {
             //dynamic data = jsonData;
@@ -692,6 +704,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<ProductMaster> items = productBusiness.GetAllProducts();
                 if (items?.Any() == true)
                 {
@@ -790,6 +803,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("price/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListProductPrice(ParamProduct itemData)
         {
             //dynamic data=jsonData;
@@ -798,6 +812,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var items = priceBusiness.PriceList(itemData.productID);
                 if (items?.Any() == true)
                 {
@@ -849,6 +864,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("price/getprice")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetProductPrice(ParamProductPrice itemData)
         {
             var reqHeader = Request;
@@ -857,6 +873,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID, itemData.size);
 
                 if (item != null)
@@ -926,6 +943,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("price/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddProductPrice(ProductPrice price)
         {
             var reqHeader = Request;
@@ -933,6 +951,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = priceBusiness.SavePrice(price);
                 if (result)
                 {
@@ -995,6 +1014,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("price/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveProductPrice(ParamProductPrice itemData)
         {
             var reqHeader = Request;
@@ -1003,6 +1023,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
 
                 if (result)
@@ -1070,6 +1091,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("image/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListProductImage(ParamProduct itemData)
         {
             //dynamic data = jsonData;
@@ -1078,6 +1100,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var items = imageBusiness.GetProductImages(itemData.productID);
                 if (items?.Any() == true)
                 {
@@ -1143,6 +1166,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("image/getimage")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetProductImage(ParamProductImage itemData)
         {
             var reqHeader = Request;
@@ -1151,6 +1175,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = imageBusiness.GetProductImage(itemData.imageID, itemData.productID);
 
                 if (item != null)
@@ -1215,6 +1240,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("image/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddProductImage(ProductImage item)
         {
             var reqHeader = Request;
@@ -1222,6 +1248,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = imageBusiness.AddProductImage(item);
                 if (result)
                 {
@@ -1283,6 +1310,7 @@ namespace appify.web.api.Controllers
         ///
         [HttpPost, Route("image/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveProductImage(ParamProductImage itemData)
         {
             var reqHeader = Request;
@@ -1291,6 +1319,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = imageBusiness.RemoveProductImage(itemData.imageID, itemData.productID);
 
                 if (result)
@@ -1329,6 +1358,7 @@ namespace appify.web.api.Controllers
         /// </summary>
         [HttpPost, Route("image/verify")]
         [MapToApiVersion("1.0")]
+
         public IActionResult VerifyImage([Required] string imagePath)
         {
             var reqHeader = Request;
@@ -1559,6 +1589,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("NewProductsList")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetNewProductsList(ParamNewProductsByMember itemData)
         {
             var reqHeader = Request;
@@ -1566,6 +1597,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.productBusiness.GetNewProductsList(itemData.userID, itemData.IsNew);
                 if (result != null)
                 {
@@ -1626,6 +1658,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("UpdateProductAsNew")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult UpdateNewProducts(List<ParamNewProduct> itemData)
         {
             var reqHeader = Request;
@@ -1634,6 +1667,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 foreach (var item in itemData)
                 {
                     result = this.productBusiness.UpdateNewProducts(item.ProductID, item.IsNew);
@@ -1712,6 +1746,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getmastercategories")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetMasterCategories(ParamParent itemData)
         {
             var reqHeader = Request;
@@ -1720,6 +1755,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.productBusiness.GetProductMasterCategories(itemData.parentID);
                 if (item != null)
                 {
@@ -1759,7 +1795,27 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
+        /// -----------------------------------------------------------------------------------------
         /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Get Categories 4 based on ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "ParentID": 1001
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Gets All Categories based on ID
+        /// 
+        /// -----------------------------------------------------------------------------------------
         ///     Method Type : POST
         ///     
         ///     {
@@ -1795,6 +1851,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getcategoriesbyid")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetCategoriesList(ParamParent itemData)
         {
             var reqHeader = Request;
@@ -1803,7 +1860,54 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.productBusiness.GetCategoriesList(itemData.parentID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH CATEGORIES BY PARENTID";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost, Route("getcategoriesbyid")]
+        [MapToApiVersion("1.1")]
+        [Authorize]
+        public IActionResult GetALLCategoriesList(ParamParent itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1871,6 +1975,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getcategoryname")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetCategorieName(ParamCatID itemData)
         {
             var reqHeader = Request;
@@ -1879,6 +1984,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.productBusiness.GetCategorieName(itemData.categoryID);
                 if (item != null)
                 {
@@ -1953,6 +2059,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("savevendorcategories")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> SaveVendorCategories(List<ParentCategories> vendorCategories)
         {
             var reqHeader = Request;
@@ -1962,6 +2069,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<ParentCategories> returnItem = new List<ParentCategories>();
                 foreach (var item in vendorCategories)
                 {
@@ -2003,6 +2111,27 @@ namespace appify.web.api.Controllers
         /// Get Selected Parent Categories By VendorID
         /// </summary>
         /// <remarks>
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.0 (DEFAULT version)
+        /// 
+        /// Description : Get Categories 4 based on Vendor ID 
+        /// 
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///         "userID": 1060
+        ///     }
+        ///     
+        /// -----------------------------------------------------------------------------------------
+        /// 
+        /// version : 1.1
+        /// 
+        /// Description : Gets All Categories based on Vendor ID
+        /// 
+        /// -----------------------------------------------------------------------------------------
         /// Sample request:
         /// 
         ///     Method Type : POST
@@ -2059,6 +2188,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getvendorcategories")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> GetVendorCategories(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -2067,7 +2197,52 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.productBusiness.GetVendorCategories(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH SELECTED PARENT CATEGORIES";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost, Route("getvendorcategories")]
+        [MapToApiVersion("1.1")]
+        [Authorize]
+        public async Task<IActionResult> GetALLVendorCategories(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
+                var item = this.productBusiness.GetALLVendorCategories(itemData.userID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -2228,6 +2403,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                this.productBusiness.DeleteFeaturedCategories(itemData[0].VendorID);
                 foreach (var item in itemData)
                 {
                     result = this.productBusiness.UpdateFeaturedCategories(item);
@@ -2263,5 +2439,97 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+        /// <summary>
+        /// Get Product Stock by Price
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///         "priceID": "1019, 1020, 1021, 1022"
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH STOCK BY PRICEID",
+        ///       "data": [
+        ///         {
+        ///           "stock": 6,
+        ///           "priceID": 1019
+        ///         },
+        ///         {
+        ///           "stock": 4,
+        ///           "priceID": 1020
+        ///         },
+        ///         {
+        ///         "stock": 7,
+        ///           "priceID": 1021
+        ///         },
+        ///         {
+        ///         "stock": 6,
+        ///           "priceID": 1022
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCH STOCK BY PRICEID!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("stock/getbyprice")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetStockByPriceID(ParamPriceID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                foreach (var priceid in PriceIDs)
+                {
+                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                }
+
+                if (stockitem != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH STOCK BY PRICEID";
+                    rm.name = StatusName.ok;
+                    rm.data = stockitem;
+                    await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID", reqHeader, controllerURL, stockitem, stockitem, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID - NO CONTENT", reqHeader, controllerURL, stockitem, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
     }
 }

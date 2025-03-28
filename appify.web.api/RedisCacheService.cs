@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using StackExchange.Redis;
 using System;

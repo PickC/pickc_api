@@ -134,6 +134,10 @@ namespace appify.Business
         {
             return repository.GetCategoriesList(parentID);
         }
+        public List<ProductCategories> GetALLCategoriesList(long parentID)
+        {
+            return repository.GetALLCategoriesList(parentID);
+        }
         public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
             return repository.GetCategorieName(categoryID);
@@ -147,14 +151,17 @@ namespace appify.Business
             return repository.GetVendorCategories(VendorID);
         }
 
-
+        public List<ParentCategories> GetALLVendorCategories(long VendorID)
+        {
+            return repository.GetALLVendorCategories(VendorID);
+        }
         public List<FeaturedCategories> GetFeaturedCategories(long vendorID)
         {
             return repository.GetFeaturedCategories(vendorID);
         }
 
-        //public bool DeleteFeaturedCategories(long vendorID) {
-        //    throw new NotImplementedException();
+        //public bool deletefeaturedcategories(long vendorid) {
+        //    return repository.DeleteFeaturedCategories(vendorid);
         //}
 
 
@@ -163,5 +170,14 @@ namespace appify.Business
             return repository.UpdateFeaturedCategories(item);
         }
 
+        public StockByPriceID GetStockByPriceID(long PriceID)
+        {
+            return repository.GetStockByPriceID(PriceID);
+        }
+
+        public bool DeleteFeaturedCategories(long VendorID)
+        {
+            return repository.DeleteFeaturedCategories(VendorID);
+        }
     }
 }

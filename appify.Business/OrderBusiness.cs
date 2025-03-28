@@ -304,5 +304,9 @@ namespace appify.Business
         {
             return orderRepository.GetAlertHeader();
         }
+        public bool StockUpdate(long orderID, short OrderStatus)
+        {
+            return orderRepository.StockUpdate(orderID, OrderStatus);
+        }
     }
 }

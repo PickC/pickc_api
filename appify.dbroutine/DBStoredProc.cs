@@ -104,13 +104,17 @@ namespace appify.dbroutine
         public const string LISTALLPRODUCT = "[Operation].[usp_ProductMasterListAll]";
         public const string UPDATEPRODUCTIMAGEPRICE = "[Operation].[usp_ProductMasterUpdatePriceImage]";
         public const string SELECTPRODUCTMASTERCATEGORIES = "[Master].[usp_Categories]";
+        public const string CATEGORIESDEFAULTLISTBYID = "[Operation].[usp_DefaultCategoriesByID]";
         public const string CATEGORIESLISTBYID = "[Operation].[usp_CategoriesByID]";
         public const string CATEGORIESNAME = "[Operation].[usp_CategorieName]";
         public const string SAVEPARENTCATEGORIES = "[Operation].[usp_MemberCategorySave]";
-        public const string PARENTCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
+        public const string PARENTCATEGORIES = "[Operation].[usp_MemberDefaultCategory]";
+        public const string PARENTALLCATEGORIES = "[Operation].[usp_MemberCategorySelect]";
+        
 
         public const string FEATUREDCATEGORIES = "[Operation].[usp_FeaturedCategoriesList]";
         public const string SAVEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategorySave]";
+        public const string DELETEFEATUREDCATEGORIES = "[Operation].[usp_MemberFeatureCategoryDelete]";
         /// <summary>
         /// [Operation].[ProductImage]
         /// </summary>
@@ -131,6 +135,7 @@ namespace appify.dbroutine
         public const string LISTPRODUCTPRICENEW = "[Operation].[usp_ProductPriceListNew]";
         public const string SAVEPRODUCTPRICE = "[Operation].[usp_ProductPriceSave]";
         public const string DELETEPRODUCTPRICE = "[Operation].[usp_ProductPriceDelete]";
+        public const string SELECTSTOCKBYPRICE = "[Operation].[usp_ProductStockByPrice]";
 
         /// <summary>
         /// [Config].[Lookup]
@@ -183,6 +188,7 @@ namespace appify.dbroutine
         public const string ORDERDELIVERYDETAILS = "[Operation].[usp_OrderDetailDelivery]";
         public const string ORDERUPDATEAWB = "[Operation].[usp_OrderUpdateAWB]";
         public const string ORDERDELIVERYTRACKINGDETAILS = "[Operation].[usp_OrderDeliveryTrack]";
+        public const string STOCKUPDATE = "[Audit].[usp_OrderStockUpdate]";
 
         /// <summary>
         /// [Operation].[OrderDetail]

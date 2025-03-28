@@ -10,6 +10,7 @@ using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -104,6 +105,7 @@ namespace appify.web.api.Controllers
         // GET: api/<MemberController>
         [HttpGet]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> GetAllMembers()
         {
             var reqHeader = Request;
@@ -111,7 +113,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var items = this.memberBusiness.GetAllMembers();
 
                 if (items?.Any() == true)
@@ -201,6 +203,7 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpGet("{userID}")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> GetMember(long userID)
         {
             var reqHeader = Request;
@@ -208,6 +211,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var member = this.memberBusiness.GetMember(Convert.ToInt64(userID));
                 if (member != null)
                 {
@@ -496,6 +500,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("DeActivateMember")]
         [MapToApiVersion("1.0")]
+        //[Authorize]
         public IActionResult DeactivateMember(ParamMemberUserID itemData)
         {
             //dynamic data = jsondata;
@@ -504,6 +509,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.RemoveMember(itemData.userID);
                 if (result)
                 {
@@ -554,6 +560,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("DeleteMember")]
         [MapToApiVersion("1.0")]
+        //[Authorize]
         public IActionResult DeleteMember(ParamDeactivateMember itemData)
         {
             //dynamic data = jsondata;
@@ -562,6 +569,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.RemoveMemberByMobileNo(itemData.mobileNo, itemData.password);
                 if (result)
                 {
@@ -612,6 +620,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("ResetPassword")]
         [MapToApiVersion("1.0")]
+
         public IActionResult ResetPassword(ParamMemberResetPassword itemData)
         {
             var reqHeader = Request;
@@ -783,6 +792,7 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost, Route("OrdersCount")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult OrdersCount(ParamMemberUserID item)
         {
             var reqHeader = Request;
@@ -790,6 +800,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var count = this.memberBusiness.MemberOrderCount(item.userID);
                 if (count > 0)
                 {
@@ -849,6 +860,7 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost, Route("VendorOrdersCount")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult VendorOrdersCount(ParamMemberUserID item)
         {
             var reqHeader = Request;
@@ -856,6 +868,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var count = this.memberBusiness.VendorOrderCount(item.userID);
                 if (count > 0)
                 {
@@ -915,6 +928,7 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost, Route("OnlinePaymentAllowed")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult OnlinePaymentStatus(ParamMemberUserID item)
         {
             var reqHeader = Request;
@@ -922,6 +936,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 bool isAllowed = this.memberBusiness.CheckMemberOnlinePaymentStatus(item.userID);
 
                 rm.statusCode = StatusCodes.OK;
@@ -1062,6 +1077,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response>
         [HttpPost, Route("dashboard")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult MemberDashboard(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1071,6 +1087,7 @@ namespace appify.web.api.Controllers
                 // dynamic data = jsondata;
 
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 //var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID));
 
                 //TODO: to implement the above dashboard information
@@ -1146,6 +1163,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("dashboardsummery")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult MemberDashboardSummery(ParamMemberDashboard itemData)
         {
             var reqHeader = Request;
@@ -1154,6 +1172,7 @@ namespace appify.web.api.Controllers
             {
                 // dynamic data = jsondata;
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID), itemData.dateFrom, itemData.dateTo);
 
                 //TODO: to implement the above dashboard information
@@ -1229,6 +1248,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("rp/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetReturnPolicy(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1237,6 +1257,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = memberReturnPolicyBusiness.GetItem(itemData.userID);
 
                 if (item != null)
@@ -1311,6 +1332,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("rp/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddReturnPolicy(MemberReturnPolicy item)
         {
             var reqHeader = Request;
@@ -1318,6 +1340,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = memberReturnPolicyBusiness.Save(item);
                 if (result)
                 {
@@ -1369,6 +1392,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("rp/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveReturnPolicy(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -1377,6 +1401,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = memberReturnPolicyBusiness.Remove(itemData.userID);
 
                 if (result != null)
@@ -1574,7 +1599,7 @@ namespace appify.web.api.Controllers
                     AppLogo = item.Logo,
                     AppIcon = item.AppIcon,
                     AndroidBundleID = item.PlayStoreID,
-                    AppleAppID = item.AppStoreID
+                    AppleBundleID = item.AppStoreID
                 };
 
                 rm = new ResponseMessage();
@@ -2131,6 +2156,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("theme/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetMemberTheme(ParamMemberTheme itemData)
         {
             var reqHeader = Request;
@@ -2139,6 +2165,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = memberThemeBusiness.Get(itemData.MemberID, itemData.ThemeID);
 
                 if (item != null)
@@ -2191,6 +2218,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("theme/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddMemberTheme(ParamMemberTheme item)
         {
             var reqHeader = Request;
@@ -2198,7 +2226,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 MemberTheme memberTheme = new MemberTheme();
                 memberTheme.ThemeID = item.ThemeID;
                 memberTheme.MemberID = item.MemberID;
@@ -2255,6 +2283,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("theme/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveMemberTheme(ParamMemberTheme itemData)
         {
             var reqHeader = Request;
@@ -2263,6 +2292,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = memberThemeBusiness.Delete(itemData.MemberID, itemData.ThemeID);
 
                 if (result)
@@ -2344,6 +2374,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("kyc/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetMemberKYC(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -2352,6 +2383,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = memberKYCBusiness.Get(itemData.userID);
 
                 if (item != null)
@@ -2418,6 +2450,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("kyc/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> AddMemberKYC(MemberKYC item)
         {
             var reqHeader = Request;
@@ -2425,7 +2458,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
 
 
 
@@ -2483,6 +2516,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("kyc/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveMemberKYC(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -2491,6 +2525,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = memberKYCBusiness.Delete(itemData.userID);
 
                 if (result)
@@ -2561,6 +2596,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("contact/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetMemberContact(ParamMemberContact itemData)
         {
             var reqHeader = Request;
@@ -2569,6 +2605,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = memberContactBusiness.Get(itemData.MemberID, itemData.MobileNo);
 
                 if (item != null)
@@ -2654,6 +2691,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("contact/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListMemberContact(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -2662,6 +2700,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = memberContactBusiness.List(itemData.userID);
 
                 if (item != null)
@@ -2716,6 +2755,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("contact/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddMemberContact(MemberContact item)
         {
             var reqHeader = Request;
@@ -2723,7 +2763,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 if (item.MemberID == 0)
                 {
                     rm.statusCode = StatusCodes.ERROR;
@@ -2791,6 +2831,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("contact/bulksave")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult AddMemberContactBulk(List<MemberContact> items)
         {
             var reqHeader = Request;
@@ -2798,7 +2839,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
 
 
 
@@ -2854,6 +2895,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("contact/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveMemberKYC(ParamMemberContact itemData)
         {
             var reqHeader = Request;
@@ -2862,6 +2904,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = memberContactBusiness.Delete(itemData.MemberID, itemData.MobileNo);
 
                 if (result)
@@ -2921,6 +2964,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("banner/Save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult memberBannerAdd(MemberBanner memberBanner)
         {
             var reqHeader = Request;
@@ -2928,6 +2972,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.memberBannerAdd(memberBanner);
                 if (result != null)
                 {
@@ -2978,6 +3023,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("banner/Remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult memberBannerRemove(ParamBannerID itemData)
         {
             var reqHeader = Request;
@@ -2985,6 +3031,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.memberBannerRemove(itemData.bannerID);
                 if (result != null)
                 {
@@ -3054,6 +3101,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("banner/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult memberBannerGet(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -3061,6 +3109,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.memberBannerGet(itemData.userID);
                 if (result != null)
                 {
@@ -3128,6 +3177,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("banner/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult memberBannerList()
         {
             var reqHeader = Request;
@@ -3135,6 +3185,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.memberBannerList();
                 if (result != null)
                 {
@@ -3204,6 +3255,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("banner/listbyvendor")]
         [MapToApiVersion("1.0")]
+
         public IActionResult memberBannerListByVendor(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -3338,6 +3390,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("getapplinks")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult getAppLinks(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -3345,6 +3398,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.memberBusiness.getAppLinks(itemData.userID);
                 if (result != null)
                 {

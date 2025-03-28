@@ -28,14 +28,16 @@ namespace appify.Business.Contract
         public bool UpdateNewProducts(long ProductID, bool IsNew);
         public List<ProductMasterCategories> GetProductMasterCategories(long parentID);
         public List<ProductCategories> GetCategoriesList(long parentID);
+        public List<ProductCategories> GetALLCategoriesList(long parentID);
         public List<ProductCategoryName> GetCategorieName(long categoryID);
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories);
         public List<ParentCategories> GetVendorCategories(long VendorID);
-
-
+        public List<ParentCategories> GetALLVendorCategories(long VendorID);
         public List<FeaturedCategories> GetFeaturedCategories(long VendorID);
 
+        public bool DeleteFeaturedCategories(long VendorID);
         public bool UpdateFeaturedCategories(FeaturedCategories item);
+        public StockByPriceID GetStockByPriceID(long PriceID);
         //public bool deletefeaturedcategories();
 
 

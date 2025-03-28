@@ -9,9 +9,11 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace appify.web.api.Controllers
 {
@@ -65,6 +67,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("Save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> discountHeaderAdd(List<DiscountHeader> discountHeader)
         {
             var result = true;
@@ -75,8 +78,8 @@ namespace appify.web.api.Controllers
                 List<DiscountHeader> returnItem = new List<DiscountHeader>();
 
                 rm = new ResponseMessage();
-
-                foreach(var item in discountHeader)
+                CheckToken.IsValidToken(Request, _configuration);
+                foreach (var item in discountHeader)
                 {
                     returnItem.Add(this.discountHeaderBusiness.Save(item));
                 }
@@ -133,6 +136,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("Remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult discountHeaderRemove(ParamDiscountDetail itemData)
         {
             var reqHeader = Request;
@@ -140,6 +144,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.Remove(itemData.DiscountID, itemData.productID);
                 if (result != null)
                 {
@@ -219,6 +224,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("Get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult discountHeaderGet(ParamDiscount itemData)
         {
             var reqHeader = Request;
@@ -226,6 +232,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.Get(itemData.DiscountID);
                 if (result != null)
                 {
@@ -294,6 +301,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("List")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult discountHeaderList()
         {
             var reqHeader = Request;
@@ -301,6 +309,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetAll();
                 if (result != null)
                 {
@@ -380,6 +389,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyvendor")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListByVendor(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -387,6 +397,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.ListByVendor(itemData.userID);
                 if (result != null)
                 {
@@ -459,6 +470,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyproduct")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListByProduct(ParamProduct itemData)
         {
             var reqHeader = Request;
@@ -466,6 +478,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.ListByProduct(itemData.productID);
                 if (result != null)
                 {
@@ -532,6 +545,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DiscountSave")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> orderDiscountAdd(List<OrderDiscount> orderDiscount)
         {
             var result = true;
@@ -542,7 +556,7 @@ namespace appify.web.api.Controllers
                 List<OrderDiscount> returnItem = new List<OrderDiscount>();
 
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, _configuration);
                 foreach (var item in orderDiscount)
                 {
                     returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
@@ -578,6 +592,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("DiscountSave")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public async Task<IActionResult> orderDiscountAdd1(List<OrderDiscount> orderDiscount)
         {
             var result = true;
@@ -588,7 +603,7 @@ namespace appify.web.api.Controllers
                 List<OrderDiscount> returnItem = new List<OrderDiscount>();
 
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, _configuration);
                 foreach (var item in orderDiscount)
                 {
                     returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
@@ -643,6 +658,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("DiscountRemove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult orderDiscountRemove(ParamDiscount itemData)
         {
             var reqHeader = Request;
@@ -650,6 +666,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
                 if (result != null)
                 {
@@ -684,6 +701,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("DiscountRemove")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult orderDiscountRemove1(ParamDiscount itemData)
         {
             var reqHeader = Request;
@@ -691,6 +709,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
                 if (result != null)
                 {
@@ -768,6 +787,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("GetDiscount")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult orderDiscountGet(ParamDiscount itemData)
         {
             var reqHeader = Request;
@@ -775,6 +795,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
                 if (result != null)
                 {
@@ -816,6 +837,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
                 if (result != null)
                 {
@@ -867,6 +889,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DiscountListByVendor")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult discountListByVendor(ParamVendor item)
         {
             var reqHeader = Request;
@@ -874,6 +897,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
                 if (result != null)
                 {
@@ -908,6 +932,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("DiscountListByVendor")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult discountListByVendor1(ParamVendor item)
         {
             var reqHeader = Request;
@@ -915,6 +940,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
                 if (result != null)
                 {
@@ -968,6 +994,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("DiscountListByVendorRow")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult discountListByVendorRow(ParamProductList item)
         {
             var reqHeader = Request;
@@ -975,7 +1002,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, _configuration);
                 List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
                 if (items?.Any() == true)
                 {
@@ -1015,6 +1042,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("DiscountListByVendorRow")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult discountListByVendorRow1(ParamProductList item)
         {
             var reqHeader = Request;
@@ -1022,7 +1050,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, _configuration);
                 List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
                 if (items?.Any() == true)
                 {
@@ -1091,6 +1119,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetDiscountCount")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult orderDiscountCount(ParamVendor itemData)
         {
             var reqHeader = Request;
@@ -1098,6 +1127,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
                 if (result != null)
                 {
@@ -1132,6 +1162,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("GetDiscountCount")]
         [MapToApiVersion("1.1")]
+        [Authorize]
         public IActionResult orderDiscountCount1(ParamVendor itemData)
         {
             var reqHeader = Request;
@@ -1139,6 +1170,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
                 if (result != null)
                 {
@@ -1211,6 +1243,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetOrderDiscountByVendor")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult getOrderDiscountByVendor(ParamVendor itemData)
         {
             var reqHeader = Request;
@@ -1218,6 +1251,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetOrderDiscountByVendor(itemData.VendorID);
                 if (result != null)
                 {

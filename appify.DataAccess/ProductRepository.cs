@@ -245,6 +245,14 @@ namespace appify.DataAccess
         public List<ProductCategories> GetCategoriesList(long parentID)
         {
             List<ProductCategories> item = new List<ProductCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESDEFAULTLISTBYID, parentID);
+            item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
+
+            return item;
+        }
+        public List<ProductCategories> GetALLCategoriesList(long parentID)
+        {
+            List<ProductCategories> item = new List<ProductCategories>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
             item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
 
@@ -302,8 +310,16 @@ namespace appify.DataAccess
             return item;
         }
 
+        public List<ParentCategories> GetALLVendorCategories(long VendorID)
+        {
+            List<ParentCategories> item = new List<ParentCategories>();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PARENTALLCATEGORIES, VendorID);
+            item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
+
+            return item;
+        }
         #region Featured Categories
-       
+
 
         /// <summary>
         /// Retrieves a list of featured categories for a specific vendor.
@@ -365,11 +381,45 @@ namespace appify.DataAccess
 
             return result;
         }
-        public bool DeleteFeaturedCategories() {
-            throw new NotImplementedException();
+        public bool DeleteFeaturedCategories(long VendorID) {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.DELETEFEATUREDCATEGORIES))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
         }
 
-        #endregion
+        public StockByPriceID GetStockByPriceID(long PriceID)
+        {
+            StockByPriceID item = new StockByPriceID();
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
+            item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+            return item;
+        }
+            #endregion
 
+        }
     }
-}

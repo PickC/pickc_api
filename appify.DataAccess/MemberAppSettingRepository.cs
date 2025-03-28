@@ -98,7 +98,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@AppIcon", item.AppIcon);
                         cmd.Parameters.AddWithValue("@AppIconTransparent", item.AppIconTransparent);
                         cmd.Parameters.AddWithValue("@AndroidBundleID", item.AndroidBundleID);
-                        cmd.Parameters.AddWithValue("@AppleBuldleID", item.AppleBuldleID);
+                        cmd.Parameters.AddWithValue("@AppleBundleID", item.AppleBundleID);
                         cmd.Parameters.AddWithValue("@AppleAppID", item.AppleAppID);
                         cmd.Parameters.AddWithValue("@AndroidAppURL", item.AndroidAppURL);
                         cmd.Parameters.AddWithValue("@AppleAppURL", item.AppleAppURL);
