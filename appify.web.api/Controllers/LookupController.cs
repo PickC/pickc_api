@@ -9,6 +9,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Add(Lookup item)
         {
             var reqHeader = Request;
@@ -87,7 +89,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var result = lookupBusiness.SaveLookUp(item);
                 if (result != null)
                 {
@@ -151,6 +153,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("remove")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult Remove(ParamLookup itemData)
     {
         var reqHeader = Request;
@@ -159,6 +162,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             var result = lookupBusiness.DeleteLookUp(itemData.lookupID);
             if (result)
             {
@@ -229,6 +233,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("getitem")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult GetLookup(ParamLookupCode jsonData)
     {
         var reqHeader = Request;
@@ -237,7 +242,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-
+            CheckToken.IsValidToken(Request, configuration);
             var item = lookupBusiness.GetLookUp(jsonData.lookupCode,jsonData.category);
 
             if (item != null)
@@ -322,6 +327,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("list")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult List(ParamLookupCategory jsonData)
     {
         var reqHeader = Request;
@@ -330,6 +336,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             List<Lookup> items = lookupBusiness.GetList(jsonData.category);
             if (items?.Any() == true)
             {
@@ -457,6 +464,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("listbymember")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult ListByMember(ParamLookupByMember jsonData)
     {
         var reqHeader = Request;
@@ -466,6 +474,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             items = lookupBusiness.GetList(jsonData.category, jsonData.userID);
             if (items?.Any() == true)
             {
@@ -543,6 +552,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpGet, Route("listall")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public async Task<IActionResult> ListAll()
     {
         var reqHeader = Request;
@@ -550,6 +560,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             List<Lookup> items = lookupBusiness.GetAllList();
             if (items?.Any() == true)
             {
@@ -716,7 +727,6 @@ namespace appify.web.api.Controllers
 
     }
 
-
         /// <summary>
         /// gets System configuration settings
         /// </summary>
@@ -806,24 +816,25 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
-    /// <summary>
-    /// GENERATE OTP
-    /// </summary>
-    /// <remarks>
-    /// Sample response JSON :
-    /// 
-    ///     {
-    ///       "statusCode": 200,
-    ///       "name": "SUCCESS_OK",
-    ///       "message": "GENERATE OTP ",
-    ///       "data": "010262"
-    ///     }
-    /// </remarks>
-    /// <returns>ResponseMessage Object</returns>
-    /// <response code="200">Returns GENERATE OTP </response>
-    /// <response code="500">ResponseMessage with Error Description</response> 
-    /// 
-    [HttpGet, Route("generateOTP")]
+
+        /// <summary>
+        /// GENERATE OTP
+        /// </summary>
+        /// <remarks>
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "GENERATE OTP ",
+        ///       "data": "010262"
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns GENERATE OTP </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpGet, Route("generateOTP")]
     [MapToApiVersion("1.0")]
     [MapToApiVersion("1.1")]
     public IActionResult GenerateOTP()

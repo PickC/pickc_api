@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Razorpay.Api;
 using Microsoft.Extensions.Caching.Distributed;
+using StackExchange.Redis;
 
 namespace appify.web.api
 {
@@ -30,6 +31,7 @@ namespace appify.web.api
             {
             new Claim("UserID", customerID),
             new Claim("DeviceID", deviceID),
+            ////new Claim(ClaimTypes.Role, role),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             //new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddDays(7)).ToUnixTimeSeconds().ToString()) // Token expiry
         };

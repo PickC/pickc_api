@@ -10,6 +10,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -92,6 +93,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("productlist")]
         [MapToApiVersion("1.0")]
+        ////[VendorAuthorize]
         public IActionResult GetMemberProducts(ParamMemberUserID itemData) {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -217,6 +219,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("productlistbycategory")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetMemberProductsByCategory(ParamCategoryID itemData)
         {
             var reqHeader = Request;
@@ -224,7 +227,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 List<MemberProduct> items = customerBusiness.ProductListByCategory(itemData.userID, itemData.categoryID, itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -294,6 +297,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("AllDetails")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> GetAllDetails(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -301,7 +305,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var items = customerBusiness.GetMemberAllDetails(itemData.userID);
                 if (items != null)
                 {
@@ -374,6 +378,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("productlistbyvaua")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> GetProductListByVAUA(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
@@ -381,7 +386,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                CheckToken.IsValidToken(Request, configuration);
                 var items = customerBusiness.GetProductListByVAUA(itemData.userID);
                 if (items != null)
                 {

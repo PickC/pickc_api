@@ -23,7 +23,7 @@ namespace appify.models
         public string AppIcon { get; set; }
         public string AppIconTransparent { get; set; }
         public string AndroidBundleID { get; set; }
-        public string AppleBuldleID { get; set; }
+        public string AppleBundleID { get; set; }
         public string AppleAppID { get; set; }
         public string AndroidAppURL { get; set; }
         public string AppleAppURL { get; set; }
@@ -65,10 +65,10 @@ namespace appify.models
         public string AppName1 { get; set; }
         public string AppName2 { get; set; }
         public string ShortDescription { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public string Logo { get; set; }
-        public string PlayStoreID { get; set; }
-        public string AppStoreID { get; set; }
+        public string? PlayStoreID { get; set; }
+        public string? AppStoreID { get; set; }
         public string AppIcon { get; set; }
 
     }

@@ -2,6 +2,7 @@
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +71,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("categoryparameter/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult SaveCategoryParameter(CategoryParameter itemData)
         {
             var reqHeader = Request;
@@ -77,6 +79,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.categoryParameterBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -136,6 +139,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("categoryparameter/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveCategoryParameter(ParamCategoryParameter itemData)
         {
             var reqHeader = Request;
@@ -143,6 +147,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.categoryParameterBusiness.Delete(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
                 {
@@ -196,6 +201,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("categoryparameter/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetCategoryParameter(ParamCategoryParameter itemData)
         {
             var reqHeader = Request;
@@ -203,6 +209,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.categoryParameterBusiness.Get(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
                 {
@@ -258,6 +265,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("categoryparameter/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListCategoryParameters(ParamCategoryParameter itemData)
         {
             var reqHeader = Request;
@@ -265,6 +273,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.categoryParameterBusiness.ListAll(itemData.CategoryID);
                 if (result != null)
                 {
@@ -335,6 +344,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("parametertype/save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult SaveParameterType(ParameterType itemData)
         {
             var reqHeader = Request;
@@ -342,6 +352,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.parameterTypeBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -403,6 +414,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("parametertype/remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult RemoveParameterType(ParamCategoryParameterTypes itemData)
         {
             var reqHeader = Request;
@@ -410,6 +422,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.parameterTypeBusiness.Delete(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -465,6 +478,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("parametertype/get")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetParameterType(ParamCategoryParameterTypes itemData)
         {
             var reqHeader = Request;
@@ -472,6 +486,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.parameterTypeBusiness.Get(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -531,6 +546,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">Returns Error ResponseMessages </response> 
         [HttpPost, Route("parametertype/list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult ListParameterType(ParamCategoryParameter itemData)
         {
             var reqHeader = Request;
@@ -538,6 +554,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.parameterTypeBusiness.ListAll(itemData.ParameterID);
                 if (result != null)
                 {

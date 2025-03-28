@@ -9,6 +9,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -117,6 +118,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> Add(appify.models.Order order)
         {
             var reqHeader = Request;
@@ -125,6 +127,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = this.orderBusiness.Save(order);
                 if (result != null)
                 {
@@ -338,6 +341,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> Remove(Int64 orderID)
         {
             var reqHeader = Request;
@@ -346,6 +350,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = orderBusiness.Delete(orderID);
                 if (result)
                 {
@@ -485,6 +490,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("printinvoice")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult PrintInvoice(Int64 orderID)
         {
             ////OrderPlace_PushNotification_Email(orderID);
@@ -497,6 +503,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = invoiceBusinesss.PrintInvoice(orderID);
                 if (result != null)
                 {
@@ -545,12 +552,14 @@ namespace appify.web.api.Controllers
         /// <response code="500"></response>
         [HttpPost, Route("printreceipt")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult PrintReceipt(Int64 VendorID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = invoiceBusinesss.PrintReceipt(VendorID);
                 if (result != null)
                 {
@@ -609,6 +618,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("updatestatus")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult UpdateOrderStatus(ParamOrderStatus statusData)
     {
         var reqHeader = Request;
@@ -617,6 +627,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             var result = orderBusiness.UpdateOrderStatus(statusData.OrderID, statusData.OrderStatus, statusData.Remarks);
             if (result)
             {
@@ -810,6 +821,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("updateorderforpickup")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult UpdateOrderForPickup(ParamOrderForPickup statusData)
         {
             var reqHeader = Request;
@@ -818,6 +830,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = orderBusiness.UpdateOrderPickup(statusData.OrderID, statusData.Weight, statusData.Length, statusData.Width, statusData.Height);
                 if (result)
                 {
@@ -881,6 +894,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("updateorderawb")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult UpdateOrderAWB(ParamOrderAWB statusData)
         {
             var reqHeader = Request;
@@ -889,6 +903,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = orderBusiness.UpdateOrderAWB(statusData.OrderID, statusData.CourierRefID, statusData.ShipmentID, statusData.AWB);
                 if (result)
                 {
@@ -954,6 +969,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("gettrackingdetails")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetOrderTrackingDetails(Int64 orderID)
         {
             var reqHeader = Request;
@@ -962,6 +978,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var result = orderBusiness.GetOrderTrackingDetails(orderID);
                 if (result != null)
                 {
@@ -1084,6 +1101,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Getorder(long orderID)
         {
             var reqHeader = Request;
@@ -1092,6 +1110,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.orderBusiness.GetCustomerOrder(orderID);
                 if (item != null)
                 {
@@ -1195,6 +1214,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getitemnew")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetOrderNew(long orderID)
         {
             var reqHeader = Request;
@@ -1203,6 +1223,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.orderBusiness.GetCustomerOrderNew(orderID);
                 if (item != null)
                 {
@@ -1312,6 +1333,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("getorderpickup")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult Getorderfordelivery(long orderID)
         {
             var reqHeader = Request;
@@ -1320,6 +1342,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 var item = this.orderBusiness.GetOrderForDelivery(orderID);
                 if (item != null)
                 {
@@ -1443,6 +1466,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
@@ -1451,6 +1475,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<CustomerOrder> items = orderBusiness.List(itemData.userID);
                 if (items?.Any() == true)
                 {
@@ -1518,6 +1543,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("listall")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> ListAll(ParamMIDMType itemData)
         {
             //dynamic data = jsonData;
@@ -1526,6 +1552,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<OrderList> items = orderBusiness.OrderList(itemData.userID,itemData.userType);
                 if (items?.Any() == true)
                 {
@@ -1608,6 +1635,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("summarylist")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public async Task<IActionResult> SummaryList(ParamMemberOrder itemData)
     {
         //dynamic data = jsonData;
@@ -1616,6 +1644,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
             if (items?.Any() == true)
             {
@@ -1689,6 +1718,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("dailyordersummarylist")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> DailyOrderSummaryList()
         {
             //dynamic data = jsonData;
@@ -1697,6 +1727,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<DailyOrderSummary> items = orderBusiness.GetDailyOrderSummary();
                 if (items?.Any() == true)
                 {
@@ -1851,6 +1882,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("vendororderlist")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public async Task<IActionResult> ListByVendor(ParamMemberOrder itemData)
     {
         //dynamic data = jsonData;
@@ -1859,6 +1891,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             List<VendorOrderNew> items = orderBusiness.ListByVendorNew(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
             if (items?.Any() == true)
             {
@@ -1985,6 +2018,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("vendororderdetail")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public IActionResult GetDetailByVendor(ParamVendorOrder itemData)
         {
             //dynamic data = jsonData;
@@ -1993,6 +2027,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                CheckToken.IsValidToken(Request, configuration);
                 List<VendorOrder> items = orderBusiness.GetByVendorDetail(itemData.VendorID, itemData.OrderID);
                 if (items?.Any() == true)
                 {
@@ -2030,6 +2065,7 @@ namespace appify.web.api.Controllers
         {
             try
             {
+                this.orderBusiness.StockUpdate(OrderID, 3932);
                 //// Order Placed By Customer COD & Online
                 OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(OrderID);
 
@@ -2945,11 +2981,13 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("sendalert")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> sendalert(ParamDownTimeAlert itemData)
         {
             var reqHeader = Request;
             var items = false;
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {

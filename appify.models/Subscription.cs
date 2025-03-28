@@ -22,7 +22,7 @@ namespace appify.models
         public bool? InvoiceBilling { get; set; } 
         public bool?  SMSService { get; set; } 
         public short? DiscountCoupons { get; set; } 
-        public short? MarketingTools { get; set; } 
+        public string? MarketingTools { get; set; } 
         public bool? AppDownloads { get; set; } 
         public short? Analytics { get; set; } 
         public short? CustomerSupport { get; set; } 

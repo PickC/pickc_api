@@ -9,6 +9,7 @@ using appify.Business.Contract;
 using appify.models;
 using appify.utility;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,7 @@ namespace appify.web.api.Controllers
 
     [HttpPost, Route("save")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult Add(ThemeMaster item)
     {
         var reqHeader = Request;
@@ -84,7 +86,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-
+            CheckToken.IsValidToken(Request, configuration);
             var result = themeMasterBusiness.Save(item);
             if (result!=null)
             {
@@ -135,6 +137,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("remove")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult Remove(long themeID)
     {
         var reqHeader = Request;
@@ -143,6 +146,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             var result = themeMasterBusiness.Delete(themeID);
             if (result)
             {
@@ -210,6 +214,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("get")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult GetThemeMaster(long themeID)
     {
         var reqHeader = Request;
@@ -218,7 +223,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-
+            CheckToken.IsValidToken(Request, configuration);
             var item = themeMasterBusiness.Get(themeID);
 
             if (item != null)
@@ -293,6 +298,7 @@ namespace appify.web.api.Controllers
     /// 
     [HttpPost, Route("list")]
     [MapToApiVersion("1.0")]
+    [Authorize]
     public IActionResult List()
     {
         var reqHeader = Request;
@@ -301,6 +307,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
             List<ThemeMaster> items = themeMasterBusiness.ListAll();
             if (items?.Any() == true)
             {
