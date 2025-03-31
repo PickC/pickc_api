@@ -27,13 +27,17 @@ namespace appify.web.api.Controllers
         public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly IAddressBusiness addressBusiness;
+        private readonly IWebHostEnvironment env;
         private ResponseMessage rm;
         private HttpClient httpClient;
-        public AddressController(IConfiguration configuration, IAddressBusiness iResultData, IEventLogBusiness eventLogBusiness)
+
+
+        public AddressController(IConfiguration configuration, IAddressBusiness iResultData, IEventLogBusiness eventLogBusiness, IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.addressBusiness = iResultData;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
         /// <summary>
@@ -108,7 +112,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration,env);
 
                 var result = addressBusiness.SaveAddress(item);
                 if (result!=null)
@@ -184,7 +188,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
 
                 var result = addressBusiness.DeleteAddress(itemData.addressID, itemData.userID);
                 if (result)
@@ -276,7 +281,9 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+
                 var item = addressBusiness.GetAddress(itemData.addressID,itemData.userID);
 
                 if (item != null)
@@ -366,7 +373,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
 
 
                 var item = addressBusiness.GetDefaultAddress(itemData.userID);
@@ -502,7 +510,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
 
                 List<Address> items = addressBusiness.GetList(itemData.userID);
                 if (items?.Any() == true)

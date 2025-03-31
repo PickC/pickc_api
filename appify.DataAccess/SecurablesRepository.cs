@@ -16,6 +16,10 @@ namespace appify.DataAccess
     {
         private IConfiguration _configuration;
         private string appify_connectionstring;
+
+
+
+
         public SecurablesRepository(IConfiguration configuration) {
             this._configuration = configuration;
             this.appify_connectionstring = configuration["ConnectionStrings:appify.connectionstring"].ToString();
