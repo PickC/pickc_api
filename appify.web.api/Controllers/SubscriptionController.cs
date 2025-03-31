@@ -24,7 +24,7 @@ namespace appify.web.api.Controllers
         {
             this.configuration = configuration;
             this.subscriptionBusiness = subscriptionBusiness;
-            
+
         }
 
 
@@ -35,21 +35,38 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request:
-        /// NOTE : For a new Product Subscription object, send the SubscriptionID = 0.
+        /// NOTE : For a new Subscription object, send the SubscriptionID = 0.
         /// 
-        ///     [{
-        ///         "SubscriptionID": 0,
-        ///         "ProductID": 1505,
-        ///         "SubscriptionType": 3001,
-        ///         "SubscriptionValue": 0.33,
-        ///         "EffectiveDate": "2024-04-11T15:55:06.807",
-        ///         "ExpiryDate": "2024-04-18T15:55:06.807",
-        ///         "IsCancel": false,
-        ///         "CreatedBy": 1505,
-        ///         "CreatedOn": "2024-04-11T18:20:59.953",
-        ///         "ModifiedBy": 1505,
-        ///         "ModifiedOn": "2024-04-11T18:21:53.250"
-        ///     }]
+        ///     {
+        ///       "subscriptionID": 1000,
+        ///       "planName": "Basic Plan",
+        ///       "planDescription": "Entry-level subscription",
+        ///       "appliedCommission": 6.99,
+        ///       "warehouseCount": 1,
+        ///       "userAccountCount": 1,
+        ///       "hasEcommerceIntegration": false,
+        ///       "ecommercePlatforms": null,
+        ///       "hasBulkUpload": true,
+        ///       "hasProductCatalog": true,
+        ///       "hasInvoice": true,
+        ///       "hasSMSService": true,
+        ///       "discountCouponCount": 0,
+        ///       "hasAnalytics": true,
+        ///       "hasStoreLocation": false,
+        ///       "isWhiteLabeled": false,
+        ///       "hasAccountManager": false,
+        ///       "imageEnhancerCount": 25,
+        ///       "productListingCount": 25,
+        ///       "productCategoryCount": 1,
+        ///       "bannerCount": 3,
+        ///       "monthlyFee": 499,
+        ///       "halfYearlyFee": 1799,
+        ///       "annualFee": 2999,
+        ///       "isActive": true,
+        ///       "createdOn": "2025-03-26T10:38:45.56",
+        ///       "modifiedOn": "0001-01-01T00:00:00",
+        ///       "features": "Basic Theme",
+        ///     }
         /// 
         /// 
         /// </remarks>
@@ -107,7 +124,6 @@ namespace appify.web.api.Controllers
         /// 
         ///     {
         ///         "SubscriptionID":1015,
-        ///         "ProductID":1904
         ///     }
         /// 
         /// </remarks>
@@ -167,25 +183,39 @@ namespace appify.web.api.Controllers
         /// Sample response JSON :
         /// 
         ///     {
-        ///       "statusCode": 200,
-        ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH SUBSCRIPTION ITEM!",
-        ///       "data": {
-        ///         "subscriptionID": 1001,
-        ///         "productID": 2334,
-        ///         "discountType": 3000,
-        ///         "discountValue": 1000,
-        ///         "effectiveDate": "2024-04-25T15:55:06.807",
-        ///         "expiryDate": "2024-04-30T15:55:06.807",
-        ///         "isCancel": false,
-        ///         "createdBy": 1505,
-        ///         "createdOn": "2024-04-29T15:55:06.807",
-        ///         "modifiedBy": 0,
-        ///         "modifiedOn": "0001-01-01T00:00:00",
-        ///         "isActive": true
-        ///       }
+        ///       "subscriptionID": 1000,
+        ///       "planName": "Basic Plan",
+        ///       "planDescription": "Entry-level subscription",
+        ///       "appliedCommission": 6.99,
+        ///       "warehouseCount": 1,
+        ///       "userAccountCount": 1,
+        ///       "hasEcommerceIntegration": false,
+        ///       "ecommercePlatforms": null,
+        ///       "hasBulkUpload": true,
+        ///       "hasProductCatalog": true,
+        ///       "hasInvoice": true,
+        ///       "hasSMSService": true,
+        ///       "discountCouponCount": 0,
+        ///       "hasAnalytics": true,
+        ///       "hasStoreLocation": false,
+        ///       "isWhiteLabeled": false,
+        ///       "hasAccountManager": false,
+        ///       "imageEnhancerCount": 25,
+        ///       "productListingCount": 25,
+        ///       "productCategoryCount": 1,
+        ///       "bannerCount": 3,
+        ///       "monthlyFee": 499,
+        ///       "halfYearlyFee": 1799,
+        ///       "annualFee": 2999,
+        ///       "isActive": true,
+        ///       "createdOn": "2025-03-26T10:38:45.56",
+        ///       "modifiedOn": "0001-01-01T00:00:00",
+        ///       "features": "Basic Theme",
+        ///       "marketingTools": "Push Notifications, WhatsApp Marketing",
+        ///       "supportTypes": "Email Support",
+        ///       "paymentGateways": "Appify Partnered",
+        ///       "deliveryPartners": "Appify Partnered"
         ///     }
-        /// 
         /// </remarks>
         /// <param name="SubscriptionID"></param>
         /// <returns>ResponseMessage Object</returns>
@@ -240,29 +270,43 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         /// Sample response JSON :
-        /// 
-        ///     {
-        ///       "statusCode": 200,
-        ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH SUBSCRIPTION ITEM!",
-        ///       "data": [
-        ///         {
-        ///           "subscriptionID": 1001,
-        ///           "productID": 2334,
-        ///           "discountType": 3000,
-        ///           "discountValue": 1000,
-        ///           "effectiveDate": "2024-04-25T15:55:06.807",
-        ///           "expiryDate": "2024-04-30T15:55:06.807",
-        ///           "isCancel": false,
-        ///           "createdBy": 1505,
-        ///           "createdOn": "2024-04-29T15:55:06.807",
-        ///           "modifiedBy": 0,
-        ///           "modifiedOn": "0001-01-01T00:00:00",
-        ///           "isActive": true
-        ///         }
-        ///       ]
-        ///     }
-        /// 
+        ///
+        ///     
+        ///     [{
+        ///       "subscriptionID": 1000,
+        ///       "planName": "Basic Plan",
+        ///       "planDescription": "Entry-level subscription",
+        ///       "appliedCommission": 6.99,
+        ///       "warehouseCount": 1,
+        ///       "userAccountCount": 1,
+        ///       "hasEcommerceIntegration": false,
+        ///       "ecommercePlatforms": null,
+        ///       "hasBulkUpload": true,
+        ///       "hasProductCatalog": true,
+        ///       "hasInvoice": true,
+        ///       "hasSMSService": true,
+        ///       "discountCouponCount": 0,
+        ///       "hasAnalytics": true,
+        ///       "hasStoreLocation": false,
+        ///       "isWhiteLabeled": false,
+        ///       "hasAccountManager": false,
+        ///       "imageEnhancerCount": 25,
+        ///       "productListingCount": 25,
+        ///       "productCategoryCount": 1,
+        ///       "bannerCount": 3,
+        ///       "monthlyFee": 499,
+        ///       "halfYearlyFee": 1799,
+        ///       "annualFee": 2999,
+        ///       "isActive": true,
+        ///       "createdOn": "2025-03-26T10:38:45.56",
+        ///       "modifiedOn": "0001-01-01T00:00:00",
+        ///       "features": "Basic Theme",
+        ///       "marketingTools": "Push Notifications, WhatsApp Marketing",
+        ///       "supportTypes": "Email Support",
+        ///       "paymentGateways": "Appify Partnered",
+        ///       "deliveryPartners": "Appify Partnered"
+        ///     }]
+        ///     
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">Returns Subscription Object </response>

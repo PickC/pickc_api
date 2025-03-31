@@ -28,13 +28,17 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration _configuration;
         private readonly IDiscountHeaderBusiness discountHeaderBusiness;
         private readonly IDiscountDetailBusiness discountDetailBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
-        public DiscountController(IConfiguration configuration, IDiscountHeaderBusiness discountHeaderBusiness, IDiscountDetailBusiness discountDetailBusiness, IEventLogBusiness eventLogBusiness)
+        public DiscountController(IConfiguration configuration, IDiscountHeaderBusiness discountHeaderBusiness, IDiscountDetailBusiness discountDetailBusiness, 
+            IEventLogBusiness eventLogBusiness, IWebHostEnvironment env)
         {
             this._configuration = configuration;
             this.discountHeaderBusiness = discountHeaderBusiness;
             this.discountDetailBusiness = discountDetailBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
 
