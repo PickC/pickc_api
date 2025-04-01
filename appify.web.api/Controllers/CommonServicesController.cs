@@ -42,15 +42,18 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly IOrderBusiness orderBusiness;
         private readonly INotificationBusiness notificationBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
 
-        public CommonServicesController(IConfiguration configuration, IEventLogBusiness eventLogBusiness, IOrderBusiness orderBusiness, INotificationBusiness notificationBusiness)
+        public CommonServicesController(IConfiguration configuration, IEventLogBusiness eventLogBusiness, IOrderBusiness orderBusiness, INotificationBusiness notificationBusiness,IWebHostEnvironment env)
         {
             //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             this.configuration = configuration;
             this.eventLogBusiness = eventLogBusiness;
             this.orderBusiness = orderBusiness;
             this.notificationBusiness = notificationBusiness;
+            this.env = env;
         }
         /// <summary>
         /// ShipRocket WebHook for DeliveryEvents.

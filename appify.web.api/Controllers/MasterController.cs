@@ -19,14 +19,17 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly ICategoryParameterBusiness categoryParameterBusiness;
         private readonly IParameterTypeBusiness parameterTypeBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
 
 
-        public MasterController(IConfiguration configuration, ICategoryParameterBusiness categoryParameterBusiness, IParameterTypeBusiness parameterTypeBusiness)
+        public MasterController(IConfiguration configuration, ICategoryParameterBusiness categoryParameterBusiness, IParameterTypeBusiness parameterTypeBusiness,IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.categoryParameterBusiness = categoryParameterBusiness;
             this.parameterTypeBusiness = parameterTypeBusiness;
+            this.env = env;
         }
 
         #region Category Parameters

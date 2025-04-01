@@ -12,6 +12,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Net;
 using StackExchange.Redis;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -187,7 +188,22 @@ builder.Services.AddApiVersioning(o =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(Options =>
+{
+    Options.DefaultPolicy = new AuthorizationPolicyBuilder()
+           .RequireAssertion(context =>
+           {
+               if (builder.Environment.IsDevelopment())
+                   return true;
+
+               return context.User.Identity?.IsAuthenticated ?? false;
+
+           }).Build();
+});
+
+
+
 //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 var app = builder.Build();
