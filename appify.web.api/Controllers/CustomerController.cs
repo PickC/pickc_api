@@ -30,13 +30,16 @@ namespace appify.web.api.Controllers
         public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly ICustomerBusiness customerBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
         private readonly string[] allowedCountries = { "IN" };
-        public CustomerController(IConfiguration configuration,ICustomerBusiness customerBusiness, IEventLogBusiness eventLogBusiness)
+        public CustomerController(IConfiguration configuration,ICustomerBusiness customerBusiness, IEventLogBusiness eventLogBusiness, IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
         /// <summary>

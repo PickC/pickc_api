@@ -1,39 +1,52 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.models
 {
-    public partial class Subscription
-    {
-        public int SubscriptionID { get; set; } 
-        public string PlanName { get; set; } 
-        public decimal? AppifyCommission { get; set; } 
-        public short? NumberOfWarehouses { get; set; } 
-        public short? NumberOfStaffAccounts { get; set; } 
-        public bool? EcommerceIntegration { get; set; } 
-        public bool? BulkUpload { get; set; } 
-        public bool? ProductCatalog { get; set; } 
-        public short? PaymentGateway { get; set; } 
-        public short? DeliveryPartner { get; set; } 
-        public short? UserAppCustomization { get; set; } 
-        public bool? InvoiceBilling { get; set; } 
-        public bool?  SMSService { get; set; } 
-        public short? DiscountCoupons { get; set; } 
-        public string? MarketingTools { get; set; } 
-        public bool? AppDownloads { get; set; } 
-        public short? Analytics { get; set; } 
-        public short? CustomerSupport { get; set; } 
-        public bool? SellerStoreLocation { get; set; } 
-        public bool? WhiteLabeling { get; set; } 
-        public bool? AccountManager { get; set; } 
-        public bool? AdvancedFeatures { get; set; } 
-        public short? ImageEnhancer { get; set; } 
-        public short? ProductListing { get; set; } 
-        public short? ProductCategory { get; set; } 
-        public short? Banners { get; set; } 
-        public decimal? SubscriptionFee { get; set; } 
+	public partial class Subscription
+	{
+		public Subscription() { }
+
+
+		public Int32  SubscriptionID { get; set; }
+		public string  PlanName { get; set; }
+		public string  PlanDescription { get; set; }
+		public decimal AppliedCommission { get; set; }
+		public Int32  WarehouseCount { get; set; }
+		public Int32  UserAccountCount { get; set; }
+		public bool  HasEcommerceIntegration { get; set; }
+		public string  EcommercePlatforms { get; set; }
+		public bool  HasBulkUpload { get; set; }
+		public bool  HasProductCatalog { get; set; }
+		public bool  HasInvoice { get; set; }
+		public bool  HasSMSService { get; set; }
+		public Int32  DiscountCouponCount { get; set; }
+		public bool  HasAnalytics { get; set; }
+		public bool  HasStoreLocation { get; set; }
+		public bool  IsWhiteLabeled { get; set; }
+		public bool  HasAccountManager { get; set; }
+		public Int32  ImageEnhancerCount { get; set; }
+		public Int32  ProductListingCount { get; set; }
+		public Int32  ProductCategoryCount { get; set; }
+		public Int32  BannerCount { get; set; }
+		public decimal MonthlyFee { get; set; }
+		public decimal HalfYearlyFee { get; set; }
+		public decimal AnnualFee { get; set; }
+		public bool  IsActive { get; set; }
+		public DateTime  CreatedOn { get; set; }
+		public DateTime  ModifiedOn { get; set; }
+
+        public string? Features { get; set; }
+		public string? MarketingTools { get; set; }
+		public string? SupportTypes { get; set; }
+		public string? PaymentGateways { get; set; }
+        public string? DeliveryPartners { get; set; }
+
     }
 }
+
+
+
+
