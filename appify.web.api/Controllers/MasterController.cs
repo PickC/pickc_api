@@ -82,7 +82,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.categoryParameterBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -150,7 +151,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.categoryParameterBusiness.Delete(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
                 {
@@ -212,7 +214,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.categoryParameterBusiness.Get(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
                 {
@@ -276,7 +279,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.categoryParameterBusiness.ListAll(itemData.CategoryID);
                 if (result != null)
                 {
@@ -355,7 +359,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.parameterTypeBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -425,7 +430,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.parameterTypeBusiness.Delete(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -489,7 +495,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.parameterTypeBusiness.Get(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -557,7 +564,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.parameterTypeBusiness.ListAll(itemData.ParameterID);
                 if (result != null)
                 {
