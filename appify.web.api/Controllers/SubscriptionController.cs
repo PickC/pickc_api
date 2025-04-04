@@ -17,6 +17,8 @@ namespace appify.web.api.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly ISubscriptionBusiness subscriptionBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
 
 

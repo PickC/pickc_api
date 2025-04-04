@@ -29,12 +29,19 @@ namespace appify.web.api.Controllers
         public readonly IEventLogBusiness eventLogBusiness;
         public readonly IVendorPaymentBusiness vendorPaymentBusiness;
         private readonly IConfiguration configuration;
-        public VendorPaymentController(IConfiguration configuration, INotificationBusiness IResultData, IEventLogBusiness eventLogBusiness, IVendorPaymentBusiness vendorPaymentBusiness)
+        private readonly IWebHostEnvironment env;
+
+        public VendorPaymentController(IConfiguration configuration, 
+                                       INotificationBusiness IResultData, 
+                                       IEventLogBusiness eventLogBusiness, 
+                                       IVendorPaymentBusiness vendorPaymentBusiness,
+                                       IWebHostEnvironment env)
         {
             this.notificationBusiness = IResultData;
             this.eventLogBusiness = eventLogBusiness;
             this.vendorPaymentBusiness = vendorPaymentBusiness;
             this.configuration = configuration;
+            this.env = env;
         }
 
         /// <summary>
