@@ -32,14 +32,22 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
-        public ProductController(IConfiguration configuration, IProductBusiness iResultData, IProductPriceBusiness priceBusiness, IProductImageBusiness imageBusiness, IEventLogBusiness eventLogBusiness)
+        public ProductController(IConfiguration configuration, 
+                                 IProductBusiness iResultData, 
+                                 IProductPriceBusiness priceBusiness, 
+                                 IProductImageBusiness imageBusiness, 
+                                 IEventLogBusiness eventLogBusiness,
+                                 IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
         /// <summary>

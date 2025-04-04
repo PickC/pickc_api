@@ -99,5 +99,9 @@ namespace appify.Business
         {
             return repository.GetUserDetails(EmailID);
         }
+        public List<EmailUserHeader> GetUserDetailsForActivation(string EmailID)
+        {
+            return repository.GetUserDetails(EmailID,false);
+        }
     }
 }

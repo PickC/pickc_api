@@ -26,14 +26,20 @@ namespace appify.web.api.Controllers
         public readonly IEventLogBusiness eventLogBusiness;
         private readonly IConfiguration configuration;
         private readonly IThemeMasterBusiness themeMasterBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
 
 
-        public ThemeMasterController(IConfiguration configuration, IThemeMasterBusiness iResultData, IEventLogBusiness eventLogBusiness)
+        public ThemeMasterController(IConfiguration configuration, 
+                                     IThemeMasterBusiness iResultData, 
+                                     IEventLogBusiness eventLogBusiness,
+                                     IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.themeMasterBusiness = iResultData;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
     /// <summary>
