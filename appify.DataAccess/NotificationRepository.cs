@@ -273,10 +273,10 @@ namespace appify.DataAccess
             return result;
 
         }
-        public List<EmailUserHeader> GetUserDetails(string EmailID)
+        public List<EmailUserHeader> GetUserDetails(string EmailID, bool isAcceptedUsers = true)
         {
             List<EmailUserHeader> items = new List<EmailUserHeader>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETUSERDETAILS, EmailID);
+            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETUSERDETAILS, EmailID,isAcceptedUsers);
             items = DataTableHelper.ConvertDataTable<EmailUserHeader>(ds.Tables[0]);
 
             return items;

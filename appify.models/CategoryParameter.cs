@@ -11,6 +11,8 @@ namespace appify.models
         public long ParameterID { get; set; }
         public long CategoryID { get; set; }
         public string ParameterName { get; set; }
+
+        public string? HintText { get; set; }
         public bool IsActive { get; set; }
         public Int16 CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }

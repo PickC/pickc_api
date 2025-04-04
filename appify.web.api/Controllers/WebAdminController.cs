@@ -33,11 +33,19 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IMemberBusiness memberBusiness;
         private readonly IWebAdminBusiness webAdminBusiness;
+        private readonly IWebHostEnvironment env;
 
         private readonly IAdminDashboardBusiness adminDashboardBusiness;
         private ResponseMessage rm;
         private readonly INotificationBusiness notificationBusiness;
-        public WebAdminController(IConfiguration configuration, IMemberBusiness memberBusiness, IProductBusiness product, IEventLogBusiness eventLogBusiness, IWebAdminBusiness webAdminBusiness, INotificationBusiness notificationBusiness,  IAdminDashboardBusiness adminDashboardBusiness)
+        public WebAdminController(IConfiguration configuration, 
+                                  IMemberBusiness memberBusiness, 
+                                  IProductBusiness product, 
+                                  IEventLogBusiness eventLogBusiness, 
+                                  IWebAdminBusiness webAdminBusiness, 
+                                  INotificationBusiness notificationBusiness,  
+                                  IAdminDashboardBusiness adminDashboardBusiness,
+                                  IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.productBusiness = product;
@@ -46,6 +54,7 @@ namespace appify.web.api.Controllers
             this.webAdminBusiness = webAdminBusiness;
             this.notificationBusiness = notificationBusiness;
             this.adminDashboardBusiness = adminDashboardBusiness;
+            this.env = env;
         }
 
         /// <summary>
@@ -101,6 +110,40 @@ namespace appify.web.api.Controllers
                     rm.message = "USER REGISTRATION SUCCESSFUL!";
                     rm.name = StatusName.ok;
                     rm.data = memberItem;
+
+                    
+                    /// <summary>
+                    /// send email for the newly registered user.
+                    /// </summary>
+
+                    string mailbody = string.Empty;
+                    EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.UserActivation));
+                    //List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(memberItem.EmailID);
+
+                    Notifications notifications = new Notifications
+                    {
+                        EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
+                        EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                        ToEmail = memberItem.EmailID
+                    };
+                    string path = notifications.EmailTemplateURL;
+                    using (StreamReader reader = new StreamReader(path))
+                    {
+                        mailbody = reader.ReadToEnd();
+                    }
+
+                    //mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
+                    //mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+
+                    mailbody = mailbody.Replace("{{name}}", memberItem.UserName.ToString());
+                    mailbody = mailbody.Replace("{{userId}}", memberItem.UserID.ToString());
+
+
+                    notifications.EmailBody = mailbody;
+                    var emailResult = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
+
+
+
 
                     await Common.UpdateEventLogsNew("USER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
                 }
@@ -529,10 +572,24 @@ namespace appify.web.api.Controllers
                 var returnData = this.webAdminBusiness.LogIn(itemData.emailID, itemData.password);
                 if (returnData != null)
                 {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "LOGIN DATA";
-                    rm.name = StatusName.ok;
-                    rm.data = returnData;
+
+                    if (returnData.IsActive)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "LOGIN DATA";
+                        rm.name = StatusName.ok;
+                        rm.data = returnData;
+
+                    }
+                    else {
+                        rm.statusCode = StatusCodes.ERROR;
+                        rm.message = "User Inactive.Please contact administrator";
+                        rm.name = StatusName.invalidCred;
+                        rm.data = "User Inactive.Please contact administrator";
+
+                    }
+
+
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("WebLogIn - SUCCESSFULLY", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
                 }
@@ -653,7 +710,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 string mailbody = string.Empty;
                 EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.UserActivation));
-                List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(itemData.emailID);
+                List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetailsForActivation(itemData.emailID);
 
                 Notifications notifications = new Notifications
                 {
@@ -672,13 +729,13 @@ namespace appify.web.api.Controllers
 
 
                 notifications.EmailBody = mailbody;
-                var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
-                if (user != null)
+                var emailResult = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
+                if (emailResult ==true)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "THE EMAIL HAS BEEN SENT SUCCESSFULLY";
                     rm.name = StatusName.ok;
-                    rm.data = user;
+                    rm.data = emailResult;
                     //await Common.UpdateEventLogsNew("THE EMAIL HAS BEEN SENT SUCCESSFULLY", reqHeader, controllerURL, EmailID, user, StatusName.ok, this.eventLogBusiness);
                 }
                 else
@@ -686,7 +743,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = user;
+                    rm.data = emailResult;
                     //await Common.UpdateEventLogsNew("EMAIL HAS - NO CONTENT", reqHeader, controllerURL, EmailID, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -758,7 +815,7 @@ namespace appify.web.api.Controllers
                     mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
 
                     notifications.EmailBody = mailbody;
-                    var user = EmailNotification.SendEmailCommon(notifications, notificationBusiness);
+                    var user = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
                     if (user != null)
                     {
                         rm.statusCode = StatusCodes.OK;

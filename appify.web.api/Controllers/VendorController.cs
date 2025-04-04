@@ -27,8 +27,18 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
-        public VendorController(IConfiguration configuration, ICustomerBusiness customerBusiness, IEventLogBusiness eventLogBusiness, IMemberBusiness iResultData,ILookupBusiness lookupBusiness,IProductBusiness productBusiness, IProductPriceBusiness priceBusiness, IProductImageBusiness imageBusiness) {
+        public VendorController(IConfiguration configuration, 
+                                ICustomerBusiness customerBusiness, 
+                                IEventLogBusiness eventLogBusiness, 
+                                IMemberBusiness iResultData,
+                                ILookupBusiness lookupBusiness,
+                                IProductBusiness productBusiness, 
+                                IProductPriceBusiness priceBusiness, 
+                                IProductImageBusiness imageBusiness,
+                                IWebHostEnvironment env) {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
             this.eventLogBusiness = eventLogBusiness;
@@ -37,6 +47,7 @@ namespace appify.web.api.Controllers
             this.productBusiness = productBusiness;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
+            this.env = env;
         }
         /// <summary>
         /// gets Product items information based on Vendor ID

@@ -82,6 +82,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ParameterID", item.ParameterID);
                         cmd.Parameters.AddWithValue("@CategoryID", item.CategoryID);
                         cmd.Parameters.AddWithValue("@ParameterName", item.ParameterName);
+                        cmd.Parameters.AddWithValue("@HintText", item.HintText);
                         cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
 

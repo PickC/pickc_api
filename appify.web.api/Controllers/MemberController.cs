@@ -36,6 +36,8 @@ namespace appify.web.api.Controllers
         private readonly IMemberKYCBusiness memberKYCBusiness;
         private readonly IMemberContactBusiness memberContactBusiness;
         private readonly INotificationBusiness notificationBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
         private readonly IOrderBusiness orderBusiness;
 
@@ -45,7 +47,11 @@ namespace appify.web.api.Controllers
                                 IMemberAppSettingBusiness memberAppSettingBusiness,
                                 IMemberThemeBusiness memberThemeBusiness,
                                 IMemberKYCBusiness memberKYCBusiness,
-                                IMemberContactBusiness memberContactBusiness, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData, IOrderBusiness orderBusiness)
+                                IMemberContactBusiness memberContactBusiness, 
+                                IEventLogBusiness eventLogBusiness, 
+                                INotificationBusiness IResultData, 
+                                IOrderBusiness orderBusiness,
+                                IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.memberBusiness = iResultData;
@@ -57,6 +63,7 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
             this.notificationBusiness = IResultData;
             this.orderBusiness = orderBusiness;
+            this.env = env;
         }
         /// <summary>
         /// Get a Member List
