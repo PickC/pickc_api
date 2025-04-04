@@ -35,16 +35,24 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly IOrderBusiness orderBusiness;
         private readonly IInvoiceBusinesss invoiceBusinesss;
+        private readonly IWebHostEnvironment env;
+
         private NotificationModel notificationModel;
         private ResponseMessage rm;
         private readonly INotificationBusiness notificationBusiness;
-        public OrderController(IConfiguration configuration, IOrderBusiness orderBusiness, IInvoiceBusinesss invoiceBusinesss, IEventLogBusiness eventLogBusiness, INotificationBusiness IResultData)
+        public OrderController(IConfiguration configuration, 
+                               IOrderBusiness orderBusiness, 
+                               IInvoiceBusinesss invoiceBusinesss, 
+                               IEventLogBusiness eventLogBusiness, 
+                               INotificationBusiness IResultData,
+                               IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.orderBusiness = orderBusiness;
             this.invoiceBusinesss = invoiceBusinesss;
             this.eventLogBusiness = eventLogBusiness;
             this.notificationBusiness = IResultData;
+            this.env = env;
 
             ////FCM Objects
             notificationModel = new NotificationModel();

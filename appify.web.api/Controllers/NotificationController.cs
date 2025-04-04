@@ -25,13 +25,19 @@ namespace appify.web.api.Controllers
     {
         private IConfiguration configuration;
         public readonly IEventLogBusiness eventLogBusiness;
-        private readonly INotificationBusiness notificationBusiness; 
+        private readonly INotificationBusiness notificationBusiness;
+        private readonly IWebHostEnvironment env;
+
         private ResponseMessage rm;
-        public NotificationController(IConfiguration configuration, INotificationBusiness notificationBusiness, IEventLogBusiness eventLogBusiness)
+        public NotificationController(IConfiguration configuration, 
+                                      INotificationBusiness notificationBusiness, 
+                                      IEventLogBusiness eventLogBusiness,
+                                      IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.notificationBusiness = notificationBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.env = env;
         }
 
         /// <summary>
