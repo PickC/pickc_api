@@ -92,7 +92,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             var result = themeMasterBusiness.Save(item);
             if (result!=null)
             {
@@ -152,7 +152,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             var result = themeMasterBusiness.Delete(themeID);
             if (result)
             {
@@ -229,7 +229,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             var item = themeMasterBusiness.Get(themeID);
 
             if (item != null)
@@ -313,7 +313,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             List<ThemeMaster> items = themeMasterBusiness.ListAll();
             if (items?.Any() == true)
             {

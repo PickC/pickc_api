@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Razorpay.Api;
 using System.IdentityModel.Tokens.Jwt;
@@ -35,7 +36,9 @@ namespace appify.web.api.Controllers
             rm = new ResponseMessage();
             try
             {
-                CheckToken.IsValidToken(Request, config);
+                //CheckToken.IsValidToken(Request, config);
+                TokenValidator.IsValidToken(Request, config, env);
+
             }
             catch (Exception ex)
             {

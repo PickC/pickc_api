@@ -135,7 +135,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.orderBusiness.Save(order);
                 if (result != null)
                 {
@@ -358,7 +358,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = orderBusiness.Delete(orderID);
                 if (result)
                 {
@@ -511,7 +511,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = invoiceBusinesss.PrintInvoice(orderID);
                 if (result != null)
                 {
@@ -567,7 +567,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = invoiceBusinesss.PrintReceipt(VendorID);
                 if (result != null)
                 {
@@ -635,7 +635,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             var result = orderBusiness.UpdateOrderStatus(statusData.OrderID, statusData.OrderStatus, statusData.Remarks);
             if (result)
             {
@@ -838,7 +838,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = orderBusiness.UpdateOrderPickup(statusData.OrderID, statusData.Weight, statusData.Length, statusData.Width, statusData.Height);
                 if (result)
                 {
@@ -911,7 +911,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = orderBusiness.UpdateOrderAWB(statusData.OrderID, statusData.CourierRefID, statusData.ShipmentID, statusData.AWB);
                 if (result)
                 {
@@ -986,7 +986,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = orderBusiness.GetOrderTrackingDetails(orderID);
                 if (result != null)
                 {
@@ -1118,7 +1118,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.orderBusiness.GetCustomerOrder(orderID);
                 if (item != null)
                 {
@@ -1231,7 +1231,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.orderBusiness.GetCustomerOrderNew(orderID);
                 if (item != null)
                 {
@@ -1350,7 +1350,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.orderBusiness.GetOrderForDelivery(orderID);
                 if (item != null)
                 {
@@ -1483,7 +1483,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<CustomerOrder> items = orderBusiness.List(itemData.userID);
                 if (items?.Any() == true)
                 {
@@ -1560,7 +1560,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<OrderList> items = orderBusiness.OrderList(itemData.userID,itemData.userType);
                 if (items?.Any() == true)
                 {
@@ -1652,7 +1652,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             List<CustomerOrderSummary> items = orderBusiness.CustomerSummaryList(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
             if (items?.Any() == true)
             {
@@ -1735,7 +1735,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<DailyOrderSummary> items = orderBusiness.GetDailyOrderSummary();
                 if (items?.Any() == true)
                 {
@@ -1899,7 +1899,7 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             List<VendorOrderNew> items = orderBusiness.ListByVendorNew(itemData.userID, itemData.OrderStatus, itemData.PageNo, itemData.Rows);
             if (items?.Any() == true)
             {
@@ -2035,7 +2035,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<VendorOrder> items = orderBusiness.GetByVendorDetail(itemData.VendorID, itemData.OrderID);
                 if (items?.Any() == true)
                 {
@@ -2995,7 +2995,7 @@ namespace appify.web.api.Controllers
             var reqHeader = Request;
             var items = false;
             rm = new ResponseMessage();
-            CheckToken.IsValidToken(Request, configuration);
+            TokenValidator.IsValidToken(Request, configuration, env);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
