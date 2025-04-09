@@ -120,7 +120,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var items = this.memberBusiness.GetAllMembers();
 
                 if (items?.Any() == true)
@@ -218,7 +219,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var member = this.memberBusiness.GetMember(Convert.ToInt64(userID));
                 if (member != null)
                 {
@@ -807,7 +809,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var count = this.memberBusiness.MemberOrderCount(item.userID);
                 if (count > 0)
                 {
@@ -875,7 +878,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var count = this.memberBusiness.VendorOrderCount(item.userID);
                 if (count > 0)
                 {
@@ -943,7 +947,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 bool isAllowed = this.memberBusiness.CheckMemberOnlinePaymentStatus(item.userID);
 
                 rm.statusCode = StatusCodes.OK;
@@ -1094,7 +1099,8 @@ namespace appify.web.api.Controllers
                 // dynamic data = jsondata;
 
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 //var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID));
 
                 //TODO: to implement the above dashboard information
@@ -1179,7 +1185,8 @@ namespace appify.web.api.Controllers
             {
                 // dynamic data = jsondata;
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var dashboard = this.memberBusiness.MemberDashboard(Convert.ToInt64(itemData.userID), itemData.dateFrom, itemData.dateTo);
 
                 //TODO: to implement the above dashboard information
@@ -1264,7 +1271,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = memberReturnPolicyBusiness.GetItem(itemData.userID);
 
                 if (item != null)
@@ -1347,7 +1355,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = memberReturnPolicyBusiness.Save(item);
                 if (result)
                 {
@@ -1408,7 +1417,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = memberReturnPolicyBusiness.Remove(itemData.userID);
 
                 if (result != null)
@@ -2172,7 +2182,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = memberThemeBusiness.Get(itemData.MemberID, itemData.ThemeID);
 
                 if (item != null)
@@ -2233,7 +2244,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 MemberTheme memberTheme = new MemberTheme();
                 memberTheme.ThemeID = item.ThemeID;
                 memberTheme.MemberID = item.MemberID;
@@ -2299,7 +2311,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = memberThemeBusiness.Delete(itemData.MemberID, itemData.ThemeID);
 
                 if (result)
@@ -2612,7 +2625,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = memberContactBusiness.Get(itemData.MemberID, itemData.MobileNo);
 
                 if (item != null)
@@ -2707,7 +2721,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = memberContactBusiness.List(itemData.userID);
 
                 if (item != null)
@@ -2770,7 +2785,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 if (item.MemberID == 0)
                 {
                     rm.statusCode = StatusCodes.ERROR;
@@ -2846,7 +2862,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
 
 
 
@@ -2911,7 +2928,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = memberContactBusiness.Delete(itemData.MemberID, itemData.MobileNo);
 
                 if (result)
@@ -2979,7 +2997,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.memberBusiness.memberBannerAdd(memberBanner);
                 if (result != null)
                 {
@@ -3038,7 +3057,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.memberBusiness.memberBannerRemove(itemData.bannerID);
                 if (result != null)
                 {
@@ -3116,7 +3136,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.memberBusiness.memberBannerGet(itemData.userID);
                 if (result != null)
                 {
@@ -3192,7 +3213,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.memberBusiness.memberBannerList();
                 if (result != null)
                 {
@@ -3405,7 +3427,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.memberBusiness.getAppLinks(itemData.userID);
                 if (result != null)
                 {

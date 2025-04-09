@@ -252,10 +252,10 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request: 
-        ///     {
-        ///       "parameterID": 0,
-        ///       "categoryID": 0
-        ///     }
+        /// 
+        ///        {
+        ///          "categoryID": 0
+        ///        }
         ///     
         /// Sample response JSON :
         /// 
@@ -272,7 +272,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("categoryparameter/list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListCategoryParameters(ParamCategoryParameter itemData)
+        public IActionResult ListCategoryParameters(ParamCatID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -281,7 +281,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var result = this.categoryParameterBusiness.ListAll(itemData.CategoryID);
+                var result = this.categoryParameterBusiness.ListAll(itemData.categoryID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

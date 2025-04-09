@@ -80,7 +80,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.SaveVendorPayment(item);
                 if (result != null)
                 {
@@ -123,7 +124,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.SaveVendorPayment(item);
                 if (result != null)
                 {
@@ -179,7 +181,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.RemoveVendorPayment(itemData.PaymentID);
                 if (result != null)
                 {
@@ -221,7 +224,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.RemoveVendorPayment(itemData.PaymentID);
                 if (result != null)
                 {
@@ -281,7 +285,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.Get(itemData.PaymentID);
                 if (result != null)
                 {
@@ -323,7 +328,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.Get(itemData.PaymentID);
                 if (result != null)
                 {
@@ -372,7 +378,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.GetAll();
                 if (result != null)
                 {
@@ -414,7 +421,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.GetAll();
                 if (result != null)
                 {
@@ -476,7 +484,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<VendorPayment> items = vendorPaymentBusiness.PaymentListbyRows(itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -523,7 +532,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<VendorPayment> items = vendorPaymentBusiness.PaymentListbyRows(itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -586,7 +596,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.GetPaymentStatus(itemData.VendorID);
                 if (result != null)
                 {
@@ -628,7 +639,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.GetPaymentStatus(itemData.VendorID);
                 if (result != null)
                 {
@@ -688,7 +700,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.UpdateReferenceNo(item);
                 if (result != null)
                 {
@@ -730,7 +743,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = vendorPaymentBusiness.UpdateReferenceNo(item);
                 if (result != null)
                 {
@@ -788,7 +802,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.ListByVendor(item.VendorID);
                 if (result != null)
                 {
@@ -831,7 +846,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.vendorPaymentBusiness.ListByVendor(item.VendorID);
                 
                 if (result != null)

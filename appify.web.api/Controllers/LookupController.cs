@@ -192,7 +192,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = lookupBusiness.SaveLookUp(item);
                 if (result != null)
                 {

@@ -114,7 +114,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID);
                 if (result != null)
                 {
@@ -158,7 +159,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.notificationBusiness.GetNotificationByVendor(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
@@ -263,7 +265,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.notificationBusiness.GetNotificationByUser(itemData.userID);
                 if (result != null)
                 {
@@ -356,7 +359,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.notificationBusiness.GetNotificationByUser(itemData.userID,itemData.PageNo,itemData.Rows);
                 if (result != null)
                 {
@@ -416,7 +420,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.notificationBusiness.IsReadNotification(itemData.NotificationID);
                 if (result != null)
                 {
@@ -474,8 +479,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
-                var result = this.notificationBusiness.unReadCountNotification(itemData.userID);
+                CheckToken.IsValidToken(Request, configuration);                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env); var result = this.notificationBusiness.unReadCountNotification(itemData.userID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

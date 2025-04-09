@@ -97,7 +97,7 @@ namespace appify.web.api.Controllers
         [Route("productlist")]
         [MapToApiVersion("1.0")]
         ////[VendorAuthorize]
-        public IActionResult GetMemberProducts(ParamMemberUserID itemData) {
+        public async Task<IActionResult> GetMemberProducts(ParamMemberUserID itemData) {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
@@ -112,8 +112,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
 
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -121,8 +120,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+
+                    await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
 
 
@@ -134,7 +133,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -143,7 +143,7 @@ namespace appify.web.api.Controllers
         [HttpPost]
         [Route("productlist")]
         [MapToApiVersion("1.1")]
-        public IActionResult GetMemberProductsList(ParamMemberUserID itemData)
+        public async Task<IActionResult> GetMemberProductsList(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -159,8 +159,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = items;
 
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -168,8 +167,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+
+                    await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
 
 
@@ -180,8 +179,9 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -230,7 +230,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 List<MemberProduct> items = customerBusiness.ProductListByCategory(itemData.userID, itemData.categoryID, itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -308,7 +309,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var items = customerBusiness.GetMemberAllDetails(itemData.userID);
                 if (items != null)
                 {
@@ -389,7 +391,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var items = customerBusiness.GetProductListByVAUA(itemData.userID);
                 if (items != null)
                 {
