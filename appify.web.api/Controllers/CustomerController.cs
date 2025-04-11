@@ -230,8 +230,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                CheckToken.IsValidToken(Request, configuration);
                 List<MemberProduct> items = customerBusiness.ProductListByCategory(itemData.userID, itemData.categoryID, itemData.PageNo, itemData.Rows);
                 if (items?.Any() == true)
                 {
@@ -309,8 +308,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                CheckToken.IsValidToken(Request, configuration);
                 var items = customerBusiness.GetMemberAllDetails(itemData.userID);
                 if (items != null)
                 {
@@ -391,8 +389,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                CheckToken.IsValidToken(Request, configuration);
                 var items = customerBusiness.GetProductListByVAUA(itemData.userID);
                 if (items != null)
                 {

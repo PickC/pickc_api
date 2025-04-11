@@ -96,33 +96,45 @@ namespace appify.DataAccess
         public VendorPayment Get(Int64 PaymentID)
         {
             VendorPayment item = new VendorPayment();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTVENDORPAYMENT, PaymentID);
-            item = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTVENDORPAYMENT, PaymentID);
+                item = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public List<VendorPayment> GetAll()
         {
             List<VendorPayment> payments = new List<VendorPayment>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLVENDORPAYMENT);
-            payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTALLVENDORPAYMENT);
+                payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
+            }
             return payments;
         }
         public List<VendorPayment> PaymentListbyRows(int pageNo, int rows)
         {
             List<VendorPayment> payments = new List<VendorPayment>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLROWSVENDORPAYMENT, pageNo, rows);
-            payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTALLROWSVENDORPAYMENT, pageNo, rows);
+                payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
+            }
             return payments;
         }
         public VendorPayment GetPaymentStatus(Int64 VendorID)
         {
             VendorPayment item = new VendorPayment();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.VENDORPAYMENTSTATUS, VendorID);
-            item = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.VENDORPAYMENTSTATUS, VendorID);
+                item = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public bool UpdateReferenceNo(VendorPaymentStatus item)
@@ -158,9 +170,12 @@ namespace appify.DataAccess
         public List<VendorPayment> ListByVendor(Int64 VendorID) 
         {
             List<VendorPayment> payments = new List<VendorPayment>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLBYVENDOR, VendorID);
-            payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTALLBYVENDOR, VendorID);
+                payments = DataTableHelper.ConvertDataTable<VendorPayment>(ds.Tables[0]);
+            }
             return payments;
 
         }

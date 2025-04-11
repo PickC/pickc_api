@@ -95,37 +95,40 @@ namespace appify.DataAccess
 
             InvoiceReport invoiceReport = new InvoiceReport();
 
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
 
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRINTINVOICEHEADER, orderID);
-            invoiceReport = DataTableHelper.ConvertDataTable<InvoiceReport>(ds.Tables[0]).FirstOrDefault();
-
-
-            List<InvoiceItemReport> items = new List<InvoiceItemReport>();
-            DataSet dsitem = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRINTINVOICEDETAIL, orderID);
-            items = DataTableHelper.ConvertDataTable<InvoiceItemReport>(dsitem.Tables[0]);
-
-            //decimal deliveryCharges = Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 100) / (100 + 18)), 2, MidpointRounding.AwayFromZero);
-
-            /* Add Delivery as Line Item */
-            //items.Add(new InvoiceItemReport
-            //{
-            //    ProductID ="0",
-            //    ProductName="Shipping Charges",
-            //    Description = "Shipping Charges",
-            //    UnitPrice = deliveryCharges ,
-            //    Quantity = 1,
-            //    CGST = 0.00M,
-            //    SGST=0.00M,
-            //    IGST= Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 18)/100),2,MidpointRounding.AwayFromZero),
-            //    SellingAmount = Math.Round(invoiceReport.DeliveryCost,2,MidpointRounding.AwayFromZero)
-
-            //});
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRINTINVOICEHEADER, orderID);
+                invoiceReport = DataTableHelper.ConvertDataTable<InvoiceReport>(ds.Tables[0]).FirstOrDefault();
 
 
-            invoiceReport.InvoiceItems.AddRange(items);
+                List<InvoiceItemReport> items = new List<InvoiceItemReport>();
+                DataSet dsitem = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRINTINVOICEDETAIL, orderID);
+                items = DataTableHelper.ConvertDataTable<InvoiceItemReport>(dsitem.Tables[0]);
+
+                //decimal deliveryCharges = Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 100) / (100 + 18)), 2, MidpointRounding.AwayFromZero);
+
+                /* Add Delivery as Line Item */
+                //items.Add(new InvoiceItemReport
+                //{
+                //    ProductID ="0",
+                //    ProductName="Shipping Charges",
+                //    Description = "Shipping Charges",
+                //    UnitPrice = deliveryCharges ,
+                //    Quantity = 1,
+                //    CGST = 0.00M,
+                //    SGST=0.00M,
+                //    IGST= Math.Round(Convert.ToDecimal((invoiceReport.DeliveryCost * 18)/100),2,MidpointRounding.AwayFromZero),
+                //    SellingAmount = Math.Round(invoiceReport.DeliveryCost,2,MidpointRounding.AwayFromZero)
+
+                //});
 
 
-            
+                invoiceReport.InvoiceItems.AddRange(items);
+
+
+            }
             
 
             return invoiceReport;
@@ -134,8 +137,12 @@ namespace appify.DataAccess
         {
             ReceiptReport invoiceReport = new ReceiptReport();
 
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRINTVENDORRECEIPT, vendorID);
-            invoiceReport = DataTableHelper.ConvertDataTable<ReceiptReport>(ds.Tables[0]).FirstOrDefault();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRINTVENDORRECEIPT, vendorID);
+                invoiceReport = DataTableHelper.ConvertDataTable<ReceiptReport>(ds.Tables[0]).FirstOrDefault();
+            }
             return invoiceReport;
         }
     }

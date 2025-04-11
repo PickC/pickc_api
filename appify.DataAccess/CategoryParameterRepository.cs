@@ -51,18 +51,24 @@ namespace appify.DataAccess
         public CategoryParameter Get(long parameterID, long categoryID)
         {
             CategoryParameter item = new CategoryParameter();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTCATEGORYPARAMETER, parameterID, categoryID);
-            item = DataTableHelper.ConvertDataTable<CategoryParameter>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTCATEGORYPARAMETER, parameterID, categoryID);
+                item = DataTableHelper.ConvertDataTable<CategoryParameter>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<CategoryParameter> ListAll(long categoryID)
         {
             List<CategoryParameter> item = new List<CategoryParameter>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTCATEGORYPARAMETER, categoryID);
-            item = DataTableHelper.ConvertDataTable<CategoryParameter>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTCATEGORYPARAMETER, categoryID);
+                item = DataTableHelper.ConvertDataTable<CategoryParameter>(ds.Tables[0]);
+            }
             return item;
         }
 
@@ -149,18 +155,24 @@ namespace appify.DataAccess
         public ParameterType Get(long parameterID, string parameterValue)
         {
             ParameterType item = new ParameterType();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPARAMETERTYPE, parameterID, parameterValue);
-            item = DataTableHelper.ConvertDataTable<ParameterType>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPARAMETERTYPE, parameterID, parameterValue);
+                item = DataTableHelper.ConvertDataTable<ParameterType>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<ParameterType> ListAll(long parameterID)
         {
             List<ParameterType> item = new List<ParameterType>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPARAMETERTYPE, parameterID);
-            item = DataTableHelper.ConvertDataTable<ParameterType>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPARAMETERTYPE, parameterID);
+                item = DataTableHelper.ConvertDataTable<ParameterType>(ds.Tables[0]);
+            }
             return item;
         }
 

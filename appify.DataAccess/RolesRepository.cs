@@ -60,9 +60,12 @@ namespace appify.DataAccess
         public Roles Get(short roleID)
         {
             Roles item = new Roles();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTROLE, roleID);
-            item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTROLE, roleID);
+                item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
@@ -70,27 +73,36 @@ namespace appify.DataAccess
         {
 
             Int64 item = new Int64();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTROLE);
-            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ROWCOUNTROLE);
+                item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+            }
             return item;
         }
 
         public List<Roles> ListAll(string? roleCode,string? roleDescription)
         {
             List<Roles> item = new List<Roles>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLE,roleCode,roleDescription);
-            item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTROLE, roleCode, roleDescription);
+                item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]);
+            }
             return item;
         }
 
         public List<Roles> ListbyPageView(int pageNo, int rows)
         {
             List<Roles> item = new List<Roles>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWLISTROLE, pageNo, rows);
-            item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWLISTROLE, pageNo, rows);
+                item = DataTableHelper.ConvertDataTable<Roles>(ds.Tables[0]);
+            }
             return item;
         }
 
@@ -143,9 +155,12 @@ namespace appify.DataAccess
         public List<RolesAccessType> GetAccessType(string LookupCategory)
         {
             List<RolesAccessType> item = new List<RolesAccessType>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROLEACCESSTYPE, LookupCategory);
-            item = DataTableHelper.ConvertDataTable<RolesAccessType>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ROLEACCESSTYPE, LookupCategory);
+                item = DataTableHelper.ConvertDataTable<RolesAccessType>(ds.Tables[0]);
+            }
             return item;
         }
     }

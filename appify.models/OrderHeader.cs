@@ -75,7 +75,7 @@ namespace appify.models
         public string? ReceiverMobileNo { get; set; }
 
         public short? DeliveryChannel { get; set; }
-        public string? DeliveryChannelDescription { get;set; }
+        public string? DeliveryChannelDescription { get; set; }
 
 
 
@@ -127,7 +127,7 @@ namespace appify.models
 
     }
 
-        public partial class VendorOrder
+    public partial class VendorOrder
     {
         public VendorOrder()
         {
@@ -264,7 +264,7 @@ namespace appify.models
         public string order_date { get; set; }
         public string pickup_location { get; set; }
         public string pickup_address { get; set; }
-        
+
         public string channel_id { get; set; }
         public string comment { get; set; }
         public string billing_customer_name { get; set; }
@@ -327,9 +327,10 @@ namespace appify.models
         public string OrderReferenceNo { get; set; }
         public string PaymentReferenceNo { get; set; }
         public short PaymentMode { get; set; }
-        public string LookupCode {  get; set; }
+        public string LookupCode { get; set; }
     }
-    public partial class OrderTrackingDetails {
+    public partial class OrderTrackingDetails
+    {
 
         public Int64 OrderID { get; set; }
         public string CourierRefID { get; set; }
@@ -343,12 +344,12 @@ namespace appify.models
         {
             note = new List<string>();
         }
-        public decimal Amount {  get; set; }
-        public string Currency {  get; set; }
+        public decimal Amount { get; set; }
+        public string Currency { get; set; }
         public string Receipt { get; set; }
         public List<string> note { get; set; }
         public bool PartialPayment { get; set; }
-        public long FirstPaymentMinAmount {  get; set; }
+        public long FirstPaymentMinAmount { get; set; }
     }
     public partial class OrderTrackingUpdate
     {
@@ -360,14 +361,14 @@ namespace appify.models
         public string AWB { get; set; }
         public DateTime DeliveredOn { get; set; }
         public string CourierName { get; set; }
-        public string TrackURL {  get; set; }   
+        public string TrackURL { get; set; }
     }
 
     public partial class OrderTrackingUpdateDelhivery
     {
         public string AWB { get; set; }
         public string Status { get; set; }
-        public string StatusType {  get; set; }
+        public string StatusType { get; set; }
         public string Instructions { get; set; }
         public string ReferenceNo { get; set; }
         public DateTime StatusDateTime { get; set; }
@@ -387,7 +388,8 @@ namespace appify.models
         public string SkipNo { get; set; }
         public bool IsSkipNo { get; set; }
     }
-        public partial class CustomerOrder {
+    public partial class CustomerOrder
+    {
 
         public CustomerOrder()
         {
@@ -621,10 +623,17 @@ namespace appify.models
         public string OrderNo { get; set; }
         public DateTime OrderDate { get; set; }
         public Int32 OrderStatus { get; set; }
-        public string OrderStatusDescription {  get; set; }
-        public Int32 ProductID {  get; set; }
+        public string OrderStatusDescription { get; set; }
+        public Int32 ProductID { get; set; }
         public string ProductDescription { get; set; }
-        public string ImageName {  get; set; }
+        public string ImageName { get; set; }
+
+        public string? EstimatedDeliveryDate { get; set; }
+        public string Size { get; set; }
+        public int Quantity { get; set; }
+        public decimal? DiscountPrice { get; set; }
+        public decimal? ActualPrice { get; set; }
+
     }
- 
+
 }

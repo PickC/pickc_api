@@ -27,9 +27,12 @@ namespace appify.DataAccess
         public MemberReturnPolicy GetItem(long memberID)
         {
             MemberReturnPolicy item = new MemberReturnPolicy();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERRETURNPOLICY, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberReturnPolicy>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERRETURNPOLICY, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberReturnPolicy>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 

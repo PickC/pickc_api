@@ -56,9 +56,12 @@ namespace appify.DataAccess
         public Securables Get(Int32 SecurablesID)
         {
             Securables item = new Securables();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSECURABLE, SecurablesID);
-            item = DataTableHelper.ConvertDataTable<Securables>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSECURABLE, SecurablesID);
+                item = DataTableHelper.ConvertDataTable<Securables>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
@@ -66,18 +69,24 @@ namespace appify.DataAccess
         {
 
             Int64 item = new Int64();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTROLE);
-            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ROWCOUNTROLE);
+                item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+            }
             return item;
         }
 
         public List<Securables> ListAll()
         {
             List<Securables> item = new List<Securables>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSECURABLE);
-            item = DataTableHelper.ConvertDataTable<Securables>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTSECURABLE);
+                item = DataTableHelper.ConvertDataTable<Securables>(ds.Tables[0]);
+            }
             return item;
         }
 

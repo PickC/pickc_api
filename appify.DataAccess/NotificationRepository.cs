@@ -31,34 +31,46 @@ namespace appify.DataAccess
         public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID);
-            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDOR, VendorID);
+                items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+            }
             return items;
         }
         public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID);
-            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMER, CustomerID);
+                items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDORPAGEVIEW, VendorID, PageNo, Rows);
-            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTNOTIFICATIONBYVENDORPAGEVIEW, VendorID, PageNo, Rows);
+                items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+            }
             return items;
         }
         public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows)
         {
             List<PushNotificationMessage> items = new List<PushNotificationMessage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMERPAGEVIEW, CustomerID, PageNo, Rows);
-            items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTNOTIFICATIONBYCUSTOMERPAGEVIEW, CustomerID, PageNo, Rows);
+                items = DataTableHelper.ConvertDataTable<PushNotificationMessage>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -66,17 +78,23 @@ namespace appify.DataAccess
         public NotificationTemplate GetNotificationTemplate(long TemplateID)
         {
             NotificationTemplate items = new NotificationTemplate();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTNOTIFICATIONTEMPLATE, TemplateID);
-            items = DataTableHelper.ConvertDataTable<NotificationTemplate>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTNOTIFICATIONTEMPLATE, TemplateID);
+                items = DataTableHelper.ConvertDataTable<NotificationTemplate>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
         public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID)
         {
             SMSNotificationTemplate items = new SMSNotificationTemplate();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSNOTIFICATIONTEMPLATE, TemplateID);
-            items = DataTableHelper.ConvertDataTable<SMSNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSMSNOTIFICATIONTEMPLATE, TemplateID);
+                items = DataTableHelper.ConvertDataTable<SMSNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
 
@@ -186,58 +204,79 @@ namespace appify.DataAccess
         public VendorDetails GetVendorDetails(long VendorID, long OrderID)
         {
             VendorDetails items = new VendorDetails();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETVENDORDETAILS, VendorID, OrderID);
-            items = DataTableHelper.ConvertDataTable<VendorDetails>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETVENDORDETAILS, VendorID, OrderID);
+                items = DataTableHelper.ConvertDataTable<VendorDetails>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
         public EmailNotificationTemplate GetEmailNotificationTemplate(long TemplateID)
         {
             EmailNotificationTemplate items = new EmailNotificationTemplate();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEMAILNOTIFICATIONTEMPLATE, TemplateID);
-            items = DataTableHelper.ConvertDataTable<EmailNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTEMAILNOTIFICATIONTEMPLATE, TemplateID);
+                items = DataTableHelper.ConvertDataTable<EmailNotificationTemplate>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
         public List<EmailNotificationHeader> GetMemberDetails(long VendorID, long OrderID)
         {
             List<EmailNotificationHeader> items = new List<EmailNotificationHeader>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERDETAILS, VendorID, OrderID);
-            items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETMEMBERDETAILS, VendorID, OrderID);
+                items = DataTableHelper.ConvertDataTable<EmailNotificationHeader>(ds.Tables[0]);
+            }
             return items;
         }
         public SMSSystemConfigSetting GetSMSSystemConfig()
         {
             SMSSystemConfigSetting items = new SMSSystemConfigSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
-            items = DataTableHelper.ConvertDataTable<SMSSystemConfigSetting>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
+                items = DataTableHelper.ConvertDataTable<SMSSystemConfigSetting>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
 
         public List<SMSConfig> GetSMSConfig()
         {
             List<SMSConfig> items = new List<SMSConfig>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
-            items = DataTableHelper.ConvertDataTable<SMSConfig>(ds.Tables[0]).ToList();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSMSCONFIGSETTING);
+                items = DataTableHelper.ConvertDataTable<SMSConfig>(ds.Tables[0]).ToList();
+            }
             return items;
         }
         public List<EmailConfig> GetEmailConfig()
         {
             List<EmailConfig> items = new List<EmailConfig>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEMAILCONFIGSETTING);
-            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]).ToList();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTEMAILCONFIGSETTING);
+                items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]).ToList();
+            }
             return items;
         }
         public List<EmailConfig> GetAlertHeader()
         {
             List<EmailConfig> items = new List<EmailConfig>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.EMAILSERVERALERT);
-            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.EMAILSERVERALERT);
+                items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
+            }
             return items;
         }
         public bool UpdateSMSAlert(bool smsalert, bool smsalertemail)
@@ -276,9 +315,12 @@ namespace appify.DataAccess
         public List<EmailUserHeader> GetUserDetails(string EmailID, bool isAcceptedUsers = true)
         {
             List<EmailUserHeader> items = new List<EmailUserHeader>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETUSERDETAILS, EmailID,isAcceptedUsers);
-            items = DataTableHelper.ConvertDataTable<EmailUserHeader>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETUSERDETAILS, EmailID, isAcceptedUsers);
+                items = DataTableHelper.ConvertDataTable<EmailUserHeader>(ds.Tables[0]);
+            }
             return items;
         }
     }

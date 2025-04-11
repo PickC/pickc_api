@@ -61,18 +61,24 @@ namespace appify.DataAccess
         public MemberAppSetting GetMemberAppSetting(long userID)
         {
             MemberAppSetting item = new MemberAppSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
+                item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberAppSetting> ListMemberAppSetting(long userID)
         {
             List<MemberAppSetting> items = new List<MemberAppSetting>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPSETTING, userID);
-            items = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERAPPSETTING, userID);
+                items = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -146,18 +152,24 @@ namespace appify.DataAccess
         public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
         {
             MemberAppSettingCICD item = new MemberAppSettingCICD();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGSCICD, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGSCICD, userID);
+                item = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberAppSettingCICD> ListMemberAppSettingCICD()
         {
             List<MemberAppSettingCICD> items = new List<MemberAppSettingCICD>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPSETTINGSCICD);
-            items = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERAPPSETTINGSCICD);
+                items = DataTableHelper.ConvertDataTable<MemberAppSettingCICD>(ds.Tables[0]);
+            }
             return items;
         }
         //public Int16 RecordCountMemberAppSettingCICD()
@@ -223,18 +235,24 @@ namespace appify.DataAccess
         public MemberAppPublishSetting GetMemberAppPublishSetting(long userID)
         {
             MemberAppPublishSetting item = new MemberAppPublishSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPPUBLISHSETTINGS, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPPUBLISHSETTINGS, userID);
+                item = DataTableHelper.ConvertDataTable<MemberAppPublishSetting>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting()
         {
             List<MemberAppPublishSettingLite> items = new List<MemberAppPublishSettingLite>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERAPPPUBLISHSETTINGS);
-            items = DataTableHelper.ConvertDataTable<MemberAppPublishSettingLite>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERAPPPUBLISHSETTINGS);
+                items = DataTableHelper.ConvertDataTable<MemberAppPublishSettingLite>(ds.Tables[0]);
+            }
             return items;
         }
         //public Int16 RecordCountMemberAppSettingCICD()
@@ -308,9 +326,12 @@ namespace appify.DataAccess
         public MemberAppStatus GetAppStatusCICD(long userID)
         {
             MemberAppStatus item = new MemberAppStatus();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAppStatus>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTING, userID);
+                item = DataTableHelper.ConvertDataTable<MemberAppStatus>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 

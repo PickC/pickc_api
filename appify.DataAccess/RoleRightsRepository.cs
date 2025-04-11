@@ -50,18 +50,24 @@ namespace appify.DataAccess
         public RoleRights Get(short roleID, short securableID)
         {
             RoleRights item = new RoleRights();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTROLERIGHT, roleID,securableID);
-            item = DataTableHelper.ConvertDataTable<RoleRights>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTROLERIGHT, roleID, securableID);
+                item = DataTableHelper.ConvertDataTable<RoleRights>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
          
         public List<RoleRights> ListAll(short roleID)
         {
             List<RoleRights> item = new List<RoleRights>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTROLERIGHT,roleID);
-            item = DataTableHelper.ConvertDataTable<RoleRights>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTROLERIGHT, roleID);
+                item = DataTableHelper.ConvertDataTable<RoleRights>(ds.Tables[0]);
+            }
             return item;
         }
 
