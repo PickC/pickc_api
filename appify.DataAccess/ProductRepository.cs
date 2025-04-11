@@ -86,35 +86,47 @@ namespace appify.DataAccess
         public ProductMaster GetProduct(long productId)
         {
             ProductMaster item = new ProductMaster();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTMASTER, productId);
-            item = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPRODUCTMASTER, productId);
+                item = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public ProductMasterNew GetProductNew(long productId)
         {
             ProductMasterNew item = new ProductMasterNew();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTMASTERNEW, productId);
-            item = DataTableHelper.ConvertDataTable<ProductMasterNew>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPRODUCTMASTERNEW, productId);
+                item = DataTableHelper.ConvertDataTable<ProductMasterNew>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public List<ProductMaster> GetProducts(long sellerID)
         {
             List<ProductMaster> items = new List<ProductMaster>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTMASTER, sellerID);
-            items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTMASTER, sellerID);
+                items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<ProductMaster> GetAllProducts()
         {
             List<ProductMaster> items = new List<ProductMaster>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTMASTERALL);
-            items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTMASTERALL);
+                items = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -127,9 +139,12 @@ namespace appify.DataAccess
         {
 
             List<ProductWeb> items = new List<ProductWeb>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLPRODUCT);
-            items = DataTableHelper.ConvertDataTable<ProductWeb>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTALLPRODUCT);
+                items = DataTableHelper.ConvertDataTable<ProductWeb>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -196,9 +211,12 @@ namespace appify.DataAccess
         public List<NewProduct> GetNewProductsList(long VendorID,bool IsNew=false)
         {
             List<NewProduct> items = new List<NewProduct>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID,IsNew);
-            items = DataTableHelper.ConvertDataTable<NewProduct>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTNEWPRODUCTS, VendorID, IsNew);
+                items = DataTableHelper.ConvertDataTable<NewProduct>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -237,33 +255,45 @@ namespace appify.DataAccess
         public List<ProductMasterCategories> GetProductMasterCategories(long parentID)
         {
             List<ProductMasterCategories> item = new List<ProductMasterCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTMASTERCATEGORIES, parentID);
-            item = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPRODUCTMASTERCATEGORIES, parentID);
+                item = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
+            }
             return item;
         }
         public List<ProductCategories> GetCategoriesList(long parentID)
         {
             List<ProductCategories> item = new List<ProductCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESDEFAULTLISTBYID, parentID);
-            item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESDEFAULTLISTBYID, parentID);
+                item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
+            }
             return item;
         }
         public List<ProductCategories> GetALLCategoriesList(long parentID)
         {
             List<ProductCategories> item = new List<ProductCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
-            item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
+                item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
+            }
             return item;
         }
         public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
             List<ProductCategoryName> item = new List<ProductCategoryName>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESNAME, categoryID);
-            item = DataTableHelper.ConvertDataTable<ProductCategoryName>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESNAME, categoryID);
+                item = DataTableHelper.ConvertDataTable<ProductCategoryName>(ds.Tables[0]);
+            }
             return item;
         }
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories)
@@ -304,18 +334,24 @@ namespace appify.DataAccess
         public List<ParentCategories> GetVendorCategories(long VendorID)
         {
             List<ParentCategories> item = new List<ParentCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PARENTCATEGORIES, VendorID);
-            item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PARENTCATEGORIES, VendorID);
+                item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
+            }
             return item;
         }
 
         public List<ParentCategories> GetALLVendorCategories(long VendorID)
         {
             List<ParentCategories> item = new List<ParentCategories>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PARENTALLCATEGORIES, VendorID);
-            item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PARENTALLCATEGORIES, VendorID);
+                item = DataTableHelper.ConvertDataTable<ParentCategories>(ds.Tables[0]);
+            }
             return item;
         }
         #region Featured Categories
@@ -415,8 +451,12 @@ namespace appify.DataAccess
         public StockByPriceID GetStockByPriceID(long PriceID)
         {
             StockByPriceID item = new StockByPriceID();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
-            item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
+                item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
             #endregion

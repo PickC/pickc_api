@@ -61,8 +61,12 @@ namespace appify.DataAccess
         public Address GetAddress(long addressID, long linkID)
         {
             Address item = new Address();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTADDRESS,addressID,linkID);
-            item = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]).FirstOrDefault();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTADDRESS,addressID,linkID);
+                item = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]).FirstOrDefault();
+            }
 
             return item;
         }
@@ -71,9 +75,12 @@ namespace appify.DataAccess
         public Address GetDefaultAddress(long linkID)
         {
             Address item = new Address();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTDEFAULTADDRESS, linkID);
-            item = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTDEFAULTADDRESS, linkID);
+                item = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
@@ -82,18 +89,24 @@ namespace appify.DataAccess
         public List<Address> GetList(long linkID)
         {
             List<Address> items = new List<Address>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTADDRESS,linkID);
-            items = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTADDRESS, linkID);
+                items = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<Address> GetAddressList()
         {
             List<Address> items = new List<Address>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTALLADDRESS);
-            items = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTALLADDRESS);
+                items = DataTableHelper.ConvertDataTable<Address>(ds.Tables[0]);
+            }
             return items;
         }
 

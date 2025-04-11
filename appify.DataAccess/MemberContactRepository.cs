@@ -62,18 +62,24 @@ namespace appify.DataAccess
         public MemberContact Get(long memberID, string mobileNo)
         {
             MemberContact item = new MemberContact();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERCONTACT, memberID, mobileNo);
-            item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERCONTACT, memberID, mobileNo);
+                item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberContact> List(long memberID)
         {
             List<MemberContact> item = new List<MemberContact>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERCONTACT,memberID);
-            item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERCONTACT, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]);
+            }
             return item;
         }
         public bool BulkSave(List<MemberContact> items)

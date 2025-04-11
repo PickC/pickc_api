@@ -28,26 +28,35 @@ namespace appify.DataAccess
         public ProductPrice GetPrice(long priceID, long productID,string size)
         {
             ProductPrice item = new ProductPrice();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTPRICE,priceID, productID,size);
-            item = DataTableHelper.ConvertDataTable<ProductPrice>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPRODUCTPRICE, priceID, productID, size);
+                item = DataTableHelper.ConvertDataTable<ProductPrice>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<ProductPrice> PriceList(long productID)
         {
             List<ProductPrice> items = new List<ProductPrice>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTPRICE, productID);
-            items = DataTableHelper.ConvertDataTable<ProductPrice>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTPRICE, productID);
+                items = DataTableHelper.ConvertDataTable<ProductPrice>(ds.Tables[0]);
+            }
             return items;
         }
         public List<ProductPriceNew> PriceListNew(long productID)
         {
             List<ProductPriceNew> items = new List<ProductPriceNew>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTPRICENEW, productID);
-            items = DataTableHelper.ConvertDataTable<ProductPriceNew>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTPRICENEW, productID);
+                items = DataTableHelper.ConvertDataTable<ProductPriceNew>(ds.Tables[0]);
+            }
             return items;
         }
 

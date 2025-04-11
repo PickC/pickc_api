@@ -61,18 +61,24 @@ namespace appify.DataAccess
         public MemberTheme Get(long memberID, long themeID)
         {
             MemberTheme item = new MemberTheme();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERTHEME, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERTHEME, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberTheme> ListAll()
         {
             List<MemberTheme> item = new List<MemberTheme>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERTHEME);
-            item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERTHEME);
+                item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]);
+            }
             return item;
         }
 

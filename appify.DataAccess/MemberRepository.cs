@@ -67,25 +67,35 @@ namespace appify.DataAccess
         public List<Member> GetAllMembers()
         {
             List<Member> members = new List<Member>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERS);
-            members = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERS);
+                members = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
+            }
             return members;
         }
 
         public bool UpdateWelcomeEmail(long userID, bool IsWelcomeEmail)
         {
             bool result = false;
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring,dbroutine.DBStoredProc.UPDATEWELCOMEEMAIL,userID, IsWelcomeEmail);
-            result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.UPDATEWELCOMEEMAIL, userID, IsWelcomeEmail);
+                result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            }
             return result;
         }
         public bool CheckMemberOnlinePaymentStatus(long userID) {
 
             bool result= false;
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERONLINEPAYMENTSTATUS, userID);
-            result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERONLINEPAYMENTSTATUS, userID);
+                result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            }
             return result;
         }
         public bool RegisterMobileOTP(RegisterOTP item)
@@ -124,14 +134,17 @@ namespace appify.DataAccess
         public List<Member> GetAllVendors(int pageNo, int rows)
         {
             List<Member> members = new List<Member>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWMEMBER,pageNo,rows);
-            members = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
-
-            if (members?.Any()==true)
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
-                members = members.Where(m => m.MemberType == (short)MemberType.VENDOR).ToList();
-            }
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWMEMBER, pageNo, rows);
+                members = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
 
+                if (members?.Any() == true)
+                {
+                    members = members.Where(m => m.MemberType == (short)MemberType.VENDOR).ToList();
+                }
+            }
             return members;
 
         }
@@ -139,18 +152,24 @@ namespace appify.DataAccess
         public Member GetMember(long userID)
         {
             Member member = new Member();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBER, userID);
-            member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBER, userID);
+                member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
+            }
             return member;
         }
 
         public Int32 MemberOrderCount(long userID) {
 
             Int32 count=0;
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERCOUNTBYCUSTOMER, userID);
-            count = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString()); 
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERCOUNTBYCUSTOMER, userID);
+                count = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+            }
             return count;
 
         }
@@ -158,9 +177,12 @@ namespace appify.DataAccess
         {
 
             Int32 count = 0;
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERCOUNTBYVENDOR, userID);
-            count = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERCOUNTBYVENDOR, userID);
+                count = Convert.ToInt32(ds.Tables[0].Rows[0][0].ToString());
+            }
             return count;
 
         }
@@ -168,18 +190,24 @@ namespace appify.DataAccess
         public Member IsMemberExist(string emailID, string mobileNo,short memberType,Int64 parentID)
         {
             Member member = new Member();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CHECKMEMBER, emailID,mobileNo,memberType,parentID);
-            member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CHECKMEMBER, emailID, mobileNo, memberType, parentID);
+                member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
+            }
             return member;
 
         }
         public CheckOTPSent GetOTPSent(string mobileNo)
         {
             CheckOTPSent member = new CheckOTPSent();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CHECKOTPSENT, mobileNo);
-            member = DataTableHelper.ConvertDataTable<CheckOTPSent>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CHECKOTPSENT, mobileNo);
+                member = DataTableHelper.ConvertDataTable<CheckOTPSent>(ds.Tables[0]).FirstOrDefault();
+            }
             return member;
         }
         public Member RegisterMember(Member member)
@@ -318,9 +346,12 @@ namespace appify.DataAccess
             try
             {
                 Member member = new Member();
-                DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERLOGIN, emailID, mobileNo, password,parentID);
-                member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
-
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERLOGIN, emailID, mobileNo, password, parentID);
+                    member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
+                }
                 return member;
             }
             catch (Exception ex)
@@ -335,9 +366,12 @@ namespace appify.DataAccess
             try
             {
                 MemberDashboardLite items = new MemberDashboardLite();
-                DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERDASHBOARD, userID, dateFrom, dateTo);
-                items = DataTableHelper.ConvertDataTable<MemberDashboardLite>(ds.Tables[0]).FirstOrDefault();
-
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERDASHBOARD, userID, dateFrom, dateTo);
+                    items = DataTableHelper.ConvertDataTable<MemberDashboardLite>(ds.Tables[0]).FirstOrDefault();
+                }
                 return items;
             }
             catch(Exception ex)
@@ -433,24 +467,35 @@ namespace appify.DataAccess
         public MemberBanner memberBannerGet(long MemberID)
         {
             MemberBanner item = new MemberBanner();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERBANNER, MemberID);
-            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERBANNER, MemberID);
+                item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberBanner> memberBannerList()
         {
             List<MemberBanner> item = new List<MemberBanner>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERBANNER);
-            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERBANNER);
+                item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            }
             return item;
         }
         public List<MemberBanner> memberBannerListByVendor(long VendorID)
         {
             List<MemberBanner> item = new List<MemberBanner>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERBANNERBYVENDOR, VendorID);
-            item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERBANNERBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<MemberBanner>(ds.Tables[0]);
+            }
             return item;
         }
         public bool memberBannerRemove(long BannerID)
@@ -483,17 +528,23 @@ namespace appify.DataAccess
         public MemberSMSSetting memberSMSSettingGet(long VendorID)
         {
             MemberSMSSetting item = new MemberSMSSetting();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERSMSSETTING, VendorID);
-            item = DataTableHelper.ConvertDataTable<MemberSMSSetting>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERSMSSETTING, VendorID);
+                item = DataTableHelper.ConvertDataTable<MemberSMSSetting>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public MemberAppLinks getAppLinks(long VendorID)
         {
             MemberAppLinks item = new MemberAppLinks();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETAPPLINKSBYUSER, VendorID);
-            item = DataTableHelper.ConvertDataTable<MemberAppLinks>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETAPPLINKSBYUSER, VendorID);
+                item = DataTableHelper.ConvertDataTable<MemberAppLinks>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
     }

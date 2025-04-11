@@ -28,17 +28,23 @@ namespace appify.DataAccess
         public List<Member> GetAllCustomersByVendor(long vendorID, int pageNo, int rows)
         {
             List<Member> customers = new List<Member>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWCUSTOMERBYMEMBER, vendorID, pageNo, rows);
-            customers = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWCUSTOMERBYMEMBER, vendorID, pageNo, rows);
+                customers = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]);
+            }
             return customers;
         }
 
         public List<MemberProduct> ProductList(long vendorID) {
             List<MemberProduct> products = new List<MemberProduct>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYVENDOR, vendorID);
-            products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYVENDOR, vendorID);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
             return products;
 
 
@@ -46,9 +52,12 @@ namespace appify.DataAccess
         public List<MemberProduct> ProductListNew(long vendorID)
         {
             List<MemberProduct> products = new List<MemberProduct>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYVENDORNEW, vendorID);
-            products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYVENDORNEW, vendorID);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
             return products;
 
 
@@ -57,9 +66,12 @@ namespace appify.DataAccess
         public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
         {
             List<MemberProduct> products = new List<MemberProduct>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYCATEGORY, vendorID, CategoryID, pageNo, rows);
-            products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYCATEGORY, vendorID, CategoryID, pageNo, rows);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
             return products;
 
 
@@ -67,26 +79,36 @@ namespace appify.DataAccess
         public MemberAllDetail GetMemberAllDetails(long userID)
         {
             MemberAllDetail item = new MemberAllDetail();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.MEMBERALLDETAILS, userID);
-            item = DataTableHelper.ConvertDataTable<MemberAllDetail>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERALLDETAILS, userID);
+                item = DataTableHelper.ConvertDataTable<MemberAllDetail>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public HomePageProductByCategory GetProductListByVAUA(long userID)
         {
             HomePageProductByCategory item = new HomePageProductByCategory();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PRODUCTSBYCATEGORIES, userID);
-            item.categories = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
-            item.products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[1]);
-            //item.productdetails = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[2]);
-            return item;
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYCATEGORIES, userID);
+                item.categories = DataTableHelper.ConvertDataTable<ProductMasterCategories>(ds.Tables[0]);
+                item.products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[1]);
+                //item.productdetails = DataTableHelper.ConvertDataTable<ProductMaster>(ds.Tables[2]);
+            }
+                return item;
         }
         public List<MemberPassword> GetMemberPasswordList()
         {
             List<MemberPassword> products = new List<MemberPassword>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETMEMBERPASSWORDLIST);
-            products = DataTableHelper.ConvertDataTable<MemberPassword>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETMEMBERPASSWORDLIST);
+                products = DataTableHelper.ConvertDataTable<MemberPassword>(ds.Tables[0]);
+            }
             return products;
         }
         public bool SaveMemberPassword(long userID, string password)

@@ -103,34 +103,48 @@ namespace appify.DataAccess
         public EventLogs eventLogGet(long EventID)
         {
             EventLogs item = new EventLogs();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEVENTLOG, EventID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTEVENTLOG, EventID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<EventLogs> eventLogList()
         {
             List<EventLogs> items = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOG);
-            items = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOG);
+                items = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<EventLogs> eventLogListByVendor(long VendorID)
         {
             List<EventLogs> item = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOGBYVENDOR, VendorID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOGBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return item;
         }
 
         public List<EventLogs> eventLogListByCustomer(long CustomerID)
         {
             List<EventLogs> item = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOGBYCUSTOMER, CustomerID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOGBYCUSTOMER, CustomerID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return item;
         }
     }

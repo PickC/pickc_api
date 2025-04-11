@@ -60,18 +60,24 @@ namespace appify.DataAccess
         public ThemeMaster Get(long themeID)
         {
             ThemeMaster item = new ThemeMaster();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTTHEME, themeID);
-            item = DataTableHelper.ConvertDataTable<ThemeMaster>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTTHEME, themeID);
+                item = DataTableHelper.ConvertDataTable<ThemeMaster>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<ThemeMaster> ListAll()
         {
             List<ThemeMaster> item = new List<ThemeMaster>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTTHEME);
-            item = DataTableHelper.ConvertDataTable<ThemeMaster>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTTHEME);
+                item = DataTableHelper.ConvertDataTable<ThemeMaster>(ds.Tables[0]);
+            }
             return item;
         }
 
