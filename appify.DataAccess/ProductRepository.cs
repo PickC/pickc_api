@@ -461,12 +461,12 @@ namespace appify.DataAccess
 
         public List<StockByPriceID> GetStockByPriceID(string PriceID)
         {
-            StockByPriceID item = new StockByPriceID();
+            List<StockByPriceID> item = new List<StockByPriceID>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
-                item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]);
             }
             return item;
         }
