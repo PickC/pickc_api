@@ -61,18 +61,24 @@ namespace appify.DataAccess
         public MemberKYC Get(long memberID)
         {
             MemberKYC item = new MemberKYC();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERKYC, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERKYC, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberKYC> ListAll()
         {
             List<MemberKYC> item = new List<MemberKYC>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERKYC);
-            item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERKYC);
+                item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]);
+            }
             return item;
         }
 

@@ -36,8 +36,8 @@ namespace appify.web.api.Controllers
             rm = new ResponseMessage();
             try
             {
-                //CheckToken.IsValidToken(Request, config);
-                TokenValidator.IsValidToken(Request, config, env);
+                CheckToken.IsValidToken(Request, config);
+                //TokenValidator.IsValidToken(Request, config, env);
 
             }
             catch (Exception ex)

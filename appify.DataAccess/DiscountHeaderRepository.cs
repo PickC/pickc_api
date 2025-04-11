@@ -26,65 +26,89 @@ namespace appify.DataAccess
         public DiscountHeader Get(long DiscountID)
         {
             DiscountHeader item = new DiscountHeader();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTDISCOUNTHEADER, DiscountID);
-            item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTDISCOUNTHEADER, DiscountID);
+                item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public OrderDiscount GetDiscount(long DiscountID)
         {
             OrderDiscount item = new OrderDiscount();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERDISCOUNT, DiscountID);
-            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTORDERDISCOUNT, DiscountID);
+                item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public List<OrderDiscountDetail> GetOrderDiscountByVendor(Int64 VendorID)
         {
             List<OrderDiscountDetail> item = new List<OrderDiscountDetail>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.GETORDERDISCOUNTSBYVENDOR, VendorID);
-            item = DataTableHelper.ConvertDataTable<OrderDiscountDetail>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GETORDERDISCOUNTSBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<OrderDiscountDetail>(ds.Tables[0]);
+            }
             return item;
         }
         public List<DiscountHeader> GetAll()
         {
             List<DiscountHeader> item = new List<DiscountHeader>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTHEADER);
-            item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTDISCOUNTHEADER);
+                item = DataTableHelper.ConvertDataTable<DiscountHeader>(ds.Tables[0]);
+            }
             return item;
         }
         public List<OrderDiscount> GetDiscountByVendor(Int64 VendorID)
         {
             List<OrderDiscount> item = new List<OrderDiscount>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDOR, VendorID);
-            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
+            }
             return item;
         }
         public List<OrderDiscount> GetDiscountListbyVendorRows(long VendorID, int pageNo, int rows)
         {
             List<OrderDiscount> item = new List<OrderDiscount>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDORPAGEVIEW, VendorID, pageNo, rows);
-            item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERDISCOUNTBYVENDORPAGEVIEW, VendorID, pageNo, rows);
+                item = DataTableHelper.ConvertDataTable<OrderDiscount>(ds.Tables[0]);
+            }
             return item;
         }
         public Int64 GetDiscountCount(Int64 VendorID)
         {
             Int64 item = new Int64();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTORDERDISCOUNT, VendorID);
-            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ROWCOUNTORDERDISCOUNT, VendorID);
+                item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+            }
             return item;
         }
         public List<ProductDiscount> ListByVendor(long vendorID)
         {
             List<ProductDiscount> items = new List<ProductDiscount>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTBYVENDOR, vendorID);
-            items = DataTableHelper.ConvertDataTable<ProductDiscount>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTDISCOUNTBYVENDOR, vendorID);
+                items = DataTableHelper.ConvertDataTable<ProductDiscount>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -92,9 +116,12 @@ namespace appify.DataAccess
         public List<ProductDiscountList> ListByProduct(long productID)
         {
             List<ProductDiscountList> items = new List<ProductDiscountList>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTVENDORPRODUCTDISCOUNTS, productID);
-            items = DataTableHelper.ConvertDataTable<ProductDiscountList>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTVENDORPRODUCTDISCOUNTS, productID);
+                items = DataTableHelper.ConvertDataTable<ProductDiscountList>(ds.Tables[0]);
+            }
             return items;
         }
         

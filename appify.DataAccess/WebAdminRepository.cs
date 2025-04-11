@@ -126,34 +126,46 @@ namespace appify.DataAccess
         public User GetUser(Int32 userID)
         {
             User user = new User();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTUSER, userID);
-            user = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTUSER, userID);
+                user = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]).FirstOrDefault();
+            }
             return user;
         }
         public long GetUsersCount()
         {
 
             Int64 item = new Int64();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ROWCOUNTUSER);
-            item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ROWCOUNTUSER);
+                item = Convert.ToInt64(ds.Tables[0].Rows[0][0].ToString());
+            }
             return item;
         }
         public List<User> ListbyPageView(int pageNo, int rows)
         {
             List<User> item = new List<User>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.PAGEVIEWLISTUSER, pageNo, rows);
-            item = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWLISTUSER, pageNo, rows);
+                item = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]);
+            }
             return item;
         }
         public bool CheckUser(string userID)
         {
             var user = false;
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CHECKDUSER, userID);
-            user = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CHECKDUSER, userID);
+                user = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            }
             return user;
         }
         public User LogIn(string emailID, string password)
@@ -162,9 +174,12 @@ namespace appify.DataAccess
             try
             {
                 User user = new User();
-                DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LOGINUSER, emailID, password);
-                user = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]).FirstOrDefault();
-
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LOGINUSER, emailID, password);
+                    user = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]).FirstOrDefault();
+                }
                 return user;
             }
             catch (Exception ex)
@@ -239,17 +254,23 @@ namespace appify.DataAccess
         public List<SellerList> GetSellerList()
         {
             List<SellerList> seller = new List<SellerList>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTSELLER);
-            seller = DataTableHelper.ConvertDataTable<SellerList>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTSELLER);
+                seller = DataTableHelper.ConvertDataTable<SellerList>(ds.Tables[0]);
+            }
             return seller;
         }
         public List<SellerOrderList> GetSellerOrderList()
         {
             List<SellerOrderList> seller = new List<SellerOrderList>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELLERORDERLIST);
-            seller = DataTableHelper.ConvertDataTable<SellerOrderList>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELLERORDERLIST);
+                seller = DataTableHelper.ConvertDataTable<SellerOrderList>(ds.Tables[0]);
+            }
             return seller;
         }
 
@@ -288,9 +309,12 @@ namespace appify.DataAccess
         public List<ProductMasterByVendor> GetProducts(long userID)
         {
             List<ProductMasterByVendor> items = new List<ProductMasterByVendor>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTMASTERNEW, userID);
-            items = DataTableHelper.ConvertDataTable<ProductMasterByVendor>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTMASTERNEW, userID);
+                items = DataTableHelper.ConvertDataTable<ProductMasterByVendor>(ds.Tables[0]);
+            }
             return items;
         }
     }

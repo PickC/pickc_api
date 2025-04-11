@@ -54,8 +54,8 @@ namespace appify.DataAccess
             return result;
         }
 
-
-        public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks) {
+        public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks)
+        {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
             try
@@ -92,37 +92,52 @@ namespace appify.DataAccess
         public OrderHeader Get(short orderID)
         {
             OrderHeader item = new OrderHeader();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERHEADER, orderID);
-            item = DataTableHelper.ConvertDataTable<OrderHeader>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTORDERHEADER, orderID);
+                item = DataTableHelper.ConvertDataTable<OrderHeader>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
         public OrderUpdateDetail GetOrderUpdateDetail(long orderID)
         {
             OrderUpdateDetail item = new OrderUpdateDetail();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERUPDATEDETAIL, orderID);
-            item = DataTableHelper.ConvertDataTable<OrderUpdateDetail>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTORDERUPDATEDETAIL, orderID);
+                item = DataTableHelper.ConvertDataTable<OrderUpdateDetail>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
-        public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID) {
+        public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID)
+        {
 
             OrderHeaderDelivery item = new OrderHeaderDelivery();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERDELIVERYHEADER, orderID);
-            item = DataTableHelper.ConvertDataTable<OrderHeaderDelivery>(ds.Tables[0]).FirstOrDefault();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
 
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERDELIVERYHEADER, orderID);
+                item = DataTableHelper.ConvertDataTable<OrderHeaderDelivery>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
 
         }
 
 
-        public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID) {
+        public OrderTrackingDetails GetOrderTrackingDetails(Int64 orderID)
+        {
 
             OrderTrackingDetails item = new OrderTrackingDetails();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERDELIVERYTRACKINGDETAILS, orderID);
-            item = DataTableHelper.ConvertDataTable<OrderTrackingDetails>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERDELIVERYTRACKINGDETAILS, orderID);
+                item = DataTableHelper.ConvertDataTable<OrderTrackingDetails>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
 
 
@@ -131,41 +146,59 @@ namespace appify.DataAccess
         public CustomerOrder GetCustomerOrder(long orderID)
         {
             CustomerOrder items = new CustomerOrder();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERHEADERBYORDERID, orderID);
-            items = DataTableHelper.ConvertDataTable<CustomerOrder>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTORDERHEADERBYORDERID, orderID);
+                items = DataTableHelper.ConvertDataTable<CustomerOrder>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
         public CustomerOrderNew GetCustomerOrderNew(long orderID)
         {
             CustomerOrderNew items = new CustomerOrderNew();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTORDERSBYORDERID, orderID);
-            items = DataTableHelper.ConvertDataTable<CustomerOrderNew>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTORDERSBYORDERID, orderID);
+                items = DataTableHelper.ConvertDataTable<CustomerOrderNew>(ds.Tables[0]).FirstOrDefault();
+            }
             return items;
         }
         public List<CustomerOrder> List(long sellerID)
         {
             List<CustomerOrder> items = new List<CustomerOrder>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERHEADERBYSELLER, sellerID);
-            items = DataTableHelper.ConvertDataTable<CustomerOrder>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERHEADERBYSELLER, sellerID);
+                items = DataTableHelper.ConvertDataTable<CustomerOrder>(ds.Tables[0]);
+            }
             return items;
         }
         public List<OrderList> OrderList(long userID, short userType)
         {
             List<OrderList> items = new List<OrderList>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDER, userID, userType);
-            items = DataTableHelper.ConvertDataTable<OrderList>(ds.Tables[0]);
+
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDER, userID, userType);
+                items = DataTableHelper.ConvertDataTable<OrderList>(ds.Tables[0]);
+            }
 
             return items;
         }
 
-        public List<DailyOrderSummary> GetDailyOrderSummary() {
+        public List<DailyOrderSummary> GetDailyOrderSummary()
+        {
             List<DailyOrderSummary> items = new List<DailyOrderSummary>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.DAILYORDERSUMMARY);
-            items = DataTableHelper.ConvertDataTable<DailyOrderSummary>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.DAILYORDERSUMMARY);
+                items = DataTableHelper.ConvertDataTable<DailyOrderSummary>(ds.Tables[0]);
+            }
             return items;
 
 
@@ -173,37 +206,49 @@ namespace appify.DataAccess
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
             List<CustomerOrderSummary> items = new List<CustomerOrderSummary>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYCUSTOMER, sellerID, OrderStatus, PageNo, Rows);
-            items = DataTableHelper.ConvertDataTable<CustomerOrderSummary>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERBYCUSTOMER, sellerID, OrderStatus, PageNo, Rows);
+                items = DataTableHelper.ConvertDataTable<CustomerOrderSummary>(ds.Tables[0]);
+            }
             return items;
         }
-        
+
 
         public List<VendorOrder> ListByVendor(long vendorID, string OrderStatus, short PageNo, short Rows)
         {
             List<VendorOrder> items = new List<VendorOrder>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
-            items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
+                items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<VendorOrderNew> ListByVendorNew(long vendorID, string OrderStatus, short PageNo, short Rows)
         {
             List<VendorOrderNew> items = new List<VendorOrderNew>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
-            items = DataTableHelper.ConvertDataTable<VendorOrderNew>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERBYVENDOR, vendorID, OrderStatus, PageNo, Rows);
+                items = DataTableHelper.ConvertDataTable<VendorOrderNew>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<VendorOrder> GetByVendorDetail(long vendorID, long OrderID)
         {
             List<VendorOrder> items = new List<VendorOrder>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERBYVENDORDETAIL, vendorID, OrderID);
-            items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERBYVENDORDETAIL, vendorID, OrderID);
+                items = DataTableHelper.ConvertDataTable<VendorOrder>(ds.Tables[0]);
+            }
             return items;
         }
 
@@ -268,7 +313,8 @@ namespace appify.DataAccess
         }
 
 
-        public bool UpdateOrderPickup(Int64 orderID, decimal weight, decimal length, decimal width, decimal height) {
+        public bool UpdateOrderPickup(Int64 orderID, decimal weight, decimal length, decimal width, decimal height)
+        {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
             try
@@ -399,7 +445,7 @@ namespace appify.DataAccess
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
                     using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UPDATEORDERTRACKINGSTATUSDELHIVERY))
-                    { 
+                    {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@AWB", item.AWB);
@@ -495,9 +541,12 @@ namespace appify.DataAccess
         public List<EmailConfig> GetAlertHeader()
         {
             List<EmailConfig> items = new List<EmailConfig>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.EMAILSERVERALERT);
-            items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.EMAILSERVERALERT);
+                items = DataTableHelper.ConvertDataTable<EmailConfig>(ds.Tables[0]);
+            }
             return items;
         }
         public bool StockUpdate(long orderID, short OrderStatus)
