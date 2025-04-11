@@ -138,6 +138,10 @@ namespace appify.Business
         {
             return repository.GetALLCategoriesList(parentID);
         }
+        public String GetALLCategoriesListJSON(long parentID)
+        {
+            return repository.GetALLCategoriesListJSON(parentID);
+        }
         public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
             return repository.GetCategorieName(categoryID);
@@ -170,7 +174,7 @@ namespace appify.Business
             return repository.UpdateFeaturedCategories(item);
         }
 
-        public StockByPriceID GetStockByPriceID(long PriceID)
+        public List<StockByPriceID> GetStockByPriceID(string PriceID)
         {
             return repository.GetStockByPriceID(PriceID);
         }

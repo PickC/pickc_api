@@ -680,13 +680,13 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                List<StockByPriceID> stockitem = new List<StockByPriceID>();
-                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
-                foreach (var priceid in PriceIDs)
-                {
-                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
-                }
-
+                //List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                //int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                //foreach (var priceid in PriceIDs)
+                //{
+                //    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                // }
+                var stockitem = this.productBusiness.GetStockByPriceID(itemData.PriceID);
                 if (stockitem != null)
                 {
                     rm.statusCode = StatusCodes.OK;

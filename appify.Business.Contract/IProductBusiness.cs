@@ -29,6 +29,7 @@ namespace appify.Business.Contract
         public List<ProductMasterCategories> GetProductMasterCategories(long parentID);
         public List<ProductCategories> GetCategoriesList(long parentID);
         public List<ProductCategories> GetALLCategoriesList(long parentID);
+        public String GetALLCategoriesListJSON(long parentID);
         public List<ProductCategoryName> GetCategorieName(long categoryID);
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories);
         public List<ParentCategories> GetVendorCategories(long VendorID);
@@ -37,7 +38,7 @@ namespace appify.Business.Contract
 
         public bool DeleteFeaturedCategories(long VendorID);
         public bool UpdateFeaturedCategories(FeaturedCategories item);
-        public StockByPriceID GetStockByPriceID(long PriceID);
+        public List<StockByPriceID> GetStockByPriceID(string PriceID);
         //public bool deletefeaturedcategories();
 
 

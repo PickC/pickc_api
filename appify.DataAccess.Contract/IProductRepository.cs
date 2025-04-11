@@ -28,6 +28,7 @@ namespace appify.DataAccess.Contract
         public List<ProductMasterCategories> GetProductMasterCategories(long parentID);
         public List<ProductCategories> GetCategoriesList(long parentID);
         public List<ProductCategories> GetALLCategoriesList(long parentID);
+        public String GetALLCategoriesListJSON(long parentID);
         public List<ProductCategoryName> GetCategorieName(long categoryID);
         public ParentCategories SaveVendorCategories(ParentCategories vendorCategories);
         public List<ParentCategories> GetVendorCategories(long VendorID);
@@ -38,6 +39,6 @@ namespace appify.DataAccess.Contract
         public bool UpdateFeaturedCategories(FeaturedCategories item);
         public bool DeleteFeaturedCategories(long VendorID);
 
-        public StockByPriceID GetStockByPriceID(long PriceID);
+        public List<StockByPriceID> GetStockByPriceID(string PriceID);
     }
 }

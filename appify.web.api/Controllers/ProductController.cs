@@ -13,12 +13,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Utilities;
 using Razorpay.Api;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Cryptography.Xml;
+using System.Text.Json;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -1895,7 +1897,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1904,7 +1906,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1915,7 +1917,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1934,15 +1936,15 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID);
+                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID);//.GetALLCategoriesListJSON(itemData.parentID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH CATEGORIES BY PARENTID";
                     rm.name = StatusName.ok;
-                    rm.data = item;
+                    rm.data = item;//JsonConvert.DeserializeObject(item);
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1951,7 +1953,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1962,7 +1964,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -2524,14 +2526,14 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                rm = new ResponseMessage();
-                List<StockByPriceID> stockitem = new List<StockByPriceID>();
-                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
-                foreach (var priceid in PriceIDs)
-                {
-                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
-                }
-
+                //rm = new ResponseMessage();
+                //List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                //int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                //foreach (var priceid in PriceIDs)
+                //{
+                //     stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                // }
+                var stockitem = this.productBusiness.GetStockByPriceID(itemData.PriceID);
                 if (stockitem != null)
                 {
                     rm.statusCode = StatusCodes.OK;

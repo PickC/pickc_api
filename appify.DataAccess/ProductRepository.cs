@@ -258,6 +258,17 @@ namespace appify.DataAccess
 
             return item;
         }
+
+        public String GetALLCategoriesListJSON(long parentID)
+        {
+            string item = "";
+            SqlParameter[] parameters = new SqlParameter[]
+            {new SqlParameter("@ParentID", SqlDbType.Int) { Value = parentID }};
+            //DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
+            //item = ds.Tables[0].Rows.Count>0 ? ds.Tables[0].Rows[0][0].ToString() : "";
+            string jsonResult = SqlHelper.ExecuteScalar(appify_connectionstring, CommandType.StoredProcedure, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parameters)?.ToString();
+            return jsonResult;
+        }
         public List<ProductCategoryName> GetCategorieName(long categoryID)
         {
             List<ProductCategoryName> item = new List<ProductCategoryName>();
@@ -412,11 +423,11 @@ namespace appify.DataAccess
             return result;
         }
 
-        public StockByPriceID GetStockByPriceID(long PriceID)
+        public List<StockByPriceID> GetStockByPriceID(string PriceID)
         {
-            StockByPriceID item = new StockByPriceID();
+            List<StockByPriceID> item = new List<StockByPriceID>();
             DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTSTOCKBYPRICE, PriceID);
-            item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]).FirstOrDefault();
+            item = DataTableHelper.ConvertDataTable<StockByPriceID>(ds.Tables[0]);
             return item;
         }
             #endregion
