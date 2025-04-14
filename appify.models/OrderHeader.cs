@@ -450,6 +450,7 @@ namespace appify.models
         public short? DeliveryChannel { get; set; }
         public string? DeliveryChannelDescription { get; set; }
         public bool CanCancel { get; set; }
+        public string? EstimateDeliveryDate { get; set; }
 
     }
 

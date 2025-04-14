@@ -2514,7 +2514,12 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH STOCK BY PRICEID";
                     rm.name = StatusName.ok;
                     rm.data = stockitem;
-                    await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID", reqHeader, controllerURL, stockitem, stockitem, StatusName.ok, this.eventLogBusiness);
+                    
+                    #if DEBUG
+
+                    #else
+                        await Common.UpdateEventLogsNew("FETCH STOCK BY PRICEID", reqHeader, controllerURL, stockitem, stockitem, StatusName.ok, this.eventLogBusiness);
+                    #endif                
                 }
                 else
                 {
