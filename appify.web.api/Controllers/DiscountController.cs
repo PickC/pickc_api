@@ -82,9 +82,8 @@ namespace appify.web.api.Controllers
                 List<DiscountHeader> returnItem = new List<DiscountHeader>();
 
                 rm = new ResponseMessage();
-                //CheckToken.IsValidToken(Request, _configuration);
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
-
                 foreach (var item in discountHeader)
                 {
                     returnItem.Add(this.discountHeaderBusiness.Save(item));
@@ -150,6 +149,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.Remove(itemData.DiscountID, itemData.productID);
                 if (result != null)
@@ -238,6 +238,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.Get(itemData.DiscountID);
                 if (result != null)
@@ -315,6 +316,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetAll();
                 if (result != null)
@@ -403,6 +405,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.ListByVendor(itemData.userID);
                 if (result != null)
@@ -484,6 +487,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.ListByProduct(itemData.productID);
                 if (result != null)
@@ -562,6 +566,7 @@ namespace appify.web.api.Controllers
                 List<OrderDiscount> returnItem = new List<OrderDiscount>();
 
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in orderDiscount)
                 {
@@ -609,6 +614,7 @@ namespace appify.web.api.Controllers
                 List<OrderDiscount> returnItem = new List<OrderDiscount>();
 
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in orderDiscount)
                 {
@@ -672,6 +678,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
                 if (result != null)
@@ -715,7 +722,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                TokenValidator.IsValidToken(Request, _configuration, env);
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.DiscountRemove(itemData.DiscountID);
                 if (result != null)
                 {
@@ -801,7 +808,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                TokenValidator.IsValidToken(Request, _configuration, env);
+                CheckToken.IsValidToken(Request, _configuration);
                 var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
                 if (result != null)
                 {
@@ -843,6 +850,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetDiscount(itemData.DiscountID);
                 if (result != null)
@@ -903,6 +911,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
                 if (result != null)
@@ -946,6 +955,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetDiscountByVendor(item.VendorID);
                 if (result != null)
@@ -1008,6 +1018,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
                 if (items?.Any() == true)
@@ -1056,6 +1067,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 List<OrderDiscount> items = discountHeaderBusiness.GetDiscountListbyVendorRows(item.userID, item.PageNo, item.Rows);
                 if (items?.Any() == true)
@@ -1133,6 +1145,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
                 if (result != null)
@@ -1176,6 +1189,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetDiscountCount(itemData.VendorID);
                 if (result != null)
@@ -1257,6 +1271,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 var result = this.discountHeaderBusiness.GetOrderDiscountByVendor(itemData.VendorID);
                 if (result != null)

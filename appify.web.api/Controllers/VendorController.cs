@@ -111,6 +111,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 List<MemberProduct> items = customerBusiness.ProductListNew(itemData.userID);
                 if (items?.Any() == true)
@@ -159,9 +160,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //TokenValidator.IsValidToken(Request, configuration, env);
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 List<MemberProduct> items = customerBusiness.ProductListNew(itemData.userID);
                 if (items?.Any() == true)
                 {
@@ -243,9 +243,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //TokenValidator.IsValidToken(Request, configuration, env);
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var result = this.memberBusiness.memberBannerListByVendor(itemData.userID);
                 if (result != null)
                 {
@@ -331,9 +330,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                //TokenValidator.IsValidToken(Request, configuration, env);
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 List<SystemConfigSetting> items = lookupBusiness.GetSystemConfigurationSettings(itemData.SettingKey);
                 if (items?.Any() == true)
                 {
@@ -462,7 +460,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 List<LookupStartUpList> items = new List<LookupStartUpList>();
                 //foreach (var item  in categoryList.list)
                 //{
@@ -591,7 +588,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var item = this.productBusiness.GetProductNew(itemData.productID);
                 if (item != null)
                 {
@@ -684,14 +680,13 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
-                List<StockByPriceID> stockitem = new List<StockByPriceID>();
-                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
-                foreach (var priceid in PriceIDs)
-                {
-                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
-                }
-
+                //List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                //int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                //foreach (var priceid in PriceIDs)
+                //{
+                //    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                // }
+                var stockitem = this.productBusiness.GetStockByPriceID(itemData.PriceID);
                 if (stockitem != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -766,6 +761,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetFeaturedCategories(itemData.userID);
                 if (item != null)
