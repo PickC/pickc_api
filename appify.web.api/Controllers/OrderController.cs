@@ -2321,6 +2321,7 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> WebhookPaymentEvents()/////[FromBody] RazorpayWebhookPayload payload
         {
             var body = "";
+            string paymentType = "";
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
@@ -2353,10 +2354,10 @@ namespace appify.web.api.Controllers
                     //body = "{    \"account_id\": \"acc_OCjTrbZShxQc7y\",    \"contains\": [      \"refund\",      \"payment\"    ],    \"created_at\": 1729663607,    \"entity\": \"event\",    \"event\": \"refund.created\",    \"payload\": {      \"payment\": {        \"entity\": {          \"acquirer_data\": {            \"rrn\": \"428487107955\",            \"upi_transaction_id\": \"PTM5e6b325a3c1243c2a1745401cce7b542\"          },          \"amount\": 53950,          \"amount_refunded\": 53950,          \"amount_transferred\": 0,          \"bank\": null,          \"base_amount\": 53950,          \"captured\": true,          \"card_id\": null,          \"contact\": \"+918688647764\",          \"created_at\": 1728543101,          \"currency\": \"INR\",          \"description\": \"Order Payment\",          \"email\": \"g52976433@gmail.com\",          \"entity\": \"payment\",          \"error_code\": null,          \"error_description\": null,          \"error_reason\": null,          \"error_source\": null,          \"error_step\": null,          \"fee\": 1273,          \"id\": \"pay_P7F5reTtlujp0Z\",          \"international\": false,          \"invoice_id\": null,          \"method\": \"upi\",          \"notes\": {            \"device\": \"Android\",            \"orderId\": \"1614\"          },          \"order_id\": \"order_P7F5bB5kTbeiKE\",          \"provider\": null,          \"refund_status\": \"full\",          \"reward\": null,          \"status\": \"refunded\",          \"tax\": 194,          \"upi\": {            \"payer_account_type\": \"bank_account\",            \"vpa\": \"8688647764@ptaxis\"          },          \"vpa\": \"8688647764@ptaxis\",          \"wallet\": null        }      },      \"refund\": {        \"entity\": {          \"acquirer_data\": {            \"rrn\": null          },          \"amount\": 53950,          \"batch_id\": null,          \"created_at\": 1729663604,          \"currency\": \"INR\",          \"entity\": \"refund\",          \"id\": \"rfnd_PCNGwVoLSRV7aq\",          \"notes\": {            \"comment\": \"Refund of Order Id - OD17332410037, Vendor Name - Agu Chicha Fashion\"          },          \"payment_id\": \"pay_P7F5reTtlujp0Z\",          \"receipt\": null,          \"speed_processed\": \"normal\",          \"speed_requested\": \"normal\",          \"status\": \"processed\"        }      }    }  }";
 
 
-                    ////body = "{\"entity\":\"event\",\"account_id\":\"acc_OCjTrbZShxQc7y\",\"event\":\"downtime\",\"contains\":[\"payment\"],\"payload\":{\"payment\":{\"entity\":{\"id\":\"pay_Q0FVJgJOpEgmvN\",\"entity\":\"payment\",\"amount\":149900,\"currency\":\"INR\",\"status\":\"captured\",\"order_id\":\"order_Q0FVBeUZFfswoY\",\"invoice_id\":null,\"international\":false,\"method\":\"upi\",\"amount_refunded\":0,\"refund_status\":null,\"captured\":true,\"offers\":{\"entity\":\"collection\",\"count\":1,\"items\":[{\"id\":\"offer_Ofa82cOYv48wTM\"}]},\"description\":\"subscription_payment\",\"card_id\":null,\"bank\":null,\"wallet\":null,\"vpa\":\"9489351994@ybl\",\"email\":\"minafashions1983@gmail.com\",\"contact\":\"+918838398149\",\"notes\":{\"orderId\":\"1740553245398\",\"vendorId\":\"15055\",\"device\":\"Android\",\"paymentType\":\"oneTimeSubscription\"},\"fee\":3538,\"tax\":540,\"error_code\":null,\"error_description\":null,\"error_source\":null,\"error_step\":null,\"error_reason\":null,\"acquirer_data\":{\"rrn\":\"259755110162\",\"upi_transaction_id\":\"YBL911156377a174275af93ce37a273a5de\"},\"created_at\":1740553254,\"reward\":null,\"upi\":{\"payer_account_type\":\"bank_account\",\"vpa\":\"9489351994@ybl\"},\"base_amount\":149900}}},\"created_at\":1740553266}";
+                    ////body = "{\"entity\":\"event\",\"account_id\":\"acc_OCjTrbZShxQc7y\",\"event\":\"payment.captured\",\"contains\":[\"payment\"],\"payload\":{\"payment\":{\"entity\":{\"id\":\"pay_QIQkcRDQUWixSk\",\"entity\":\"payment\",\"amount\":149900,\"currency\":\"INR\",\"status\":\"captured\",\"order_id\":\"order_QIQkNFicMOTDBh\",\"invoice_id\":null,\"international\":false,\"method\":\"upi\",\"amount_refunded\":0,\"refund_status\":null,\"captured\":true,\"description\":\"subscription_payment\",\"card_id\":null,\"bank\":null,\"wallet\":null,\"vpa\":\"success@razorpay\",\"email\":\"rama@appi-fy.ai\",\"contact\":\"+916281438226\",\"notes\":{\"orderId\":\"1744522966806\",\"vendorId\":\"2205\",\"device\":\"Android\",\"paymentType\":\"oneTimeSubscription\"},\"fee\":3538,\"tax\":540,\"error_code\":null,\"error_description\":null,\"error_source\":null,\"error_step\":null,\"error_reason\":null,\"acquirer_data\":{\"rrn\":\"371595461222\",\"upi_transaction_id\":\"033E6336C4B4E9F17059AB28B1CAAF1A\"},\"created_at\":1744522982,\"reward\":null,\"upi\":{\"vpa\":\"success@razorpay\"},\"base_amount\":149900}}},\"created_at\":1744522983}";
 
 
-                var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
+                    var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
                 string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
                 foreach (var s in eventSearch)
                 {
@@ -2366,36 +2367,45 @@ namespace appify.web.api.Controllers
                 }
                 if(eventResult==false)
                 {
-                    long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
+                    paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
 
-                    DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
-                    OrderPayment orderPayment = new OrderPayment
+                    if(paymentType== "orderPayment")
                     {
-                        PaymentID = 0,
-                        PaymentDate = dt,
-                        OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
-                        EventName = Convert.ToString(request["event"]),
-                        PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
-                        OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
-                        PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
-                        PaymentMode = 0,
-                        LookupCode = "RAZORPAY"
-                    };
-                    var result = orderBusiness.OrderPaymentSave(orderPayment);
-                    if (result)
-                    {
-                        rm.statusCode = StatusCodes.OK;
-                        rm.message = "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY";
-                        rm.name = StatusName.ok;
-                        rm.data = request;
-                        if (orderPayment.EventName == "payment.captured")
+                        long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
+
+                        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
+                        OrderPayment orderPayment = new OrderPayment
                         {
-                            OrderPlace_PushNotification_Email(orderPayment.OrderID);
-                        }
+                            PaymentID = 0,
+                            PaymentDate = dt,
+                            OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
+                            EventName = Convert.ToString(request["event"]),
+                            PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
+                            OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
+                            PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
+                            PaymentMode = 0,
+                            LookupCode = "RAZORPAY"
+                        };
+                        var result = orderBusiness.OrderPaymentSave(orderPayment);
+                        if (result)
+                        {
+                            rm.statusCode = StatusCodes.OK;
+                            rm.message = "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY";
+                            rm.name = StatusName.ok;
+                            rm.data = request;
+                            if (orderPayment.EventName == "payment.captured")
+                            {
+                                OrderPlace_PushNotification_Email(orderPayment.OrderID);
+                            }
                             //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok));
                             await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok, this.eventLogBusiness);
+                        }
                     }
-                }
+                    else if (paymentType == "oneTimeSubscription")
+                    {
+
+                    }
+                 }
                 else
                 {
                         //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook", reqHeader, controllerURL, "RAZORPAY Webhook - " + request["event"].ToString(), request, StatusName.ok));

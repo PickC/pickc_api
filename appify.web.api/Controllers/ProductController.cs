@@ -1846,7 +1846,10 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///         "ParentID": 1001
+        ///       "parentID": 1003,
+        ///       "searchFilter": "Yoga",
+        ///       "pageNo": 1,
+        ///       "rows": 5
         ///     }
         /// 
         /// Sample response JSON :
@@ -1926,7 +1929,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getcategoriesbyid")]
         [MapToApiVersion("1.1")]
         [Authorize]
-        public IActionResult GetALLCategoriesList(ParamParent itemData)
+        public IActionResult GetALLCategoriesList(ParamParentID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1936,7 +1939,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID);//.GetALLCategoriesListJSON(itemData.parentID);
+                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID,itemData.searchFilter, itemData.PageNo, itemData.Rows);//.GetALLCategoriesListJSON(itemData.parentID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -2526,7 +2529,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
-                //rm = new ResponseMessage();
+                rm = new ResponseMessage();
                 //List<StockByPriceID> stockitem = new List<StockByPriceID>();
                 //int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
                 //foreach (var priceid in PriceIDs)

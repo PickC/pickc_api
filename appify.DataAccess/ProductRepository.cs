@@ -269,18 +269,18 @@ namespace appify.DataAccess
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESDEFAULTLISTBYID, parentID);
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESDEFAULTLISTBYID);
                 item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
             }
             return item;
         }
-        public List<ProductCategories> GetALLCategoriesList(long parentID)
+        public List<ProductCategories> GetALLCategoriesList(long parentID, string? SearchFilter, short? pageNo, short? rows)
         {
             List<ProductCategories> item = new List<ProductCategories>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID);
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CATEGORIESLISTBYID, parentID, SearchFilter, pageNo, rows);
                 item = DataTableHelper.ConvertDataTable<ProductCategories>(ds.Tables[0]);
             }
             return item;
@@ -470,7 +470,7 @@ namespace appify.DataAccess
             }
             return item;
         }
-            #endregion
+        #endregion
 
-        }
+    }
     }

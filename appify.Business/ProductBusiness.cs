@@ -134,9 +134,9 @@ namespace appify.Business
         {
             return repository.GetCategoriesList(parentID);
         }
-        public List<ProductCategories> GetALLCategoriesList(long parentID)
+        public List<ProductCategories> GetALLCategoriesList(long parentID, string? SearchFilter=null, short? pageNo=0, short? rows = 0)
         {
-            return repository.GetALLCategoriesList(parentID);
+            return repository.GetALLCategoriesList(parentID, SearchFilter, pageNo, rows);
         }
         public String GetALLCategoriesListJSON(long parentID)
         {
