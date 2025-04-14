@@ -92,8 +92,9 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            TokenValidator.IsValidToken(Request, configuration, env);
-            var result = themeMasterBusiness.Save(item);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = themeMasterBusiness.Save(item);
             if (result!=null)
             {
                 rm.statusCode = StatusCodes.OK;
@@ -152,8 +153,9 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            TokenValidator.IsValidToken(Request, configuration, env);
-            var result = themeMasterBusiness.Delete(themeID);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = themeMasterBusiness.Delete(themeID);
             if (result)
             {
                 rm.statusCode = StatusCodes.OK;
@@ -229,8 +231,9 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            TokenValidator.IsValidToken(Request, configuration, env);
-            var item = themeMasterBusiness.Get(themeID);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = themeMasterBusiness.Get(themeID);
 
             if (item != null)
             {
@@ -313,8 +316,9 @@ namespace appify.web.api.Controllers
         try
         {
             rm = new ResponseMessage();
-            TokenValidator.IsValidToken(Request, configuration, env);
-            List<ThemeMaster> items = themeMasterBusiness.ListAll();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                List<ThemeMaster> items = themeMasterBusiness.ListAll();
             if (items?.Any() == true)
             {
                 rm.statusCode = StatusCodes.OK;

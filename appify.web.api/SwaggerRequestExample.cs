@@ -162,7 +162,13 @@ namespace appify.web.api
     {
         public long parentID { get; set; }
     }
-
+    public class ParamParentID
+    {
+        public long parentID { get; set; }
+        public string? searchFilter { get; set; }
+        public short? PageNo { get; set; }
+        public short? Rows { get; set; }
+    }
     public class ParamCatID
     {
         public long categoryID { get; set; }
