@@ -13,11 +13,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Utilities;
 using Razorpay.Api;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Cryptography.Xml;
+using System.Text.Json;
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
@@ -183,6 +186,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();////To Do Need to check internal - price, image is empty then return exception message
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 if (product.prices?.Any() == true && product.images?.Any() == true)
                 {
@@ -273,6 +277,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = productBusiness.DeleteProduct(itemData.productID, itemData.IsActive);
                 if (result)
@@ -363,6 +368,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetProduct(itemData.productID);
                 if (item != null)
@@ -599,6 +605,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 List<ProductMaster> items = productBusiness.GetProducts(itemData.userID);
                 if (items?.Any() == true)
@@ -712,6 +719,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 List<ProductMaster> items = productBusiness.GetAllProducts();
                 if (items?.Any() == true)
@@ -820,6 +828,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var items = priceBusiness.PriceList(itemData.productID);
                 if (items?.Any() == true)
@@ -881,6 +890,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = priceBusiness.GetPrice(itemData.priceID, itemData.productID, itemData.size);
 
@@ -959,6 +969,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = priceBusiness.SavePrice(price);
                 if (result)
@@ -1031,6 +1042,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = priceBusiness.RemovePrice(itemData.priceID, itemData.productID, itemData.size);
 
@@ -1108,6 +1120,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var items = imageBusiness.GetProductImages(itemData.productID);
                 if (items?.Any() == true)
@@ -1183,6 +1196,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = imageBusiness.GetProductImage(itemData.imageID, itemData.productID);
 
@@ -1256,6 +1270,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = imageBusiness.AddProductImage(item);
                 if (result)
@@ -1327,6 +1342,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = imageBusiness.RemoveProductImage(itemData.imageID, itemData.productID);
 
@@ -1605,6 +1621,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.productBusiness.GetNewProductsList(itemData.userID, itemData.IsNew);
                 if (result != null)
@@ -1675,6 +1692,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 foreach (var item in itemData)
                 {
@@ -1763,6 +1781,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetProductMasterCategories(itemData.parentID);
                 if (item != null)
@@ -1827,7 +1846,10 @@ namespace appify.web.api.Controllers
         ///     Method Type : POST
         ///     
         ///     {
-        ///         "ParentID": 1001
+        ///       "parentID": 1003,
+        ///       "searchFilter": "Yoga",
+        ///       "pageNo": 1,
+        ///       "rows": 5
         ///     }
         /// 
         /// Sample response JSON :
@@ -1868,6 +1890,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetCategoriesList(itemData.parentID);
                 if (item != null)
@@ -1877,7 +1900,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1886,7 +1909,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1897,7 +1920,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1906,7 +1929,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getcategoriesbyid")]
         [MapToApiVersion("1.1")]
         [Authorize]
-        public IActionResult GetALLCategoriesList(ParamParent itemData)
+        public IActionResult GetALLCategoriesList(ParamParentID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1914,16 +1937,17 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID);
+                var item = this.productBusiness.GetALLCategoriesList(itemData.parentID,itemData.searchFilter, itemData.PageNo, itemData.Rows);//.GetALLCategoriesListJSON(itemData.parentID);
                 if (item != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "FETCH CATEGORIES BY PARENTID";
                     rm.name = StatusName.ok;
-                    rm.data = item;
+                    rm.data = item;//JsonConvert.DeserializeObject(item);
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
                 }
                 else
                 {
@@ -1932,7 +1956,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
                 }
 
             }
@@ -1943,7 +1967,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
             return Ok(rm);
 
@@ -1984,7 +2008,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getcategoryname")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult GetCategorieName(ParamCatID itemData)
+        public async Task<IActionResult> GetCategorieName(ParamCatID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1992,6 +2016,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetCategorieName(itemData.categoryID);
                 if (item != null)
@@ -2000,8 +2025,8 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH CATEGORIES BY PARENTID";
                     rm.name = StatusName.ok;
                     rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok));
+
+                    await Common.UpdateEventLogsNew("FETCH CATEGORIES SUCCESSFULLY BY PARENTID", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -2009,8 +2034,8 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+
+                    await Common.UpdateEventLogsNew("FETCH CATEGORIES BY PARENTID - NO CONTENT", reqHeader, controllerURL, itemData, item, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -2021,7 +2046,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+
+                await Common.UpdateEventLogsNew("FETCH CATEGORIES BY PARENTID - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -2077,6 +2103,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 List<ParentCategories> returnItem = new List<ParentCategories>();
                 foreach (var item in vendorCategories)
@@ -2205,6 +2232,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetVendorCategories(itemData.userID);
                 if (item != null)
@@ -2249,6 +2277,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetALLVendorCategories(itemData.userID);
                 if (item != null)
@@ -2501,13 +2530,13 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                List<StockByPriceID> stockitem = new List<StockByPriceID>();
-                int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
-                foreach (var priceid in PriceIDs)
-                {
-                    stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
-                }
-
+                //List<StockByPriceID> stockitem = new List<StockByPriceID>();
+                //int[] PriceIDs = itemData.PriceID.Split(',').Select(int.Parse).ToArray();
+                //foreach (var priceid in PriceIDs)
+                //{
+                //     stockitem.Add(this.productBusiness.GetStockByPriceID(priceid));
+                // }
+                var stockitem = this.productBusiness.GetStockByPriceID(itemData.PriceID);
                 if (stockitem != null)
                 {
                     rm.statusCode = StatusCodes.OK;

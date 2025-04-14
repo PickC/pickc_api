@@ -13,6 +13,7 @@ using System.Text;
 using System.Net;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -202,7 +203,11 @@ builder.Services.AddAuthorization(Options =>
            }).Build();
 });
 
-
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
+});
 
 //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

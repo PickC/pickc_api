@@ -84,7 +84,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var result = this.categoryParameterBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -152,6 +151,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 var result = this.categoryParameterBusiness.Delete(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
@@ -216,7 +216,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var result = this.categoryParameterBusiness.Get(itemData.ParameterID, itemData.CategoryID);
                 if (result != null)
                 {
@@ -253,10 +252,10 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request: 
-        ///     {
-        ///       "parameterID": 0,
-        ///       "categoryID": 0
-        ///     }
+        /// 
+        ///        {
+        ///          "categoryID": 0
+        ///        }
         ///     
         /// Sample response JSON :
         /// 
@@ -273,7 +272,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("categoryparameter/list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListCategoryParameters(ParamCategoryParameter itemData)
+        public IActionResult ListCategoryParameters(ParamCatID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -282,8 +281,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
-                var result = this.categoryParameterBusiness.ListAll(itemData.CategoryID);
+                var result = this.categoryParameterBusiness.ListAll(itemData.categoryID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -363,8 +361,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
-
                 var result = this.parameterTypeBusiness.Save(itemData);
                 if (result == true)
                 {
@@ -436,8 +432,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
-
                 var result = this.parameterTypeBusiness.Delete(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -503,7 +497,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var result = this.parameterTypeBusiness.Get(itemData.ParameterID, itemData.ParameterValue);
                 if (result != null)
                 {
@@ -573,7 +566,6 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-
                 var result = this.parameterTypeBusiness.ListAll(itemData.ParameterID);
                 if (result != null)
                 {
