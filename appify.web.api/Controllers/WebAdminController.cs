@@ -2529,5 +2529,83 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+        /// <summary>
+        /// Get Orders List based on filter
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "filterType": "OrderNumber",
+        ///       "searchText": "OD10602504021",
+        ///       "pageNo": 1,
+        ///       "rows": 10
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ORDERS BY GLOBAL SEARCH",
+        ///       "data": [
+        ///         {
+        ///           "orderNo": "OD10602504021",
+        ///           "vendorID": 0,
+        ///           "appName": null,
+        ///           "value": "OD10602504021"
+        ///         }
+        ///       ]
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Orders By Global Search</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("globalsearch")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GlobalSearch(ParamGlobalSearch itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.GlobalSearch(itemData.FilterType, itemData.SearchText, itemData.PageNo, itemData.Rows);
+                if (result.Any())
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH ORDERS BY GLOBAL SEARCH";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT ITEM SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET DISCOUNT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
     }
 }

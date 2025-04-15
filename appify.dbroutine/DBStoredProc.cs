@@ -450,7 +450,7 @@ namespace appify.dbroutine
         public const string LISTDASHBOARDORDERSTATUS = "[Operation].[usp_DashboardOrderStatus]";
         public const string LISTOPERATIONDASHBOARDSUMMARY = "[Operation].[usp_OperationDashboardMetrics]";
         public const string LISTDASHBOARDTOPVENDORSPRODUCTS= "[Operation].[usp_DashboardTopVendorsProducts]";
-
+        public const string GLOBALSEARCH = "[Operation].[GetFilteredOrders]";
 
 
         /// <summary>
