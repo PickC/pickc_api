@@ -397,7 +397,13 @@ namespace appify.web.api
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
-
+    public class ParamGlobalSearch
+    {
+        public string FilterType { get; set; }
+        public string SearchText { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
 
     public class ParamRoleRights {
         public short RoleID { get; set; }

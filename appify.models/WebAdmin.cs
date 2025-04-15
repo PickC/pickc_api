@@ -178,3 +178,11 @@ public partial class DashboardTopVendorsProducts
     public string ProductName { get; set; }
     public Int32 StockRemaining { get; set; }
 }
+public partial class GlobalSearch
+{
+    public long OrderID { get; set; }
+    public string OrderNo { get; set; }
+    public long VendorID { get; set; }
+    public string AppName { get; set; }
+    public string Value { get; set; }
+}

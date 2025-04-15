@@ -59,5 +59,9 @@ namespace appify.Business
         {
             return repository.DashboardTopVendorsProducts(StartDate, EndDate);
         }
+        public List<GlobalSearch> GlobalSearch(string FilterType, string SearchText, short PageNo, short Rows)
+        {
+            return repository.GlobalSearch(FilterType, SearchText, PageNo, Rows);
+        }
     }
 }
