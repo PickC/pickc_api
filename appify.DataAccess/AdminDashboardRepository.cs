@@ -143,5 +143,16 @@ namespace appify.DataAccess
             }
             return item;
         }
+        public List<GlobalSearch> GlobalSearch(string FilterType, string SearchText, short PageNo, short Rows)
+        {
+            List<GlobalSearch> item = new List<GlobalSearch>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GLOBALSEARCH, FilterType, SearchText, PageNo, Rows);
+                item = DataTableHelper.ConvertDataTable<GlobalSearch>(ds.Tables[0]);
+            }
+            return item;
+        }
     }
 }
