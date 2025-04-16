@@ -61,6 +61,7 @@ namespace appify.DataAccess
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTSECURABLE, SecurablesID);
                 item = DataTableHelper.ConvertDataTable<Securables>(ds.Tables[0]).FirstOrDefault();
+                con.Close();
             }
             return item;
         }
