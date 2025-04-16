@@ -60,14 +60,14 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<CategoryParameter> ListAll(long categoryID)
+        public List<CategoryParameterLite> ListAll(long categoryID)
         {
-            List<CategoryParameter> item = new List<CategoryParameter>();
+            List<CategoryParameterLite> item = new List<CategoryParameterLite>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTCATEGORYPARAMETER, categoryID);
-                item = DataTableHelper.ConvertDataTable<CategoryParameter>(ds.Tables[0]);
+                item = DataTableHelper.ConvertDataTable<CategoryParameterLite>(ds.Tables[0]);
             }
             return item;
         }
@@ -89,6 +89,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CategoryID", item.CategoryID);
                         cmd.Parameters.AddWithValue("@ParameterName", item.ParameterName);
                         cmd.Parameters.AddWithValue("@HintText", item.HintText);
+                        cmd.Parameters.AddWithValue("@ParameterType", item.ParameterType);
                         cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
 

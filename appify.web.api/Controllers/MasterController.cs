@@ -318,7 +318,7 @@ namespace appify.web.api.Controllers
 
         #region Parameter Types
 
-
+        /*
         
         /// <summary>
         /// Save/Update Parameter Type
@@ -597,6 +597,7 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+        */
 
         #endregion
 

@@ -35,14 +35,16 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
+        private readonly IMemberCategoryParametersBusiness parametersBusiness;
         private readonly IWebHostEnvironment env;
-
+        
         private ResponseMessage rm;
         public ProductController(IConfiguration configuration, 
                                  IProductBusiness iResultData, 
                                  IProductPriceBusiness priceBusiness, 
                                  IProductImageBusiness imageBusiness, 
                                  IEventLogBusiness eventLogBusiness,
+                                 IMemberCategoryParametersBusiness parametersBusiness,
                                  IWebHostEnvironment env)
         {
             this.configuration = configuration;
@@ -50,6 +52,7 @@ namespace appify.web.api.Controllers
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
             this.eventLogBusiness = eventLogBusiness;
+            this.parametersBusiness = parametersBusiness;
             this.env = env;
         }
 
@@ -312,7 +315,7 @@ namespace appify.web.api.Controllers
 
         }
         /// <summary>
-        /// Remove an Address
+        /// Remove an Product
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -404,7 +407,7 @@ namespace appify.web.api.Controllers
 
         }
         /// <summary>
-        /// Remove an Address
+        /// Get Product Details
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -2572,6 +2575,152 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+        #region Product Parameters
+
+
+        [HttpPost, Route("parameters/get")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetProductParameters(short productID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                var item = this.parametersBusiness.ListMemberCategoryParameters(productID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH PRODUCT PARAMETERS";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT PARAMETERS", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT PARAMETERS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH SELECTED PRODUCT PARAMETERS- ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Save/Update Product Parameters by Product ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     [
+        ///       {
+        ///          "ID":0
+        ///          "UserID": 1060,
+        ///          "ProductID": 1706,
+        ///          "ParameterID": 1118,
+        ///          "ParameterValue": "POLYSTER"
+        ///        },
+        ///       {
+        ///          "ID":0
+        ///          "UserID": 1060,
+        ///          "ProductID": 1706,
+        ///          "ParameterID": 1053,
+        ///          "ParameterValue": "COTTON"
+        ///        },
+        ///       {
+        ///          "ID":0
+        ///          "UserID": 1060,
+        ///          "ProductID": 1706,
+        ///          "ParameterID": 1121,
+        ///          "ParameterValue": "NEW BRAND"
+        ///        }
+        ///     ]        
+        ///     
+        /// Sample response:
+        /// 
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
+        ///         "message": "SAVE PRODUCT PARAMETERS",
+        ///         "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">SAVE PRODUCT PARAMETERS!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("parameters/save")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UpdateProductParameters(List<MemberCategoryParameters> itemData)
+        {
+            var reqHeader = Request;
+            bool result = false;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                foreach (var item in itemData)
+                {
+                    result = this.parametersBusiness.SaveMemberCategoryParameters(item);
+
+                }
+                if (result)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SAVE PRODUCT PARAMETERS";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //await Common.UpdateEventLogsNew("FETCH SELECTED PARENT CATEGORIES - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+
+
+
+
+
+        #endregion
 
     }
 }

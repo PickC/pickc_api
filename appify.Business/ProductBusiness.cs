@@ -16,17 +16,22 @@ namespace appify.Business
         private IProductRepository repository;
         private IProductPriceRepository priceRepository;
         private IProductImageRepository imageRepository;
+        private IMemberCategoryParametersRepository parametersRepository;
 
         public ProductBusiness(IProductRepository repository)
         {
             this.repository = repository;
         }
 
-        public ProductBusiness(IProductRepository repository, IProductImageRepository imageRepository, IProductPriceRepository priceRepository)
+        public ProductBusiness( IProductRepository repository, 
+                                IProductImageRepository imageRepository, 
+                                IProductPriceRepository priceRepository,
+                                IMemberCategoryParametersRepository parametersRepository)
         {
             this.repository = repository;
             this.priceRepository = priceRepository;
             this.imageRepository = imageRepository;
+            this.parametersRepository = parametersRepository;
 
         }
         public bool DeleteProduct(long productId, bool? IsActive)
@@ -51,12 +56,14 @@ namespace appify.Business
             ProductMasterNew productMaster = new ProductMasterNew();
             List<ProductPriceNew> prices = new List<ProductPriceNew>();
             List<ProductImageNew> images = new List<ProductImageNew>();
+            List<MemberCategoryParameters> parameters = new List<MemberCategoryParameters>();
 
             productMaster = repository.GetProductNew(productId);
             if(productMaster!=null)
             {
                 productMaster.prices = priceRepository.PriceListNew(productId);
                 productMaster.images = imageRepository.GetProductImagesNew(productId);
+                productMaster.parameters = parametersRepository.ListMemberCategoryParameters(productId);
             }
             return productMaster;
         }

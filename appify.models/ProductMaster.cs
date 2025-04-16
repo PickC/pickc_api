@@ -92,6 +92,8 @@ namespace appify.models
 
         public List<ProductPriceNew>? prices { get; set; }
         public List<ProductImageNew>? images { get; set; }
+
+        public List<MemberCategoryParameters>? parameters { get; set; }
     }
 
     public partial class ProductWeb : ProductMaster
