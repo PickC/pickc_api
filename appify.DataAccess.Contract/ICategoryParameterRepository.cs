@@ -14,7 +14,7 @@ namespace appify.DataAccess.Contract
 
         public CategoryParameter Get(long parameterID, long categoryID);
 
-        public List<CategoryParameter> ListAll(long parameterID);
+        public List<CategoryParameterLite> ListAll(long parameterID);
 
     }
 
