@@ -13,6 +13,7 @@ namespace appify.models
         public string ParameterName { get; set; }
 
         public string? HintText { get; set; }
+        public string? ParameterType { get; set; }
         public bool IsActive { get; set; }
         public Int16 CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
@@ -22,6 +23,17 @@ namespace appify.models
         public long ParentID { get; set; }
         public string ParentCategory { get; set; }
 
+
+    }
+
+    public partial class CategoryParameterLite
+    {
+        public long ParameterID { get; set; }
+        public string ParameterName { get; set; }
+
+        public string? HintText { get; set; }
+        public string? ParameterType { get; set; }
+    
 
     }
 
