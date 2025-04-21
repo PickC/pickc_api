@@ -22,8 +22,11 @@ namespace appify.Business
 		{
 			return repository.ListMemberCategoryParameters(ProductID);
 		}
-
-		public bool SaveMemberCategoryParameters(MemberCategoryParameters item)
+        public List<MemberCategoryParametersLite> ListMemberCategoryParametersLite(long ProductID)
+        {
+            return repository.ListMemberCategoryParametersLite(ProductID);
+        }
+        public bool SaveMemberCategoryParameters(MemberCategoryParameters item)
 		{
 			return repository.SaveMemberCategoryParameters(item);
 		}

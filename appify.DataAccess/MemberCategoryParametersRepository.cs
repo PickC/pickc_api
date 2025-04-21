@@ -52,6 +52,20 @@ namespace appify.DataAccess
             return items;
 
         }
+        public List<MemberCategoryParametersLite> ListMemberCategoryParametersLite(long ProductID)
+        {
+            List<MemberCategoryParametersLite> items = new List<MemberCategoryParametersLite>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, LISTMEMBERCATEGORYPARAMETERS, ProductID);
+                items = DataTableHelper.ConvertDataTable<MemberCategoryParametersLite>(ds.Tables[0]);
+                con.Close();
+            }
+
+            return items;
+
+        }
         public bool SaveMemberCategoryParameters(MemberCategoryParameters itemData)
         {
 
@@ -69,8 +83,8 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ProductID", itemData.ProductID);
                         cmd.Parameters.AddWithValue("@ParameterID", itemData.ParameterID);
                         cmd.Parameters.AddWithValue("@ParameterValue", itemData.ParameterValue);
-                        cmd.Parameters.AddWithValue("@CreatedOn", itemData.CreatedOn);
-                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
+                        //cmd.Parameters.AddWithValue("@CreatedOn", itemData.CreatedOn);
+                        //cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
