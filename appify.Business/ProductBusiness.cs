@@ -56,14 +56,14 @@ namespace appify.Business
             ProductMasterNew productMaster = new ProductMasterNew();
             List<ProductPriceNew> prices = new List<ProductPriceNew>();
             List<ProductImageNew> images = new List<ProductImageNew>();
-            List<MemberCategoryParameters> parameters = new List<MemberCategoryParameters>();
+            List<MemberCategoryParametersLite> parameters = new List<MemberCategoryParametersLite>();
 
             productMaster = repository.GetProductNew(productId);
             if(productMaster!=null)
             {
                 productMaster.prices = priceRepository.PriceListNew(productId);
                 productMaster.images = imageRepository.GetProductImagesNew(productId);
-                productMaster.parameters = parametersRepository.ListMemberCategoryParameters(productId);
+                productMaster.parameters = parametersRepository.ListMemberCategoryParametersLite(productId);
             }
             return productMaster;
         }
