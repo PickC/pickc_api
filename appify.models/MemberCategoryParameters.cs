@@ -20,6 +20,17 @@ namespace appify.models
 
         public string? ParameterName { get; set; }
     }
+
+    public partial class MemberCategoryParametersLite
+    {
+        public MemberCategoryParametersLite() { }
+
+        public string? ParameterName { get; set; }
+        public string ParameterValue { get; set; }
+
+
+    }
+
 }
 
 
