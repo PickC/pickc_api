@@ -86,7 +86,10 @@ builder.Services.AddSingleton<IAdminDashboardRepository, AdminDashboardRepositor
 builder.Services.AddSingleton<IRoleRightsRepository, RoleRightsRepository>();
 builder.Services.AddSingleton<ICategoryParameterRepository, CategoryParameterRepository>();
 builder.Services.AddSingleton<IParameterTypeRepository, ParameterTypeRepository>();
-builder.Services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddSingleton<ISubscriptionHeaderRepository, SubscriptionHeaderRepository>();
+builder.Services.AddSingleton<ISubscriptionFeatureRepository, SubscriptionFeatureRepository>();
+builder.Services.AddSingleton<ISubscriptionItemRepository, SubscriptionItemRepository>();
+builder.Services.AddSingleton<ISubscriptionPriceRepository, SubscriptionPriceRepository>();
 builder.Services.AddSingleton<IMemberCategoryParametersRepository, MemberCategoryParametersRepository>();
 
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
@@ -122,7 +125,10 @@ builder.Services.AddSingleton<IAdminDashboardBusiness, AdminDashboardBusiness>()
 builder.Services.AddSingleton<IRoleRightsBusiness, RoleRightsBusiness>();
 builder.Services.AddSingleton<ICategoryParameterBusiness, CategoryParameterBusiness>();
 builder.Services.AddSingleton<IParameterTypeBusiness, ParameterTypeBusiness>();
-builder.Services.AddSingleton<ISubscriptionBusiness , SubscriptionBusiness>();
+builder.Services.AddSingleton<ISubscriptionHeaderBusiness, SubscriptionHeaderBusiness>();
+builder.Services.AddSingleton<ISubscriptionFeatureBusiness, SubscriptionFeatureBusiness>();
+builder.Services.AddSingleton<ISubscriptionItemBusiness, SubscriptionItemBusiness>();
+builder.Services.AddSingleton<ISubscriptionPriceBusiness, SubscriptionPriceBusiness>();
 builder.Services.AddSingleton<IMemberCategoryParametersBusiness, MemberCategoryParametersBusiness>();
 
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
