@@ -9,7 +9,8 @@ namespace appify.DataAccess.Contract
 
 		public List<MemberCategoryParameters> ListMemberCategoryParameters(long ProductID);
 
-		public bool SaveMemberCategoryParameters(MemberCategoryParameters item);
+        public List<MemberCategoryParametersLite> ListMemberCategoryParametersLite(long ProductID);
+        public bool SaveMemberCategoryParameters(MemberCategoryParameters item);
 
 		public bool DeleteMemberCategoryParameters(Int64 ID);
 
