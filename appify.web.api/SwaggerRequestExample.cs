@@ -20,7 +20,7 @@ namespace appify.web.api
     public class ParamMIDMType
     {
         public long userID { get; set; }
-        public short userType {  get; set; }
+        public short userType { get; set; }
 
     }
     public class ParamUserID
@@ -323,12 +323,12 @@ namespace appify.web.api
     public class ParamSMSCredentials
     {
         public Int16 SMSTemplateID { get; set; }
-        public string Name {  get; set; }
+        public string Name { get; set; }
         public string MobileNo { get; set; }
         public string MessageTitle { get; set; }
         public string MessageBody { get; set; }
-        public string FirstName {  get; set; }
-        public string OrderNo {  get; set; }
+        public string FirstName { get; set; }
+        public string OrderNo { get; set; }
     }
     public class ParamEmailFields
     {
@@ -345,11 +345,11 @@ namespace appify.web.api
     public class ParamDownTimeAlert
     {
         public string Service { get; set; }
-        public Int64 MemberID {  get; set; }
-        public Int32 MemberType {  get; set; }
+        public Int64 MemberID { get; set; }
+        public Int32 MemberType { get; set; }
         public Int64 OrderID { get; set; }
-        public string AppVersion {  get; set; }
-        public string AppName {  get; set; }
+        public string AppVersion { get; set; }
+        public string AppName { get; set; }
     }
 
     public class ParamVerifySignature
@@ -357,7 +357,7 @@ namespace appify.web.api
         public Int64 OrderID { get; set; }
         public string razorpayPaymentId { get; set; }
         public string razorpayOrderId { get; set; }
-        public string razorpaySignature {  get; set; }
+        public string razorpaySignature { get; set; }
     }
 
     public class ParamPageView
@@ -432,6 +432,20 @@ namespace appify.web.api
         public short PlanID { get; set; }
 
     }
+
+    public class ParamSubscriptionItem : ParamSubscription  {
+        public short ItemID { get; set; }
+        public short FeatureID { get; set; }
+    }
+
+    public class ParamSubscriptionFeature {
+        public short FeatureID { get; set; }
+    }
+
+    public class ParamSubscriptionPrice : ParamSubscription {
+        public short PriceID { get; set; }
+    }
+    
 
 
 
