@@ -13,17 +13,17 @@ namespace appify.Business
 		public SubscriptionFeatureBusiness (ISubscriptionFeatureRepository repository){
 			this.repository = repository;
 		}
-		public SubscriptionFeature GetSubscriptionFeature(short featureID)
+		public SubscriptionFeatureLite GetSubscriptionFeature(short featureID)
 		{
 			return repository.GetSubscriptionFeature(featureID);
 		}
 
-		public List<SubscriptionFeature> ListSubscriptionFeature()
+		public List<SubscriptionFeatureLite> ListSubscriptionFeature()
 		{
 			return repository.ListSubscriptionFeature();
 		}
 
-		public bool SaveSubscriptionFeature(SubscriptionFeature item)
+		public SubscriptionFeature SaveSubscriptionFeature(SubscriptionFeature item)
 		{
 			return repository.SaveSubscriptionFeature(item);
 		}

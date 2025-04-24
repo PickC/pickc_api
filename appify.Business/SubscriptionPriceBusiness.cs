@@ -13,12 +13,12 @@ namespace appify.Business
 		public SubscriptionPriceBusiness (ISubscriptionPriceRepository repository){
 			this.repository = repository;
 		}
-		public SubscriptionPrice GetSubscriptionPrice(short priceID)
+		public SubscriptionPriceLite GetSubscriptionPrice(short priceID)
 		{
 			return repository.GetSubscriptionPrice(priceID);
 		}
 
-        public List<SubscriptionPrice> ListSubscriptionPrice()
+        public List<SubscriptionPriceLite> ListSubscriptionPrice()
         {
             return repository.ListSubscriptionPrice();
         }
@@ -28,7 +28,7 @@ namespace appify.Business
             return repository.ListSubscriptionPriceByPlan(planID);
         }
 
-        public bool SaveSubscriptionPrice(SubscriptionPrice item)
+        public SubscriptionPrice SaveSubscriptionPrice(SubscriptionPrice item)
 		{
 			return repository.SaveSubscriptionPrice(item);
 		}
