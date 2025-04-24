@@ -13,17 +13,17 @@ namespace appify.Business
 		public SubscriptionHeaderBusiness (ISubscriptionHeaderRepository repository){
 			this.repository = repository;
 		}
-		public SubscriptionHeader GetSubscriptionHeader(short planID)
+		public SubscriptionHeaderLite GetSubscriptionHeader(short planID)
 		{
 			return repository.GetSubscriptionHeader(planID);
 		}
 
-		public List<SubscriptionHeader> ListSubscriptionHeader()
+		public List<SubscriptionHeaderLite> ListSubscriptionHeader()
 		{
 			return repository.ListSubscriptionHeader();
 		}
 
-		public bool SaveSubscriptionHeader(SubscriptionHeader item)
+		public SubscriptionHeader SaveSubscriptionHeader(SubscriptionHeader item)
 		{
 			return repository.SaveSubscriptionHeader(item);
 		}

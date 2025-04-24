@@ -24,35 +24,35 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public SubscriptionFeature GetSubscriptionFeature(short featureID)
+        public SubscriptionFeatureLite GetSubscriptionFeature(short featureID)
         {
-            SubscriptionFeature item = new SubscriptionFeature();
+            SubscriptionFeatureLite item = new SubscriptionFeatureLite();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, SELECTSUBSCRIPTIONFEATURE,featureID);
-                item = DataTableHelper.ConvertDataTable<SubscriptionFeature>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<SubscriptionFeatureLite>(ds.Tables[0]).FirstOrDefault();
                 con.Close();
             }
 
             return item;
         }
 
-        public List<SubscriptionFeature> ListSubscriptionFeature()
+        public List<SubscriptionFeatureLite> ListSubscriptionFeature()
         {
-            List<SubscriptionFeature> items = new List<SubscriptionFeature>();
+            List<SubscriptionFeatureLite> items = new List<SubscriptionFeatureLite>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, LISTSUBSCRIPTIONFEATURE);
-                items = DataTableHelper.ConvertDataTable<SubscriptionFeature>(ds.Tables[0]);
+                items = DataTableHelper.ConvertDataTable<SubscriptionFeatureLite>(ds.Tables[0]);
                 con.Close();
             }
 
             return items;
 
         }
-        public bool SaveSubscriptionFeature(SubscriptionFeature itemData)
+        public SubscriptionFeature SaveSubscriptionFeature(SubscriptionFeature itemData)
         {
 
             var result = false;
@@ -71,8 +71,15 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@FeatureID";
+                        outPutParameter.SqlDbType = SqlDbType.SmallInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        itemData.FeatureID = Convert.ToInt16(outPutParameter.Value);
                         con.Close();
                     }
                 }
@@ -83,7 +90,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return itemData;
         }
 
         public bool DeleteSubscriptionFeature(short featureID)
