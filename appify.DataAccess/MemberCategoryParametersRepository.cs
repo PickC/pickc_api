@@ -84,7 +84,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ParameterID", itemData.ParameterID);
                         cmd.Parameters.AddWithValue("@ParameterValue", itemData.ParameterValue);
                         //cmd.Parameters.AddWithValue("@CreatedOn", itemData.CreatedOn);
-                        //cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());

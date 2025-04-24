@@ -5,13 +5,13 @@ namespace appify.Business.Contract
 {
 	public interface ISubscriptionPriceBusiness
 	{
-		public SubscriptionPrice GetSubscriptionPrice(short priceID);
+		public SubscriptionPriceLite GetSubscriptionPrice(short priceID);
 
-		public List<SubscriptionPrice> ListSubscriptionPrice();
+		public List<SubscriptionPriceLite> ListSubscriptionPrice();
 
         public List<SubscriptionPrice> ListSubscriptionPriceByPlan(short planID);
 
-        public bool SaveSubscriptionPrice(SubscriptionPrice item);
+        public SubscriptionPrice SaveSubscriptionPrice(SubscriptionPrice item);
 
 		public bool DeleteSubscriptionPrice(short priceID);
 

@@ -27,28 +27,28 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public SubscriptionPrice GetSubscriptionPrice(short priceID)
+        public SubscriptionPriceLite GetSubscriptionPrice(short priceID)
         {
-            SubscriptionPrice item = new SubscriptionPrice();
+            SubscriptionPriceLite item = new SubscriptionPriceLite();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, SELECTSUBSCRIPTIONPRICE,priceID);
-                item = DataTableHelper.ConvertDataTable<SubscriptionPrice>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<SubscriptionPriceLite>(ds.Tables[0]).FirstOrDefault();
                 con.Close();
             }
 
             return item;
         }
 
-        public List<SubscriptionPrice> ListSubscriptionPrice()
+        public List<SubscriptionPriceLite> ListSubscriptionPrice()
         {
-            List<SubscriptionPrice> items = new List<SubscriptionPrice>();
+            List<SubscriptionPriceLite> items = new List<SubscriptionPriceLite>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, LISTSUBSCRIPTIONPRICE);
-                items = DataTableHelper.ConvertDataTable<SubscriptionPrice>(ds.Tables[0]);
+                items = DataTableHelper.ConvertDataTable<SubscriptionPriceLite>(ds.Tables[0]);
                 con.Close();
             }
 
@@ -69,7 +69,7 @@ namespace appify.DataAccess
             return items;
 
         }
-        public bool SaveSubscriptionPrice(SubscriptionPrice itemData)
+        public SubscriptionPrice SaveSubscriptionPrice(SubscriptionPrice itemData)
         {
 
             var result = false;
@@ -88,8 +88,15 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewPriceID";
+                        outPutParameter.SqlDbType = SqlDbType.SmallInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        itemData.PriceID = Convert.ToInt16(outPutParameter.Value);
                         con.Close();
                     }
                 }
@@ -100,7 +107,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return itemData;
         }
 
         public bool DeleteSubscriptionPrice(short priceID)

@@ -5,11 +5,11 @@ namespace appify.DataAccess.Contract
 {
 	public interface ISubscriptionFeatureRepository
 	{
-		public SubscriptionFeature GetSubscriptionFeature(short featureID);
+		public SubscriptionFeatureLite GetSubscriptionFeature(short featureID);
 
-		public List<SubscriptionFeature> ListSubscriptionFeature();
+		public List<SubscriptionFeatureLite> ListSubscriptionFeature();
 
-		public bool SaveSubscriptionFeature(SubscriptionFeature item);
+		public SubscriptionFeature SaveSubscriptionFeature(SubscriptionFeature item);
 
 		public bool DeleteSubscriptionFeature(short featureID);
 
