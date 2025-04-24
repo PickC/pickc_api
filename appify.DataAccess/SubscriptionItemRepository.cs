@@ -75,6 +75,7 @@ namespace appify.DataAccess
                         outPutParameter.ParameterName = "@ItemID";
                         outPutParameter.SqlDbType = SqlDbType.SmallInt;
                         outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
