@@ -68,11 +68,12 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PlanID", itemData.PlanID);
                         cmd.Parameters.AddWithValue("@FeatureID", itemData.FeatureID);
                         cmd.Parameters.AddWithValue("@Value", itemData.Value);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
 
                         SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@ItemID";
+                        outPutParameter.ParameterName = "@NewItemID";
                         outPutParameter.SqlDbType = SqlDbType.SmallInt;
                         outPutParameter.Direction = ParameterDirection.Output;
                         cmd.Parameters.Add(outPutParameter);
