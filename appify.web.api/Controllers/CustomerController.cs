@@ -14,8 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-
-
 using System.ComponentModel.DataAnnotations;
 
 namespace appify.web.api.Controllers
@@ -789,6 +787,28 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
 
+        }
+        [HttpPost]
+        [Route("whatsappnotification")]
+        [MapToApiVersion("1.0")]
+
+        public async Task<IActionResult> NotifyOrderStatus([FromBody] OrderStatusDto dto)
+        {
+            var wati = new WhatsAppNotification(configuration);
+
+            string[] parameters = new[] { dto.CustomerName, dto.OrderNumber, dto.OrderStatus };
+
+            var result = await wati.SendWhatsAppMessageAsync(dto.PhoneNumber, "order_placed", parameters);
+
+            return Ok(result);
+        }
+
+        public class OrderStatusDto
+        {
+            public string CustomerName { get; set; }
+            public string OrderNumber { get; set; }
+            public string OrderStatus { get; set; }  // "Confirmed" or "Declined"
+            public string PhoneNumber { get; set; }  // E.g., "9198xxxxxxx"
         }
     }
 }

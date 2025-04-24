@@ -49,7 +49,9 @@ namespace appify.models
 
         public Int16 ItemID { get; set; }
         public Int16 PlanID { get; set; }
+        public string PlanName { get; set; }
         public Int16 FeatureID { get; set; }
+        public string FeatureName {  get; set; }
         public string Value { get; set; }
         public bool IsActive { get; set; }
     }
@@ -77,7 +79,7 @@ namespace appify.models
         public Int16 Term { get; set; }
         public Int16 PlanID { get; set; }
         public string PlanName { get; set; }
-        public bool IsActive { get; set; }
+        public string PlanDescription { get; set; }
     }
 
     public partial class SubscriptionFeature
@@ -88,6 +90,7 @@ namespace appify.models
         public Int16 FeatureID { get; set; }
         public string FeatureName { get; set; }
         public string Description { get; set; }
+        public string FeatureCode { get; set; }
         public bool IsActive { get; set; }
         public Int16 CreatedBy { get; set; }
         public Int16 ModifiedBy { get; set; }
