@@ -24,35 +24,35 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public SubscriptionHeader GetSubscriptionHeader(short planID)
+        public SubscriptionHeaderLite GetSubscriptionHeader(short planID)
         {
-            SubscriptionHeader item = new SubscriptionHeader();
+            SubscriptionHeaderLite item = new SubscriptionHeaderLite();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, SELECTSUBSCRIPTIONHEADER,planID);
-                item = DataTableHelper.ConvertDataTable<SubscriptionHeader>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<SubscriptionHeaderLite>(ds.Tables[0]).FirstOrDefault();
                 con.Close();
             }
 
             return item;
         }
 
-        public List<SubscriptionHeader> ListSubscriptionHeader()
+        public List<SubscriptionHeaderLite> ListSubscriptionHeader()
         {
-            List<SubscriptionHeader> items = new List<SubscriptionHeader>();
+            List<SubscriptionHeaderLite> items = new List<SubscriptionHeaderLite>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, LISTSUBSCRIPTIONHEADER);
-                items = DataTableHelper.ConvertDataTable<SubscriptionHeader>(ds.Tables[0]);
+                items = DataTableHelper.ConvertDataTable<SubscriptionHeaderLite>(ds.Tables[0]);
                 con.Close();
             }
 
             return items;
 
         }
-        public bool SaveSubscriptionHeader(SubscriptionHeader itemData)
+        public SubscriptionHeader SaveSubscriptionHeader(SubscriptionHeader itemData)
         {
 
             var result = false;
@@ -67,11 +67,20 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PlanID", itemData.PlanID);
                         cmd.Parameters.AddWithValue("@PlanName", itemData.PlanName);
                         cmd.Parameters.AddWithValue("@Description", itemData.Description);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewPlanID";
+                        outPutParameter.SqlDbType = SqlDbType.SmallInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        itemData.PlanID = Convert.ToInt16(outPutParameter.Value);
                         con.Close();
                     }
                 }
@@ -82,7 +91,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return itemData;
         }
 
         public bool DeleteSubscriptionHeader(short planID)

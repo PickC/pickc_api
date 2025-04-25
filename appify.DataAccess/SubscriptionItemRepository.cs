@@ -24,35 +24,35 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public SubscriptionItem GetSubscriptionItem(short itemID, short planID, short featureID)
+        public SubscriptionItemLite GetSubscriptionItem(short itemID, short planID, short featureID)
         {
-            SubscriptionItem item = new SubscriptionItem();
+            SubscriptionItemLite item = new SubscriptionItemLite();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, SELECTSUBSCRIPTIONITEM,itemID,planID,featureID);
-                item = DataTableHelper.ConvertDataTable<SubscriptionItem>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<SubscriptionItemLite>(ds.Tables[0]).FirstOrDefault();
                 con.Close();
             }
 
             return item;
         }
 
-        public List<SubscriptionItem> ListSubscriptionItem(short planID)
+        public List<SubscriptionItemLite> ListSubscriptionItem(short planID)
         {
-            List<SubscriptionItem> items = new List<SubscriptionItem>();
+            List<SubscriptionItemLite> items = new List<SubscriptionItemLite>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, LISTSUBSCRIPTIONITEM,planID);
-                items = DataTableHelper.ConvertDataTable<SubscriptionItem>(ds.Tables[0]);
+                items = DataTableHelper.ConvertDataTable<SubscriptionItemLite>(ds.Tables[0]);
                 con.Close();
             }
 
             return items;
 
         }
-        public bool SaveSubscriptionItem(SubscriptionItem itemData)
+        public SubscriptionItem SaveSubscriptionItem(SubscriptionItem itemData)
         {
 
             var result = false;
@@ -68,11 +68,20 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PlanID", itemData.PlanID);
                         cmd.Parameters.AddWithValue("@FeatureID", itemData.FeatureID);
                         cmd.Parameters.AddWithValue("@Value", itemData.Value);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
-                        
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewItemID";
+                        outPutParameter.SqlDbType = SqlDbType.SmallInt;
+                        outPutParameter.Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        itemData.ItemID = Convert.ToInt16(outPutParameter.Value);
+
                         con.Close();
                     }
                 }
@@ -83,7 +92,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return itemData;
         }
 
         public bool DeleteSubscriptionItem(short itemID, short planID, short featureID)

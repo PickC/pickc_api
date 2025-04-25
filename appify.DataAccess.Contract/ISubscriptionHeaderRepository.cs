@@ -5,11 +5,11 @@ namespace appify.DataAccess.Contract
 {
 	public interface ISubscriptionHeaderRepository
 	{
-		public SubscriptionHeader GetSubscriptionHeader(short planID);
+		public SubscriptionHeaderLite GetSubscriptionHeader(short planID);
 
-		public List<SubscriptionHeader> ListSubscriptionHeader();
+		public List<SubscriptionHeaderLite> ListSubscriptionHeader();
 
-		public bool SaveSubscriptionHeader(SubscriptionHeader item);
+		public SubscriptionHeader SaveSubscriptionHeader(SubscriptionHeader item);
 
         public bool DeleteSubscriptionHeader(short planID);
 
