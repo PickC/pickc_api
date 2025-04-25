@@ -5,6 +5,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace appify.web.api.Controllers
 {
@@ -473,15 +474,17 @@ namespace appify.web.api.Controllers
         /// 
         ///     Method Type : POST
         ///     
-        ///     {
-        ///       "itemID": 0,
-        ///       "planID": 1000,
-        ///       "featureID": 100,
-        ///       "value": "abcd",
-        ///       "isActive": true,
-        ///       "createdBy": 0,
-        ///       "modifiedBy": 0
-        ///     }
+        ///     [
+        ///       {
+        ///         "itemID": 0,
+        ///         "planID": 0,
+        ///         "featureID": 0,
+        ///         "value": "string",
+        ///         "IsActive": true,
+        ///         "createdBy": 0,
+        ///         "modifiedBy": 0
+        ///       }
+        ///     ]
         /// 
         /// </remarks>
         /// <returns>Boolean value</returns>
@@ -491,7 +494,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("item/save")]
         [MapToApiVersion("1.0")]
-        public IActionResult SubscriptionItemSave(SubscriptionItem itemData)
+        public IActionResult SubscriptionItemSave(List<SubscriptionItem> itemData)
         {
 
             var reqHeader = Request;
@@ -499,13 +502,17 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                var result = this.subscriptionitemBusiness.SaveSubscriptionItem(itemData);
-                if (result != null)
+                List<SubscriptionItem> subscriptionItem = new List<SubscriptionItem>();
+                foreach (var item in itemData)
+                {
+                    subscriptionItem.Add(this.subscriptionitemBusiness.SaveSubscriptionItem(item));
+                }
+                if (subscriptionItem != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "SAVE SUBSCRIPTIONITEM ITEM!";
                     rm.name = StatusName.ok;
-                    rm.data = result;
+                    rm.data = subscriptionItem;
                 }
                 else
                 {
@@ -747,6 +754,7 @@ namespace appify.web.api.Controllers
         ///       "featureID": 0,
         ///       "featureName": "ProductCatalog",
         ///       "description": "Product Catalog",
+        ///       "featureCode": "SMS service",
         ///       "isActive": true,
         ///       "createdBy": 1000,
         ///       "modifiedBy": 1000
@@ -881,8 +889,7 @@ namespace appify.web.api.Controllers
         ///         "price": 499,
         ///         "term": 1,
         ///         "planID": 1000,
-        ///         "planName": "Baric Plan",
-        ///         "isActive": true
+        ///         "planName": "Baric Plan"
         ///       }
         ///     }
         /// 
@@ -947,16 +954,14 @@ namespace appify.web.api.Controllers
         ///           "price": 499,
         ///           "term": 1,
         ///           "planID": 1000,
-        ///           "planName": "Baric Plan",
-        ///           "isActive": true
+        ///           "planName": "Baric Plan"
         ///         },
         ///         {
         ///           "priceID": 1001,
         ///           "price": 1799,
         ///           "term": 6,
         ///           "planID": 1000,
-        ///           "planName": "Baric Plan",
-        ///           "isActive": true
+        ///           "planName": "Baric Plan"
         ///         },
         ///       ]
         ///     }

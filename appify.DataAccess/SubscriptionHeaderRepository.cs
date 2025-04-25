@@ -67,6 +67,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PlanID", itemData.PlanID);
                         cmd.Parameters.AddWithValue("@PlanName", itemData.PlanName);
                         cmd.Parameters.AddWithValue("@Description", itemData.Description);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
 
