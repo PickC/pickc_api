@@ -889,7 +889,8 @@ namespace appify.web.api.Controllers
         ///         "price": 499,
         ///         "term": 1,
         ///         "planID": 1000,
-        ///         "planName": "Baric Plan"
+        ///         "planName": "Baric Plan",
+        ///         "isActive": true
         ///       }
         ///     }
         /// 
@@ -954,14 +955,16 @@ namespace appify.web.api.Controllers
         ///           "price": 499,
         ///           "term": 1,
         ///           "planID": 1000,
-        ///           "planName": "Baric Plan"
+        ///           "planName": "Baric Plan",
+        ///           "isActive": true
         ///         },
         ///         {
         ///           "priceID": 1001,
         ///           "price": 1799,
         ///           "term": 6,
         ///           "planID": 1000,
-        ///           "planName": "Baric Plan"
+        ///           "planName": "Baric Plan",
+        ///           "isActive": true
         ///         },
         ///       ]
         ///     }
@@ -1025,16 +1028,17 @@ namespace appify.web.api.Controllers
         ///       "term": 12,
         ///       "planID": 1004,
         ///       "createdBy": 1000,
-        ///       "modifiedBy": 1000
+        ///       "modifiedBy": 1000,
+        ///       "isActive": true
         ///     }
         /// 
         /// </remarks>
         /// <returns>Boolean value</returns>
         /// <response code="200">SAVE/UPDATE SUBSCRIPTION PRICE ITEM!</response>
         /// <response code="500">Returns Error ResponseMessages </response> 
-    #region Save SubscriptionPrice Item
+        #region Save SubscriptionPrice Item
 
-    [HttpPost, Route("price/save")]
+        [HttpPost, Route("price/save")]
         [MapToApiVersion("1.0")]
         public IActionResult SubscriptionPriceSave(SubscriptionPrice itemData)
         {

@@ -87,6 +87,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PlanID", itemData.PlanID);
                         cmd.Parameters.AddWithValue("@CreatedBy", itemData.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", itemData.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@IsActive", itemData.IsActive);
 
                         SqlParameter outPutParameter = new SqlParameter();
                         outPutParameter.ParameterName = "@NewPriceID";
