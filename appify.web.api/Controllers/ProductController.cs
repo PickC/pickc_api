@@ -1884,7 +1884,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getcategoriesbyid")]
         [MapToApiVersion("1.0")]
-        [Authorize]
+        //[Authorize]
         public IActionResult GetCategoriesList(ParamParent itemData)
         {
             var reqHeader = Request;
@@ -1894,7 +1894,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+               // TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetCategoriesList(itemData.parentID);
                 if (item != null)
                 {
@@ -1931,7 +1931,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getcategoriesbyid")]
         [MapToApiVersion("1.1")]
-        [Authorize]
+        //[Authorize]
         public IActionResult GetALLCategoriesList(ParamParentID itemData)
         {
             var reqHeader = Request;
@@ -1941,7 +1941,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                //TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetALLCategoriesList(itemData.parentID,itemData.searchFilter, itemData.PageNo, itemData.Rows);//.GetALLCategoriesListJSON(itemData.parentID);
                 if (item != null)
                 {
