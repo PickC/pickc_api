@@ -956,6 +956,38 @@ namespace appify.web.api.Controllers
                 return $"Exception: {ex.Message}";
             }
         }
+
+        [HttpPost]
+        [Route("Delhivery/GetOrderStatus")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> GetDelhiveryOrderStatus()
+        {
+
+            GetExpectedDeliveryDateAsync("27334010002612");
+            //GetExpectedDeliveryDateAsync("27334010002586");
+            //GetExpectedDeliveryDateAsync("27334010002564");
+            //GetExpectedDeliveryDateAsync("27334010002553");
+            //GetExpectedDeliveryDateAsync("27334010002601"); ///// Getting Null
+            //GetExpectedDeliveryDateAsync("27334010002575"); //// Getting Null
+            //GetExpectedDeliveryDateAsync("27334010002590"); //// Getting Null
+
+            return Ok(0);
+        }
+        private async Task<string?> GetExpectedDeliveryDateAsync(string awbNumber)
+        {
+            using var client = new HttpClient();
+            var token = configuration["OneDelhiveryKey:Key"].ToString();
+            client.DefaultRequestHeaders.Add("Authorization", $"Token {token}");
+
+            var response = await client.GetAsync($"https://track.delhivery.com/api/v1/packages/json/?waybill={awbNumber}");
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JObject.Parse(json);
+
+            var edd = data["ShipmentData"]?[0]?["Shipment"]?["ExpectedDeliveryDate"]?.ToString();
+            return edd;
+        }
     }
     #endregion
 

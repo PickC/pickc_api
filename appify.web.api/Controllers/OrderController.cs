@@ -2809,7 +2809,6 @@ namespace appify.web.api.Controllers
             using var reader = new StreamReader(HttpContext.Request.Body);
                 // You now have the body string raw
             body = await reader.ReadToEndAsync();
-
             // As well as a bound model
             //var request = JsonConvert.DeserializeObject(body);
             var requestObj = (JObject)JsonConvert.DeserializeObject(body);
@@ -2824,8 +2823,12 @@ namespace appify.web.api.Controllers
                 ReferenceNo = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["ReferenceNo"]) ? "" : Convert.ToString((JValue)requestObj["Shipment"]["ReferenceNo"]),
                 StatusDateTime = System.String.IsNullOrEmpty((string?)requestObj["Shipment"]["Status"]["StatusDateTime"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)requestObj["Shipment"]["Status"]["StatusDateTime"])
             };
-
-                var result = orderBusiness.UpdateDelhiveryOrderTrackingStatus(orderTrackingUpdate);
+                    if (orderTrackingUpdate.Status == "In Transit" && orderTrackingUpdate.StatusType == "UD" && orderTrackingUpdate.Instructions == "Shipment picked up")
+                    {
+                        var expectedDeliveryDate = await Common.GetExpectedDeliveryDateAsync(orderTrackingUpdate.AWB);
+                        orderTrackingUpdate.ExpectedDeliveryDate = System.String.IsNullOrEmpty((string?)expectedDeliveryDate) ? null : Convert.ToDateTime(expectedDeliveryDate);
+                    }
+                    var result = orderBusiness.UpdateDelhiveryOrderTrackingStatus(orderTrackingUpdate);
                     if (result > 0)
                     {
                         rm.statusCode = StatusCodes.OK;
