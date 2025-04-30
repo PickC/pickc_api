@@ -454,6 +454,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@Instructions", item.Instructions);
                         cmd.Parameters.AddWithValue("@ReferenceNo", item.ReferenceNo);
                         cmd.Parameters.AddWithValue("@StatusDateTime", item.StatusDateTime);
+                        cmd.Parameters.AddWithValue("@ExpectedDeliveryDate", item.ExpectedDeliveryDate);
 
                         //Add the output parameter to the command object
                         SqlParameter outPutParameter = new SqlParameter();

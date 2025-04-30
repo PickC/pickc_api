@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace appify.utility
 {
@@ -194,6 +195,22 @@ namespace appify.utility
             }
             return password;
         }
+
+        public static async Task<string?> GetExpectedDeliveryDateAsync(string awbNumber)
+        {
+            using var client = new HttpClient();
+            var token = OneDelhiveryToken;
+            client.DefaultRequestHeaders.Add("Authorization", $"Token {token}");
+
+            var response = await client.GetAsync($"https://track.delhivery.com/api/v1/packages/json/?waybill={awbNumber}");
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var data = JObject.Parse(json);
+
+            var edd = data["ShipmentData"]?[0]?["Shipment"]?["ExpectedDeliveryDate"]?.ToString();
+            return edd;
+        }
     }
     public class TokenObject
     {
@@ -203,4 +220,5 @@ namespace appify.utility
        // public string Role {  get; set; }
 
     }
+
 }

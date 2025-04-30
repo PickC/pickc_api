@@ -67,6 +67,7 @@ namespace appify.models
         public Int16 PlanID { get; set; }
         public Int16 CreatedBy { get; set; }
         public Int16 ModifiedBy { get; set; }
+        public Boolean IsActive { get; set; }
     }
 
     public partial class SubscriptionPriceLite
@@ -80,6 +81,7 @@ namespace appify.models
         public Int16 PlanID { get; set; }
         public string PlanName { get; set; }
         public string PlanDescription { get; set; }
+        public Boolean IsActive { get; set; }
     }
 
     public partial class SubscriptionFeature

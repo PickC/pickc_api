@@ -14,6 +14,7 @@ using System.Net;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
+using appify.web.api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,6 +132,7 @@ builder.Services.AddSingleton<ISubscriptionItemBusiness, SubscriptionItemBusines
 builder.Services.AddSingleton<ISubscriptionPriceBusiness, SubscriptionPriceBusiness>();
 builder.Services.AddSingleton<IMemberCategoryParametersBusiness, MemberCategoryParametersBusiness>();
 
+builder.Services.AddHttpClient<ShopifyGraphQLService>();
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
 
 
