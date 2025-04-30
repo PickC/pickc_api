@@ -445,8 +445,12 @@ namespace appify.web.api
     public class ParamSubscriptionPrice : ParamSubscription {
         public short PriceID { get; set; }
     }
-    
 
+    public class ParamExcelUpload
+    {
+        public int VendorID { get; set; }
+        public IFormFile ExcelFile { get; set; }
+    }
 
 
 }
