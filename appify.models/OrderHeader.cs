@@ -372,6 +372,7 @@ namespace appify.models
         public string Instructions { get; set; }
         public string ReferenceNo { get; set; }
         public DateTime StatusDateTime { get; set; }
+        public DateTime? ExpectedDeliveryDate { get; set; }
     }
 
     public partial class OrderUpdateDetail
