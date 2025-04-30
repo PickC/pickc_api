@@ -9,6 +9,12 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Cors;
+using NPOI;
+using NPOI.OOXML;
+using NPOI.SS.UserModel;
+using System.Text;
+using NPOI.XSSF.UserModel;
+using Razorpay.Api;
 
 namespace appify.web.api.Controllers
 {
@@ -30,15 +36,16 @@ namespace appify.web.api.Controllers
         private readonly IWebHostEnvironment env;
 
         private ResponseMessage rm;
-        public VendorController(IConfiguration configuration, 
-                                ICustomerBusiness customerBusiness, 
-                                IEventLogBusiness eventLogBusiness, 
+        public VendorController(IConfiguration configuration,
+                                ICustomerBusiness customerBusiness,
+                                IEventLogBusiness eventLogBusiness,
                                 IMemberBusiness iResultData,
                                 ILookupBusiness lookupBusiness,
-                                IProductBusiness productBusiness, 
-                                IProductPriceBusiness priceBusiness, 
+                                IProductBusiness productBusiness,
+                                IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
-                                IWebHostEnvironment env) {
+                                IWebHostEnvironment env)
+        {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
             this.eventLogBusiness = eventLogBusiness;
@@ -794,5 +801,61 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+
+        [HttpPost("uploadProductExcel")]
+        public IActionResult ImportProducts(ParamExcelUpload itemData)
+        {
+
+            ExcelReader reader = new ExcelReader();
+            rm = new ResponseMessage();
+
+            if (itemData.ExcelFile == null || itemData.ExcelFile.Length == 0)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "No file uploaded";
+                rm.name = StatusName.ok;
+                rm.data = "No file uploaded";
+
+                return Ok(rm);
+            }
+
+            if (!Path.GetExtension(itemData.ExcelFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "Only .xlsx files are allowed";
+                rm.name = StatusName.ok;
+                rm.data = "Only .xlsx files are allowed";
+
+                return Ok(rm);
+
+
+            }
+
+
+            try
+            {
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
+                rm.name = StatusName.ok;
+                rm.data = products;
+                 
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Error processing file: {ex.Message}";
+                rm.name = StatusName.invalid;
+                rm.data = $"Error processing file: {ex.Message}";
+
+            }
+
+            return Ok(rm);
+        }
+
+
     }
 }
