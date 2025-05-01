@@ -15,6 +15,8 @@ using NPOI.SS.UserModel;
 using System.Text;
 using NPOI.XSSF.UserModel;
 using Razorpay.Api;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace appify.web.api.Controllers
 {
@@ -805,9 +807,8 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts(ParamExcelUpload itemData)
+        public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
         {
-
             ExcelReader reader = new ExcelReader();
             rm = new ResponseMessage();
 
@@ -837,7 +838,7 @@ namespace appify.web.api.Controllers
             try
             {
                 var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
-
+                //DownloadGoogleDriveImagesAsync(products);
                 rm.statusCode = StatusCodes.OK;
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
                 rm.name = StatusName.ok;
@@ -856,6 +857,35 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        //public async Task DownloadGoogleDriveImagesAsync(List<Product> products)
+        //{
+        //    var httpClient = new HttpClient();
 
+        //    foreach (var product in products)
+        //    {
+        //        foreach (var imageUrl in new[] { product.Image1, product.Image2 })
+        //        {
+        //            if (!string.IsNullOrEmpty(imageUrl))
+        //            {
+        //                var fileId = ExtractGoogleDriveFileId(imageUrl);
+        //                if (!string.IsNullOrEmpty(fileId))
+        //                {
+        //                    var downloadUrl = $"https://drive.google.com/uc?export=download&id={fileId}";
+        //                    var bytes = await httpClient.GetByteArrayAsync(downloadUrl);
+        //                    var filename = $"{Guid.NewGuid()}.jpg"; // or derive from product data
+
+        //                    await File.WriteAllBytesAsync(Path.Combine("wwwroot/images", filename), bytes);
+
+        //                    Console.WriteLine($"Downloaded: {filename}");
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        private string ExtractGoogleDriveFileId(string url)
+        {
+            var match = Regex.Match(url, @"\/d\/(.*?)\/");
+            return match.Success ? match.Groups[1].Value : string.Empty;
+        }
     }
 }

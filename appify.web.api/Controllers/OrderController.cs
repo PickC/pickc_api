@@ -2220,8 +2220,7 @@ namespace appify.web.api.Controllers
         [Route("PhonepeCallBack")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> PhonePeCallback()////object payload VerifyRequestModel verifyRequestModel
-        {////string val = "{\r\n  \"response\": \"ewoJInN1Y2Nlc3MiOiB0cnVlLAoJImNvZGUiOiAiUEFZTUVOVF9TVUNDRVNTIiwKCSJkYXRhIjogewoJCSJ0cmFuc2FjdGlvbklkIjogImY2MjI0MjBmLTJmNTgtNGYyZS04MzJmIiwKCQkibWVyY2hhbnRJZCI6ICJNSURURVNUIiwKCQkiYW1vdW50IjogMTAwMCwKCQkicHJvdmlkZXJSZWZlcmVuY2VJZCI6ICJQMTkxMjE4MTIxMDM1NzQyMTc1Njc1NSIsCgkJInBheW1lbnRTdGF0ZSI6ICJDT01QTEVURUQiLAoJCSJwYXlSZXNwb25zZUNvZGUiOiAiU1VDQ0VTUyIKCX0KfQ==\"\r\n}";
-
+        {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
@@ -2344,20 +2343,14 @@ namespace appify.web.api.Controllers
                 rm.message = "Invalid payload";
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Received null payload", reqHeader, controllerURL, "RAZORPAY Received Null Payload X-Razorpay-Signature-" + xVerifyHeader, "RAZORPAY Received null payload", StatusName.ok));
                     await Common.UpdateEventLogsNew("RAZORPAY Received null payload", reqHeader, controllerURL, "RAZORPAY Received Null Payload X-Razorpay-Signature-" + xVerifyHeader, "RAZORPAY Received null payload", StatusName.ok, this.eventLogBusiness);
                 }
             else
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
                 body = await reader.ReadToEndAsync();
-                    //body = "{    \"account_id\": \"acc_OCjTrbZShxQc7y\",    \"contains\": [      \"refund\",      \"payment\"    ],    \"created_at\": 1729663607,    \"entity\": \"event\",    \"event\": \"refund.created\",    \"payload\": {      \"payment\": {        \"entity\": {          \"acquirer_data\": {            \"rrn\": \"428487107955\",            \"upi_transaction_id\": \"PTM5e6b325a3c1243c2a1745401cce7b542\"          },          \"amount\": 53950,          \"amount_refunded\": 53950,          \"amount_transferred\": 0,          \"bank\": null,          \"base_amount\": 53950,          \"captured\": true,          \"card_id\": null,          \"contact\": \"+918688647764\",          \"created_at\": 1728543101,          \"currency\": \"INR\",          \"description\": \"Order Payment\",          \"email\": \"g52976433@gmail.com\",          \"entity\": \"payment\",          \"error_code\": null,          \"error_description\": null,          \"error_reason\": null,          \"error_source\": null,          \"error_step\": null,          \"fee\": 1273,          \"id\": \"pay_P7F5reTtlujp0Z\",          \"international\": false,          \"invoice_id\": null,          \"method\": \"upi\",          \"notes\": {            \"device\": \"Android\",            \"orderId\": \"1614\"          },          \"order_id\": \"order_P7F5bB5kTbeiKE\",          \"provider\": null,          \"refund_status\": \"full\",          \"reward\": null,          \"status\": \"refunded\",          \"tax\": 194,          \"upi\": {            \"payer_account_type\": \"bank_account\",            \"vpa\": \"8688647764@ptaxis\"          },          \"vpa\": \"8688647764@ptaxis\",          \"wallet\": null        }      },      \"refund\": {        \"entity\": {          \"acquirer_data\": {            \"rrn\": null          },          \"amount\": 53950,          \"batch_id\": null,          \"created_at\": 1729663604,          \"currency\": \"INR\",          \"entity\": \"refund\",          \"id\": \"rfnd_PCNGwVoLSRV7aq\",          \"notes\": {            \"comment\": \"Refund of Order Id - OD17332410037, Vendor Name - Agu Chicha Fashion\"          },          \"payment_id\": \"pay_P7F5reTtlujp0Z\",          \"receipt\": null,          \"speed_processed\": \"normal\",          \"speed_requested\": \"normal\",          \"status\": \"processed\"        }      }    }  }";
 
-
-                    ////body = "{\"entity\":\"event\",\"account_id\":\"acc_OCjTrbZShxQc7y\",\"event\":\"payment.captured\",\"contains\":[\"payment\"],\"payload\":{\"payment\":{\"entity\":{\"id\":\"pay_QIQkcRDQUWixSk\",\"entity\":\"payment\",\"amount\":149900,\"currency\":\"INR\",\"status\":\"captured\",\"order_id\":\"order_QIQkNFicMOTDBh\",\"invoice_id\":null,\"international\":false,\"method\":\"upi\",\"amount_refunded\":0,\"refund_status\":null,\"captured\":true,\"description\":\"subscription_payment\",\"card_id\":null,\"bank\":null,\"wallet\":null,\"vpa\":\"success@razorpay\",\"email\":\"rama@appi-fy.ai\",\"contact\":\"+916281438226\",\"notes\":{\"orderId\":\"1744522966806\",\"vendorId\":\"2205\",\"device\":\"Android\",\"paymentType\":\"oneTimeSubscription\"},\"fee\":3538,\"tax\":540,\"error_code\":null,\"error_description\":null,\"error_source\":null,\"error_step\":null,\"error_reason\":null,\"acquirer_data\":{\"rrn\":\"371595461222\",\"upi_transaction_id\":\"033E6336C4B4E9F17059AB28B1CAAF1A\"},\"created_at\":1744522982,\"reward\":null,\"upi\":{\"vpa\":\"success@razorpay\"},\"base_amount\":149900}}},\"created_at\":1744522983}";
-
-
-                    var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
+                var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
                 string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
                 foreach (var s in eventSearch)
                 {
@@ -2809,6 +2802,7 @@ namespace appify.web.api.Controllers
             using var reader = new StreamReader(HttpContext.Request.Body);
                 // You now have the body string raw
             body = await reader.ReadToEndAsync();
+
             // As well as a bound model
             //var request = JsonConvert.DeserializeObject(body);
             var requestObj = (JObject)JsonConvert.DeserializeObject(body);

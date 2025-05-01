@@ -76,7 +76,7 @@ namespace appify.web.api
                 Console.WriteLine($"Page: {page}");
                 var query = $@"
                 query {{
-                    products(first: 50{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
+                    products(first: 1{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
                         edges {{
                             cursor
                             node {{
@@ -160,7 +160,7 @@ namespace appify.web.api
 
                 Console.WriteLine($"Has Next Page: {hasNextPage}, Cursor: {cursor}");
                 page++;
-                //if (page > 2) break; //Added break to stop after 3 pages.
+                if (page > 1) break; //Added break to stop after 3 pages.
             }
             Console.WriteLine("Done");
             return jsonList.ToString();
@@ -178,14 +178,23 @@ namespace appify.web.api
                 title
                 descriptionHtml
                 vendor
-                variants(first: 10) {{
-                  edges {{
-                    node {{
-                      id
-                      title
-                      price
+                variants(first: 100) {{
+                    edges {{
+                        node {{
+                            id
+                            title
+                            price
+                            sku
+                        }}
                     }}
-                  }}
+                }}
+                images(first: 10) {{
+                    edges {{
+                        node {{
+                            src
+                            altText
+                        }}
+                    }}
                 }}
               }}
             }}";
@@ -291,6 +300,7 @@ namespace appify.web.api
             //{
             //    canDispose.Dispose();
             //}
+
             GC.SuppressFinalize(this);
             //throw new NotImplementedException();
         }

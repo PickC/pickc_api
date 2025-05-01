@@ -33,7 +33,7 @@ namespace appify.web.api.Controllers
         }
 
         /// <summary>
-        /// GetAllProductsAsync
+        /// Fetch A Shopify Product List
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -46,7 +46,7 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="200">SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetAllProductsAsync")]
         [MapToApiVersion("1.0")]
@@ -54,11 +54,25 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService();
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
             return View();
         }
 
         /// <summary>
-        /// GetProductAsync
+        /// Fetch A Shopify Product
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -71,11 +85,11 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY ASYNCED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetProductAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetProductAsync()
+        public async Task<IActionResult> GetProductAsync(string ProductID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -91,14 +105,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+
+                await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
                 return View();
         }
 
         /// <summary>
-        /// CreateProductAsync
+        /// CREATE A Shopify Product
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -111,34 +125,34 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost, Route("CreateProductAsync")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CreateProductAsync()
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService();
-            }
-            catch (Exception ex)
-            {
+        //[HttpPost, Route("CreateProductAsync")]
+        //[MapToApiVersion("1.0")]
+        //public async Task<IActionResult> CreateProductAsync()
+        //{
+        //    var reqHeader = Request;
+        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService();
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return View();
-        }
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
+
+        //        await Common.UpdateEventLogsNew("SHPIFY CREATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+        //    }
+        //    return View();
+        //}
 
         /// <summary>
-        /// UpdateProductAsync
+        /// Update A Shopify Product
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -151,11 +165,11 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateProductAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UpdateProductAsync()
+        public async Task<IActionResult> UpdateProductAsync(string ProductID, string Title)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -171,14 +185,14 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+
+                await Common.UpdateEventLogsNew("SHPIFY UPDATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return View();
         }
 
         /// <summary>
-        /// DeleteProductAsync
+        /// Remove A Shopify Product
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -191,11 +205,11 @@ namespace appify.web.api.Controllers
         /// 
         /// </remarks>
         /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">ORDER HAS BEEN SUCCESSFULLY SAVED </response>
+        /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY DELETED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductAsync()
+        public async Task<IActionResult> DeleteProductAsync(string ProductID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -212,8 +226,8 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - ERROR", reqHeader, controllerURL, order, null, rm.message));
-                await Common.UpdateEventLogsNew("ORDER - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+
+                await Common.UpdateEventLogsNew("SHPIFY DELETE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return View();
         }
