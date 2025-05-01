@@ -805,7 +805,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts(ParamExcelUpload itemData)
+        public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
         {
 
             ExcelReader reader = new ExcelReader();

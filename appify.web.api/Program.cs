@@ -92,6 +92,7 @@ builder.Services.AddSingleton<ISubscriptionFeatureRepository, SubscriptionFeatur
 builder.Services.AddSingleton<ISubscriptionItemRepository, SubscriptionItemRepository>();
 builder.Services.AddSingleton<ISubscriptionPriceRepository, SubscriptionPriceRepository>();
 builder.Services.AddSingleton<IMemberCategoryParametersRepository, MemberCategoryParametersRepository>();
+builder.Services.AddSingleton<IBulkImportedProductRepository, BulkImportedProductRepository>();
 
 //builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
 //builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
@@ -131,6 +132,8 @@ builder.Services.AddSingleton<ISubscriptionFeatureBusiness, SubscriptionFeatureB
 builder.Services.AddSingleton<ISubscriptionItemBusiness, SubscriptionItemBusiness>();
 builder.Services.AddSingleton<ISubscriptionPriceBusiness, SubscriptionPriceBusiness>();
 builder.Services.AddSingleton<IMemberCategoryParametersBusiness, MemberCategoryParametersBusiness>();
+builder.Services.AddSingleton<IBulkImportedProductBusiness, BulkImportedProductBusiness>();
+
 
 builder.Services.AddHttpClient<ShopifyGraphQLService>();
 //builder.Services.AddSingleton<IOrderBusiness, OrderBusiness>();
