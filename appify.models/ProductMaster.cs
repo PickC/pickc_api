@@ -110,6 +110,8 @@ namespace appify.models
         public bool? Category { get; set; }
         public bool? Orders { get; set; }
         public bool? AppDetails { get; set; }
+        public bool? KYC { get; set; }
+        public bool? Subscription {  get; set; }
     }
     public partial class MemberProduct
     {

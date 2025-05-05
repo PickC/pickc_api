@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Google.Apis.Http;
 using appify.models;
 using appify.Business.Contract;
-using System.Data;
-using appify.Business;
 
 namespace appify.web.api
 {
@@ -21,9 +19,6 @@ namespace appify.web.api
         private readonly IShopifyBusiness shopifyBusiness;
         private readonly long VendorID;
         private readonly short ReferenceID;
-        DataTable shopifyProductMaster = new DataTable();
-        DataTable shopifyProductVariant = new DataTable();
-        DataTable shopifyProductImage = new DataTable();
         public ShopifyGraphQLService(IShopifyBusiness shopifyBusiness, long vendorID, short referenceID=0)
         {
             httpClient = new HttpClient();
@@ -34,7 +29,6 @@ namespace appify.web.api
             accessToken = shopifyConfig.AccessToken;
             apiVersion = shopifyConfig.APIVersion;
             ReferenceID = referenceID;
-            CreateTableStucture();
         }
 
         private async Task<string> PostGraphQLRequestAsync(string query)
@@ -153,10 +147,6 @@ namespace appify.web.api
                 hasNextPage = response["data"]["products"]["pageInfo"]["hasNextPage"].Value<bool>();
                 cursor = response["data"]["products"]["pageInfo"]["endCursor"].Value<string>();
                 Shopify shopifyProduct = new Shopify();
-
-
-
-
                 var products = response["data"]["products"]["edges"];
                 foreach (var product in products)
                 {
@@ -177,8 +167,6 @@ namespace appify.web.api
                     shopifyProduct.PublishedAt = productNode["publishedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
                     shopifyProduct.LegacyResourceId = productNode["legacyResourceId"]?.Value<string>() ?? "";
                     shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
-
-                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1);
 
                     var variants = productNode["variants"]["edges"];
                     foreach (var variant2 in variants)
@@ -201,8 +189,7 @@ namespace appify.web.api
                             UpdatedAt = variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
                         };
 
-                        //shopifyProduct.variants.Add(variant);
-                        shopifyProductVariant.Rows.Add(variant.ReferenceID,variant.VariantID,variant.ProductID,variant.Title,variant.SKU,variant.Price,variant.Position,variant.Barcode,variant.Weight,variant.WeightUnit,variant.InventoryQuantity,variant.CreatedAt,variant.UpdatedAt,1);
+                        shopifyProduct.variants.Add(variant);
                     }
 
                     var images = productNode["images"]["edges"];
@@ -219,70 +206,17 @@ namespace appify.web.api
                             Height = imageNode["height"]?.Value<short?>() ?? 0,
                             SRC = imageNode["url"]?.Value<string>() ?? ""
                         };
-                        //shopifyProduct.images.Add(image);
-                        shopifyProductImage.Rows.Add(image.ReferenceID,image.ImageID,image.ALT,image.ProductID,image.Width,image.Height,image.SRC,1);
+                        shopifyProduct.images.Add(image);
                     }
-                    
+
+                    result = shopifyBusiness.SaveShopifyProduct(shopifyProduct);
                 }
                 Console.WriteLine($"Has Next Page: {hasNextPage}, Cursor: {cursor}");
-                result = shopifyBusiness.BulkInsertShopifyProducts(shopifyProductMaster, shopifyProductVariant, shopifyProductImage);////shopifyBusiness.SaveShopifyProduct(shopifyProduct);
-                shopifyProductMaster.Rows.Clear();
-                shopifyProductVariant.Rows.Clear();
-                shopifyProductImage.Rows.Clear();
+
                 page++;
                 //if (page > 1) break; //Added break to stop after 3 pages.
             }
             return result;
-        }
-        private void CreateTableStucture()
-        {
-            try
-            {
-                ////// Product Table
-                shopifyProductMaster.Columns.Add("ReferenceID", typeof(short));
-                shopifyProductMaster.Columns.Add("ProductID", typeof(string));
-                shopifyProductMaster.Columns.Add("VendorID", typeof(long));
-                shopifyProductMaster.Columns.Add("Vendor", typeof(string));
-                shopifyProductMaster.Columns.Add("Title", typeof(string));
-                shopifyProductMaster.Columns.Add("Description", typeof(string));
-                shopifyProductMaster.Columns.Add("Handle", typeof(string));
-                shopifyProductMaster.Columns.Add("Status", typeof(string));
-                shopifyProductMaster.Columns.Add("ProductType", typeof(string));
-                shopifyProductMaster.Columns.Add("CreatedAt", typeof(DateTime));
-                shopifyProductMaster.Columns.Add("UpdatedAt", typeof(DateTime));
-                shopifyProductMaster.Columns.Add("PublishedAt", typeof(DateTime));
-                shopifyProductMaster.Columns.Add("LegacyResourceId", typeof(string));
-                shopifyProductMaster.Columns.Add("TotalInventory", typeof(Int16));
-                shopifyProductMaster.Columns.Add("IsActive", typeof(bool));
-
-                shopifyProductVariant.Columns.Add("ReferenceID", typeof(short));
-                shopifyProductVariant.Columns.Add("VariantID", typeof(string));
-                shopifyProductVariant.Columns.Add("ProductID", typeof(string));
-                shopifyProductVariant.Columns.Add("Title", typeof(string));
-                shopifyProductVariant.Columns.Add("SKU", typeof(string));
-                shopifyProductVariant.Columns.Add("Price", typeof(decimal));
-                shopifyProductVariant.Columns.Add("Position", typeof(Int16));
-                shopifyProductVariant.Columns.Add("Barcode", typeof(string));
-                shopifyProductVariant.Columns.Add("Weight", typeof(Int16));
-                shopifyProductVariant.Columns.Add("WeightUnit", typeof(string));
-                shopifyProductVariant.Columns.Add("InventoryQuantity", typeof(Int16));
-                shopifyProductVariant.Columns.Add("CreatedAt", typeof(DateTime));
-                shopifyProductVariant.Columns.Add("UpdatedAt", typeof(DateTime));
-                shopifyProductVariant.Columns.Add("IsActive", typeof(bool));
-
-                shopifyProductImage.Columns.Add("ReferenceID", typeof(string));
-                shopifyProductImage.Columns.Add("ImageID", typeof(string));
-                shopifyProductImage.Columns.Add("ProductID", typeof(string));
-                shopifyProductImage.Columns.Add("ALT", typeof(string));
-                shopifyProductImage.Columns.Add("Width", typeof(Int16));
-                shopifyProductImage.Columns.Add("Height", typeof(Int16));
-                shopifyProductImage.Columns.Add("SRC", typeof(string));
-                shopifyProductImage.Columns.Add("IsActive", typeof(bool));
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         // Fetch Single Product

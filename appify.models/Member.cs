@@ -124,9 +124,11 @@
         public string? BankAccountNo { get; set; }
         public string? IFSC { get; set; }
         public short? BankAccountType { get; set; }
+        public string? BeneficiaryName { get; set; }
         public string? ChequeImage { get; set; }
         public string? PANImage { get; set; }
         public string? GSTImage { get; set; }
+        public string? DigitalSignatureImage { get; set; }
         public string? AadharImage { get; set; }
         public string? AadharImage2 { get; set; }
         public string? KVICNo { get; set; }
