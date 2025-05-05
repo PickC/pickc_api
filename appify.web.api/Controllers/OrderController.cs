@@ -20,6 +20,8 @@ using Razorpay.Api;
 using System.Security.Cryptography;
 using System.Text;
 using static appify.models.NotificationType;
+using appify.audit.service;
+using StackExchange.Redis;
 
 namespace appify.web.api.Controllers
 {
@@ -36,6 +38,7 @@ namespace appify.web.api.Controllers
         private readonly IOrderBusiness orderBusiness;
         private readonly IInvoiceBusinesss invoiceBusinesss;
         private readonly IWebHostEnvironment env;
+        private readonly IAuditService auditService;
 
         private NotificationModel notificationModel;
         private ResponseMessage rm;
@@ -45,7 +48,8 @@ namespace appify.web.api.Controllers
                                IInvoiceBusinesss invoiceBusinesss, 
                                IEventLogBusiness eventLogBusiness, 
                                INotificationBusiness IResultData,
-                               IWebHostEnvironment env)
+                               IWebHostEnvironment env,
+                               IAuditService auditService)
         {
             this.configuration = configuration;
             this.orderBusiness = orderBusiness;
@@ -53,6 +57,7 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
             this.notificationBusiness = IResultData;
             this.env = env;
+            this.auditService = auditService;
 
             ////FCM Objects
             notificationModel = new NotificationModel();
@@ -307,6 +312,14 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, order, data, StatusName.ok));
                     await Common.UpdateEventLogsNew("ORDER HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, order, data, StatusName.ok, this.eventLogBusiness);
+
+
+                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+                    await auditService.LogAsync(EntityType.Order, result.OrderID, "New Order Created", result.MemberID.ToString(), "WEB", sourceIPAddress, result);
+
+
+                    //string ipaddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"].ToString() : "";
+                    //await auditService.LogAsync(EntityType.Order, order.OrderID, "ADD ORDER","",  "WEB", ipaddress, "");
                 }
                 else
                 {
@@ -317,6 +330,9 @@ namespace appify.web.api.Controllers
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - UNSBLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message));
                     await Common.UpdateEventLogsNew("ORDER - UNSBLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message, this.eventLogBusiness);
+               
+                
+                
                 }
 
             }
@@ -1489,6 +1505,11 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
+
+
+            
+
+
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
@@ -1497,6 +1518,9 @@ namespace appify.web.api.Controllers
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
                 List<CustomerOrder> items = orderBusiness.List(itemData.userID);
+
+
+
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -1506,6 +1530,7 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                     await Common.UpdateEventLogsNew("FETCH ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+
                 }
                 else
                 {

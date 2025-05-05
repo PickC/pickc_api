@@ -15,6 +15,8 @@ using StackExchange.Redis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.ResponseCompression;
 using appify.web.api;
+using appify.models;
+using appify.audit.service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,8 +97,6 @@ builder.Services.AddSingleton<IMemberCategoryParametersRepository, MemberCategor
 builder.Services.AddSingleton<IBulkImportedProductRepository, BulkImportedProductRepository>();
 builder.Services.AddSingleton<IShopifyRepository, ShopifyRepository>();
 
-//builder.Services.AddSingleton<IOrderHeaderRepository, OrderHeaderRepository>();
-//builder.Services.AddSingleton<IOrderDetailRepository, OrderDetailRepository>();
 
 //Business services
 builder.Services.AddSingleton<IAddressBusiness, AddressBusiness>();//
@@ -135,6 +135,21 @@ builder.Services.AddSingleton<ISubscriptionPriceBusiness, SubscriptionPriceBusin
 builder.Services.AddSingleton<IMemberCategoryParametersBusiness, MemberCategoryParametersBusiness>();
 builder.Services.AddSingleton<IBulkImportedProductBusiness, BulkImportedProductBusiness>();
 builder.Services.AddSingleton<IShopifyBusiness, ShopifyBusiness>();
+
+
+
+// 1. Register repositories first
+builder.Services.AddScoped<IOrderLogRepository, OrderLogRepository>();
+builder.Services.AddScoped<IProductLogRepository, ProductLogRepository>();
+builder.Services.AddScoped<IVendorLogRepository, VendorLogRepository>();
+
+// 2. Register business layer services
+builder.Services.AddScoped<IOrderLogBusiness, OrderLogBusiness>();
+builder.Services.AddScoped<IProductLogBusiness, ProductLogBusiness>();
+builder.Services.AddScoped<IVendorLogBusiness, VendorLogBusiness>();
+
+// 3. Register audit service
+builder.Services.AddScoped<IAuditService, AuditService>();
 
 
 builder.Services.AddHttpClient<ShopifyGraphQLService>();
