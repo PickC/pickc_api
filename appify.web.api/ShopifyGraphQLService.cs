@@ -4,19 +4,37 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Google.Apis.Http;
+using appify.models;
+using appify.Business.Contract;
+using System.Data;
+using appify.Business;
 
 namespace appify.web.api
 {
     public class ShopifyGraphQLService : IDisposable
     {
         private readonly HttpClient httpClient;
-        private readonly string shopUrl = "dsgclothes.myshopify.com";
-        private readonly string accessToken = "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";
-        private readonly string apiVersion = "2024-01";//"2023-10";
-
-        public ShopifyGraphQLService()
+        private readonly string storeUrl; //= "https://dsgclothes.myshopify.com";
+        private readonly string accessToken; //= "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";
+        private readonly string apiVersion;// = "2024-01";//"2023-10";
+        private readonly IShopifyBusiness shopifyBusiness;
+        private readonly long VendorID;
+        private readonly short ReferenceID;
+        DataTable shopifyProductMaster = new DataTable();
+        DataTable shopifyProductVariant = new DataTable();
+        DataTable shopifyProductImage = new DataTable();
+        public ShopifyGraphQLService(IShopifyBusiness shopifyBusiness, long vendorID, short referenceID=0)
         {
             httpClient = new HttpClient();
+            this.shopifyBusiness = shopifyBusiness;
+            VendorID = vendorID;
+            var shopifyConfig = this.shopifyBusiness.GetShopifyConfigByVendor(vendorID);
+            storeUrl = shopifyConfig.StoreURL;
+            accessToken = shopifyConfig.AccessToken;
+            apiVersion = shopifyConfig.APIVersion;
+            ReferenceID = referenceID;
+            CreateTableStucture();
         }
 
         private async Task<string> PostGraphQLRequestAsync(string query)
@@ -24,7 +42,7 @@ namespace appify.web.api
             try
             {
                 var requestBody = System.Text.Json.JsonSerializer.Serialize(new { query });
-                var request = new HttpRequestMessage(HttpMethod.Post, $"https://{shopUrl}/admin/api/2023-10/graphql.json");
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{storeUrl}");
                 request.Headers.Add("X-Shopify-Access-Token", accessToken);
                 request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
@@ -43,7 +61,7 @@ namespace appify.web.api
         }
         public async Task<JObject> QueryAsync(string query, object variables = null)
         {
-            string apiUrl = $"https://{shopUrl}/admin/api/{apiVersion}/graphql.json";
+            string apiUrl = $"{storeUrl}";
 
             var payload = new
             {
@@ -64,13 +82,13 @@ namespace appify.web.api
             }
         }
 
-        public async Task<string> FetchAllProductsAsync()
+        public async Task<bool> FetchAllProductsAsync()
         {
             string cursor = null;
+            bool result = false;
             bool hasNextPage = true;
             int page = 1;
             JArray jsonList = new JArray();
-
             while (hasNextPage)
             {
                 Console.WriteLine($"Page: {page}");
@@ -83,21 +101,41 @@ namespace appify.web.api
                                 id
                                 title
                                 descriptionHtml
+                                handle
+                                status
+                                vendor
+                                productType
+                                tags
+                                createdAt
+                                updatedAt
+                                publishedAt
+                                legacyResourceId
+                                totalInventory
                                 variants(first: 100) {{
                                     edges {{
                                         node {{
                                             id
                                             title
-                                            price
                                             sku
+                                            price
+                                            position
+                                            barcode
+                                            weight
+                                            weightUnit
+                                            inventoryQuantity
+                                            createdAt
+                                            updatedAt
                                         }}
                                     }}
                                 }}
                                 images(first: 10) {{
                                     edges {{
                                         node {{
-                                            src
+                                            id
                                             altText
+                                            width
+                                            height
+                                            url
                                         }}
                                     }}
                                 }}
@@ -114,105 +152,229 @@ namespace appify.web.api
 
                 hasNextPage = response["data"]["products"]["pageInfo"]["hasNextPage"].Value<bool>();
                 cursor = response["data"]["products"]["pageInfo"]["endCursor"].Value<string>();
+                Shopify shopifyProduct = new Shopify();
+
+
+
 
                 var products = response["data"]["products"]["edges"];
-
-                // Process the 'products' JToken here.  This JToken contains the array
-                // of products, each with its 'cursor' and 'node' properties.
-                // You can iterate through 'products' and extract the data you need.
-
                 foreach (var product in products)
                 {
                     jsonList.Add(product["node"]);
-                    ////    string productCursor = product["cursor"].Value<string>();
-                    ////    var productNode = product["node"];
+                    var fullnode = jsonList.ToString();
+                    var productNode = product["node"];
+                    shopifyProduct.ReferenceID = ReferenceID;
+                    shopifyProduct.ProductID = productNode["id"]?.Value<string>() ?? "";
+                    shopifyProduct.Title = productNode["title"]?.Value<string>() ?? "";
+                    shopifyProduct.Description = productNode["descriptionHtml"]?.Value<string>() ?? "";
+                    shopifyProduct.Handle = productNode["handle"]?.Value<string>() ?? "";
+                    shopifyProduct.Status = productNode["status"]?.Value<string>() ?? "";
+                    shopifyProduct.Vendor = productNode["vendor"]?.Value<string>() ?? "";
+                    shopifyProduct.VendorID = VendorID;
+                    shopifyProduct.ProductType = productNode["productType"]?.Value<string>() ?? "";
+                    shopifyProduct.CreatedAt = System.String.IsNullOrEmpty((string?)productNode["createdAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["createdAt"]); //productNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.UpdatedAt = System.String.IsNullOrEmpty((string?)productNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["updatedAt"]);//productNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.PublishedAt = System.String.IsNullOrEmpty((string?)productNode["publishedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["publishedAt"]);//productNode["publishedAt"]?.Value<DateTime>() ?? DateTime.MinValue;
+                    shopifyProduct.LegacyResourceId = productNode["legacyResourceId"]?.Value<string>() ?? "";
+                    shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
 
-                    ////    string productId = productNode["id"].Value<string>();
-                    ////    string productTitle = productNode["title"].Value<string>();
-                    ////    string productDescription = productNode["descriptionHtml"].Value<string>();
+                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1);
 
-                    ////    Console.WriteLine($"  Cursor: {productCursor}, ID: {productId}, Title: {productTitle}, Description: {productDescription}");
+                    var variants = productNode["variants"]["edges"];
+                    foreach (var variant2 in variants)
+                    {
+                        var variantNode = variant2["node"];
+                        ShopifyProductVariant variant = new ShopifyProductVariant
+                        {
+                            ReferenceID = ReferenceID,
+                            VariantID = variantNode["id"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Title = variantNode["title"]?.Value<string>() ?? "",
+                            SKU = variantNode["sku"]?.Value<string>() ?? "",
+                            Price = variantNode["price"]?.Value<decimal?>() ?? 0,
+                            Position = variantNode["position"]?.Value<short?>() ?? 0,
+                            Barcode = variantNode["barcode"]?.Value<string>() ?? "",
+                            Weight = variantNode["weight"]?.Value<short?>() ?? 0,
+                            WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
+                            InventoryQuantity = variantNode["inventoryQuantity"]?.Value<short?>() ?? 0,
+                            CreatedAt = System.String.IsNullOrEmpty((string?)variantNode["createdAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["createdAt"]),//variantNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
+                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updatedAt"])//variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
+                        };
 
-                    ////    // Example of getting variants:
-                    ////    var variants = productNode["variants"]["edges"];
-                    ////    Console.WriteLine("    Variants:");
-                    ////    foreach (var variant in variants)
-                    ////    {
-                    ////        var variantNode = variant["node"];
-                    ////        string variantId = variantNode["id"].Value<string>();
-                    ////        string variantTitle = variantNode["title"].Value<string>();
-                    ////        decimal variantPrice = variantNode["price"].Value<decimal>();
-                    ////        string variantSku = variantNode["sku"].Value<string>();
-                    ////        Console.WriteLine($"      ID: {variantId}, Title: {variantTitle}, Price: {variantPrice}, Sku: {variantSku}");
-                    ////    }
+                        //shopifyProduct.variants.Add(variant);
+                        shopifyProductVariant.Rows.Add(variant.ReferenceID,variant.VariantID,variant.ProductID,variant.Title,variant.SKU,variant.Price,variant.Position,variant.Barcode,variant.Weight,variant.WeightUnit,variant.InventoryQuantity,variant.CreatedAt,variant.UpdatedAt,1);
+                    }
 
-                    ////    // Example of getting images
-                    ////    var images = productNode["images"]["edges"];
-                    ////    Console.WriteLine("    Images:");
-                    ////    foreach (var image in images)
-                    ////    {
-                    ////        var imageNode = image["node"];
-                    ////        string imageSrc = imageNode["src"].Value<string>();
-                    ////        string imageAltText = imageNode["altText"].Value<string>();
-                    ////        Console.WriteLine($"      Source: {imageSrc}, Alt Text: {imageAltText}");
-                    ////    }
+                    var images = productNode["images"]["edges"];
+                    foreach (var image2 in images)
+                    {
+                        var imageNode = image2["node"];
+                        ShopifyProductVariantImage image = new ShopifyProductVariantImage
+                        {
+                            ReferenceID= ReferenceID,
+                            ImageID = imageNode["id"]?.Value<string>() ?? "",
+                            ALT = imageNode["altText"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Width = imageNode["width"]?.Value<short?>() ?? 0,
+                            Height = imageNode["height"]?.Value<short?>() ?? 0,
+                            SRC = imageNode["url"]?.Value<string>() ?? ""
+                        };
+                        //shopifyProduct.images.Add(image);
+                        shopifyProductImage.Rows.Add(image.ReferenceID,image.ImageID,image.ALT,image.ProductID,image.Width,image.Height,image.SRC,1);
+                    }
+                    
                 }
-
                 Console.WriteLine($"Has Next Page: {hasNextPage}, Cursor: {cursor}");
+                result = shopifyBusiness.BulkInsertShopifyProducts(shopifyProductMaster, shopifyProductVariant, shopifyProductImage);////shopifyBusiness.SaveShopifyProduct(shopifyProduct);
+                shopifyProductMaster.Rows.Clear();
+                shopifyProductVariant.Rows.Clear();
+                shopifyProductImage.Rows.Clear();
                 page++;
-                //if (page > 2) break; //Added break to stop after 3 pages.
+                //if (page > 1) break; //Added break to stop after 3 pages.
             }
-            Console.WriteLine("Done");
-            return jsonList.ToString();
+            return result;
         }
-
-        // Fetch Single Product
-        public async Task<string> GetSingleProductAsync(string productId)
+        private void CreateTableStucture()
         {
             try
             {
-                var query = $@"
-            query {{
-              product(id: ""{productId}"") {{
-                id
-                title
-                descriptionHtml
-                vendor
-                variants(first: 10) {{
-                  edges {{
-                    node {{
-                      id
-                      title
-                      price
-                    }}
-                  }}
-                }}
-              }}
-            }}";
+                ////// Product Table
+                shopifyProductMaster.Columns.Add("ReferenceID", typeof(short));
+                shopifyProductMaster.Columns.Add("ProductID", typeof(string));
+                shopifyProductMaster.Columns.Add("VendorID", typeof(long));
+                shopifyProductMaster.Columns.Add("Vendor", typeof(string));
+                shopifyProductMaster.Columns.Add("Title", typeof(string));
+                shopifyProductMaster.Columns.Add("Description", typeof(string));
+                shopifyProductMaster.Columns.Add("Handle", typeof(string));
+                shopifyProductMaster.Columns.Add("Status", typeof(string));
+                shopifyProductMaster.Columns.Add("ProductType", typeof(string));
+                shopifyProductMaster.Columns.Add("CreatedAt", typeof(DateTime));
+                shopifyProductMaster.Columns.Add("UpdatedAt", typeof(DateTime));
+                shopifyProductMaster.Columns.Add("PublishedAt", typeof(DateTime));
+                shopifyProductMaster.Columns.Add("LegacyResourceId", typeof(string));
+                shopifyProductMaster.Columns.Add("TotalInventory", typeof(Int16));
+                shopifyProductMaster.Columns.Add("IsActive", typeof(bool));
 
-                return await PostGraphQLRequestAsync(query);
+                shopifyProductVariant.Columns.Add("ReferenceID", typeof(short));
+                shopifyProductVariant.Columns.Add("VariantID", typeof(string));
+                shopifyProductVariant.Columns.Add("ProductID", typeof(string));
+                shopifyProductVariant.Columns.Add("Title", typeof(string));
+                shopifyProductVariant.Columns.Add("SKU", typeof(string));
+                shopifyProductVariant.Columns.Add("Price", typeof(decimal));
+                shopifyProductVariant.Columns.Add("Position", typeof(Int16));
+                shopifyProductVariant.Columns.Add("Barcode", typeof(string));
+                shopifyProductVariant.Columns.Add("Weight", typeof(Int16));
+                shopifyProductVariant.Columns.Add("WeightUnit", typeof(string));
+                shopifyProductVariant.Columns.Add("InventoryQuantity", typeof(Int16));
+                shopifyProductVariant.Columns.Add("CreatedAt", typeof(DateTime));
+                shopifyProductVariant.Columns.Add("UpdatedAt", typeof(DateTime));
+                shopifyProductVariant.Columns.Add("IsActive", typeof(bool));
+
+                shopifyProductImage.Columns.Add("ReferenceID", typeof(string));
+                shopifyProductImage.Columns.Add("ImageID", typeof(string));
+                shopifyProductImage.Columns.Add("ProductID", typeof(string));
+                shopifyProductImage.Columns.Add("ALT", typeof(string));
+                shopifyProductImage.Columns.Add("Width", typeof(Int16));
+                shopifyProductImage.Columns.Add("Height", typeof(Int16));
+                shopifyProductImage.Columns.Add("SRC", typeof(string));
+                shopifyProductImage.Columns.Add("IsActive", typeof(bool));
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Failed to get product: {ex.Message}", ex);
+                throw ex;
             }
         }
 
+        // Fetch Single Product
+        //public async Task<string> GetSingleProductAsync(string productId)
+        //{
+        //    try
+        //    {
+        //        var query = $@"
+        //    query {{
+        //      product(id: ""{productId}"") {{
+        //        id
+        //        title
+        //        descriptionHtml
+        //        vendor
+        //        variants(first: 100) {{
+        //            edges {{
+        //                node {{
+        //                    id
+        //                    title
+        //                    price
+        //                    sku
+        //                }}
+        //            }}
+        //        }}
+        //        images(first: 10) {{
+        //            edges {{
+        //                node {{
+        //                    src
+        //                    altText
+        //                }}
+        //            }}
+        //        }}
+        //      }}
+        //    }}";
+
+        //        return await PostGraphQLRequestAsync(query);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException($"Failed to get product: {ex.Message}", ex);
+        //    }
+        //}
+
         // Create New Product
-        public async Task<string> CreateProductAsync(string title, string description, string vendor)
+        //public async Task<string> CreateProductAsync(string title, string description, string vendor)
+        //{
+        //    try
+        //    {
+        //        var mutation = $@"
+        //    mutation {{
+        //      productCreate(input: {{
+        //        title: ""{title}"",
+        //        descriptionHtml: ""{description}"",
+        //        vendor: ""{vendor}""
+        //      }}) {{
+        //        product {{
+        //          id
+        //          title
+        //        }}
+        //        userErrors {{
+        //          field
+        //          message
+        //        }}
+        //      }}
+        //    }}";
+
+        //        return await PostGraphQLRequestAsync(mutation);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+        //    }
+        //}
+
+        // Update Existing Product
+        public async Task<string> UpdateProductAsync(string productId, string title, string descriptionHtml, string status)
         {
             try
             {
                 var mutation = $@"
             mutation {{
-              productCreate(input: {{
+              productUpdate(input: {{
+                id: ""{productId}"",
                 title: ""{title}"",
-                descriptionHtml: ""{description}"",
-                vendor: ""{vendor}""
+                descriptionHtml: ""{descriptionHtml}"",
+                status: {status}
               }}) {{
                 product {{
                   id
                   title
+                  descriptionHtml
+                  status
                 }}
                 userErrors {{
                   field
@@ -225,20 +387,56 @@ namespace appify.web.api
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+                throw new ApplicationException($"Failed to update product: {ex.Message}", ex);
             }
         }
 
-        // Update Existing Product
-        public async Task<string> UpdateProductAsync(string productId, string title)
+        // Update Existing Product's Variant
+        public async Task<string> UpdateVariantAsync(string variantId, double price, Int16 weight, string weightUnit, Int16 inventoryQuantity)
+        {
+            try
+            {
+                var mutation = $@"
+            mutation {{
+              productVariantUpdate(input: {{
+                    id: ""{variantId}"",
+                    price: ""{price}"",
+                    weight: {weight},
+                    weightUnit: {weightUnit},
+                    inventoryQuantity: {inventoryQuantity}
+              }}) {{
+                productVariant {{
+                    id
+                    price
+                    weight
+                    weightUnit
+                    inventoryQuantity
+                }}
+                userErrors {{
+                  field
+                  message
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(mutation);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to update product: {ex.Message}", ex);
+            }
+        }
+
+        // Update Existing Product's Stock
+        public async Task<string> UpdateProductStockAsync(ShopifyProductStock itemData)
         {
             try
             {
                 var mutation = $@"
             mutation {{
               productUpdate(input: {{
-                id: ""{productId}"",
-                title: ""{title}""
+                id: ""{itemData.ProductID}"",
+                totalInventory: ""{itemData.InventoryQuantity}""
               }}) {{
                 product {{
                   id
@@ -291,6 +489,7 @@ namespace appify.web.api
             //{
             //    canDispose.Dispose();
             //}
+
             GC.SuppressFinalize(this);
             //throw new NotImplementedException();
         }

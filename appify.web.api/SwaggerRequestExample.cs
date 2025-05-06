@@ -300,6 +300,15 @@ namespace appify.web.api
         public long DiscountID { get; set; }
         public long productID { get; set; }
     }
+    public class ParamProductID
+    {
+        public string ProductID { get; set; }
+    }
+    public class ParamVendorProduct
+    {
+        public long VendorID { get; set; }
+        public string ProductID { get; set; }
+    }
     public class ParamVendorOrder
     {
         public long VendorID { get; set; }
@@ -319,6 +328,11 @@ namespace appify.web.api
     public class ParamVendor
     {
         public Int64 VendorID { get; set; }
+    }
+    public class ParamVendorRef
+    {
+        public Int64 VendorID { get; set; }
+        public short ReferenceID { get; set; }
     }
     public class ParamSMSCredentials
     {

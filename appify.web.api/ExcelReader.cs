@@ -13,14 +13,19 @@ using System.Text;
 using NPOI.XSSF.UserModel;
 using System.Net;
 using appify.models;
-
+using Azure.Storage.Blobs;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
+using Google.Api.Gax.ResourceNames;
+using NPOI.SS.Formula.Functions;
 namespace appify.web.api
 {
     public class ExcelReader
     {
+        List<BulkImportedProduct> products = new List<BulkImportedProduct>();
         public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID = 0)
         {
-            var products = new List<BulkImportedProduct>();
+
 
             // NPOI Workbook initialization
             IWorkbook workbook = new XSSFWorkbook(stream);
@@ -142,13 +147,19 @@ namespace appify.web.api
 
             // download the images from google drive
 
-#if !DEBUG
+#if DEBUG
 
             if (products.Count > 0)
             {
+                short index = 0;
                 foreach (var item in products)
                 {
-                    DownloadGoogleDriveImage(item.ProductName, item.Image2);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image1, index,1);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image2, index, 2);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image3, index, 3);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image4, index, 4);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image5, index, 5);
+                    index +=1;
                 }
 
             }
@@ -173,13 +184,14 @@ namespace appify.web.api
         }
 
 
-        private void DownloadGoogleDriveImage(string productCode, string url)
+        private async void DownloadGoogleDriveImageAsync(string productCode, string url, short ItemNo, short col)
         {
-            string baseFolder = @"D:\Downloads";
-
+            string baseFolder = @"C:\Downloads";
             try
             {
+                if(string.IsNullOrEmpty(url)) { return; }
                 // Create product-specific folder if it doesn't exist
+                productCode = SanitizeFolderName(productCode);
                 var productFolder = Path.Combine(baseFolder, productCode);
                 if (!Directory.Exists(productFolder))
                 {
@@ -209,6 +221,7 @@ namespace appify.web.api
                     // Download with timeout
                     client.DownloadFile(directUrl, fullPath);
                     Console.WriteLine($"Downloaded: {fullPath}");
+                    AzureUploadImagesAsync(fullPath, ItemNo, col);
                 }
             }
             catch (Exception ex)
@@ -222,6 +235,58 @@ namespace appify.web.api
             }
         }
 
+        private async void AzureUploadImagesAsync(string url, short ItemNo, short col)
+        {
+            string storageConnectionString;
+            string containerName;
+            var UploadedUrl = "";
+            try
+            {
+                storageConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+                containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+
+                var blobContainerClient = new BlobContainerClient(storageConnectionString, containerName);
+                blobContainerClient.CreateIfNotExistsAsync();
+
+
+                var fileName = Path.GetFileName(url);
+                var blobClient = blobContainerClient.GetBlobClient(fileName);
+
+                using FileStream uploadFileStream = File.OpenRead(url);
+                blobClient.UploadAsync(uploadFileStream, overwrite: true);
+                uploadFileStream.Close();
+                if(col==1)
+                    products[ItemNo].Image1 = blobClient.Uri.ToString();
+                else if (col == 2)
+                    products[ItemNo].Image2 = blobClient.Uri.ToString();
+                else if (col == 3)
+                    products[ItemNo].Image3 = blobClient.Uri.ToString();
+                else if (col == 4)
+                    products[ItemNo].Image4 = blobClient.Uri.ToString();
+                else if (col == 5)
+                    products[ItemNo].Image5 = blobClient.Uri.ToString();
+                //UploadedUrl = blobClient.Uri.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Failed to upload {url}");
+                Console.WriteLine($"Details: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+            }
+        }
+
+        public static string SanitizeFolderName(string folderName)
+        {
+            // Remove or replace characters invalid in Windows folder names
+            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+            string invalidReStr = $"[{invalidChars}]";
+
+            return Regex.Replace(folderName, invalidReStr, "_");
+        }
         private string ExtractGoogleDriveFileId(string url)
         {
             // Handle multiple Google Drive URL formats:

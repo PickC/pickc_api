@@ -14,7 +14,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Json;
 
 namespace appify.web.api.Controllers
 {
@@ -796,18 +798,17 @@ namespace appify.web.api.Controllers
         {
             var wati = new WhatsAppNotification(configuration);
 
-            string[] parameters = new[] { dto.CustomerName, dto.OrderNumber, dto.OrderStatus };
+            string[] parameters = new[] { dto.Name, dto.OrderNumber };
 
-            var result = await wati.SendWhatsAppMessageAsync(dto.PhoneNumber, "order_placed", parameters);
-
-            return Ok(result);
+            var result = await wati.SendWhatsAppMessageAsync(dto.PhoneNumber, "order_placed_tmp", dto.Name, dto.OrderNumber);
+            var json = JsonConvert.DeserializeObject(result);
+            return Ok(json);
         }
 
         public class OrderStatusDto
         {
-            public string CustomerName { get; set; }
+            public string Name { get; set; }
             public string OrderNumber { get; set; }
-            public string OrderStatus { get; set; }  // "Confirmed" or "Declined"
             public string PhoneNumber { get; set; }  // E.g., "9198xxxxxxx"
         }
     }
