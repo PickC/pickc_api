@@ -50,12 +50,8 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
-<<<<<<< HEAD
-                                IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness)
-=======
-                                IBulkImportedProductBusiness bulkImportedProductBusiness,
-                                IWebHostEnvironment env)
->>>>>>> 4fb4e283a80793273e8c1a3193a093b00c8b81e4
+                                IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness,
+                                IBulkImportedProductBusiness bulkImportedProductBusiness)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
@@ -852,10 +848,8 @@ namespace appify.web.api.Controllers
 
             try
             {
-<<<<<<< HEAD
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
+                //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
                 //DownloadGoogleDriveImagesAsync(products);
-=======
                 var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(),itemData.VendorID);
 
 
@@ -864,7 +858,6 @@ namespace appify.web.api.Controllers
                     result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
                 }
 
->>>>>>> 4fb4e283a80793273e8c1a3193a093b00c8b81e4
                 rm.statusCode = StatusCodes.OK;
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
                 rm.name = StatusName.ok;

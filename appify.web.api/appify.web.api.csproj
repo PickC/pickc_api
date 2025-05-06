@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
     <PackageReference Include="CorePush" Version="3.0.1" />
     <PackageReference Include="EASendMail" Version="7.9.2.6" />
     <PackageReference Include="FirebaseAdmin" Version="2.4.0" />

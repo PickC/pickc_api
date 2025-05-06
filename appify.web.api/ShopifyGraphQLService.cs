@@ -160,8 +160,8 @@ namespace appify.web.api
                 var products = response["data"]["products"]["edges"];
                 foreach (var product in products)
                 {
-                    //jsonList.Add(product["node"]);
-                    //var fullnode = jsonList.ToString();
+                    jsonList.Add(product["node"]);
+                    var fullnode = jsonList.ToString();
                     var productNode = product["node"];
                     shopifyProduct.ReferenceID = ReferenceID;
                     shopifyProduct.ProductID = productNode["id"]?.Value<string>() ?? "";
@@ -172,9 +172,9 @@ namespace appify.web.api
                     shopifyProduct.Vendor = productNode["vendor"]?.Value<string>() ?? "";
                     shopifyProduct.VendorID = VendorID;
                     shopifyProduct.ProductType = productNode["productType"]?.Value<string>() ?? "";
-                    shopifyProduct.CreatedAt = productNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                    shopifyProduct.UpdatedAt = productNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                    shopifyProduct.PublishedAt = productNode["publishedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.CreatedAt = System.String.IsNullOrEmpty((string?)productNode["createdAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["createdAt"]); //productNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.UpdatedAt = System.String.IsNullOrEmpty((string?)productNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["updatedAt"]);//productNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.PublishedAt = System.String.IsNullOrEmpty((string?)productNode["publishedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["publishedAt"]);//productNode["publishedAt"]?.Value<DateTime>() ?? DateTime.MinValue;
                     shopifyProduct.LegacyResourceId = productNode["legacyResourceId"]?.Value<string>() ?? "";
                     shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
 
@@ -197,8 +197,8 @@ namespace appify.web.api
                             Weight = variantNode["weight"]?.Value<short?>() ?? 0,
                             WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
                             InventoryQuantity = variantNode["inventoryQuantity"]?.Value<short?>() ?? 0,
-                            CreatedAt = variantNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
-                            UpdatedAt = variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
+                            CreatedAt = System.String.IsNullOrEmpty((string?)variantNode["createdAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["createdAt"]),//variantNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
+                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updatedAt"])//variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
                         };
 
                         //shopifyProduct.variants.Add(variant);
