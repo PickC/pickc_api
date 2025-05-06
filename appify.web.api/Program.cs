@@ -96,7 +96,7 @@ builder.Services.AddSingleton<ISubscriptionPriceRepository, SubscriptionPriceRep
 builder.Services.AddSingleton<IMemberCategoryParametersRepository, MemberCategoryParametersRepository>();
 builder.Services.AddSingleton<IBulkImportedProductRepository, BulkImportedProductRepository>();
 builder.Services.AddSingleton<IShopifyRepository, ShopifyRepository>();
-
+builder.Services.AddSingleton<IVendorWebModuleRepository,  VendorWebModuleRepository>();
 
 //Business services
 builder.Services.AddSingleton<IAddressBusiness, AddressBusiness>();//
@@ -135,7 +135,7 @@ builder.Services.AddSingleton<ISubscriptionPriceBusiness, SubscriptionPriceBusin
 builder.Services.AddSingleton<IMemberCategoryParametersBusiness, MemberCategoryParametersBusiness>();
 builder.Services.AddSingleton<IBulkImportedProductBusiness, BulkImportedProductBusiness>();
 builder.Services.AddSingleton<IShopifyBusiness, ShopifyBusiness>();
-
+builder.Services.AddSingleton<IVendorWebModuleBusiness, VendorWebModuleBusiness>();
 
 
 // 1. Register repositories first

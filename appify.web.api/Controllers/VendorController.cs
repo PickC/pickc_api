@@ -17,6 +17,7 @@ using NPOI.XSSF.UserModel;
 using Razorpay.Api;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using static appify.models.NotificationType;
 
 namespace appify.web.api.Controllers
 {
@@ -36,6 +37,8 @@ namespace appify.web.api.Controllers
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
         private readonly IWebHostEnvironment env;
+        private readonly INotificationBusiness notificationBusiness;
+        private readonly IVendorWebModuleBusiness vendorWebModuleBusiness;
 
         private ResponseMessage rm;
         public VendorController(IConfiguration configuration,
@@ -46,7 +49,7 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
-                                IWebHostEnvironment env)
+                                IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
@@ -57,6 +60,8 @@ namespace appify.web.api.Controllers
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
             this.env = env;
+            this.notificationBusiness = IResultData;
+            this.vendorWebModuleBusiness = vendorWebModuleBusiness;
         }
         /// <summary>
         /// gets Product items information based on Vendor ID
@@ -886,6 +891,401 @@ namespace appify.web.api.Controllers
         {
             var match = Regex.Match(url, @"\/d\/(.*?)\/");
             return match.Success ? match.Groups[1].Value : string.Empty;
+        }
+
+        /// <summary>
+        /// Add/Update The User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        /// Method Type : POST
+        ///          
+        ///     {
+        ///       "userID": 0,
+        ///       "vendorID": 1060,
+        ///       "memberType": 1001,
+        ///       "firstName": "John",
+        ///       "lastName": "Abraham",
+        ///       "mobileNo": "98989898989",
+        ///       "createdby": 1060,
+        ///       "createdOn": "2025-05-06T06:17:35.187Z",
+        ///       "modifiedBy": 1060,
+        ///       "modifiedOn": "2025-05-06T06:17:35.187Z",
+        ///       "isActive": true
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER HAS BEEN SUCCESSFULLY REGISTERED!",
+        ///       "data": {
+        ///         "userID": 100,
+        ///         "vendorID": 1060,
+        ///         "memberType": 1001,
+        ///         "firstName": "John",
+        ///         "lastName": "Abraham",
+        ///         "mobileNo": "98989898989",
+        ///         "createdby": 1060,
+        ///         "createdOn": "2025-05-06T06:17:35.187Z",
+        ///         "modifiedBy": 1060,
+        ///         "modifiedOn": "2025-05-06T06:17:35.187Z",
+        ///         "isActive": true
+        ///       }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER HAS BEEN SUCCESSFULLY REGISTERED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/Register")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> SaveUser(MemberUser itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.SaveVendorUser(itemData);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER HAS BEEN SUCCESSFULLY REGISTERED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER HAS BEEN SUCCESSFULLY REGISTERED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER REGISTERED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER REGISTERED - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get The User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///       "userID": 100
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER ITEM HAS BEEN SUCCESSFULLY FETCHED!",
+        ///       "data": {
+        ///         "userID": 100,
+        ///         "vendorID": 1060,
+        ///         "memberType": 1001,
+        ///         "firstName": "John",
+        ///         "lastName": "Abraham",
+        ///         "mobileNo": "98989898989",
+        ///         "isActive": true
+        ///       }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER ITEM HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/Get")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetAUser(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.GetVendorUser(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER ITEM HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER ITEM", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER ITEM - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER ITEM - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Get The User List By Vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     {
+        ///       "userID": 100
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER LIST HAS BEEN SUCCESSFULLY FETCHED!",
+        ///       "data": [
+        ///         {
+        ///           "userID": 100,
+        ///           "vendorID": 1060,
+        ///           "memberType": 1001,
+        ///           "firstName": "John",
+        ///           "lastName": "Abraham",
+        ///           "mobileNo": "98989898989",
+        ///           "isActive": true
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER LIST HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/List")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetUserList(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.GetVendorUserList(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER LIST HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER LIST HAS BEEN SUCCESSFULLY FETCHED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER LIST - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Update The User Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST  
+        ///     {
+        ///       "userID": 100,
+        ///       "isActive": false
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": true
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/UpdateStatus")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserStatus(MemberUserUpdate itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.UpdateVendorUser(itemData.UserID, itemData.IsActive);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER'S STATUS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER'S STATUS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Send The Invitation to the Particular User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST  
+        ///     {
+        ///       "userID": 100,
+        ///       "mobileNo": "9899898989"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "INVITATION HAS BEEN SUCCESSFULLY SENT!",
+        ///       "data": true
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">INVITATION HAS BEEN SUCCESSFULLY SENT!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/SendInvitation")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> SendInvitation(MemberUserInvitation itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                string OTPValue = utility.Common.GenerateRandomPassword();
+
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.InvitationSendToUser), 0, 0, itemData.MobileNo, this.notificationBusiness, OTPValue);
+
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "INVITATION HAS BEEN SUCCESSFULLY SENT!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("INVITATION - NOT SENT", reqHeader, controllerURL, result, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("INVITATION - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
         }
     }
 }

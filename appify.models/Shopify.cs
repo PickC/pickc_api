@@ -70,4 +70,10 @@ namespace appify.models
         public string APIVersion { get; set; }
 
     }
+    public partial class ShopifyProductStock
+    {
+        public long VendorID { get; set; }
+        public string ProductID { get; set; }
+        public Int16 InventoryQuantity { get; set; }
+    }
 }

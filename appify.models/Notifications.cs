@@ -141,7 +141,8 @@ namespace appify.models
             BackinStock = 1015,//// Requested to Stop this message
             OTP = 1016,//// Requested to Stop this message
             SuccessfulSignupCustomer = 1017,
-            OrderDeclinedByVendor = 1020
+            OrderDeclinedByVendor = 1020,
+            InvitationSendToUser = 1022
         }
     }
 

@@ -17,6 +17,7 @@ using static appify.web.api.ParamVendorProduct;
 using appify.models;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using NPOI.HPSF;
 
 namespace appify.web.api.Controllers
 {
@@ -119,29 +120,29 @@ namespace appify.web.api.Controllers
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY ASYNCED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost, Route("GetProductAsync")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetProductAsync(ParamVendorProduct item)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
-            }
-            catch (Exception ex)
-            {
+        //[HttpPost, Route("GetProductAsync")]
+        //[MapToApiVersion("1.0")]
+        //public async Task<IActionResult> GetProductAsync(ParamVendorProduct item)
+        //{
+        //    var reqHeader = Request;
+        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //    try
+        //    {
+        //        rm = new ResponseMessage();
+        //        ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
+        //        rm.statusCode = StatusCodes.ERROR;
+        //        rm.message = ex.Message.ToString();
+        //        rm.name = StatusName.invalid;
+        //        rm.data = null;
 
-                await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-                return View();
-        }
+        //        await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+        //    }
+        //        return View();
+        //}
 
         /// <summary>
         /// CREATE A Shopify Product
@@ -209,6 +210,27 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
+                var result = await shopifyGraphQLService.UpdateProductAsync("gid://shopify/Product/9776273359136", "Zebra Print Bikini222", "ok then", "DRAFT");
+                var result2 = await shopifyGraphQLService.UpdateVariantAsync("gid://shopify/ProductVariant/49684002701600", 16.99, 10, "KILOGRAMS",98);
+                if (result != null && result2 != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY IMPORTED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED", reqHeader, controllerURL, null, result2, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
             }
             catch (Exception ex)
             {
@@ -220,7 +242,67 @@ namespace appify.web.api.Controllers
 
                 await Common.UpdateEventLogsNew("SHPIFY UPDATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
-            return View();
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Update A Shopify Product
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        ///     {
+        ///     }
+        ///     
+        /// Sample response JSON :
+        ///     {
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("UpdateProductStockAsync")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UpdateProductStockAsync(ShopifyProductStock item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
+                var result = await shopifyGraphQLService.UpdateProductStockAsync(item);
+
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY IMPORTED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS ASYNC - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHPIFY UPDATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
         }
 
         /// <summary>

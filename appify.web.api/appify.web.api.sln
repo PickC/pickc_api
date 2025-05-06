@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appify.web.api", "appify.web.api.csproj", "{3EB1B680-6720-4555-A2D9-32AA0A868E99}"
+	ProjectSection(ProjectDependencies) = postProject
+		{557C5460-F010-4EE3-B7D1-6751D15B1468} = {557C5460-F010-4EE3-B7D1-6751D15B1468}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{932FEB91-E3F8-49AB-BC51-0AF60E989278}"
 EndProject
@@ -27,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appify.Business", "..\appif
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appify.DataAccess", "..\appify.DataAccess\appify.DataAccess.csproj", "{43D0FBA6-157A-486E-94AF-B545CA7D5ACA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit.Services", "Audit.Services", "{07D726AE-F215-467F-8416-FF7C3046185F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit", "Audit", "{07D726AE-F215-467F-8416-FF7C3046185F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "appify.audit.service", "..\appify.audit.service\appify.audit.service.csproj", "{557C5460-F010-4EE3-B7D1-6751D15B1468}"
 EndProject

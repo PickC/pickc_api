@@ -286,61 +286,95 @@ namespace appify.web.api
         }
 
         // Fetch Single Product
-        public async Task<string> GetSingleProductAsync(string productId)
-        {
-            try
-            {
-                var query = $@"
-            query {{
-              product(id: ""{productId}"") {{
-                id
-                title
-                descriptionHtml
-                vendor
-                variants(first: 100) {{
-                    edges {{
-                        node {{
-                            id
-                            title
-                            price
-                            sku
-                        }}
-                    }}
-                }}
-                images(first: 10) {{
-                    edges {{
-                        node {{
-                            src
-                            altText
-                        }}
-                    }}
-                }}
-              }}
-            }}";
+        //public async Task<string> GetSingleProductAsync(string productId)
+        //{
+        //    try
+        //    {
+        //        var query = $@"
+        //    query {{
+        //      product(id: ""{productId}"") {{
+        //        id
+        //        title
+        //        descriptionHtml
+        //        vendor
+        //        variants(first: 100) {{
+        //            edges {{
+        //                node {{
+        //                    id
+        //                    title
+        //                    price
+        //                    sku
+        //                }}
+        //            }}
+        //        }}
+        //        images(first: 10) {{
+        //            edges {{
+        //                node {{
+        //                    src
+        //                    altText
+        //                }}
+        //            }}
+        //        }}
+        //      }}
+        //    }}";
 
-                return await PostGraphQLRequestAsync(query);
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Failed to get product: {ex.Message}", ex);
-            }
-        }
+        //        return await PostGraphQLRequestAsync(query);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException($"Failed to get product: {ex.Message}", ex);
+        //    }
+        //}
 
         // Create New Product
-        public async Task<string> CreateProductAsync(string title, string description, string vendor)
+        //public async Task<string> CreateProductAsync(string title, string description, string vendor)
+        //{
+        //    try
+        //    {
+        //        var mutation = $@"
+        //    mutation {{
+        //      productCreate(input: {{
+        //        title: ""{title}"",
+        //        descriptionHtml: ""{description}"",
+        //        vendor: ""{vendor}""
+        //      }}) {{
+        //        product {{
+        //          id
+        //          title
+        //        }}
+        //        userErrors {{
+        //          field
+        //          message
+        //        }}
+        //      }}
+        //    }}";
+
+        //        return await PostGraphQLRequestAsync(mutation);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+        //    }
+        //}
+
+        // Update Existing Product
+        public async Task<string> UpdateProductAsync(string productId, string title, string descriptionHtml, string status)
         {
             try
             {
                 var mutation = $@"
             mutation {{
-              productCreate(input: {{
+              productUpdate(input: {{
+                id: ""{productId}"",
                 title: ""{title}"",
-                descriptionHtml: ""{description}"",
-                vendor: ""{vendor}""
+                descriptionHtml: ""{descriptionHtml}"",
+                status: {status}
               }}) {{
                 product {{
                   id
                   title
+                  descriptionHtml
+                  status
                 }}
                 userErrors {{
                   field
@@ -353,20 +387,56 @@ namespace appify.web.api
             }
             catch (Exception ex)
             {
-                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+                throw new ApplicationException($"Failed to update product: {ex.Message}", ex);
             }
         }
 
-        // Update Existing Product
-        public async Task<string> UpdateProductAsync(string productId, string title)
+        // Update Existing Product's Variant
+        public async Task<string> UpdateVariantAsync(string variantId, double price, Int16 weight, string weightUnit, Int16 inventoryQuantity)
+        {
+            try
+            {
+                var mutation = $@"
+            mutation {{
+              productVariantUpdate(input: {{
+                    id: ""{variantId}"",
+                    price: ""{price}"",
+                    weight: {weight},
+                    weightUnit: {weightUnit},
+                    inventoryQuantity: {inventoryQuantity}
+              }}) {{
+                productVariant {{
+                    id
+                    price
+                    weight
+                    weightUnit
+                    inventoryQuantity
+                }}
+                userErrors {{
+                  field
+                  message
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(mutation);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to update product: {ex.Message}", ex);
+            }
+        }
+
+        // Update Existing Product's Stock
+        public async Task<string> UpdateProductStockAsync(ShopifyProductStock itemData)
         {
             try
             {
                 var mutation = $@"
             mutation {{
               productUpdate(input: {{
-                id: ""{productId}"",
-                title: ""{title}""
+                id: ""{itemData.ProductID}"",
+                totalInventory: ""{itemData.InventoryQuantity}""
               }}) {{
                 product {{
                   id
