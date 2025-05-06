@@ -38,13 +38,13 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<IVendorAuditLog> ListVendorLog()
+        public List<IVendorAuditLog> ListVendorLog(Int64 vendorID)
         {
             var items = new List<IVendorAuditLog>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, LISTVENDORLOG);
+                DataSet ds = SqlHelper.ExecuteDataset(con, LISTVENDORLOG,vendorID);
                 var concreteItems = DataTableHelper.ConvertDataTable<VendorAuditLog>(ds.Tables[0]);
                 con.Close();
 

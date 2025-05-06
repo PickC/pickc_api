@@ -22,7 +22,23 @@ namespace appify.Business
 			return repository.ListBulkImportedProduct(vendorID,productFileName);
 		}
 
-		public bool SaveBulkImportedProduct(BulkImportedProduct item)
+
+		public bool SaveBulkImportedProducts(List<BulkImportedProduct> item) {
+
+			var result = false;
+			foreach (BulkImportedProduct product in item)
+			{
+                result = repository.SaveBulkImportedProduct(product);
+				if (!result) {
+					break;
+				}
+            }
+
+			return result;
+        }
+
+
+        public bool SaveBulkImportedProduct(BulkImportedProduct item)
 		{
 			return repository.SaveBulkImportedProduct(item);
 		}

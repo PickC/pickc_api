@@ -18,9 +18,9 @@ namespace appify.Business
 			return repository.GetOrderLog(auditID);
 		}
 
-		public List<IOrderAuditLog> ListOrderLog()
+		public List<IOrderAuditLog> ListOrderLog(Int64 orderID)
 		{
-			return repository.ListOrderLog();
+			return repository.ListOrderLog(orderID);
 		}
 
         public async Task<bool> SaveOrderLog(IOrderAuditLog item)
