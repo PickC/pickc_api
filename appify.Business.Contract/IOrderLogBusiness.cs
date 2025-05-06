@@ -7,9 +7,9 @@ namespace appify.Business.Contract
 	{
 		IOrderAuditLog GetOrderLog(Int64 auditID);
 
-		List<IOrderAuditLog> ListOrderLog();
+        //Task<IEnumerable<IOrderAuditLog>> ListOrderLog(Int64 orderId); // New method
 
-		Task<bool> SaveOrderLog(IOrderAuditLog item);
+        Task<bool> SaveOrderLog(IOrderAuditLog item);
 
 		bool DeleteOrderLog(Int64 auditID);
          

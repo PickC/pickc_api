@@ -36,6 +36,7 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
+        private readonly IBulkImportedProductBusiness bulkImportedProductBusiness;
         private readonly IWebHostEnvironment env;
         private readonly INotificationBusiness notificationBusiness;
         private readonly IVendorWebModuleBusiness vendorWebModuleBusiness;
@@ -49,7 +50,12 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
+<<<<<<< HEAD
                                 IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness)
+=======
+                                IBulkImportedProductBusiness bulkImportedProductBusiness,
+                                IWebHostEnvironment env)
+>>>>>>> 4fb4e283a80793273e8c1a3193a093b00c8b81e4
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
@@ -59,6 +65,7 @@ namespace appify.web.api.Controllers
             this.productBusiness = productBusiness;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
+            this.bulkImportedProductBusiness = bulkImportedProductBusiness;
             this.env = env;
             this.notificationBusiness = IResultData;
             this.vendorWebModuleBusiness = vendorWebModuleBusiness;
@@ -815,7 +822,10 @@ namespace appify.web.api.Controllers
         public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
         {
             ExcelReader reader = new ExcelReader();
+            
             rm = new ResponseMessage();
+
+            var result = false;
 
             if (itemData.ExcelFile == null || itemData.ExcelFile.Length == 0)
             {
@@ -842,8 +852,19 @@ namespace appify.web.api.Controllers
 
             try
             {
+<<<<<<< HEAD
                 var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
                 //DownloadGoogleDriveImagesAsync(products);
+=======
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(),itemData.VendorID);
+
+
+                if (products.Count>0)
+                {
+                    result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
+                }
+
+>>>>>>> 4fb4e283a80793273e8c1a3193a093b00c8b81e4
                 rm.statusCode = StatusCodes.OK;
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
                 rm.name = StatusName.ok;
