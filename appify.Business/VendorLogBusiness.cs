@@ -17,9 +17,9 @@ namespace appify.Business
 			return repository.GetVendorLog(auditID);
 		}
 
-		public List<IVendorAuditLog> ListVendorLog()
+		public List<IVendorAuditLog> ListVendorLog(Int64 vendorID)
 		{
-			return repository.ListVendorLog();
+			return repository.ListVendorLog(vendorID);
 		}
 
 		public async Task<bool> SaveVendorLog(IVendorAuditLog item)
