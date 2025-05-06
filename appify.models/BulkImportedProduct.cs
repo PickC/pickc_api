@@ -13,7 +13,7 @@ namespace appify.models
 		public Int64  ItemID { get; set; }
 		public string?  ProductFileName { get; set; }
 		public Int16?  ItemNo { get; set; }
-		public Int16?  VendorID { get; set; }
+		public Int64  VendorID { get; set; }
 		public string? ProductName { get; set; }
 		public string? BrandName { get; set; }
 		public string?  HSNCode { get; set; }
@@ -22,7 +22,9 @@ namespace appify.models
 		public string?  CategoryID { get; set; }
 		public string?  Category { get; set; }
 		public string?  Dimension { get; set; }
-		public decimal? Price { get; set; }
+
+        public string? Size { get; set; }
+        public decimal? Price { get; set; }
 		public Int32?  Stock { get; set; }
 		public string?  Weight { get; set; }
 		public string?  Image1 { get; set; }

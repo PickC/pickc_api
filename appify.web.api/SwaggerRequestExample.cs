@@ -448,7 +448,7 @@ namespace appify.web.api
 
     public class ParamExcelUpload
     {
-        public int VendorID { get; set; }
+        public Int64 VendorID { get; set; }
         public IFormFile ExcelFile { get; set; }
     }
 

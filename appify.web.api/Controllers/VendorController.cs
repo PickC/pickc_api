@@ -33,6 +33,7 @@ namespace appify.web.api.Controllers
         private readonly IProductBusiness productBusiness;
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
+        private readonly IBulkImportedProductBusiness bulkImportedProductBusiness;
         private readonly IWebHostEnvironment env;
 
         private ResponseMessage rm;
@@ -44,6 +45,7 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
+                                IBulkImportedProductBusiness bulkImportedProductBusiness,
                                 IWebHostEnvironment env)
         {
             this.configuration = configuration;
@@ -54,6 +56,7 @@ namespace appify.web.api.Controllers
             this.productBusiness = productBusiness;
             this.priceBusiness = priceBusiness;
             this.imageBusiness = imageBusiness;
+            this.bulkImportedProductBusiness = bulkImportedProductBusiness;
             this.env = env;
         }
         /// <summary>
@@ -809,7 +812,10 @@ namespace appify.web.api.Controllers
         {
 
             ExcelReader reader = new ExcelReader();
+            
             rm = new ResponseMessage();
+
+            var result = false;
 
             if (itemData.ExcelFile == null || itemData.ExcelFile.Length == 0)
             {
@@ -836,7 +842,13 @@ namespace appify.web.api.Controllers
 
             try
             {
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(),itemData.VendorID);
+
+
+                if (products.Count>0)
+                {
+                    result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
+                }
 
                 rm.statusCode = StatusCodes.OK;
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";

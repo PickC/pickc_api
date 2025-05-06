@@ -12,14 +12,15 @@ using System.Security.Claims;
 using System.Text;
 using NPOI.XSSF.UserModel;
 using System.Net;
+using appify.models;
 
 namespace appify.web.api
 {
     public class ExcelReader
     {
-        public List<ProductDto> ReadExcel(Stream stream)
+        public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID = 0)
         {
-            var products = new List<ProductDto>();
+            var products = new List<BulkImportedProduct>();
 
             // NPOI Workbook initialization
             IWorkbook workbook = new XSSFWorkbook(stream);
@@ -29,6 +30,7 @@ namespace appify.web.api
             // Column index mapping
             var columnMap = new Dictionary<string, int>
         {
+            {"SL No.",-1 },
             { "Product Name", -1 },
             { "Brand Name", -1 },
             { "HSN Code", -1 },
@@ -41,11 +43,11 @@ namespace appify.web.api
             { "Price", -1 },
             { "Stock", -1 },
             { "Weight", -1 },
-            { "image1",    -1 },
-            { "image2",    -1 },
-            { "image3",    -1 },
-            { "image4",    -1 },
-            { "image5",    -1 },
+            { "Image1",    -1 },
+            { "Image2",    -1 },
+            { "Image3",    -1 },
+            { "Image4",    -1 },
+            { "Image5",    -1 },
         };
 
             // Find column indexes
@@ -70,27 +72,59 @@ namespace appify.web.api
                     if (!string.IsNullOrEmpty(GetCellValue(row, columnMap["Product Name"]).ToString()))
                     {
 
-                        var product = new ProductDto
-                        {
-                            ProductName = GetCellValue(row, columnMap["Product Name"]),
-                            BrandName = GetCellValue(row, columnMap["Brand Name"]),
-                            HSNCode = GetCellValue(row, columnMap["HSN Code"]),
-                            Color = GetCellValue(row, columnMap["Color"]),
-                            ProductDescription = GetCellValue(row, columnMap["Product Description"]),
-                            CategoryID = GetCellValue(row, columnMap["Category ID"]),
-                            Category = GetCellValue(row, columnMap["Category"]),
-                            Dimension = GetCellValue(row, columnMap["Dimension"]),
-                            Size = GetCellValue(row, columnMap["Size"]),
-                            Price = GetCellValue(row, columnMap["Price"]),
-                            Stock = GetCellValue(row, columnMap["Stock"]),
-                            Weight = GetCellValue(row, columnMap["Weight"]),
-                            Image1 = GetCellValue(row, columnMap["image1"]),
-                            Image2 = GetCellValue(row, columnMap["image2"]),
-                            Image3 = GetCellValue(row, columnMap["image3"]),
-                            Image4 = GetCellValue(row, columnMap["image4"]),
-                            Image5 = GetCellValue(row, columnMap["image5"]),
+                        //var product = new BulkImportedProduct
+                        //{
+                        //    VendorID = vendorID,
+                        //    ItemNo = GetCellValue(row, columnMap["SL No."]).ToString().Length>0? Convert.ToInt16(GetCellValue(row, columnMap["SL No."]).ToString()) :Convert.ToInt16(0),
+                        //    ProductName = GetCellValue(row, columnMap["Product Name"]),
+                        //    BrandName = GetCellValue(row, columnMap["Brand Name"]),
+                        //    HSNCode = GetCellValue(row, columnMap["HSN Code"]),
+                        //    Color = GetCellValue(row, columnMap["Color"]),
+                        //    ProductDescription = GetCellValue(row, columnMap["Product Description"]),
+                        //    CategoryID = GetCellValue(row, columnMap["Category ID"]),
+                        //    Category = GetCellValue(row, columnMap["Category"]),
+                        //    Dimension = GetCellValue(row, columnMap["Dimension"]),
+                        //    Size = GetCellValue(row, columnMap["Size"]),
+                        //    Price = GetCellValue(row, columnMap["Price"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Price"]).ToString()) : Convert.ToInt16(0),
+                        //    Stock = GetCellValue(row, columnMap["Stock"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Stock"]).ToString()) : Convert.ToInt16(0),
+                        //    Weight = GetCellValue(row, columnMap["Weight"]),
+                        //    Image1 = GetCellValue(row, columnMap["Image1"]),
+                        //    Image2 = GetCellValue(row, columnMap["Image2"]),
+                        //    Image3 = GetCellValue(row, columnMap["Image3"]),
+                        //    Image4 = GetCellValue(row, columnMap["Image4"]),
+                        //    Image5 = GetCellValue(row, columnMap["Image5"]),
 
-                        };
+
+
+                        //};
+
+                        var product = new BulkImportedProduct();
+
+                        product.VendorID = vendorID;
+                        product.ItemNo = GetCellValue(row, columnMap["SL No."]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["SL No."]).ToString()) : Convert.ToInt16(0);
+                        product.ProductName = GetCellValue(row, columnMap["Product Name"]);
+                        product.BrandName = GetCellValue(row, columnMap["Brand Name"]);
+                        product.HSNCode = GetCellValue(row, columnMap["HSN Code"]);
+                        product.Color = GetCellValue(row, columnMap["Color"]);
+                        product.ProductDescription = GetCellValue(row, columnMap["Product Description"]);
+                        product.CategoryID = GetCellValue(row, columnMap["Category ID"]);
+                        product.Category = GetCellValue(row, columnMap["Category"]);
+                        product.Dimension = GetCellValue(row, columnMap["Dimension"]);
+                        product.Size = GetCellValue(row, columnMap["Size"]);
+                        product.Price = GetCellValue(row, columnMap["Price"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Price"]).ToString()) : Convert.ToInt16(0);
+                        product.Stock = GetCellValue(row, columnMap["Stock"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Stock"]).ToString()) : Convert.ToInt16(0);
+                        product.Weight = GetCellValue(row, columnMap["Weight"]);
+                        product.Image1 = GetCellValue(row, columnMap["Image1"]);
+                        product.Image2 = GetCellValue(row, columnMap["Image2"]);
+                        product.Image3 = GetCellValue(row, columnMap["Image3"]);
+                        product.Image4 = GetCellValue(row, columnMap["Image4"]);
+                        product.Image5 = GetCellValue(row, columnMap["Image5"]);
+
+
+
+
+
+
 
 
                         if (!string.IsNullOrEmpty(product.ProductName))
@@ -108,6 +142,8 @@ namespace appify.web.api
 
             // download the images from google drive
 
+#if !DEBUG
+
             if (products.Count > 0)
             {
                 foreach (var item in products)
@@ -116,6 +152,7 @@ namespace appify.web.api
                 }
 
             }
+#endif
 
             return products;
         }
@@ -238,6 +275,7 @@ namespace appify.web.api
 
     public class ProductDto
     {
+        public short SLNo { get; set; }
         public string ProductName { get; set; }
         public string BrandName { get; set; }
         public string HSNCode { get; set; }

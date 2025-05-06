@@ -18,9 +18,9 @@ namespace appify.Business
 			return repository.GetProductLog(auditID);
 		}
 
-		public List<IProductAuditLog> ListProductLog()
+		public List<IProductAuditLog> ListProductLog(Int64 productID)
 		{
-			return repository.ListProductLog();
+			return repository.ListProductLog(productID);
 		}
 
 		public async Task<bool> SaveProductLog(IProductAuditLog item)

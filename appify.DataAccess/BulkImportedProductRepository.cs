@@ -4,6 +4,7 @@ using appify.utility;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Drawing;
 
 
 namespace appify.DataAccess
@@ -62,6 +63,40 @@ namespace appify.DataAccess
                 {
                     using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTEDPRODUCT))
                     {
+                        /*
+                            @ItemID bigint, 
+                            @ProductFileName varchar(500), 
+                            @ItemNo smallint, 
+                            @VendorID bigint, 
+                            @ProductName nvarchar(500), 
+                            @BrandName nvarchar(200), 
+                            @HSNCode varchar(15), 
+                            @Color varchar(50), 
+                            @ProductDescription nvarchar(MAX), 
+                            @CategoryID varchar(50), 
+                            @Category varchar(200), 
+                            @Dimension varchar(50), 
+                            @Size varchar(50), 
+                            @Price decimal, 
+                            @Stock int, 
+                            @Weight varchar(50), 
+                            @Image1 varchar(1000), 
+                            @Image2 varchar(1000), 
+                            @Image3 varchar(1000), 
+                            @Image4 varchar(1000), 
+                            @Image5 varchar(1000), 
+                            @Remarks varchar(1000), 
+                            @ErrorMessage varchar(MAX) 
+
+                         
+                         
+                         */
+
+
+
+
+
+
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@ItemID", itemData.ItemID);
@@ -76,6 +111,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CategoryID", itemData.CategoryID);
                         cmd.Parameters.AddWithValue("@Category", itemData.Category);
                         cmd.Parameters.AddWithValue("@Dimension", itemData.Dimension);
+                        cmd.Parameters.AddWithValue("@Size", itemData.Size);
                         cmd.Parameters.AddWithValue("@Price", itemData.Price);
                         cmd.Parameters.AddWithValue("@Stock", itemData.Stock);
                         cmd.Parameters.AddWithValue("@Weight", itemData.Weight);

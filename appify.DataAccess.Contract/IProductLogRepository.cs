@@ -7,7 +7,7 @@ namespace appify.DataAccess.Contract
 	{
 		IProductAuditLog GetProductLog(Int64 auditID);
 
-		List<IProductAuditLog> ListProductLog();
+		List<IProductAuditLog> ListProductLog(Int64 productID);
 
 		Task<bool> SaveProductLog(IProductAuditLog item);
 

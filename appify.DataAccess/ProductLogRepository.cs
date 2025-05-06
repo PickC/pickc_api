@@ -38,13 +38,13 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<IProductAuditLog> ListProductLog()
+        public List<IProductAuditLog> ListProductLog(Int64 productID)
         {
             List<IProductAuditLog> items = new List<IProductAuditLog>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, LISTPRODUCTLOG);
+                DataSet ds = SqlHelper.ExecuteDataset(con, LISTPRODUCTLOG,productID);
                 var concreteItems = DataTableHelper.ConvertDataTable<ProductAuditLog>(ds.Tables[0]);
                 con.Close();
 
