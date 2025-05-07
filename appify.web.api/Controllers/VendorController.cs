@@ -811,38 +811,73 @@ namespace appify.web.api.Controllers
         public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
         {
 
+            rm = new ResponseMessage();
+            // General Validation Checks
+            if (itemData == null || itemData.VendorID <= 0 || itemData.ExcelFile == null)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Invalid input: VendorID={itemData?.VendorID}, ExcelFile={(itemData?.ExcelFile != null ? "Provided" : "Null")}";
+                rm.name = StatusName.ok;
+                rm.data = "VendorID and Excel file are required.";
+
+                return Ok(rm);
+
+            }
+
+            // Validate file Data
+            if (itemData.ExcelFile.Length == 0)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Empty file uploaded for VendorID={itemData.VendorID}";
+                rm.name = StatusName.ok;
+                rm.data = "Excel file is empty.";
+
+                return Ok(rm);
+            }
+
+            var validExtensions = new[] { ".xlsx", ".xls" };
+            var fileExtension = Path.GetExtension(itemData.ExcelFile.FileName).ToLower();
+            if (!validExtensions.Contains(fileExtension))
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Invalid file extension ({fileExtension}) for VendorID={itemData.VendorID}";
+                rm.name = StatusName.ok;
+                rm.data = "Only .xlsx or .xls files are allowed.";
+
+                return Ok(rm);
+
+
+            }
+
+
+            // Create vendor-specific folder
+            var vendorFolder = GetVendorFileUploadPath(itemData.VendorID);
+
+            // Generate unique filename with timestamp
+            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+            var originalFileName = Path.GetFileNameWithoutExtension(itemData.ExcelFile.FileName);
+            var newFileName = $"{originalFileName}_{timestamp}{fileExtension}";
+            var filePath = Path.Combine(vendorFolder, newFileName);
+
+            // Save file using streaming
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                itemData.ExcelFile.CopyTo(stream);
+            }
+
+
+
             ExcelReader reader = new ExcelReader();
             
-            rm = new ResponseMessage();
 
             var result = false;
-
-            if (itemData.ExcelFile == null || itemData.ExcelFile.Length == 0)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = "No file uploaded";
-                rm.name = StatusName.ok;
-                rm.data = "No file uploaded";
-
-                return Ok(rm);
-            }
-
-            if (!Path.GetExtension(itemData.ExcelFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = "Only .xlsx files are allowed";
-                rm.name = StatusName.ok;
-                rm.data = "Only .xlsx files are allowed";
-
-                return Ok(rm);
-
-
-            }
 
 
             try
             {
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(),itemData.VendorID);
+                //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
+                var products = reader.ReadExcel(filePath, itemData.VendorID);
 
 
                 if (products.Count>0)
@@ -869,5 +904,17 @@ namespace appify.web.api.Controllers
         }
 
 
+
+        private string GetVendorFileUploadPath(Int64 vendorID) {
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "Vendors",vendorID.ToString());
+            // Ensure the uploads directory exists
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            return uploadPath;
+        }
     }
 }
