@@ -62,6 +62,10 @@ namespace appify.models
         public bool IsActive { get; set; }
 
     }
+    public class WhatsAppTemplate
+    {
+        public string WhatsAppTemplateID { get; set; }
+    }
 
     public class VendorDetails
     {

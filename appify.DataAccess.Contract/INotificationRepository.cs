@@ -21,6 +21,7 @@ namespace appify.DataAccess.Contract
 
         public NotificationTemplate GetNotificationTemplate(long TemplateID);
         public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID);
+        public WhatsAppTemplate GetWhatsAppNotificationTemplate(long TemplateID);
         public bool IsReadNotification(long NotificationID);
         public bool addNotificationMessage(PushNotificationMessage pushNotification);
         public string unReadCountNotification(long UserID);

@@ -98,6 +98,17 @@ namespace appify.DataAccess
             return items;
         }
 
+        public WhatsAppTemplate GetWhatsAppNotificationTemplate(long TemplateID)
+        {
+            WhatsAppTemplate items = new WhatsAppTemplate();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTWHATSAPPNOTIFICATIONTEMPLATE, TemplateID);
+                items = DataTableHelper.ConvertDataTable<WhatsAppTemplate>(ds.Tables[0]).FirstOrDefault();
+            }
+            return items;
+        }
         public bool IsReadNotification(long NotificationID)
         {
 
