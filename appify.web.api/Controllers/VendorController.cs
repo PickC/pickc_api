@@ -1302,7 +1302,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost, Route("SignIn")]
+        [HttpPost, Route("WebModule/SignIn")]
         [MapToApiVersion("1.0")]
         public IActionResult SignIn(ParamLoginIn itemData)
         {
