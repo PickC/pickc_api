@@ -147,23 +147,23 @@ namespace appify.web.api
 
             // download the images from google drive
 
-#if DEBUG
+
 
             if (products.Count > 0)
             {
                 short index = 0;
                 foreach (var item in products)
                 {
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image1, index,1);
+                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image1, index, 1);
                     DownloadGoogleDriveImageAsync(item.ProductName, item.Image2, index, 2);
                     DownloadGoogleDriveImageAsync(item.ProductName, item.Image3, index, 3);
                     DownloadGoogleDriveImageAsync(item.ProductName, item.Image4, index, 4);
                     DownloadGoogleDriveImageAsync(item.ProductName, item.Image5, index, 5);
-                    index +=1;
+                    index += 1;
                 }
 
             }
-#endif
+
 
             return products;
         }
@@ -189,7 +189,7 @@ namespace appify.web.api
             string baseFolder = @"C:\Downloads";
             try
             {
-                if(string.IsNullOrEmpty(url)) { return; }
+                if (string.IsNullOrEmpty(url)) { return; }
                 // Create product-specific folder if it doesn't exist
                 productCode = SanitizeFolderName(productCode);
                 var productFolder = Path.Combine(baseFolder, productCode);
@@ -255,7 +255,7 @@ namespace appify.web.api
                 using FileStream uploadFileStream = File.OpenRead(url);
                 blobClient.UploadAsync(uploadFileStream, overwrite: true);
                 uploadFileStream.Close();
-                if(col==1)
+                if (col == 1)
                     products[ItemNo].Image1 = blobClient.Uri.ToString();
                 else if (col == 2)
                     products[ItemNo].Image2 = blobClient.Uri.ToString();

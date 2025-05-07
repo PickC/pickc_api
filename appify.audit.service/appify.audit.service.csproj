@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\appify.Business.Contract\appify.Business.Contract.csproj" />
-    <ProjectReference Include="..\appify.models\appify.models.csproj" />
+    <ProjectReference Include="D:\Project\Appify.API\appify_b2c\appify.Business.Contract\appify.Business.Contract.csproj" />
+    <ProjectReference Include="D:\Project\Appify.API\appify_b2c\appify.models\appify.models.csproj" />
   </ItemGroup>
 
 </Project>
