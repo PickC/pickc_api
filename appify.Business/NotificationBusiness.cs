@@ -50,6 +50,10 @@ namespace appify.Business
         {
             return repository.GetSMSNotificationTemplate(TemplateID);
         }
+        public WhatsAppTemplate GetWhatsAppNotificationTemplate(long TemplateID)
+        {
+            return repository.GetWhatsAppNotificationTemplate(TemplateID);
+        }
         public bool IsReadNotification(long NotificationID)
         {
             return repository.IsReadNotification(NotificationID);

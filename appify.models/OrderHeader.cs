@@ -388,6 +388,7 @@ namespace appify.models
         public bool IsPush { get; set; }
         public string SkipNo { get; set; }
         public bool IsSkipNo { get; set; }
+        public bool IsWhatsApp {  get; set; }
     }
     public partial class CustomerOrder
     {
