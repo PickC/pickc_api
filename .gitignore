@@ -459,3 +459,8 @@ FodyWeavers.xsd
 /appify.utility/obj/appify.utility.csproj.nuget.g.props
 /appify.utility/obj/project.assets.json
 /appify.web.api/Controllers/SubscriptionHeaderController.cs
+/appify.audit.service/appify.audit.service.csproj
+/appify.DataAccess/obj/appify.DataAccess.csproj.nuget.g.props
+/appify.web.api/wwwroot/uploads/Vendors/1060/BULK Product Upload Sheet_Gurjeet_20250507092133.xlsx
+/appify.web.api/appify - Backup.web.api.csproj
+/appify.web.api/appify.web.api.sln

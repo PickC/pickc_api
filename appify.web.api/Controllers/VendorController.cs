@@ -815,10 +815,10 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
+        public IActionResult ImportProducts([FromForm] ParamExcelUpload itemData)
         {
             ExcelReader reader = new ExcelReader();
-            
+
             rm = new ResponseMessage();
 
             var result = false;
@@ -850,10 +850,10 @@ namespace appify.web.api.Controllers
             {
                 //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream());
                 //DownloadGoogleDriveImagesAsync(products);
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(),itemData.VendorID);
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
 
 
-                if (products.Count>0)
+                if (products.Count > 0)
                 {
                     result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
                 }
@@ -862,7 +862,7 @@ namespace appify.web.api.Controllers
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
                 rm.name = StatusName.ok;
                 rm.data = products;
-                 
+
             }
             catch (Exception ex)
             {
@@ -1302,7 +1302,7 @@ namespace appify.web.api.Controllers
 
         }
 
-        [HttpPost, Route("WebModule/SignIn")]
+        [HttpPost, Route("SignIn")]
         [MapToApiVersion("1.0")]
         public IActionResult SignIn(ParamLoginIn itemData)
         {
