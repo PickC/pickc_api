@@ -147,7 +147,7 @@ namespace appify.web.api
 
             // download the images from google drive
 
-#if DEBUG
+
 
             if (products.Count > 0)
             {
@@ -163,7 +163,7 @@ namespace appify.web.api
                 }
 
             }
-#endif
+
 
             return products;
         }

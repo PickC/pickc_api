@@ -1270,22 +1270,22 @@ namespace appify.web.api.Controllers
                 string OTPValue = utility.Common.GenerateRandomPassword();
 
                 var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.InvitationSendToUser), 0, 0, itemData.MobileNo, this.notificationBusiness, OTPValue);
-
                 if (result != null)
                 {
+                    this.vendorWebModuleBusiness.UpdateUserPassword(itemData.UserID, itemData.MobileNo, OTPValue);
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "INVITATION HAS BEEN SUCCESSFULLY SENT!";
                     rm.name = StatusName.ok;
-                    rm.data = result;
-                    await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
+                    rm.data = true;
+                    //await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    await Common.UpdateEventLogsNew("INVITATION - NOT SENT", reqHeader, controllerURL, result, null, rm.message, this.eventLogBusiness);
+                    rm.data = "NO CONTENT";
+                    //await Common.UpdateEventLogsNew("INVITATION - NO CONTENT!", reqHeader, controllerURL, result, null, StatusName.invalid, this.eventLogBusiness);
                 }
 
             }
@@ -1296,10 +1296,53 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
-                await Common.UpdateEventLogsNew("INVITATION - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                //await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, null, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
 
+        }
+
+        [HttpPost, Route("SignIn")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SignIn(ParamLoginIn itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic loginParams = jsondata;
+
+            try
+            {
+                rm = new ResponseMessage();
+                var returnData = this.vendorWebModuleBusiness.MemberLogIn(itemData.MobileNo, itemData.Password, itemData.parentID);
+                if (returnData != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER DATA";
+                    rm.name = StatusName.ok;
+                    rm.data = returnData;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - SUCCESSFULLY", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Invalid Mobile No or Password!";
+                    rm.name = StatusName.invalidCred;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Invalid MobileNo or Password!", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalidCred;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
         }
     }
 }
