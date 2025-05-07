@@ -31,5 +31,13 @@ namespace appify.Business
         {
             return repository.UpdateVendorUser(UserID, IsActive);
         }
+        public bool UpdateUserPassword(long UserID, string MobileNo, string Password)
+        {
+            return repository.UpdateUserPassword(UserID, MobileNo, Password);
+        }
+        public MemberUser MemberLogIn(string mobileNo, string password, Int64 parentID)
+        {
+            return repository.MemberLogIn(mobileNo, password, parentID);
+        }
     }
 }

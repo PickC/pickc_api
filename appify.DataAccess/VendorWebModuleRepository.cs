@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using appify.utility;
+using IP2Location;
 
 namespace appify.DataAccess
 {
@@ -21,6 +22,8 @@ namespace appify.DataAccess
         public const string LISTVENDORUSER = "[Operation].[usp_MemberUserListByVendor]";
         public const string SAVEVENDORUSER = "[Operation].[usp_MemberUserSave]";
         public const string UPDATEVEVENDORUSER = "[Operation].[usp_MemberUserStatusUpdate]";
+        public const string UPDATEVEUSERPASSWORD = "[Operation].[usp_UserPasswordUpdate]";
+        public const string MEMBERUSERLOGIN = "[Operation].[usp_MemberUserLogIn]";
         public VendorWebModuleRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -133,6 +136,55 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+        public bool UpdateUserPassword(long UserID, string MobileNo, string Password)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATEVEUSERPASSWORD))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", UserID);
+                        cmd.Parameters.AddWithValue("@MobileNo", MobileNo);
+                        cmd.Parameters.AddWithValue("@Password", Password);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+        public MemberUser MemberLogIn(string mobileNo, string password, Int64 parentID)
+        {
+            try
+            {
+                MemberUser member = new MemberUser();
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, MEMBERUSERLOGIN, mobileNo, password, parentID);
+                    member = DataTableHelper.ConvertDataTable<MemberUser>(ds.Tables[0]).FirstOrDefault();
+                }
+                return member;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
