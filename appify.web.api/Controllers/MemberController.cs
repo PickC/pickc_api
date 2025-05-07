@@ -2376,11 +2376,13 @@ namespace appify.web.api.Controllers
         ///         "bankAccountNo": "9901110",
         ///         "ifsc": "HDFC000011",
         ///         "bankAccountType": 3900,
+        ///         "beneficiaryName": "Kiran",
         ///         "chequeImage": null,
         ///         "panImage": null,
         ///         "gstImage": null,
         ///         "aadharImage": null,
         ///         "aadharImage2": null,
+        ///         "digitalSignatureImage": null,
         ///         "kvicNo": null,
         ///         "address": null,
         ///         "addressImage": null
@@ -2403,7 +2405,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var item = memberKYCBusiness.Get(itemData.userID);
 
                 if (item != null)
@@ -2453,11 +2456,13 @@ namespace appify.web.api.Controllers
         ///         "bankAccountNo": "9901110",
         ///         "ifsc": "HDFC000011",
         ///         "bankAccountType": 3900,
+        ///         "beneficiaryName": "Kiran",
         ///         "chequeImage": null,
         ///         "panImage": null,
         ///         "gstImage": null,
         ///         "aadharImage": null,
         ///         "aadharImage2": null,
+        ///         "digitalSignatureImage": null,
         ///         "kvicNo": null,
         ///         "address": null,
         ///         "addressImage": null
@@ -2478,8 +2483,8 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
-
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
 
 
                 var result = memberKYCBusiness.Save(item);

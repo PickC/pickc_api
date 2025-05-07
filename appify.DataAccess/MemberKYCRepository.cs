@@ -104,11 +104,13 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@BankAccountNo", item.BankAccountNo);
                         cmd.Parameters.AddWithValue("@IFSC", item.IFSC);
                         cmd.Parameters.AddWithValue("@BankAccountType", item.BankAccountType);
+                        cmd.Parameters.AddWithValue("@BeneficiaryName", item.BeneficiaryName);
                         cmd.Parameters.AddWithValue("@ChequeImage", item.ChequeImage);
                         cmd.Parameters.AddWithValue("@PANImage", item.PANImage);
                         cmd.Parameters.AddWithValue("@GSTImage", item.GSTImage);
                         cmd.Parameters.AddWithValue("@AadharImage1", item.AadharImage);
                         cmd.Parameters.AddWithValue("@AadharImage2", item.AadharImage2);
+                        cmd.Parameters.AddWithValue("@DigitalSignatureImage", item.DigitalSignatureImage);
                         cmd.Parameters.AddWithValue("@KVICNo", item.KVICNo);
                         cmd.Parameters.AddWithValue("@Address", item.Address);
                         cmd.Parameters.AddWithValue("@AddressImage", item.AddressImage);
