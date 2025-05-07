@@ -15,6 +15,9 @@ using NPOI.SS.UserModel;
 using System.Text;
 using NPOI.XSSF.UserModel;
 using Razorpay.Api;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using static appify.models.NotificationType;
 
 namespace appify.web.api.Controllers
 {
@@ -35,6 +38,8 @@ namespace appify.web.api.Controllers
         private readonly IProductImageBusiness imageBusiness;
         private readonly IBulkImportedProductBusiness bulkImportedProductBusiness;
         private readonly IWebHostEnvironment env;
+        private readonly INotificationBusiness notificationBusiness;
+        private readonly IVendorWebModuleBusiness vendorWebModuleBusiness;
 
         private ResponseMessage rm;
         public VendorController(IConfiguration configuration,
@@ -45,8 +50,8 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
-                                IBulkImportedProductBusiness bulkImportedProductBusiness,
-                                IWebHostEnvironment env)
+                                IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness,
+                                IBulkImportedProductBusiness bulkImportedProductBusiness)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
@@ -58,6 +63,8 @@ namespace appify.web.api.Controllers
             this.imageBusiness = imageBusiness;
             this.bulkImportedProductBusiness = bulkImportedProductBusiness;
             this.env = env;
+            this.notificationBusiness = IResultData;
+            this.vendorWebModuleBusiness = vendorWebModuleBusiness;
         }
         /// <summary>
         /// gets Product items information based on Vendor ID
@@ -903,18 +910,298 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        //public async Task DownloadGoogleDriveImagesAsync(List<Product> products)
+        //{
+        //    var httpClient = new HttpClient();
+
+        //    foreach (var product in products)
+        //    {
+        //        foreach (var imageUrl in new[] { product.Image1, product.Image2 })
+        //        {
+        //            if (!string.IsNullOrEmpty(imageUrl))
+        //            {
+        //                var fileId = ExtractGoogleDriveFileId(imageUrl);
+        //                if (!string.IsNullOrEmpty(fileId))
+        //                {
+        //                    var downloadUrl = $"https://drive.google.com/uc?export=download&id={fileId}";
+        //                    var bytes = await httpClient.GetByteArrayAsync(downloadUrl);
+        //                    var filename = $"{Guid.NewGuid()}.jpg"; // or derive from product data
+
+        //                    await File.WriteAllBytesAsync(Path.Combine("wwwroot/images", filename), bytes);
+
+        //                    Console.WriteLine($"Downloaded: {filename}");
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+        private string ExtractGoogleDriveFileId(string url)
+        {
+            var match = Regex.Match(url, @"\/d\/(.*?)\/");
+            return match.Success ? match.Groups[1].Value : string.Empty;
+        }
+
+        /// <summary>
+        /// Add/Update The User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        /// Method Type : POST
+        ///          
+        ///     {
+        ///       "userID": 0,
+        ///       "vendorID": 1060,
+        ///       "memberType": 1001,
+        ///       "firstName": "John",
+        ///       "lastName": "Abraham",
+        ///       "mobileNo": "98989898989",
+        ///       "createdby": 1060,
+        ///       "createdOn": "2025-05-06T06:17:35.187Z",
+        ///       "modifiedBy": 1060,
+        ///       "modifiedOn": "2025-05-06T06:17:35.187Z",
+        ///       "isActive": true
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER HAS BEEN SUCCESSFULLY REGISTERED!",
+        ///       "data": {
+        ///         "userID": 100,
+        ///         "vendorID": 1060,
+        ///         "memberType": 1001,
+        ///         "firstName": "John",
+        ///         "lastName": "Abraham",
+        ///         "mobileNo": "98989898989",
+        ///         "createdby": 1060,
+        ///         "createdOn": "2025-05-06T06:17:35.187Z",
+        ///         "modifiedBy": 1060,
+        ///         "modifiedOn": "2025-05-06T06:17:35.187Z",
+        ///         "isActive": true
+        ///       }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER HAS BEEN SUCCESSFULLY REGISTERED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/Register")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> SaveUser(MemberUser itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.SaveVendorUser(itemData);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER HAS BEEN SUCCESSFULLY REGISTERED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER HAS BEEN SUCCESSFULLY REGISTERED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER REGISTERED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER REGISTERED - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get The User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///       "userID": 100
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER ITEM HAS BEEN SUCCESSFULLY FETCHED!",
+        ///       "data": {
+        ///         "userID": 100,
+        ///         "vendorID": 1060,
+        ///         "memberType": 1001,
+        ///         "firstName": "John",
+        ///         "lastName": "Abraham",
+        ///         "mobileNo": "98989898989",
+        ///         "isActive": true
+        ///       }
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER ITEM HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/Get")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetAUser(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.GetVendorUser(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER ITEM HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER ITEM", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER ITEM - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER ITEM - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+        /// <summary>
+        /// Get The User List By Vendor
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     {
+        ///       "userID": 100
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER LIST HAS BEEN SUCCESSFULLY FETCHED!",
+        ///       "data": [
+        ///         {
+        ///           "userID": 100,
+        ///           "vendorID": 1060,
+        ///           "memberType": 1001,
+        ///           "firstName": "John",
+        ///           "lastName": "Abraham",
+        ///           "mobileNo": "98989898989",
+        ///           "isActive": true
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER LIST HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/List")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetUserList(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.GetVendorUserList(itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER LIST HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER LIST HAS BEEN SUCCESSFULLY FETCHED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER LIST - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
 
 
         private string GetVendorFileUploadPath(Int64 vendorID) {
 
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "Vendors",vendorID.ToString());
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "Vendors", vendorID.ToString());
             // Ensure the uploads directory exists
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
-
-            return uploadPath;
         }
     }
 }
