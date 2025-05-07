@@ -49,7 +49,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\appify.audit.service\appify.audit.service.csproj" />
     <ProjectReference Include="..\appify.Business.Contract\appify.Business.Contract.csproj" />
     <ProjectReference Include="..\appify.Business\appify.Business.csproj" />
     <ProjectReference Include="..\appify.DataAccess.Contract\appify.DataAccess.Contract.csproj" />

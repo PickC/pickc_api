@@ -37,6 +37,12 @@ namespace appify.web.api
                         notificationModel.Title = notificationTemplate.MessageTitle.ToString();
                         notificationModel.Body = notificationTemplate.MessageBody.Replace("{#var#}", OTPValue).ToString();
                     }
+                    else if(TemplateID == 1022) //// Send Invitation To User
+                    {
+                        MobileNo = replaceTitle;
+                        notificationModel.Title = notificationTemplate.MessageTitle.ToString();
+                        notificationModel.Body = notificationTemplate.MessageBody.Replace("{#var#}", OTPValue).ToString();
+                    }
                 }
                 else if (MemberID != 0) ////// Send OTP Condition
                 {
