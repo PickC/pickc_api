@@ -15,5 +15,6 @@ namespace appify.DataAccess.Contract
         public bool SaveShopifyProductVarientImage(ShopifyProductVariantImage item);
         public ShopifyConfig GetShopifyConfigByVendor(long VendorID);
         public bool BulkInsertShopifyProducts(DataTable shopifyProductMaster, DataTable shopifyProductVariant, DataTable shopifyProductImage);
+        public bool SaveShopifyProductToAppify(long VendorID);
     }
 }
