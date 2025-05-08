@@ -213,7 +213,8 @@ namespace appify.web.api
 
                     // Get original file extension
                     var fileExtension = GetFileExtensionFromUrl(url);
-
+                    productCode = productCode.Replace(" ", "_");
+                    productCode = Regex.Replace(productCode, @"[^a-zA-Z0-9_]", "");
                     // Generate filename: {ProductCode}_{Timestamp}.{ext}
                     var fileName = $"{productCode}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
                     var fullPath = Path.Combine(productFolder, fileName);
@@ -246,14 +247,14 @@ namespace appify.web.api
                 containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
 
                 var blobContainerClient = new BlobContainerClient(storageConnectionString, containerName);
-                blobContainerClient.CreateIfNotExistsAsync();
+                await blobContainerClient.CreateIfNotExistsAsync();
 
 
                 var fileName = Path.GetFileName(url);
                 var blobClient = blobContainerClient.GetBlobClient(fileName);
 
                 using FileStream uploadFileStream = File.OpenRead(url);
-                blobClient.UploadAsync(uploadFileStream, overwrite: true);
+                await blobClient.UploadAsync(uploadFileStream, overwrite: true);
                 uploadFileStream.Close();
                 if (col == 1)
                     products[ItemNo].Image1 = blobClient.Uri.ToString();
