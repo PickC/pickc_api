@@ -66,5 +66,9 @@ namespace appify.Business
         {
             return repository.BulkInsertShopifyProducts(shopifyProductMaster, shopifyProductVariant, shopifyProductImage);
         }
+        public bool SaveShopifyProductToAppify(long VendorID)
+        {
+            return repository.SaveShopifyProductToAppify(VendorID);
+        }
     }
 }

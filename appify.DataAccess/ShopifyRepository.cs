@@ -20,6 +20,7 @@ namespace appify.DataAccess
         public const string SAVEPRODUCTVARIANTSBYVENDOR = "[Operation].[usp_ShopifyProductVariantSave]";
         public const string SAVEPRODUCTIMAGESBYVENDOR = "[Operation].[usp_ShopifyProductImageSave]";
         public const string GETSHOPIFYCONFIGBYVENDOR = "[Operation].[usp_ShopifyConfigByVendorSelect]";
+        public const string SAVESHOPIFYPRODUCTSTOAPPIFY = "[Operation].[usp_GenerateShopifyProducts]";
         public ShopifyRepository(IConfiguration config) {
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
@@ -228,6 +229,36 @@ namespace appify.DataAccess
                     }
                     result = true;
                     con.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public bool SaveShopifyProductToAppify(long VendorID)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVESHOPIFYPRODUCTSTOAPPIFY))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        con.Close();
+                    }
+
                 }
             }
             catch (Exception ex)
