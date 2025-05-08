@@ -1,12 +1,14 @@
 using appify.models;
 using appify.Business.Contract;
 using appify.DataAccess.Contract;
+using appify.models;
 using System;
+
 
 namespace appify.Business
 {
-    public partial class ProductLogBusiness : IProductLogBusiness
-    {
+	public partial class ProductLogBusiness : IProductLogBusiness 
+	{
 		IProductLogRepository repository;
 		public ProductLogBusiness (IProductLogRepository repository){
 			this.repository = repository;
@@ -18,9 +20,8 @@ namespace appify.Business
 
 		public async Task<List<IProductAuditLog>> ListProductLog(Int64 productID)
 		{
-            //return List<IProductAuditLog>(await repository.ListProductLog(productID));
-            return (List<IProductAuditLog>)await repository.ListProductLog(productID);
-        }
+			return new List<IProductAuditLog>(await repository.ListProductLog(productID));
+		}
 
 		public async Task<bool> SaveProductLog(IProductAuditLog item)
 		{
@@ -32,9 +33,5 @@ namespace appify.Business
 			return repository.DeleteProductLog(auditID);
 		}
 
-        Task<IEnumerable<IProductAuditLog>> IProductLogBusiness.ListProductLog(long orderId)
-        {
-            throw new NotImplementedException();
-        }
-    }
+	}
 }
