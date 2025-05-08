@@ -861,11 +861,18 @@ namespace appify.web.api.Controllers
                 {
                     result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
                 }
+                if(result)
+                {
+                    var rsltVal = bulkImportedProductBusiness.SaveBulkImportedProductsToMain(itemData.VendorID);
+                    if (rsltVal)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
+                        rm.name = StatusName.ok;
+                        rm.data = products;
+                    }
+                }
 
-                rm.statusCode = StatusCodes.OK;
-                rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
-                rm.name = StatusName.ok;
-                rm.data = products;
 
             }
             catch (Exception ex)
@@ -1409,6 +1416,8 @@ namespace appify.web.api.Controllers
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
+
+            return Ok(rm);
         }
 
     }
