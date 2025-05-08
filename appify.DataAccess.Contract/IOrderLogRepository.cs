@@ -7,7 +7,7 @@ namespace appify.DataAccess.Contract
 	{
 		IOrderAuditLog GetOrderLog(Int64 auditID);
 
-		List<IOrderAuditLog> ListOrderLog(Int64 orderID);
+		Task<IEnumerable<IOrderAuditLog>> ListOrderLog(Int64 orderID);
 
 		Task<bool> SaveOrderLog(IOrderAuditLog item);
 

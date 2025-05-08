@@ -7,7 +7,7 @@ namespace appify.DataAccess.Contract
 	{
 		IVendorAuditLog GetVendorLog(Int64 auditID);
 
-		List<IVendorAuditLog> ListVendorLog(Int64 vendorID);
+		Task<IEnumerable<IVendorAuditLog>> ListVendorLog(Int64 vendorID);
 
 		Task<bool> SaveVendorLog(IVendorAuditLog item);
 

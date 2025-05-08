@@ -1,4 +1,5 @@
 using appify.models;
+using System.Transactions;
 
 
 namespace appify.DataAccess.Contract
@@ -7,7 +8,7 @@ namespace appify.DataAccess.Contract
 	{
 		IProductAuditLog GetProductLog(Int64 auditID);
 
-		List<IProductAuditLog> ListProductLog(Int64 productID);
+		Task<IEnumerable<IProductAuditLog>> ListProductLog(Int64 productID);
 
 		Task<bool> SaveProductLog(IProductAuditLog item);
 

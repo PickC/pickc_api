@@ -317,6 +317,7 @@ namespace appify.web.api.Controllers
                     string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
                     await auditService.LogAsync(EntityType.Order, result.OrderID, "New Order Created", result.MemberID.ToString(), "WEB", sourceIPAddress, result);
 
+                    
 
                     //string ipaddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"].ToString() : "";
                     //await auditService.LogAsync(EntityType.Order, order.OrderID, "ADD ORDER","",  "WEB", ipaddress, "");
@@ -1315,6 +1316,63 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+        #region Order Audit Log
+
+        [HttpPost, Route("getauditlog")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetorderAuditLog(ParamOrderID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = await auditService.GetLogsByEntityAsync(EntityType.Order, itemData.OrderID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order Audit Log";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+
+
+        #endregion
+
+
+
 
         /// <summary>
         /// Get Order For Delivery

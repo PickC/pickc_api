@@ -38,7 +38,7 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<IProductAuditLog> ListProductLog(Int64 productID)
+        public async Task<IEnumerable<IProductAuditLog>> ListProductLog(Int64 productID)
         {
             List<IProductAuditLog> items = new List<IProductAuditLog>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
