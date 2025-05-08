@@ -16,7 +16,7 @@ namespace appify.audit.service
     public interface IAuditService {
         Task LogAsync(EntityType entityType, Int64 entityID, string eventType, string changedBy, string source, string ipAddress, object payLoad);
 
-        //Task<IEnumerable<IAuditLog>> GetLogsByEntityAsync(EntityType entityType, Int64 entityID);
+        Task<IEnumerable<IAuditLog>> GetLogsByEntityAsync(EntityType entityType, Int64 entityID);
     }
     public class AuditService : IAuditService
     {
@@ -57,19 +57,20 @@ namespace appify.audit.service
 
         }
 
-        //public async Task<IEnumerable<IAuditLog>> ListLogAsync(EntityType entityType, Int64 entityID) {
+        public async Task<IEnumerable<IAuditLog>> GetLogsByEntityAsync(EntityType entityType, Int64 entityID)
+        {
 
-        //    return entityType
-        //    switch
-        //    {
-        //        EntityType.Order => (await orderLog.ListOrderLog(entityID)).Cast<IAuditLog>(),
-        //        EntityType.Product =>(await productLog.ListProductLog(entityID)).Cast<IAuditLog>(),
-        //        EntityType.Vendor => (await vendorLog.ListVendorLogAsync(entityID)).Cast<IAuditLog>(),
-        //        _ => throw new ArgumentException($"Unsupported Entity Type {entityType}")
-        //    };
+            return entityType
+            switch
+            {
+                EntityType.Order => (await orderLog.ListOrderLog(entityID)).Cast<IAuditLog>(),
+                EntityType.Product => (await productLog.ListProductLog(entityID)).Cast<IAuditLog>(),
+                EntityType.Vendor => (await vendorLog.ListVendorLogAsync(entityID)).Cast<IAuditLog>(),
+                _ => throw new ArgumentException($"Unsupported Entity Type {entityType}")
+            };
 
 
-        //}
-        
+        }
+
     }
 }

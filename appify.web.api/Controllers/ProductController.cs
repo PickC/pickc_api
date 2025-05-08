@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.audit.service;
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -36,6 +37,7 @@ namespace appify.web.api.Controllers
         private readonly IProductPriceBusiness priceBusiness;
         private readonly IProductImageBusiness imageBusiness;
         private readonly IMemberCategoryParametersBusiness parametersBusiness;
+        private readonly IAuditService auditService;
         private readonly IWebHostEnvironment env;
         
         private ResponseMessage rm;
@@ -45,7 +47,8 @@ namespace appify.web.api.Controllers
                                  IProductImageBusiness imageBusiness, 
                                  IEventLogBusiness eventLogBusiness,
                                  IMemberCategoryParametersBusiness parametersBusiness,
-                                 IWebHostEnvironment env)
+                                 IWebHostEnvironment env,
+                                 IAuditService auditService)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
@@ -54,6 +57,7 @@ namespace appify.web.api.Controllers
             this.eventLogBusiness = eventLogBusiness;
             this.parametersBusiness = parametersBusiness;
             this.env = env;
+            this.auditService = auditService;
         }
 
         /// <summary>
@@ -526,6 +530,67 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+        #region Product Audit Log
+
+         
+
+        [HttpPost, Route("getauditlog")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetProductAuditLog(ParamProductID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = await auditService.GetLogsByEntityAsync(EntityType.Product, Convert.ToInt64(itemData.ProductID));
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH Product Audit Log";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+
+
+        #endregion
+
+
+
+
+
 
         /// <summary>
         /// Get Product List by UserID

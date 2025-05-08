@@ -3,15 +3,15 @@ using appify.models;
 
 namespace appify.Business.Contract
 {
-	public interface IVendorLogBusiness
-	{
-		IVendorAuditLog GetVendorLog(Int64 auditID);
+    public interface IVendorLogBusiness
+    {
+        IVendorAuditLog GetVendorLog(Int64 auditID);
 
-		//Task<IEnumerable<IVendorAuditLog>> ListVendorLogAsync(Int64 vendorID);
+        Task<IEnumerable<IVendorAuditLog>> ListVendorLogAsync(Int64 vendorID);
 
-		Task<bool> SaveVendorLog(IVendorAuditLog item);
+        Task<bool> SaveVendorLog(IVendorAuditLog item);
 
-		bool DeleteVendorLog(Int64 auditID);
+        bool DeleteVendorLog(Int64 auditID);
 
-	}
+    }
 }

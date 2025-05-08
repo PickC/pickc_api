@@ -38,7 +38,7 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<IOrderAuditLog> ListOrderLog(Int64 orderID)
+        public async Task<IEnumerable<IOrderAuditLog>> ListOrderLog(Int64 orderID)
         {
             var items = new List<IOrderAuditLog>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
