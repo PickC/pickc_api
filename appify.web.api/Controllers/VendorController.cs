@@ -18,6 +18,7 @@ using Razorpay.Api;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using static appify.models.NotificationType;
+using appify.audit.service;
 
 namespace appify.web.api.Controllers
 {
@@ -40,7 +41,7 @@ namespace appify.web.api.Controllers
         private readonly IWebHostEnvironment env;
         private readonly INotificationBusiness notificationBusiness;
         private readonly IVendorWebModuleBusiness vendorWebModuleBusiness;
-
+        private readonly IAuditService auditService;
         private ResponseMessage rm;
         public VendorController(IConfiguration configuration,
                                 ICustomerBusiness customerBusiness,
@@ -50,8 +51,11 @@ namespace appify.web.api.Controllers
                                 IProductBusiness productBusiness,
                                 IProductPriceBusiness priceBusiness,
                                 IProductImageBusiness imageBusiness,
-                                IWebHostEnvironment env, INotificationBusiness IResultData, IVendorWebModuleBusiness vendorWebModuleBusiness,
-                                IBulkImportedProductBusiness bulkImportedProductBusiness)
+                                IWebHostEnvironment env, 
+                                INotificationBusiness IResultData, 
+                                IVendorWebModuleBusiness vendorWebModuleBusiness,
+                                IBulkImportedProductBusiness bulkImportedProductBusiness,
+                                IAuditService auditService)
         {
             this.configuration = configuration;
             this.customerBusiness = customerBusiness;
@@ -65,6 +69,7 @@ namespace appify.web.api.Controllers
             this.env = env;
             this.notificationBusiness = IResultData;
             this.vendorWebModuleBusiness = vendorWebModuleBusiness;
+            this.auditService = auditService;
         }
         /// <summary>
         /// gets Product items information based on Vendor ID
@@ -883,8 +888,8 @@ namespace appify.web.api.Controllers
 
             try
             {
-                //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
-                var products = reader.ReadExcel(filePath, itemData.VendorID);
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
+                //var products = reader.ReadExcel(filePath, itemData.VendorID);
 
 
                 if (products.Count>0)
@@ -1112,6 +1117,69 @@ namespace appify.web.api.Controllers
             return Ok(rm);
 
         }
+
+
+
+        #region Product Audit Log
+
+
+
+        [HttpPost, Route("getauditlog")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetVendorAuditLog(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = await auditService.GetLogsByEntityAsync(EntityType.Vendor, itemData.userID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH Product Audit Log";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+            }
+            return Ok(rm);
+
+        }
+
+
+
+        #endregion
+
+
+
+
+
+
         /// <summary>
         /// Get The User List By Vendor
         /// </summary>
@@ -1202,6 +1270,9 @@ namespace appify.web.api.Controllers
             {
                 Directory.CreateDirectory(uploadPath);
             }
+
+            return uploadPath;
         }
+
     }
 }

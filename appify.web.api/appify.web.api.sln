@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appify.DataAccess", "..\app
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit", "Audit", "{07D726AE-F215-467F-8416-FF7C3046185F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "appify.audit.service", "..\appify.audit.service\appify.audit.service.csproj", "{71783F44-44D6-4992-A802-90AA27ED8D74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{43D0FBA6-157A-486E-94AF-B545CA7D5ACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43D0FBA6-157A-486E-94AF-B545CA7D5ACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43D0FBA6-157A-486E-94AF-B545CA7D5ACA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71783F44-44D6-4992-A802-90AA27ED8D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71783F44-44D6-4992-A802-90AA27ED8D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71783F44-44D6-4992-A802-90AA27ED8D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71783F44-44D6-4992-A802-90AA27ED8D74}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +85,7 @@ Global
 		{E66F5055-D18B-4199-A1EC-0F8AA3CB6F9E} = {AF4D485F-49E9-476B-AB7E-F078AEA56863}
 		{01650809-8C9A-462A-9CB7-352678503C90} = {AF4D485F-49E9-476B-AB7E-F078AEA56863}
 		{43D0FBA6-157A-486E-94AF-B545CA7D5ACA} = {F800DBBF-F900-4F33-87D1-BE226AF3DAE9}
+		{71783F44-44D6-4992-A802-90AA27ED8D74} = {07D726AE-F215-467F-8416-FF7C3046185F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {93A3010C-8A72-40B0-8D38-4962B65F62D3}

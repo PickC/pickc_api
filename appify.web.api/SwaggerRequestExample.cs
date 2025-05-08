@@ -314,6 +314,12 @@ namespace appify.web.api
         public long VendorID { get; set; }
         public long OrderID { get; set; }
     }
+
+    public class ParamOrderID {
+        public long OrderID { get; set; }
+
+
+    }
     public class ParamOrderItem
     {
         public Int64 OrderID { get; set; }
