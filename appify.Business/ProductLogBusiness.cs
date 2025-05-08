@@ -20,7 +20,7 @@ namespace appify.Business
 
 		public async Task<List<IProductAuditLog>> ListProductLog(Int64 productID)
 		{
-			return List<IProductAuditLog>(await repository.ListProductLog(productID));
+			return new List<IProductAuditLog>(await repository.ListProductLog(productID));
 		}
 
 		public async Task<bool> SaveProductLog(IProductAuditLog item)
