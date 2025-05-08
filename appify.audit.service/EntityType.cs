@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace appify.audit.service
 {
+    // various Entity Type to create concrete class.
     public enum EntityType
     {
         Order,

@@ -736,10 +736,6 @@ namespace appify.web.api.Controllers
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
                                     }
                                 }
-                                if (orderUpdateDetail.IsSMS == true)
-                                {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
                                     PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
@@ -755,7 +751,7 @@ namespace appify.web.api.Controllers
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
@@ -766,7 +762,7 @@ namespace appify.web.api.Controllers
 
                                 if (orderUpdateDetail.IsWhatsApp == true)
                                 {
-                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                 }
                             }
                         }
