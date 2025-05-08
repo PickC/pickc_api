@@ -820,79 +820,44 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts([FromForm]ParamExcelUpload itemData)
+        public IActionResult ImportProducts([FromForm] ParamExcelUpload itemData)
         {
+            ExcelReader reader = new ExcelReader();
 
             rm = new ResponseMessage();
-            // General Validation Checks
-            if (itemData == null || itemData.VendorID <= 0 || itemData.ExcelFile == null)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = $"Invalid input: VendorID={itemData?.VendorID}, ExcelFile={(itemData?.ExcelFile != null ? "Provided" : "Null")}";
-                rm.name = StatusName.ok;
-                rm.data = "VendorID and Excel file are required.";
-
-                return Ok(rm);
-
-            }
-
-            // Validate file Data
-            if (itemData.ExcelFile.Length == 0)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = $"Empty file uploaded for VendorID={itemData.VendorID}";
-                rm.name = StatusName.ok;
-                rm.data = "Excel file is empty.";
-
-                return Ok(rm);
-            }
-
-            var validExtensions = new[] { ".xlsx", ".xls" };
-            var fileExtension = Path.GetExtension(itemData.ExcelFile.FileName).ToLower();
-            if (!validExtensions.Contains(fileExtension))
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = $"Invalid file extension ({fileExtension}) for VendorID={itemData.VendorID}";
-                rm.name = StatusName.ok;
-                rm.data = "Only .xlsx or .xls files are allowed.";
-
-                return Ok(rm);
-
-
-            }
-
-
-            // Create vendor-specific folder
-            var vendorFolder = GetVendorFileUploadPath(itemData.VendorID);
-
-            // Generate unique filename with timestamp
-            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var originalFileName = Path.GetFileNameWithoutExtension(itemData.ExcelFile.FileName);
-            var newFileName = $"{originalFileName}_{timestamp}{fileExtension}";
-            var filePath = Path.Combine(vendorFolder, newFileName);
-
-            // Save file using streaming
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                itemData.ExcelFile.CopyTo(stream);
-            }
-
-
-
-            ExcelReader reader = new ExcelReader();
-            
 
             var result = false;
+
+            if (itemData.ExcelFile == null || itemData.ExcelFile.Length == 0)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "No file uploaded";
+                rm.name = StatusName.ok;
+                rm.data = "No file uploaded";
+
+                return Ok(rm);
+            }
+
+            if (!Path.GetExtension(itemData.ExcelFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "Only .xlsx files are allowed";
+                rm.name = StatusName.ok;
+                rm.data = "Only .xlsx files are allowed";
+
+                return Ok(rm);
+
+
+            }
 
 
             try
             {
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
-                //var products = reader.ReadExcel(filePath, itemData.VendorID);
+                //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
+                var products = reader.ReadExcel(filePath, itemData.VendorID);
 
 
-                if (products.Count>0)
+                if (products.Count > 0)
                 {
                     result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
                 }
@@ -901,7 +866,7 @@ namespace appify.web.api.Controllers
                 rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
                 rm.name = StatusName.ok;
                 rm.data = products;
-                 
+
             }
             catch (Exception ex)
             {
@@ -1260,18 +1225,190 @@ namespace appify.web.api.Controllers
 
         }
 
+        /// <summary>
+        /// Update The User Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST  
+        ///     {
+        ///       "userID": 100,
+        ///       "isActive": false
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": true
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
 
-
-        private string GetVendorFileUploadPath(Int64 vendorID) {
-
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "Vendors", vendorID.ToString());
-            // Ensure the uploads directory exists
-            if (!Directory.Exists(uploadPath))
+        [HttpPost, Route("WebModule/User/UpdateStatus")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserStatus(MemberUserUpdate itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
             {
-                Directory.CreateDirectory(uploadPath);
-            }
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.vendorWebModuleBusiness.UpdateVendorUser(itemData.UserID, itemData.IsActive);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("USER'S STATUS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
 
-            return uploadPath;
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("USER'S STATUS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Send The Invitation to the Particular User
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST  
+        ///     {
+        ///       "userID": 100,
+        ///       "mobileNo": "9899898989"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "INVITATION HAS BEEN SUCCESSFULLY SENT!",
+        ///       "data": true
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">INVITATION HAS BEEN SUCCESSFULLY SENT!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+
+        [HttpPost, Route("WebModule/User/SendInvitation")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> SendInvitation(MemberUserInvitation itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                string OTPValue = utility.Common.GenerateRandomPassword();
+
+                var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.InvitationSendToUser), 0, 0, itemData.MobileNo, this.notificationBusiness, OTPValue);
+                if (result != null)
+                {
+                    this.vendorWebModuleBusiness.UpdateUserPassword(itemData.UserID, itemData.MobileNo, OTPValue);
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "INVITATION HAS BEEN SUCCESSFULLY SENT!";
+                    rm.name = StatusName.ok;
+                    rm.data = true;
+                    //await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = "NO CONTENT";
+                    //await Common.UpdateEventLogsNew("INVITATION - NO CONTENT!", reqHeader, controllerURL, result, null, StatusName.invalid, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                //await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, null, null, StatusName.ok, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        [HttpPost, Route("SignIn")]
+        [MapToApiVersion("1.0")]
+        public IActionResult SignIn(ParamLoginIn itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic loginParams = jsondata;
+
+            try
+            {
+                rm = new ResponseMessage();
+                var returnData = this.vendorWebModuleBusiness.MemberLogIn(itemData.MobileNo, itemData.Password, itemData.parentID);
+                if (returnData != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER DATA";
+                    rm.name = StatusName.ok;
+                    rm.data = returnData;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - SUCCESSFULLY", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Invalid Mobile No or Password!";
+                    rm.name = StatusName.invalidCred;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Invalid MobileNo or Password!", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalidCred;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
         }
 
     }

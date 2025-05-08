@@ -141,6 +141,14 @@ namespace appify.web.api
 
     }
 
+    public class ParamLoginIn
+    {
+        public string MobileNo { get; set; }
+        public string Password { get; set; }
+        public Int64 parentID { get; set; }
+
+    }
+
     public class ParamLogIn
     {
         public string emailID { get; set; }

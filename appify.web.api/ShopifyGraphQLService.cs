@@ -220,7 +220,7 @@ namespace appify.web.api
                             SRC = imageNode["url"]?.Value<string>() ?? ""
                         };
                         //shopifyProduct.images.Add(image);
-                        shopifyProductImage.Rows.Add(image.ReferenceID,image.ImageID,image.ALT,image.ProductID,image.Width,image.Height,image.SRC,1);
+                        shopifyProductImage.Rows.Add(image.ReferenceID,image.ImageID, image.ProductID, image.ALT,image.Width,image.Height,image.SRC,1);
                     }
                     
                 }

@@ -73,14 +73,20 @@ namespace appify.web.api.Controllers
                 //var fileName = "products.json";
 
                 //return File(bytes, "application/json", fileName);
-                if (result != null)
+                if(result!=null)
                 {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY IMPORTED!";
-                    rm.name = StatusName.ok;
-                    rm.data = result;
-                    await Common.UpdateEventLogsNew("SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                    var products = shopifyBusiness.SaveShopifyProductToAppify(item.VendorID);
+                    if (products != null)
+                    {
+
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY IMPORTED!";
+                        rm.name = StatusName.ok;
+                        rm.data = result;
+                        await Common.UpdateEventLogsNew("SHPIFY PRODUCTS HAVE BEEN SUCCESSFULLY ASYNCED", reqHeader, controllerURL, null, products, StatusName.ok, this.eventLogBusiness);
+                    }
                 }
+
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
