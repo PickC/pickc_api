@@ -7,7 +7,7 @@ namespace appify.Business.Contract
 	{
 		IProductAuditLog GetProductLog(Int64 auditID);
 
-        Task<IEnumerable<IProductAuditLog>> ListProductLog(Int64 orderId); // New method
+        Task<List<IProductAuditLog>> ListProductLog(Int64 orderId); // New method
 
 
         Task<bool> SaveProductLog(IProductAuditLog item);

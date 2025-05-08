@@ -853,8 +853,8 @@ namespace appify.web.api.Controllers
 
             try
             {
-                //var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
-                var products = reader.ReadExcel(filePath, itemData.VendorID);
+                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
+                //var products = reader.ReadExcel(filePath, itemData.VendorID);
 
 
                 if (products.Count > 0)

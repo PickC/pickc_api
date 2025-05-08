@@ -65,7 +65,7 @@ namespace appify.audit.service
             {
                 EntityType.Order => (await orderLog.ListOrderLog(entityID)).Cast<IAuditLog>(),
                 EntityType.Product => (await productLog.ListProductLog(entityID)).Cast<IAuditLog>(),
-                EntityType.Vendor => (await vendorLog.ListVendorLogAsync(entityID)).Cast<IAuditLog>(),
+                EntityType.Vendor => (await vendorLog.ListVendorLog(entityID)).Cast<IAuditLog>(),
                 _ => throw new ArgumentException($"Unsupported Entity Type {entityType}")
             };
 
