@@ -9,6 +9,7 @@ using appify.models;
 using appify.Business.Contract;
 using System.Data;
 using appify.Business;
+using Razorpay.Api;
 
 namespace appify.web.api
 {
@@ -42,7 +43,7 @@ namespace appify.web.api
             try
             {
                 var requestBody = System.Text.Json.JsonSerializer.Serialize(new { query });
-                var request = new HttpRequestMessage(HttpMethod.Post, $"{storeUrl}");
+                var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, $"{storeUrl}");
                 request.Headers.Add("X-Shopify-Access-Token", accessToken);
                 request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
@@ -125,6 +126,10 @@ namespace appify.web.api
                                             inventoryQuantity
                                             createdAt
                                             updatedAt
+                                     selectedOptions {{
+                                                name
+                                                value
+                                            }}
                                         }}
                                     }}
                                 }}
@@ -198,11 +203,20 @@ namespace appify.web.api
                             WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
                             InventoryQuantity = variantNode["inventoryQuantity"]?.Value<short?>() ?? 0,
                             CreatedAt = System.String.IsNullOrEmpty((string?)variantNode["createdAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["createdAt"]),//variantNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
-                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updatedAt"])//variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
-                        };
+                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updatedAt"]),//variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
 
+                        };
+                        var selectedOptions = variantNode["selectedOptions"];
+                        
+                        foreach(var item in selectedOptions)
+                        {
+                            if (item["name"].ToString().ToLower() == "color")
+                                variant.Color = item["value"].ToString();
+                            if (item["name"].ToString().ToLower() == "size")
+                                variant.Size = item["value"].ToString();
+                        }
                         //shopifyProduct.variants.Add(variant);
-                        shopifyProductVariant.Rows.Add(variant.ReferenceID,variant.VariantID,variant.ProductID,variant.Title,variant.SKU,variant.Price,variant.Position,variant.Barcode,variant.Weight,variant.WeightUnit,variant.InventoryQuantity,variant.CreatedAt,variant.UpdatedAt,1);
+                        shopifyProductVariant.Rows.Add(variant.ReferenceID,variant.VariantID,variant.ProductID,variant.Title,variant.SKU,variant.Price,variant.Position,variant.Color,variant.Size,variant.Barcode,variant.Weight,variant.WeightUnit,variant.InventoryQuantity,variant.CreatedAt,variant.UpdatedAt,1);
                     }
 
                     var images = productNode["images"]["edges"];
@@ -262,6 +276,8 @@ namespace appify.web.api
                 shopifyProductVariant.Columns.Add("SKU", typeof(string));
                 shopifyProductVariant.Columns.Add("Price", typeof(decimal));
                 shopifyProductVariant.Columns.Add("Position", typeof(Int16));
+                shopifyProductVariant.Columns.Add("Color", typeof(string));
+                shopifyProductVariant.Columns.Add("Size", typeof(string));
                 shopifyProductVariant.Columns.Add("Barcode", typeof(string));
                 shopifyProductVariant.Columns.Add("Weight", typeof(Int16));
                 shopifyProductVariant.Columns.Add("WeightUnit", typeof(string));

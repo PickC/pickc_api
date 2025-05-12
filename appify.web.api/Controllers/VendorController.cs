@@ -19,6 +19,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using static appify.models.NotificationType;
 using appify.audit.service;
+using System.ComponentModel.DataAnnotations;
 
 namespace appify.web.api.Controllers
 {
@@ -820,7 +821,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts([FromForm] ParamExcelUpload itemData)
+        public IActionResult ImportProducts([Required][FromForm] ParamExcelUpload itemData)
         {
             ExcelReader reader = new ExcelReader();
 
@@ -863,7 +864,7 @@ namespace appify.web.api.Controllers
                 }
                 if(result)
                 {
-                    var rsltVal = bulkImportedProductBusiness.SaveBulkImportedProductsToMain(itemData.VendorID);
+                    var rsltVal = true;//bulkImportedProductBusiness.SaveBulkImportedProductsToMain(itemData.VendorID);
                     if (rsltVal)
                     {
                         rm.statusCode = StatusCodes.OK;
