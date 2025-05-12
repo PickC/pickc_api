@@ -33,6 +33,8 @@ namespace appify.models
         public string SKU { get; set; }
         public decimal Price { get; set; }
         public Int16 Position { get; set; }
+        public string Color { get; set; }
+        public string Size { get; set; }
         public string Barcode { get; set; }
         public Int16 Weight { get; set; }
         public string WeightUnit { get; set; }

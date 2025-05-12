@@ -18,12 +18,14 @@ using System.Security.Policy;
 using System.Text.RegularExpressions;
 using Google.Api.Gax.ResourceNames;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.Util;
+using System;
 namespace appify.web.api
 {
     public class ExcelReader
     {
         List<BulkImportedProduct> products = new List<BulkImportedProduct>();
-        public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID = 0)
+        public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID)
         {
 
 
@@ -124,7 +126,7 @@ namespace appify.web.api
                         product.Image3 = GetCellValue(row, columnMap["Image3"]);
                         product.Image4 = GetCellValue(row, columnMap["Image4"]);
                         product.Image5 = GetCellValue(row, columnMap["Image5"]);
-
+                        product.IsActive = true;
 
 
 
@@ -154,11 +156,18 @@ namespace appify.web.api
                 short index = 0;
                 foreach (var item in products)
                 {
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image1, index, 1);
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image2, index, 2);
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image3, index, 3);
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image4, index, 4);
-                    DownloadGoogleDriveImageAsync(item.ProductName, item.Image5, index, 5);
+                    //DownloadGoogleDriveImageAsyncNew(item.ProductName, item.Image1, index, 1);
+                    //DownloadGoogleDriveImageAsyncNew(item.ProductName, item.Image2, index, 2);
+                    //DownloadGoogleDriveImageAsyncNew(item.ProductName, item.Image3, index, 3);
+                    //DownloadGoogleDriveImageAsyncNew(item.ProductName, item.Image4, index, 4);
+                    //DownloadGoogleDriveImageAsyncNew(item.ProductName, item.Image5, index, 5);
+
+                    DownloadAndUploadImageAsync(item.ProductName, item.Image1, index, 1);
+                    DownloadAndUploadImageAsync(item.ProductName, item.Image2, index, 2);
+                    DownloadAndUploadImageAsync(item.ProductName, item.Image3, index, 3);
+                    DownloadAndUploadImageAsync(item.ProductName, item.Image4, index, 4);
+                    DownloadAndUploadImageAsync(item.ProductName, item.Image5, index, 5);
+
                     index += 1;
                 }
 
@@ -277,6 +286,150 @@ namespace appify.web.api
                 {
                     Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 }
+            }
+        }
+
+        private async void DownloadGoogleDriveImageAsyncNew(string productCode, string url, short ItemNo, short col)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(url)) { return; }
+                var fileId = ExtractGoogleDriveFileId(url);
+                if (string.IsNullOrEmpty(fileId))
+                {
+                    throw new ArgumentException("Invalid Google Drive URL format");
+                }
+
+                // Build direct download URL
+                var directUrl = $"https://drive.google.com/uc?export=download&id={fileId}";
+                AzureUploadImagesAsyncNew(productCode,directUrl, ItemNo, col);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Failed to download {url}");
+                Console.WriteLine($"Details: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+            }
+        }
+
+        private async void AzureUploadImagesAsyncNew(string productCode, string url, short ItemNo, short col)
+        {
+            string storageConnectionString;
+            string containerName;
+            var UploadedUrl = "";
+            try
+            {
+                storageConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+                containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+
+                var blobContainerClient = new BlobContainerClient(storageConnectionString, containerName);
+                await blobContainerClient.CreateIfNotExistsAsync();
+
+
+                using var httpClient = new HttpClient();
+
+                var response = await httpClient.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    // Get original file extension
+                    var fileExtension = GetFileExtensionFromUrl(url);
+                    productCode = productCode.Replace(" ", "_");
+                    productCode = Regex.Replace(productCode, @"[^a-zA-Z0-9_]", "");
+                    // Generate filename: {ProductCode}_{Timestamp}.{ext}
+                    var fileName = $"{productCode}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                    //var fullPath = Path.Combine(productFolder, fileName);
+                    //var fileName = Path.GetFileName(url);
+                    var blobClient = blobContainerClient.GetBlobClient(fileName);
+
+                    using var stream = await response.Content.ReadAsStreamAsync();
+                    await blobClient.UploadAsync(stream, overwrite: true);
+
+                    stream.Close();
+                    if (col == 1)
+                        products[ItemNo].Image1 = blobClient.Uri.ToString();
+                    else if (col == 2)
+                        products[ItemNo].Image2 = blobClient.Uri.ToString();
+                    else if (col == 3)
+                        products[ItemNo].Image3 = blobClient.Uri.ToString();
+                    else if (col == 4)
+                        products[ItemNo].Image4 = blobClient.Uri.ToString();
+                    else if (col == 5)
+                        products[ItemNo].Image5 = blobClient.Uri.ToString();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Failed to upload {url}");
+                Console.WriteLine($"Details: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Downloads a Google Drive image (public link) and uploads to Azure Blob Storage.
+        /// Returns the Azure Blob public URL.
+        /// </summary>
+        public async void DownloadAndUploadImageAsync(string productCode, string url, short ItemNo, short col)
+        {
+            string storageConnectionString;
+            string containerName;
+            try
+            {
+                if (string.IsNullOrEmpty(url)) { return; }
+                storageConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+                containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+
+                var blobContainerClient = new BlobContainerClient(storageConnectionString, containerName);
+                await blobContainerClient.CreateIfNotExistsAsync();
+
+                // Extract file ID from Google Drive shareable link
+                string fileId = ExtractGoogleDriveFileId(url);
+                if (string.IsNullOrEmpty(fileId))
+                    throw new Exception("Invalid Google Drive Link");
+
+                string downloadUrl = $"https://drive.google.com/uc?export=download&id={fileId}";
+
+                using (var httpClient = new HttpClient())
+                {
+                    var response = await httpClient.GetAsync(downloadUrl);
+                    response.EnsureSuccessStatusCode();
+                    var fileExtension = GetFileExtensionFromUrl(url);
+                    productCode = productCode.Replace(" ", "_");
+                    productCode = Regex.Replace(productCode, @"[^a-zA-Z0-9_]", "");
+                    // Generate filename: {ProductCode}_{Timestamp}.{ext}
+                    var fileName = $"{productCode}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                    using (var stream = await response.Content.ReadAsStreamAsync())
+                    {
+                        var blobClient = blobContainerClient.GetBlobClient(fileName);
+                        await blobClient.UploadAsync(stream, overwrite: true);
+
+                        // Return the blob URL (ensure container has public access if needed)
+
+                        if (col == 1)
+                            products[ItemNo].Image1 = blobClient.Uri.ToString();
+                        else if (col == 2)
+                            products[ItemNo].Image2 = blobClient.Uri.ToString();
+                        else if (col == 3)
+                            products[ItemNo].Image3 = blobClient.Uri.ToString();
+                        else if (col == 4)
+                            products[ItemNo].Image4 = blobClient.Uri.ToString();
+                        else if (col == 5)
+                            products[ItemNo].Image5 = blobClient.Uri.ToString();
+
+                        //return blobClient.Uri.AbsoluteUri;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error downloading or uploading image: {ex.Message}");
             }
         }
 
