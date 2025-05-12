@@ -36,7 +36,10 @@ namespace appify.Business
 
 			return result;
         }
-
+        public bool SaveBulkImportedProductsToMain(long VendorID)
+		{
+			return repository.SaveBulkImportedProductsToMain(VendorID);
+		}
 
         public bool SaveBulkImportedProduct(BulkImportedProduct item)
 		{
