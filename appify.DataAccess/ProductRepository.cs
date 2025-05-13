@@ -12,7 +12,7 @@ namespace appify.DataAccess
     {
         private IConfiguration configuration;
         private string appify_connectionstring;
-
+        public const string SAVEBULKIMPORTPRODUCTMASTER = "[Operation].[usp_ProductMasterBulkSave]";
         public ProductRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -208,6 +208,66 @@ namespace appify.DataAccess
             return productmaster;
         }
 
+        public ProductMaster SaveBulkImportedProduct(ProductMaster productmaster)
+        {
+
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTPRODUCTMASTER))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@ProductID", productmaster.ProductID);
+                        cmd.Parameters.AddWithValue("@VendorID", productmaster.VendorID);
+                        cmd.Parameters.AddWithValue("@ProductName", productmaster.ProductName);
+                        cmd.Parameters.AddWithValue("@Description", productmaster.Description);
+                        cmd.Parameters.AddWithValue("@Category", productmaster.Category);
+                        cmd.Parameters.AddWithValue("@Brand", productmaster.Brand);
+                        cmd.Parameters.AddWithValue("@Size", productmaster.Size);
+                        cmd.Parameters.AddWithValue("@Color", productmaster.Color);
+                        cmd.Parameters.AddWithValue("@UOM", productmaster.UOM);
+                        cmd.Parameters.AddWithValue("@Weight", productmaster.Weight);
+                        cmd.Parameters.AddWithValue("@PriceID", productmaster.PriceID);
+                        cmd.Parameters.AddWithValue("@Currency", productmaster.Currency);
+                        cmd.Parameters.AddWithValue("@ImageID", productmaster.ImageID);
+                        cmd.Parameters.AddWithValue("@IsAvailable", productmaster.IsAvailable);
+                        cmd.Parameters.AddWithValue("@StockQty", productmaster.StockQty);
+                        cmd.Parameters.AddWithValue("@HSNCode", productmaster.HSNCode);
+                        cmd.Parameters.AddWithValue("@SKU", productmaster.SKU);
+                        cmd.Parameters.AddWithValue("@Source", productmaster.Source);
+                        //cmd.Parameters.Add(new SqlParameter("@NewProductID",SqlDbType.BigInt).Direction = ParameterDirection.Output);
+
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewProductID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        productmaster.ProductID = Convert.ToInt64(outPutParameter.Value);
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return productmaster;
+        }
         public List<NewProduct> GetNewProductsList(long VendorID,bool IsNew=false)
         {
             List<NewProduct> items = new List<NewProduct>();

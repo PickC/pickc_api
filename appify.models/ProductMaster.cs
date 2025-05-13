@@ -50,6 +50,7 @@ namespace appify.models
         public string? ImageName { get; set; }
 
         public bool? IsNew { get; set; }
+        public string? Source { get; set; }
     }
 
 

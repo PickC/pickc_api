@@ -12,6 +12,7 @@ namespace appify.Business.Contract
         public bool SaveBulkImportedProduct(BulkImportedProduct item);
         public bool SaveBulkImportedProducts(List<BulkImportedProduct> item);
         public bool SaveBulkImportedProductsToMain(long VendorID);
+        public bool SaveBulkImportedProductsToMain(List<BulkImportedProduct> item);
         public bool DeleteBulkImportedProduct(Int64 itemID);
 
 

@@ -18,7 +18,7 @@ namespace appify.DataAccess
     {
         private IConfiguration configuration;
         private string appify_connectionstring;
-
+        public const string SAVEBULKIMPORTEDPRODUCTIMAGE = "[Operation].[usp_ProductImageBulkSave]";
         public ProductImageRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -43,6 +43,44 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ProductID",   productimage.ProductID);
                         cmd.Parameters.AddWithValue("@ImageName",  productimage.ImageName);
                         cmd.Parameters.AddWithValue("@ContentType",  productimage.ContentType);
+
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public bool AddProductBulkImage(ProductImage productimage)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTEDPRODUCTIMAGE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+
+                        cmd.Parameters.AddWithValue("@ImageID", productimage.ImageID);
+                        cmd.Parameters.AddWithValue("@ProductID", productimage.ProductID);
+                        cmd.Parameters.AddWithValue("@ImageName", productimage.ImageName);
+                        cmd.Parameters.AddWithValue("@ContentType", productimage.ContentType);
 
 
 

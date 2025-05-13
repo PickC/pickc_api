@@ -21,6 +21,7 @@ namespace appify.Business.Contract
         public bool UpdateOrderStatus(Int64 orderID, short orderStatus, string remarks);
 
         public OrderUpdateDetail GetOrderUpdateDetail(long orderID);
+        public string GetOrderStatus(long orderID);
         public bool SaveItem(OrderItem item);
         public bool DeleteItem(long orderID);
 
