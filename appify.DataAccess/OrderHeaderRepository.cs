@@ -16,6 +16,7 @@ namespace appify.DataAccess
     {
         private IConfiguration configuration;
         private string appify_connectionstring;
+        public const string SELECTORDERUPSTATUS = "[Operation].[usp_OrdeStatusSelect]";
         public OrderHeaderRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -110,6 +111,17 @@ namespace appify.DataAccess
                 item = DataTableHelper.ConvertDataTable<OrderUpdateDetail>(ds.Tables[0]).FirstOrDefault();
             }
             return item;
+        }
+        public string GetOrderStatus(long orderID)
+        {
+            string OrderStatus = "";
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SELECTORDERUPSTATUS, orderID);
+                OrderStatus = ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0][0].ToString() : "";
+            }
+            return OrderStatus;
         }
 
         public OrderHeaderDelivery GetOrderForDelivery(Int64 orderID)

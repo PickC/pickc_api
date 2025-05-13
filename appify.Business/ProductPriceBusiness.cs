@@ -41,5 +41,9 @@ namespace appify.Business
         {
             return repository.SavePrice (price);
         }
+        public bool SaveBulkPrice(ProductPrice productprice)
+        {
+            return repository.SaveBulkPrice(productprice);
+        }
     }
 }

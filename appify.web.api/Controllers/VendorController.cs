@@ -821,7 +821,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost("uploadProductExcel")]
-        public IActionResult ImportProducts([Required][FromForm] ParamExcelUpload itemData)
+        public async Task<IActionResult> ImportProducts([Required][FromForm] ParamExcelUpload itemData)
         {
             ExcelReader reader = new ExcelReader();
 
@@ -864,7 +864,7 @@ namespace appify.web.api.Controllers
                 }
                 if(result)
                 {
-                    var rsltVal = true;//bulkImportedProductBusiness.SaveBulkImportedProductsToMain(itemData.VendorID);
+                    var rsltVal = bulkImportedProductBusiness.SaveBulkImportedProductsToMain(products);
                     if (rsltVal)
                     {
                         rm.statusCode = StatusCodes.OK;

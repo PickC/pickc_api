@@ -18,7 +18,7 @@ namespace appify.DataAccess
     {
         private IConfiguration configuration;
         private string appify_connectionstring;
-
+        public const string SAVEBULKIMPORTEDPRODUCTPRICE = "[Operation].[usp_ProductPriceBulkSave]";
         public ProductPriceRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -115,6 +115,48 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@Price", productprice.Price);
                         cmd.Parameters.AddWithValue("@Discount", productprice.Discount);
                         cmd.Parameters.AddWithValue("@DiscountType",  productprice.DiscountType);
+                        cmd.Parameters.AddWithValue("@EffectiveDate", productprice.EffectiveDate);
+                        cmd.Parameters.AddWithValue("@Stock", productprice.Stock);
+                        cmd.Parameters.AddWithValue("@Weight", productprice.Weight);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+        public bool SaveBulkPrice(ProductPrice productprice)
+        {
+
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTEDPRODUCTPRICE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+
+                        cmd.Parameters.AddWithValue("@PriceID", productprice.PriceID);
+                        cmd.Parameters.AddWithValue("@ProductID", productprice.ProductID);
+                        cmd.Parameters.AddWithValue("@Size", productprice.Size);
+                        cmd.Parameters.AddWithValue("@Price", productprice.Price);
+                        cmd.Parameters.AddWithValue("@Discount", productprice.Discount);
+                        cmd.Parameters.AddWithValue("@DiscountType", productprice.DiscountType);
                         cmd.Parameters.AddWithValue("@EffectiveDate", productprice.EffectiveDate);
                         cmd.Parameters.AddWithValue("@Stock", productprice.Stock);
                         cmd.Parameters.AddWithValue("@Weight", productprice.Weight);

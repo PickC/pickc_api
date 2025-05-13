@@ -666,6 +666,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.ok;
                 rm.data = statusData.OrderID.ToString();
                 OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(statusData.OrderID);
+                var OrderStatus = orderBusiness.GetOrderStatus(statusData.OrderID);
                     //if (orderUpdateDetail.IsWhatsApp == true)
                     //{
                     //    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
@@ -673,7 +674,7 @@ namespace appify.web.api.Controllers
                     if (orderUpdateDetail.SkipNo != orderUpdateDetail.VendorMobileNo && orderUpdateDetail.SkipNo != orderUpdateDetail.MemberMobileNo)
                     {
                         /////FCM Notification AND Email Notification
-                        if (statusData.OrderStatus == 3587) //// Cancelled by Customer Cast 1 - We have 2 cases 1st is before confirmed the order
+                        if (OrderStatus== "Cancelled") //statusData.OrderStatus == 3587//// Cancelled by Customer Cast 1 - We have 2 cases 1st is before confirmed the order
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
@@ -724,7 +725,7 @@ namespace appify.web.api.Controllers
                                 }
                             }
                         }
-                        if (statusData.OrderStatus == 3588) //// Declined by Vendor
+                        if (OrderStatus == "Declined") //statusData.OrderStatus == 3588//// Declined by Vendor
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {
@@ -766,7 +767,7 @@ namespace appify.web.api.Controllers
                                 }
                             }
                         }
-                        if (statusData.OrderStatus == 3577) //// Order Confirmed by Vendor
+                        if (OrderStatus== "Manifested") //statusData.OrderStatus == 3577//// Order Confirmed by Vendor
                         {
                             if (orderUpdateDetail.VendorID != 0)
                             {

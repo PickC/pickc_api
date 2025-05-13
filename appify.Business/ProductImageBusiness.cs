@@ -23,7 +23,10 @@ namespace appify.Business
         {
             return repository.AddProductImage(productImage);
         }
-
+        public bool AddProductBulkImage(ProductImage productimage)
+        {
+            return repository.AddProductBulkImage(productimage);
+        }
         public ProductImage GetProductImage(long imageID,long productID)
         {
             return repository.GetProductImage(imageID, productID);
