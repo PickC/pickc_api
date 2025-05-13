@@ -81,6 +81,11 @@ namespace appify.Business
             return orderRepository.GetOrderUpdateDetail(orderID);
         }
 
+        public string GetOrderStatus(long orderID)
+        {
+            return orderRepository.GetOrderStatus(orderID);
+        }
+
         public List<CustomerOrder> List(long sellerID)
         {
             List<CustomerOrder> orders = orderRepository.List(sellerID);

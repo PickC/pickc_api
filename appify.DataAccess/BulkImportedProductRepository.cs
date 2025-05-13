@@ -165,6 +165,10 @@ namespace appify.DataAccess
 
             return result;
         }
+        public bool SaveBulkImportedProductsToMain(List<BulkImportedProduct> item)
+        {
+            return true;
+        }
         public bool DeleteBulkImportedProduct(Int64 itemID)
         {
 

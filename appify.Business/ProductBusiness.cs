@@ -123,7 +123,10 @@ namespace appify.Business
 
             return item;
         }
-
+        public ProductMaster SaveBulkImportedProduct(ProductMaster productmaster)
+        {
+            return SaveBulkImportedProduct(productmaster);
+        }
         public List<NewProduct> GetNewProductsList(long VendorID, bool IsNew = false)
         {
             return repository.GetNewProductsList(VendorID,IsNew);

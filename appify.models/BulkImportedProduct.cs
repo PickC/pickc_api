@@ -24,8 +24,8 @@ namespace appify.models
 		public string?  Dimension { get; set; }
 
         public string? Size { get; set; }
-        public decimal? Price { get; set; }
-		public Int32?  Stock { get; set; }
+        public string? Price { get; set; }
+		public string?  Stock { get; set; }
 		public string?  Weight { get; set; }
 		public string?  Image1 { get; set; }
 		public string?  Image2 { get; set; }

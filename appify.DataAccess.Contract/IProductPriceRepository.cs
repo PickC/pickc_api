@@ -14,6 +14,7 @@ namespace appify.DataAccess.Contract
         public ProductPrice GetPrice (long priceID,long productID, string size);
         public bool RemovePrice(long priceID, long productID, string size);
         public bool SavePrice(ProductPrice price);
+        public bool SaveBulkPrice(ProductPrice productprice);
 
     }
 }
