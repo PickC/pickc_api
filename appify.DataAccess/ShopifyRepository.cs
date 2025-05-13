@@ -200,6 +200,8 @@ namespace appify.DataAccess
                         bulkProductVariant.ColumnMappings.Add("SKU", "SKU");
                         bulkProductVariant.ColumnMappings.Add("Price", "Price");
                         bulkProductVariant.ColumnMappings.Add("Position", "Position");
+                        bulkProductVariant.ColumnMappings.Add("Color", "Color");
+                        bulkProductVariant.ColumnMappings.Add("Size", "Size");
                         bulkProductVariant.ColumnMappings.Add("Barcode", "Barcode");
                         bulkProductVariant.ColumnMappings.Add("Weight", "Weight");
                         bulkProductVariant.ColumnMappings.Add("WeightUnit", "WeightUnit");

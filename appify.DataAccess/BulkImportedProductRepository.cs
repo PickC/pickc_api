@@ -18,7 +18,7 @@ namespace appify.DataAccess
         public const string LISTBULKIMPORTEDPRODUCT = "[Operation].[usp_BulkImportedProductList]";
         public const string SAVEBULKIMPORTEDPRODUCT = "[Operation].[usp_BulkImportedProductSave]";
         public const string REMOVEBULKIMPORTEDPRODUCT = "[Operation].[usp_BulkImportedProductDelete]";
-
+        public const string SAVEBULKIMPORTEDPRODUCTTOMAIN = "[Operation].[usp_GenerateBulkImportedProducts]";
         public BulkImportedProductRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -137,7 +137,34 @@ namespace appify.DataAccess
 
             return result;
         }
+        public bool SaveBulkImportedProductsToMain(long VendorID)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTEDPRODUCTTOMAIN))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public bool DeleteBulkImportedProduct(Int64 itemID)
         {
 

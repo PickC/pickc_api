@@ -453,6 +453,7 @@ namespace appify.models
         public string? DeliveryChannelDescription { get; set; }
         public bool CanCancel { get; set; }
         public string? EstimateDeliveryDate { get; set; }
+        public string? OrderStatusGroup { get; set; }
 
     }
 
@@ -490,6 +491,7 @@ namespace appify.models
         public string? ShippingAddress { get; set; }
         public string? CurrentRemarks { get; set; }
         public DateTime? CurrentDate { get; set; }
+        public string? OrderStatusGroup { get; set; }
 
     }
     public partial class CustomerOrderSummary
@@ -642,7 +644,7 @@ namespace appify.models
 
         public string? PaymentType { get; set; }
         public string PaymentReferenceNo { get; set; }
-
+        public string? OrderStatusGroup { get; set; }
     }
 
 }
