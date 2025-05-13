@@ -624,8 +624,8 @@ namespace appify.models
     {
         public int OrderID { get; set; }
         public string OrderNo { get; set; }
-        public DateTime OrderDate { get; set; }
-        public DateTime OrderPlacedDate { get; set; }
+        public DateTime? OrderDate { get; set; }
+        public DateTime? OrderPlacedDate { get; set; }
         
         public Int32 OrderStatus { get; set; }
         public string OrderStatusDescription { get; set; }

@@ -1409,6 +1409,7 @@ namespace appify.web.api.Controllers
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
             }
+            return Ok(rm);
         }
 
     }
