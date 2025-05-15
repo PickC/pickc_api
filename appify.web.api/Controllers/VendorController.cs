@@ -20,6 +20,11 @@ using System.Collections.Generic;
 using static appify.models.NotificationType;
 using appify.audit.service;
 using System.ComponentModel.DataAnnotations;
+using Google.Api.Gax.ResourceNames;
+using NPOI.HPSF;
+using System.IO;
+using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Utilities;
 
 namespace appify.web.api.Controllers
 {
@@ -824,7 +829,7 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> ImportProducts([Required][FromForm] ParamExcelUpload itemData)
         {
             ExcelReader reader = new ExcelReader();
-
+            string productFileName = "";
             rm = new ResponseMessage();
 
             var result = false;
@@ -845,36 +850,45 @@ namespace appify.web.api.Controllers
                 rm.message = "Only .xlsx files are allowed";
                 rm.name = StatusName.ok;
                 rm.data = "Only .xlsx files are allowed";
-
                 return Ok(rm);
-
-
             }
-
+            productFileName = Path.GetFileNameWithoutExtension(itemData.ExcelFile.FileName);
+            var fileName = bulkImportedProductBusiness.checkProductFileName(productFileName);
+            if (fileName!="")
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "File already exists. Please upload with a different name!";
+                rm.name = StatusName.ok;
+                rm.data = "File already exists";
+                return Ok(rm);
+            }
 
             try
             {
-                var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID);
+                //var uploadFile = reader.UploadFile(itemData.ExcelFile.OpenReadStream(), itemData.ExcelFile.FileName, itemData.VendorID.ToString());
+               // if (uploadFile != null)
+               // {
+                    var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID, productFileName);
                 //var products = reader.ReadExcel(filePath, itemData.VendorID);
-
+                List<BulkImportedProduct> bulkImportedProduct = new List<BulkImportedProduct>();
 
                 if (products.Count > 0)
-                {
-                    result = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
-                }
-                if(result)
-                {
-                    var rsltVal = bulkImportedProductBusiness.SaveBulkImportedProductsToMain(products);
-                    if (rsltVal)
                     {
-                        rm.statusCode = StatusCodes.OK;
-                        rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
-                        rm.name = StatusName.ok;
-                        rm.data = products;
+                        bulkImportedProduct = bulkImportedProductBusiness.SaveBulkImportedProducts(products);
                     }
-                }
+                    if (bulkImportedProduct!= null)
+                    {
+                        var rsltVal = bulkImportedProductBusiness.SaveBulkImportedProductsToMain(bulkImportedProduct);
+                        if (rsltVal)
+                        {
+                            rm.statusCode = StatusCodes.OK;
+                            rm.message = $"File Processed Successfully with total Count {products.Count.ToString()}";
+                            rm.name = StatusName.ok;
+                            rm.data = products;
+                        }
+                    }
 
-
+                //}
             }
             catch (Exception ex)
             {
@@ -886,6 +900,131 @@ namespace appify.web.api.Controllers
             }
 
             return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get Bulk Imported Products Report
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///       "vendorID": 2289,
+        ///       "productFileName": "BULK Product Upload Sheet"
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCHED BULK IMPORTED PRODUCT FILE HISTORY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost("bulkImportedProductReport")]
+        public async Task<FileContentResult> DownloadBulkImportedProductReport(ParamProductLog itemData)
+        {
+            rm = new ResponseMessage();
+            ExcelReader reader = new ExcelReader();
+            string fileName = $"ProductLog_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            byte[] fileContent = null ;
+            try
+            {
+                var result = bulkImportedProductBusiness.GetBulkImportedProductsLogs(itemData.VendorID, itemData.productFileName);
+                fileContent = reader.GenerateExcel(result);
+                if (result.Count>0)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = $"Product Log file has been generated";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Error processing file: {ex.Message}";
+                rm.name = StatusName.invalid;
+                rm.data = $"Error processing file: {ex.Message}";
+
+            }
+            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        /// <summary>
+        /// Get Bulk Imported Products History
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///          
+        ///     {
+        ///       "vendorID": 2289
+        ///     }
+        ///
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCHED BULK IMPORTED PRODUCT FILE HISTORY",
+        ///       "data": [
+        ///         {
+        ///           "productFileName": "BULK Product Upload Sheet",
+        ///           "createdOn": "2025-05-13T09:22:09.603",
+        ///           "isActive": true,
+        ///           "noOfProducts": 6,
+        ///           "success": 0,
+        ///           "failed": 0
+        ///         }
+        ///       ]
+        ///     }
+        ///     
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">FETCHED BULK IMPORTED PRODUCT FILE HISTORY!</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        [HttpPost, Route("bulkImportedProductsHistory")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetBulkImportedProductsHistory(ParamVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic data = jsonData;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var item = this.bulkImportedProductBusiness.GetBulkImportedProductsHistory(itemData.VendorID);
+                if (item != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCHED BULK IMPORTED PRODUCT FILE HISTORY";
+                    rm.name = StatusName.ok;
+                    rm.data = item;
+                    await Common.UpdateEventLogsNew("FETCHED BULK IMPORTED PRODUCT FILE HISTORY", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    await Common.UpdateEventLogsNew("FETCHED BULK IMPORTED PRODUCT - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("BULK IMPORTED PRODUCT FILE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
         }
 
         //public async Task DownloadGoogleDriveImagesAsync(List<Product> products)

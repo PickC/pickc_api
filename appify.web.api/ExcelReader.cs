@@ -20,12 +20,41 @@ using Google.Api.Gax.ResourceNames;
 using NPOI.SS.Formula.Functions;
 using NPOI.SS.Util;
 using System;
+using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using Azure.Storage.Blobs.Models;
+using System.IO;
+using NPOI.HPSF;
+using CsvHelper;
 namespace appify.web.api
 {
     public class ExcelReader
     {
         List<BulkImportedProduct> products = new List<BulkImportedProduct>();
-        public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID)
+
+        public string UploadFile(Stream fileStream, string fileName, string folderName)
+        {
+            try
+            {
+                //// Folder Name - Vendors/VendorID/Uploads
+                var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+                var containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+                var blobServiceClient = new BlobServiceClient(connectionString);
+
+                var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+                containerClient.CreateIfNotExists(PublicAccessType.Blob);
+                string blobName = $"{"Vendors/" +folderName+ "/Uploads".TrimEnd('/')}/{fileName}";
+                var blobClient = containerClient.GetBlobClient(blobName);
+                blobClient.Upload(fileStream, overwrite: true);
+                return blobClient.Uri.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Upload failed: {ex.Message}", ex);
+            }
+        }
+        public List<BulkImportedProduct> ReadExcel(Stream stream, Int64 vendorID, string ProductFileName)
         {
 
 
@@ -109,6 +138,7 @@ namespace appify.web.api
 
                         product.VendorID = vendorID;
                         product.ItemNo = GetCellValue(row, columnMap["SL No."]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["SL No."]).ToString()) : Convert.ToInt16(0);
+                        product.ProductFileName = ProductFileName;
                         product.ProductName = GetCellValue(row, columnMap["Product Name"]);
                         product.BrandName = GetCellValue(row, columnMap["Brand Name"]);
                         product.HSNCode = GetCellValue(row, columnMap["HSN Code"]);
@@ -413,7 +443,59 @@ namespace appify.web.api
             }
         }
 
-        public string UploadToBlob_Sync(Stream fileStream, string blobName)
+        public byte[] GenerateExcel(List<BulkImportedProductLog> itemData)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                IWorkbook workbook = new XSSFWorkbook();
+                ISheet sheet = workbook.CreateSheet("Product Logs");
+
+                IRow headerRow = sheet.CreateRow(0);
+                string[] headers = { "SL No.", "Product Name", "Brand Name", "HSN Code", "Error", "Remark" };
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    headerRow.CreateCell(i).SetCellValue(headers[i]);
+                }
+
+                int rowIndex = 1;
+                foreach(var log in itemData)
+                {
+                    IRow row = sheet.CreateRow(rowIndex++);
+                    row.CreateCell(0).SetCellValue(log.ItemNo ?? 0);
+                    row.CreateCell(1).SetCellValue(log.ProductName ?? string.Empty);
+                    row.CreateCell(2).SetCellValue(log.BrandName ?? string.Empty);
+                    row.CreateCell(3).SetCellValue(log.HSNCode ?? string.Empty);
+                    row.CreateCell(4).SetCellValue(log.Error ?? string.Empty);
+                    row.CreateCell(5).SetCellValue(log.Remarks ?? string.Empty);
+                }
+
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    sheet.AutoSizeColumn(i);
+                }
+
+                workbook.Write(memoryStream);
+                return memoryStream.ToArray();
+                //var fileExtension = ".xlsx";
+                //var fileName = $"{"Report"}_{DateTime.Now:yyyyMMddHHmmss}{fileExtension}";
+                //var uploadedUrl = UploadFile(memoryStream, fileName, itemData[0].VendorID.ToString());
+
+                //string downloadPath = @"C:\Downloads";
+                //if (!Directory.Exists(downloadPath))
+                //{
+                //    Directory.CreateDirectory(downloadPath);
+                //}
+                //string fileName = $"ProductLog_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                //filePath = Path.Combine(downloadPath, fileName);
+                //using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                //{
+                //    workbook.Write(fileStream);
+                //}
+            }
+
+        }
+            public string UploadToBlob_Sync(Stream fileStream, string blobName)
         {
             var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
             var containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;

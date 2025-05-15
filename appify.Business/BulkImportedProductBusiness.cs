@@ -39,25 +39,28 @@ namespace appify.Business
 		}
 
 
-		public bool SaveBulkImportedProducts(List<BulkImportedProduct> item) {
+		public List<BulkImportedProduct> SaveBulkImportedProducts(List<BulkImportedProduct> item) {
 
-			var result = false;
-			foreach (BulkImportedProduct product in item)
+            List<BulkImportedProduct> bulkImportedProduct = new List<BulkImportedProduct>();
+            foreach (BulkImportedProduct product in item)
 			{
-                result = repository.SaveBulkImportedProduct(product);
-				if (!result) {
+                bulkImportedProduct.Add(repository.SaveBulkImportedProduct(product));
+				if (bulkImportedProduct == null) {
 					break;
 				}
             }
 
-			return result;
+			return bulkImportedProduct;
         }
         public bool SaveBulkImportedProductsToMain(long VendorID)
 		{
 			return repository.SaveBulkImportedProductsToMain(VendorID);
 		}
-
-        public bool SaveBulkImportedProduct(BulkImportedProduct item)
+        public string checkProductFileName(string productFileName)
+        {
+            return repository.checkProductFileName(productFileName);
+        }
+        public BulkImportedProduct SaveBulkImportedProduct(BulkImportedProduct item)
 		{
 			return repository.SaveBulkImportedProduct(item);
 		}
@@ -70,13 +73,14 @@ namespace appify.Business
 		public bool SaveBulkImportedProductsToMain(List<BulkImportedProduct> item)
 		{
             var result = false;
-            try
-			{
-                ProductMaster productMaster = new ProductMaster();
-                ProductPrice productPrice = new ProductPrice();
-                ProductImage productImage = new ProductImage();
-                /////// Product Master
-                foreach(var productItem in item)
+
+            ProductMaster productMaster = new ProductMaster();
+            ProductPrice productPrice = new ProductPrice();
+            ProductImage productImage = new ProductImage();
+            /////// Product Master
+            foreach(var productItem in item)
+            {
+                try
                 {
                     productMaster.ProductID = 0;
                     productMaster.VendorID = productItem.VendorID;
@@ -130,15 +134,16 @@ namespace appify.Business
                         }
                         result = true;
                         this.productBusiness.UpdateProductImagePrice(productMaster.ProductID);
+
                     }
                 }
-                
+                catch (Exception ex)
+                {
+                    this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Failed",ex.Message.ToString());
+                }
+                this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Success", "");
             }
-            catch (Exception ex)
-            {
 
-                throw ex;
-            }
             return result;
         }
 
@@ -172,6 +177,15 @@ namespace appify.Business
             }
 
             return result;
+        }
+
+        public List<BulkImportedProductLog> GetBulkImportedProductsLogs(long vendorID, string productFileName)
+        {
+            return repository.GetBulkImportedProductsLogs(vendorID, productFileName);
+        }
+        public List<BulkImportedProductHistory> GetBulkImportedProductsHistory(long vendorID)
+        {
+            return repository.GetBulkImportedProductsHistory(vendorID);
         }
     }
     public class VariantData
