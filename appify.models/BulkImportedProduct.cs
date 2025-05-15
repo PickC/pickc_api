@@ -59,6 +59,7 @@ namespace appify.models
 		public short? NoOfProducts {  get; set; }
 		public short? Success {  get; set; }
         public short? Failed { get; set; }
+        public string? Status { get; set; }
     }
 }
 
