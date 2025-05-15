@@ -1481,6 +1481,16 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
+
+                var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(itemData.MobileNo);
+                if (mobileNo!="")
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Mobile No Already Exits";
+                    rm.name = StatusName.ok;
+                    rm.data = "Mobile No Already Exits";
+                    return Ok(rm);
+                }
                 string OTPValue = utility.Common.GenerateRandomPassword();
 
                 var result = SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.InvitationSendToUser), 0, 0, itemData.MobileNo, this.notificationBusiness, OTPValue);
