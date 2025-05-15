@@ -24,6 +24,7 @@ namespace appify.DataAccess
         public const string UPDATEVEVENDORUSER = "[Operation].[usp_MemberUserStatusUpdate]";
         public const string UPDATEVEUSERPASSWORD = "[Operation].[usp_UserPasswordUpdate]";
         public const string MEMBERUSERLOGIN = "[Operation].[usp_MemberUserLogIn]";
+        public const string CHECKUSERMOBILENO = "[Operation].[usp_CheckUserMobileNo]";
         public VendorWebModuleRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -185,6 +186,25 @@ namespace appify.DataAccess
             {
                 throw;
             }
+        }
+        public string CheckUserMobileNo(string mobileNo)
+        {
+            try
+            {
+                string item = "";
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, CHECKUSERMOBILENO, mobileNo);
+                    item = ds.Tables[0].Rows.Count>0 ? ds.Tables[0].Rows[0][0].ToString() : "";
+                }
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }

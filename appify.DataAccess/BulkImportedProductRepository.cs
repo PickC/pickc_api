@@ -19,6 +19,9 @@ namespace appify.DataAccess
         public const string SAVEBULKIMPORTEDPRODUCT = "[Operation].[usp_BulkImportedProductSave]";
         public const string REMOVEBULKIMPORTEDPRODUCT = "[Operation].[usp_BulkImportedProductDelete]";
         public const string SAVEBULKIMPORTEDPRODUCTTOMAIN = "[Operation].[usp_GenerateBulkImportedProducts]";
+        public const string BULKIMPORTEDPRODUCTLOGS = "[Operation].[usp_BulkImportedProductLogSelect]";
+        public const string BULKIMPORTEDPRODUCTHISTORY = "[Operation].[usp_BulkImportedProductHistory]";
+        public const string CHECKBULKIMPORTEDPRODUCTFILENAME = "[Operation].[usp_CheckBulkImportedProductFileName]";
         public BulkImportedProductRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -53,7 +56,7 @@ namespace appify.DataAccess
             return items;
 
         }
-        public bool SaveBulkImportedProduct(BulkImportedProduct itemData)
+        public BulkImportedProduct SaveBulkImportedProduct(BulkImportedProduct itemData)
         {
 
             var result = false;
@@ -123,8 +126,15 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@Remarks", itemData.Remarks);
                         cmd.Parameters.AddWithValue("@ErrorMessage", itemData.ErrorMessage);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewItemID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        itemData.ItemID = Convert.ToInt64(outPutParameter.Value);
                         con.Close();
                     }
                 }
@@ -135,7 +145,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return itemData;
         }
         public bool SaveBulkImportedProductsToMain(long VendorID)
         {
@@ -198,7 +208,44 @@ namespace appify.DataAccess
 
             return result;
         }
+        public string checkProductFileName(string productFileName)
+        {
+            string result = "";
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, CHECKBULKIMPORTEDPRODUCTFILENAME, productFileName);
+                result = ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0][0].ToString() : "";
+                con.Close();
+            }
 
+            return result;
+        }
+        public List<BulkImportedProductLog> GetBulkImportedProductsLogs(long vendorID, string productFileName)
+        {
+            List<BulkImportedProductLog> items = new List<BulkImportedProductLog>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, BULKIMPORTEDPRODUCTLOGS, vendorID, productFileName);
+                items = DataTableHelper.ConvertDataTable<BulkImportedProductLog>(ds.Tables[0]);
+                con.Close();
+            }
 
+            return items;
+        }
+        public List<BulkImportedProductHistory> GetBulkImportedProductsHistory(long vendorID)
+        {
+            List<BulkImportedProductHistory> items = new List<BulkImportedProductHistory>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, BULKIMPORTEDPRODUCTHISTORY, vendorID);
+                items = DataTableHelper.ConvertDataTable<BulkImportedProductHistory>(ds.Tables[0]);
+                con.Close();
+            }
+
+            return items;
+        }
     }
 }
