@@ -38,6 +38,28 @@ namespace appify.models
 		public string?  ErrorMessage { get; set; }
 		public bool?  IsActive { get; set; }
 	}
+
+	public partial class BulkImportedProductLog
+	{
+		public BulkImportedProductLog() { }
+        public Int16? ItemNo { get; set; }
+        public Int64 VendorID { get; set; }
+        public string? ProductName { get; set; }
+        public string? BrandName { get; set; }
+        public string? HSNCode { get; set; }
+        public string? Error { get; set; }
+        public string? Remarks { get; set; }
+    }
+    public partial class BulkImportedProductHistory
+    {
+        public BulkImportedProductHistory() { }
+        public string? ProductFileName { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public bool? IsActive { get; set; }
+		public short? NoOfProducts {  get; set; }
+		public short? Success {  get; set; }
+        public short? Failed { get; set; }
+    }
 }
 
 
