@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.audit.service;
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using appify.audit.service;
 
 namespace appify.web.api.Controllers
 {
@@ -29,19 +31,23 @@ namespace appify.web.api.Controllers
         public readonly IEventLogBusiness eventLogBusiness;
         public readonly IVendorPaymentBusiness vendorPaymentBusiness;
         private readonly IConfiguration configuration;
+        private readonly IAuditService auditService;
+
         private readonly IWebHostEnvironment env;
 
         public VendorPaymentController(IConfiguration configuration, 
                                        INotificationBusiness IResultData, 
                                        IEventLogBusiness eventLogBusiness, 
                                        IVendorPaymentBusiness vendorPaymentBusiness,
-                                       IWebHostEnvironment env)
+                                       IWebHostEnvironment env,
+                                       IAuditService auditService)
         {
             this.notificationBusiness = IResultData;
             this.eventLogBusiness = eventLogBusiness;
             this.vendorPaymentBusiness = vendorPaymentBusiness;
             this.configuration = configuration;
             this.env = env;
+            this.auditService = auditService;
         }
 
         /// <summary>
@@ -753,6 +759,10 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = result;
                     await Common.UpdateEventLogsNew("VENDOR PAYMENT HAS BEEN SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok, this.eventLogBusiness);
+
+                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+                    await auditService.LogAsync(EntityType.Vendor, item.VendorID, "Invitation has been sent successfully", item.VendorID.ToString(), "WEB", sourceIPAddress, item);
+
                 }
                 else
                 {
