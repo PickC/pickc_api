@@ -1126,7 +1126,15 @@ namespace appify.web.api.Controllers
                     rm.message = "USER HAS BEEN SUCCESSFULLY REGISTERED!";
                     rm.name = StatusName.ok;
                     rm.data = item;
+
+                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+                    await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, "New User Created", item.UserID.ToString(), "WEB", sourceIPAddress, item);
+
+
+
                     await Common.UpdateEventLogsNew("USER HAS BEEN SUCCESSFULLY REGISTERED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+
+
                 }
                 else
                 {
@@ -1502,6 +1510,10 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = true;
                     //await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
+
+                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+                    await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Invitation has been sent successfully", itemData.UserID.ToString(), "WEB", sourceIPAddress, itemData);
+
                 }
                 else
                 {
