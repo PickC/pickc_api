@@ -13,6 +13,7 @@ namespace appify.DataAccess
         private IConfiguration configuration;
         private string appify_connectionstring;
         public const string SAVEBULKIMPORTPRODUCTMASTER = "[Operation].[usp_ProductMasterBulkSave]";
+        public const string UPDATEBULKIMPORTEDPRODUCTREMARKS = "[Operation].[usp_BulkImportedProductRemarksUpdate]";
         public ProductRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -83,6 +84,38 @@ namespace appify.DataAccess
             return result;
         }
 
+        public bool UpdateBulkImportedProductRemark(long ItemID, string Remarks, string Error)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATEBULKIMPORTEDPRODUCTREMARKS))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ItemID", ItemID);
+                        cmd.Parameters.AddWithValue("@Remarks", Remarks);
+                        cmd.Parameters.AddWithValue("@ErrorMessage", Error);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public ProductMaster GetProduct(long productId)
         {
             ProductMaster item = new ProductMaster();

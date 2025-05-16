@@ -15,5 +15,6 @@ namespace appify.DataAccess.Contract
         public bool UpdateVendorUser(long UserID, bool IsActive);
         public bool UpdateUserPassword(long UserID, string MobileNo, string Password);
         public MemberUser MemberLogIn(string mobileNo, string password, Int64 parentID);
+        public string CheckUserMobileNo(string mobileNo);
     }
 }

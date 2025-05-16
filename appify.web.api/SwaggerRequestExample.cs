@@ -343,6 +343,15 @@ namespace appify.web.api
     {
         public Int64 VendorID { get; set; }
     }
+    public class ParamVendorID
+    {
+        public long VendorID { get; set; }
+    }
+    public class ParamProductLog
+    {
+        public Int64 VendorID { get; set; }
+        public string productFileName {  get; set; }
+    }
     public class ParamVendorRef
     {
         public Int64 VendorID { get; set; }

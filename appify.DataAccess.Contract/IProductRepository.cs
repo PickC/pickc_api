@@ -22,7 +22,7 @@ namespace appify.DataAccess.Contract
         public List<ProductWeb> ListAll();
 
         public bool UpdateProductImagePrice(long productID);
-
+        public bool UpdateBulkImportedProductRemark(long ItemID, string Remarks, string Error);
         public List<NewProduct> GetNewProductsList(long VendorID, bool IsNew = false);
 
         public bool UpdateNewProducts(long ProductID, bool IsNew);

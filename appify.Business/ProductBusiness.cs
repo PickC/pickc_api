@@ -45,7 +45,10 @@ namespace appify.Business
             return repository.UpdateProductImagePrice(productID);
         }
 
-
+        public bool UpdateBulkImportedProductRemark(long ItemID, string Remarks, string Error)
+        {
+            return repository.UpdateBulkImportedProductRemark(ItemID, Remarks, Error);
+        }
         public ProductMaster GetProduct(long productId)
         {
             return repository.GetProduct(productId);

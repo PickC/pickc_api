@@ -39,5 +39,9 @@ namespace appify.Business
         {
             return repository.MemberLogIn(mobileNo, password, parentID);
         }
+        public string CheckUserMobileNo(string mobileNo)
+        {
+            return repository.CheckUserMobileNo(mobileNo);
+        }
     }
 }
