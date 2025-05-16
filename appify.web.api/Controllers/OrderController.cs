@@ -330,9 +330,9 @@ namespace appify.web.api.Controllers
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER - UNSBLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message));
                     await Common.UpdateEventLogsNew("ORDER - UNABLE/ADD ORDER", reqHeader, controllerURL, order, null, rm.message, this.eventLogBusiness);
-
+                          
                     await auditService.LogAsync(EntityType.Order, result.OrderID, "Order - Unable to Add/Update Order", result.MemberID.ToString(), AppName, sourceIPAddress, result);
-
+                       
                 }
 
             }
