@@ -2811,7 +2811,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
-                }
+                }   
 
             }
             catch (Exception ex)
