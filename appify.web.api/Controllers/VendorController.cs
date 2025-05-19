@@ -853,7 +853,7 @@ namespace appify.web.api.Controllers
                 return Ok(rm);
             }
             productFileName = Path.GetFileNameWithoutExtension(itemData.ExcelFile.FileName);
-            var fileName = bulkImportedProductBusiness.checkProductFileName(productFileName);
+            var fileName = bulkImportedProductBusiness.checkProductFileName(productFileName + "_" + itemData.VendorID);
             if (fileName!="")
             {
                 rm.statusCode = StatusCodes.ERROR;
@@ -868,7 +868,7 @@ namespace appify.web.api.Controllers
                 //var uploadFile = reader.UploadFile(itemData.ExcelFile.OpenReadStream(), itemData.ExcelFile.FileName, itemData.VendorID.ToString());
                // if (uploadFile != null)
                // {
-                    var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID, productFileName);
+                    var products = reader.ReadExcel(itemData.ExcelFile.OpenReadStream(), itemData.VendorID, productFileName + "_" + itemData.VendorID);
                 //var products = reader.ReadExcel(filePath, itemData.VendorID);
                 List<BulkImportedProduct> bulkImportedProduct = new List<BulkImportedProduct>();
 
@@ -1113,12 +1113,23 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
+                var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(itemData.MobileNo);
+                if (mobileNo != "")
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Mobile No Already Exits";
+                    rm.name = StatusName.ok;
+                    rm.data = "Mobile No Already Exits";
+                    return Ok(rm);
+                }
                 var item = this.vendorWebModuleBusiness.SaveVendorUser(itemData);
                 if (item != null)
                 {
@@ -1127,8 +1138,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
 
-                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
-                    await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, "New User Created", item.UserID.ToString(), "WEB", sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, "New User Created", item.UserID.ToString(), AppName, sourceIPAddress, item);
 
 
 
@@ -1484,6 +1494,8 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             try
             {
                 rm = new ResponseMessage();
@@ -1510,9 +1522,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = true;
                     //await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
-
-                    string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
-                    await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Invitation has been sent successfully", itemData.UserID.ToString(), "WEB", sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Invitation has been sent successfully", itemData.UserID.ToString(), AppName, sourceIPAddress, itemData);
 
                 }
                 else
