@@ -47,6 +47,7 @@ namespace appify.web.api.Controllers
         private readonly IWebHostEnvironment env;
         private readonly INotificationBusiness notificationBusiness;
         private readonly IVendorWebModuleBusiness vendorWebModuleBusiness;
+        private readonly IVendorPaymentBusiness vendorPaymentBusiness;
         private readonly IAuditService auditService;
         private ResponseMessage rm;
         public VendorController(IConfiguration configuration,
@@ -61,6 +62,7 @@ namespace appify.web.api.Controllers
                                 INotificationBusiness IResultData, 
                                 IVendorWebModuleBusiness vendorWebModuleBusiness,
                                 IBulkImportedProductBusiness bulkImportedProductBusiness,
+                                IVendorPaymentBusiness vendorPaymentBusiness,
                                 IAuditService auditService)
         {
             this.configuration = configuration;
@@ -75,6 +77,7 @@ namespace appify.web.api.Controllers
             this.env = env;
             this.notificationBusiness = IResultData;
             this.vendorWebModuleBusiness = vendorWebModuleBusiness;
+            this.vendorPaymentBusiness = vendorPaymentBusiness;
             this.auditService = auditService;
         }
         /// <summary>
@@ -1594,35 +1597,52 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("GenerateVendorSOA")]
-        public async Task<IActionResult> GenerateVendorSOA(long vendorID)
+        public async Task<IActionResult> GenerateVendorSOA(ParamMemberDashboard itemData)
         {
             try
             {
+                rm = new ResponseMessage();
                 // 1. Validate input
-                if (vendorID <= 0)
+                if (itemData.userID <= 0)
                 {
-                    return BadRequest("Invalid Vendor ID");
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "INVALID DATA";
+                    rm.name = StatusName.ok;
+                    rm.data = "Invalid Vendor ID";
+                    return Ok(rm);  
                 }
 
                 GenerateVendorSOA soa = new GenerateVendorSOA();
 
+                
+
                 // 2. Get vendor data (replace with your actual data access)
-                var vendorData = await soa.GetVendorData(vendorID);
+                var vendorData = vendorPaymentBusiness.GetStatement(itemData.userID,itemData.dateFrom,itemData.dateTo);
                 if (vendorData == null)
                 {
-                    return NotFound($"Vendor with ID {vendorID} not found");
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "INVALID DATA";
+                    rm.name = StatusName.ok;
+                    rm.data = $"Vendor with ID {itemData.userID} not found";
+                    return Ok(rm);
                 }
 
                 // 3. Generate PDF
                 var pdfBytes = soa.GeneratePdfStatement(vendorData);
 
                 // 4. Return PDF file
-                return File(pdfBytes, "application/pdf", $"VendorSOA_{vendorID}_{DateTime.Now:yyyyMMdd}.pdf");
+                return File(pdfBytes, "application/pdf", $"VendorSOA_{itemData.userID}_{DateTime.Now:yyyyMMdd}.pdf");
             }
             catch (Exception ex)
             {
                 // Log error here
                 return StatusCode(500, $"Internal server error: {ex.Message}");
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "INVALID DATA";
+                rm.name = StatusName.ok;
+                rm.data = ex.Message.ToString();
+                return Ok(rm);
             }
         }
 

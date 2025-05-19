@@ -17,5 +17,7 @@ namespace appify.DataAccess.Contract
         public bool UpdateReferenceNo(VendorPaymentStatus item);
         public VendorPayment GetPaymentStatus(Int64 VendorID);
         public List<VendorPayment> ListByVendor(Int64 VendorID);
+
+        public VendorStatement GetStatement(Int64 VendorID, DateTime? dateFrom, DateTime? dateTo);
     }
 }
