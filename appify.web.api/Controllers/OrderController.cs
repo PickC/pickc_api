@@ -2502,10 +2502,8 @@ namespace appify.web.api.Controllers
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
                 body = await reader.ReadToEndAsync();
-#if DEBUG
-body = "{    \"entity\": \"event\",    \"account_id\": \"acc_OCjTrbZShxQc7y\",    \"event\": \"payment.failed\",    \"contains\": [      \"payment\"    ],    \"payload\": {      \"payment\": {        \"entity\": {          \"id\": \"pay_PpLCRD0aOmsTca\",          \"entity\": \"payment\",          \"amount\": 89365,          \"currency\": \"INR\",          \"status\": \"failed\",          \"order_id\": \"order_PpLCIQtjGRKxog\",          \"invoice_id\": null,          \"international\": false,          \"method\": \"upi\",          \"amount_refunded\": 0,          \"refund_status\": null,          \"captured\": false,          \"description\": \"Order Payment\",          \"card_id\": null,          \"bank\": null,          \"wallet\": null,          \"vpa\": null,          \"email\": \"praburamya123@gmail.com\",          \"contact\": \"+918220698775\",          \"notes\": {            \"device\": \"Android\",            \"orderId\": \"2547\",            \"paymentType\": \"orderPayment\",            \"vendorId\": \"14899\"          },          \"fee\": null,          \"tax\": null,          \"error_code\": \"BAD_REQUEST_ERROR\",          \"error_description\": \"You may have cancelled the payment or there was a delay in response from the UPI app.\",          \"error_source\": \"customer\",          \"error_step\": \"payment_authentication\",          \"error_reason\": \"payment_cancelled\",          \"acquirer_data\": {            \"rrn\": null          },          \"created_at\": 1738171569,          \"provider\": null,          \"upi\": {            \"vpa\": null          },          \"reward\": null        }      }    },    \"created_at\": 1738171620  }";
-#endif
-                                    var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
+                var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
+
                 string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
                 foreach (var s in eventSearch)
                 {
