@@ -1,78 +1,75 @@
-﻿using PdfSharp.Drawing;
+﻿using appify.models;
+using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
 
 namespace appify.utility
 {
-    internal class GeneratePDF
-    {
-    }
-
     public partial class GenerateVendorSOA
     {
 
 
-        public async Task<VendorData> GetVendorData(long vendorID)
-        {
-            // Replace with your actual data access code
-            // This is just sample data matching your example
-            return await Task.FromResult(new VendorData
-            {
-                VendorId = vendorID,
-                VendorName = "M R P Stores",
-                Address = "1292,Sadashiv peth SHOP NO 3\nSneha chimnya ganpati chowk,Pune\nPune,Maharastra",
-                Email = "support@themrpstore.com",
-                ReportPeriod = "27 April 2025 - 3 May 2025",
-                SettlementDate = "5 May 2025",
-                PaymentReference = "PAY987654",
-                AccountNumber = "XXXX1234",
-                Orders = new List<OrderData>
-            {
-                new OrderData {
-                    OrderId = "OD29882504029",
-                    Date = "2025-04-29",
-                    Status = "Delivered",
-                    OrderPrice = 500.00m,
-                    DeliveryCharges = 170.00m,
-                    TransactionCharges = 13.4m,
-                    Commission = 67.00m,
-                    GstOnCommission = 12.06m,
-                    Tcs = 0.12m
-                },
-                new OrderData {
-                    OrderId = "OD29882504027",
-                    Date = "2025-04-28",
-                    Status = "Delivered",
-                    OrderPrice = 1200.00m,
-                    DeliveryCharges = 116.00m,
-                    TransactionCharges = 26.32m,
-                    Commission = 131.60m,
-                    GstOnCommission = 23.68m,
-                    Tcs = 0.23m
-                },
-                new OrderData {
-                    OrderId = "OD29882504025",
-                    Date = "2025-04-26",
-                    Status = "RTO",
-                    OrderPrice = 2000.00m,
-                    DeliveryCharges = 160.00m
-                },
-                new OrderData {
-                    OrderId = "OD29882504023",
-                    Date = "2025-04-25",
-                    Status = "Delivered",
-                    OrderPrice = 800.00m,
-                    DeliveryCharges = 132.00m,
-                    TransactionCharges = 18.64m,
-                    Commission = 93.20m,
-                    GstOnCommission = 16.78m,
-                    Tcs = 0.16m
-                }
-            }
-            });
-        }
+        //public async Task<VendorData> GetVendorData(long vendorID)
+        //{
+        //    // Replace with your actual data access code
+        //    // This is just sample data matching your example
+        //    return await Task.FromResult(new VendorData
+        //    {
+        //        VendorId = vendorID,
+        //        VendorName = "M R P Stores",
+        //        Address = "1292,Sadashiv peth SHOP NO 3\nSneha chimnya ganpati chowk,Pune\nPune,Maharastra",
+        //        Email = "support@themrpstore.com",
+        //        ReportPeriod = "27 April 2025 - 3 May 2025",
+        //        SettlementDate = "5 May 2025",
+        //        PaymentReference = "PAY987654",
+        //        AccountNumber = "XXXX1234",
+        //        Orders = new List<OrderData>
+        //    {
+        //        new OrderData {
+        //            OrderId = "OD29882504029",
+        //            Date = "2025-04-29",
+        //            Status = "Delivered",
+        //            OrderPrice = 500.00m,
+        //            DeliveryCharges = 170.00m,
+        //            TransactionCharges = 13.4m,
+        //            Commission = 67.00m,
+        //            GstOnCommission = 12.06m,
+        //            Tcs = 0.12m
+        //        },
+        //        new OrderData {
+        //            OrderId = "OD29882504027",
+        //            Date = "2025-04-28",
+        //            Status = "Delivered",
+        //            OrderPrice = 1200.00m,
+        //            DeliveryCharges = 116.00m,
+        //            TransactionCharges = 26.32m,
+        //            Commission = 131.60m,
+        //            GstOnCommission = 23.68m,
+        //            Tcs = 0.23m
+        //        },
+        //        new OrderData {
+        //            OrderId = "OD29882504025",
+        //            Date = "2025-04-26",
+        //            Status = "RTO",
+        //            OrderPrice = 2000.00m,
+        //            DeliveryCharges = 160.00m
+        //        },
+        //        new OrderData {
+        //            OrderId = "OD29882504023",
+        //            Date = "2025-04-25",
+        //            Status = "Delivered",
+        //            OrderPrice = 800.00m,
+        //            DeliveryCharges = 132.00m,
+        //            TransactionCharges = 18.64m,
+        //            Commission = 93.20m,
+        //            GstOnCommission = 16.78m,
+        //            Tcs = 0.16m
+        //        }
+        //    }
+        //    });
+        //}
 
-        public  byte[] GeneratePdfStatement(VendorData vendorData)
+        public  byte[] GeneratePdfStatement(VendorStatement vendorData)
         {
             PdfDocument document = new PdfDocument();
             document.Info.Title = $"Vendor Statement - {vendorData.VendorName}";
@@ -110,7 +107,7 @@ namespace appify.utility
             }
         }
 
-        private void DrawHeader(XGraphics gfx, PdfPage page, VendorData vendorData, ref double yPos)
+        private void DrawHeader(XGraphics gfx, PdfPage page, VendorStatement vendorData, ref double yPos)
         {
             XFont fontTitle = new ("Arial", 10,XFontStyleEx.Bold);
             XFont fontRegular = new XFont("Arial", 10);
@@ -139,7 +136,7 @@ namespace appify.utility
                 yPos += 15;
             }
 
-            gfx.DrawString($"Email: {vendorData.Email}", fontRegular, XBrushes.Black, 50, yPos);
+            gfx.DrawString($"Email: {vendorData.EmailID}", fontRegular, XBrushes.Black, 50, yPos);
             yPos += 25;
 
             // Report info
@@ -149,7 +146,7 @@ namespace appify.utility
             yPos += 30;
         }
 
-        private void DrawOrderSummary(XGraphics gfx, VendorData vendorData, ref double yPos)
+        private void DrawOrderSummary(XGraphics gfx, VendorStatement vendorData, ref double yPos)
         {
             gfx.DrawString("Orders Summary", new XFont("Arial", 12, XFontStyleEx.Bold),
                           XBrushes.Black, 50, yPos);
@@ -164,10 +161,10 @@ namespace appify.utility
 
             foreach (var order in vendorData.Orders)
             {
-                totalOrderValue += order.OrderPrice + order.DeliveryCharges;
-                totalCommission += order.Commission;
-                totalShipping += order.DeliveryCharges;
-                if (order.Status == "RTO") totalReturns += order.OrderPrice + order.DeliveryCharges;
+                totalOrderValue += order.OrderAmount + order.DeliveryCost;
+                totalCommission += order.AppifyCommission;
+                totalShipping += order.DeliveryCost;
+                if (order.OrderStatus == "RTO") totalReturns += order.OrderAmount + order.DeliveryCost;
             }
 
             decimal netPayable = totalOrderValue - totalReturns - totalCommission -
@@ -188,7 +185,7 @@ namespace appify.utility
             DrawTwoColumnTable(gfx, summaryData, 50, ref yPos, 250);
         }
 
-        private void DrawOrderDetails(XGraphics gfx, VendorData vendorData, ref double yPos)
+        private void DrawOrderDetails(XGraphics gfx, VendorStatement vendorData, ref double yPos)
         {
             gfx.DrawString("Order Details", new XFont("Arial", 12, XFontStyleEx.Bold),
                           XBrushes.Black, 50, yPos);
@@ -201,22 +198,22 @@ namespace appify.utility
             var orders = new List<string[]>();
             foreach (var order in vendorData.Orders)
             {
-                decimal totalAmount = order.OrderPrice + order.DeliveryCharges;
-                decimal finalPayout = order.Status == "RTO" ? 0 :
-                    totalAmount - order.Commission - order.GstOnCommission - order.Tcs;
+                decimal totalAmount = order.OrderAmount + order.DeliveryCost;
+                decimal finalPayout = order.OrderStatus == "RTO" ? 0 :
+                    totalAmount - order.AppifyCommission - order.CommissionGST - order.TCS;
 
                 orders.Add(new string[] {
-                order.OrderId,
-                order.Date,
-                order.Status,
-                order.OrderPrice.ToString("#,##0.00"),
-                order.DeliveryCharges.ToString("#,##0.00"),
+                order.OrderID.ToString(),
+                order.OrderDate,
+                order.OrderStatus,
+                order.OrderAmount.ToString("#,##0.00"),
+                order.DeliveryCost.ToString("#,##0.00"),
                 totalAmount.ToString("#,##0.00"),
-                order.TransactionCharges.ToString("0.00"),
+                order.TotalGST.ToString("0.00"),
                 "0.00", // GST/IGST
-                order.Commission.ToString("0.00"),
-                order.GstOnCommission.ToString("0.00"),
-                order.Tcs.ToString("0.00"),
+                order.AppifyCommission.ToString("0.00"),
+                order.CommissionGST.ToString("0.00"),
+                order.TCS.ToString("0.00"),
                 finalPayout.ToString("#,##0.00")
             });
             }
@@ -224,7 +221,7 @@ namespace appify.utility
             DrawMultiColumnTable(gfx, headers, orders, columnWidths, 50, ref yPos);
         }
 
-        private void DrawSettlementSummary(XGraphics gfx, VendorData vendorData, ref double yPos)
+        private void DrawSettlementSummary(XGraphics gfx, VendorStatement vendorData, ref double yPos)
         {
             yPos += 20;
             gfx.DrawString("Settlement Summary", new XFont("Arial", 12, XFontStyleEx.Bold),
@@ -322,30 +319,30 @@ namespace appify.utility
     }
 
 
-    // Data model classes
-    public class VendorData
-    {
-        public long VendorId { get; set; }
-        public string VendorName { get; set; }
-        public string Address { get; set; }
-        public string Email { get; set; }
-        public List<OrderData> Orders { get; set; }
-        public string ReportPeriod { get; set; }
-        public string SettlementDate { get; set; }
-        public string PaymentReference { get; set; }
-        public string AccountNumber { get; set; }
-    }
+    //// Data model classes
+    //public class VendorData
+    //{
+    //    public long VendorId { get; set; }
+    //    public string VendorName { get; set; }
+    //    public string Address { get; set; }
+    //    public string Email { get; set; }
+    //    public List<OrderData> Orders { get; set; }
+    //    public string ReportPeriod { get; set; }
+    //    public string SettlementDate { get; set; }
+    //    public string PaymentReference { get; set; }
+    //    public string AccountNumber { get; set; }
+    //}
 
-    public class OrderData
-    {
-        public string OrderId { get; set; }
-        public string Date { get; set; }
-        public string Status { get; set; }
-        public decimal OrderPrice { get; set; }
-        public decimal DeliveryCharges { get; set; }
-        public decimal TransactionCharges { get; set; }
-        public decimal Commission { get; set; }
-        public decimal GstOnCommission { get; set; }
-        public decimal Tcs { get; set; }
-    }
+    //public class OrderData
+    //{
+    //    public string OrderId { get; set; }
+    //    public string Date { get; set; }
+    //    public string Status { get; set; }
+    //    public decimal OrderPrice { get; set; }
+    //    public decimal DeliveryCharges { get; set; }
+    //    public decimal TransactionCharges { get; set; }
+    //    public decimal Commission { get; set; }
+    //    public decimal GstOnCommission { get; set; }
+    //    public decimal Tcs { get; set; }
+    //}
 }

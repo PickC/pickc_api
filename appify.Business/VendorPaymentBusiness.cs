@@ -50,5 +50,9 @@ namespace appify.Business
         {
             return repository.ListByVendor(VendorID);
         }
+
+        public VendorStatement GetStatement(Int64 VendorID, DateTime? dateFrom, DateTime? dateTo) => repository.GetStatement(VendorID, dateFrom, dateTo);
+         
+
     }
 }
