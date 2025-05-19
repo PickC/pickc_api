@@ -1592,5 +1592,39 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        [HttpPost]
+        [Route("GenerateVendorSOA")]
+        public async Task<IActionResult> GenerateVendorSOA(long vendorID)
+        {
+            try
+            {
+                // 1. Validate input
+                if (vendorID <= 0)
+                {
+                    return BadRequest("Invalid Vendor ID");
+                }
+
+                GenerateVendorSOA soa = new GenerateVendorSOA();
+
+                // 2. Get vendor data (replace with your actual data access)
+                var vendorData = await soa.GetVendorData(vendorID);
+                if (vendorData == null)
+                {
+                    return NotFound($"Vendor with ID {vendorID} not found");
+                }
+
+                // 3. Generate PDF
+                var pdfBytes = soa.GeneratePdfStatement(vendorData);
+
+                // 4. Return PDF file
+                return File(pdfBytes, "application/pdf", $"VendorSOA_{vendorID}_{DateTime.Now:yyyyMMdd}.pdf");
+            }
+            catch (Exception ex)
+            {
+                // Log error here
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }
