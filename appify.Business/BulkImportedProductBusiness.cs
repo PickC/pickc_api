@@ -86,7 +86,7 @@ namespace appify.Business
                     productMaster.VendorID = productItem.VendorID;
                     productMaster.ProductName = productItem.ProductName;
                     productMaster.Description = productItem.ProductDescription;
-                    productMaster.Category = Convert.ToInt32(productItem.CategoryID);
+                    productMaster.Category = Convert.ToInt32(string.IsNullOrEmpty(productItem.CategoryID)?0: productItem.CategoryID);
                     productMaster.Brand = productItem.BrandName;
                     productMaster.Size = productItem.Size;
                     productMaster.Color = productItem.Color;
@@ -134,14 +134,13 @@ namespace appify.Business
                         }
                         result = true;
                         this.productBusiness.UpdateProductImagePrice(productMaster.ProductID);
-
+                        this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Success", "");
                     }
                 }
                 catch (Exception ex)
                 {
                     this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Failed",ex.Message.ToString());
                 }
-                this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Success", "");
             }
 
             return result;

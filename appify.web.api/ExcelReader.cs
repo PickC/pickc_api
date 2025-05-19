@@ -101,7 +101,10 @@ namespace appify.web.api
             for (int rowIdx = 1; rowIdx <= sheet.LastRowNum; rowIdx++)
             {
                 IRow row = sheet.GetRow(rowIdx);
-                if (row == null) continue;
+                if (row == null || row.Cells.Count == 0)
+                {
+                    continue;
+                }
 
                 try
                 {

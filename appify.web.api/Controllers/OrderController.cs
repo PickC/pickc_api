@@ -371,6 +371,8 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             //dynamic data = jsonData;
             try
             {
@@ -387,6 +389,7 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order Removed", reqHeader, controllerURL, orderID, result, StatusName.ok));
                     await Common.UpdateEventLogsNew("ORDER REMOVED SUCCESSFULLY", reqHeader, controllerURL, orderID, result, StatusName.ok, this.eventLogBusiness);
+                    await auditService.LogAsync(EntityType.Order, orderID, "Order Has Been Removed", "", AppName, sourceIPAddress, orderID);
                 }
                 else
                 {
@@ -397,6 +400,7 @@ namespace appify.web.api.Controllers
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Unable to Removed", reqHeader, controllerURL, orderID, null, rm.message));
                     await Common.UpdateEventLogsNew("ORDER - UNABLE TO REMOVED", reqHeader, controllerURL, orderID, result, rm.message, this.eventLogBusiness);
+                    await auditService.LogAsync(EntityType.Order, orderID, "Unable to Remove the Order", "", AppName, sourceIPAddress, orderID);
                 }
             }
             catch (Exception ex)
@@ -408,6 +412,7 @@ namespace appify.web.api.Controllers
                 rm.data = null;
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Order - Remove - Error", reqHeader, controllerURL, orderID, null, rm.message));
                 await Common.UpdateEventLogsNew("ORDER - REMOVED - ERROR", reqHeader, controllerURL, orderID, null, rm.message, this.eventLogBusiness);
+                await auditService.LogAsync(EntityType.Order, orderID, "Order Remove - Error", "", AppName, sourceIPAddress, orderID);
             }
             return Ok(rm);
 
