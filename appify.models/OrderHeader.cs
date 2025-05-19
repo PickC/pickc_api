@@ -328,6 +328,9 @@ namespace appify.models
         public string PaymentReferenceNo { get; set; }
         public short PaymentMode { get; set; }
         public string LookupCode { get; set; }
+        public string ErrorCode {  get; set; }
+        public string ErrorDescription { get; set; }
+        public string ErrorSource { get; set; }
     }
     public partial class OrderTrackingDetails
     {

@@ -22,6 +22,7 @@ using System.Text;
 using static appify.models.NotificationType;
 using appify.audit.service;
 using StackExchange.Redis;
+using FirebaseAdmin;
 
 namespace appify.web.api.Controllers
 {
@@ -2501,8 +2502,10 @@ namespace appify.web.api.Controllers
             {
                 using var reader = new StreamReader(HttpContext.Request.Body);
                 body = await reader.ReadToEndAsync();
-
-                var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
+#if DEBUG
+body = "{    \"entity\": \"event\",    \"account_id\": \"acc_OCjTrbZShxQc7y\",    \"event\": \"payment.failed\",    \"contains\": [      \"payment\"    ],    \"payload\": {      \"payment\": {        \"entity\": {          \"id\": \"pay_PpLCRD0aOmsTca\",          \"entity\": \"payment\",          \"amount\": 89365,          \"currency\": \"INR\",          \"status\": \"failed\",          \"order_id\": \"order_PpLCIQtjGRKxog\",          \"invoice_id\": null,          \"international\": false,          \"method\": \"upi\",          \"amount_refunded\": 0,          \"refund_status\": null,          \"captured\": false,          \"description\": \"Order Payment\",          \"card_id\": null,          \"bank\": null,          \"wallet\": null,          \"vpa\": null,          \"email\": \"praburamya123@gmail.com\",          \"contact\": \"+918220698775\",          \"notes\": {            \"device\": \"Android\",            \"orderId\": \"2547\",            \"paymentType\": \"orderPayment\",            \"vendorId\": \"14899\"          },          \"fee\": null,          \"tax\": null,          \"error_code\": \"BAD_REQUEST_ERROR\",          \"error_description\": \"You may have cancelled the payment or there was a delay in response from the UPI app.\",          \"error_source\": \"customer\",          \"error_step\": \"payment_authentication\",          \"error_reason\": \"payment_cancelled\",          \"acquirer_data\": {            \"rrn\": null          },          \"created_at\": 1738171569,          \"provider\": null,          \"upi\": {            \"vpa\": null          },          \"reward\": null        }      }    },    \"created_at\": 1738171620  }";
+#endif
+                                    var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ",""));
                 string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
                 foreach (var s in eventSearch)
                 {
@@ -2517,7 +2520,7 @@ namespace appify.web.api.Controllers
                     if(paymentType== "orderPayment")
                     {
                         long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
-
+                           
                         DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
                         OrderPayment orderPayment = new OrderPayment
                         {
@@ -2529,7 +2532,11 @@ namespace appify.web.api.Controllers
                             OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
                             PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
                             PaymentMode = 0,
-                            LookupCode = "RAZORPAY"
+                            LookupCode = "RAZORPAY",
+                            ErrorCode = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["error_code"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["error_code"]),
+                            ErrorDescription = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["error_description"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["error_description"]),
+                            ErrorSource= System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["error_source"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["error_source"])
+
                         };
                         var result = orderBusiness.OrderPaymentSave(orderPayment);
                         if (result)
