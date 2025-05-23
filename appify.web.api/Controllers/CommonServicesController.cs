@@ -379,7 +379,73 @@ namespace appify.web.api.Controllers
 
         #region Razorpay Split Payment
 
-        
+        [HttpPost]
+        [Route("RazorPay/Settlement/PaymentBaseSplitPayment")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> PaymentBaseSplitPayment()
+        {
+            // Replace with the actual payment ID
+            string paymentId = "pay_QBO6jc1IqTCOXi";
+            await CreateTransferSplitPaymentAsync(paymentId);
+            return Ok("");
+        }
+
+        private static readonly string RazorpayKeyId2 = Common.RazorPayKey;
+        private static readonly string RazorpayKeySecret2 = Common.RazorPaySecret;
+        private static readonly string RazorpayApiUrl2 = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
+
+        public static async Task CreateTransferSplitPaymentAsync(string paymentId)
+        {
+            // Define the transfer payload for split payments
+            var transferData = new
+            {
+                transfers = new[]
+                {
+                new { account = "acc_QBOuFMPEh3zBGm", amount = 1000, currency = "INR", on_hold = false },
+                ////new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
+            }
+            };
+
+            // Serialize the transfer data to JSON
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(transferData);
+
+            // Create HttpClient instance
+            using (var client = new HttpClient())
+            {
+                // Set up Basic Authentication
+                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId2}:{RazorpayKeySecret2}"));
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                // Set up the request content
+                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    // Send the POST request to Razorpay API
+                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl2.Replace("PAYMENT_ID", paymentId), content);
+
+                    // Handle the response
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseBody = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Transfer created successfully:");
+                        Console.WriteLine(responseBody);
+                    }
+                    else
+                    {
+                        string errorResponse = await response.Content.ReadAsStringAsync();
+                        Console.WriteLine("Error creating transfer:");
+                        Console.WriteLine(errorResponse);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception occurred:");
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         //// <summary>
         //// 1. Name and email fields are mandatory for each account & phone number is optional
         //// 2. (50.00 MB Max)
@@ -720,73 +786,6 @@ namespace appify.web.api.Controllers
         //    await CreateSplitPaymentOrderAsync();
         //    return Ok("");
         //}
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/PaymentBaseSplitPayment")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> PaymentBaseSplitPayment()
-        {
-            // Replace with the actual payment ID
-            string paymentId = "pay_QBO6jc1IqTCOXi";
-            await CreateTransferSplitPaymentAsync(paymentId);
-            return Ok("");
-        }
-
-        private static readonly string RazorpayKeyId2 = Common.RazorPayKey;
-        private static readonly string RazorpayKeySecret2 = Common.RazorPaySecret;
-        private static readonly string RazorpayApiUrl2 = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
-
-        public static async Task CreateTransferSplitPaymentAsync(string paymentId)
-        {
-            // Define the transfer payload for split payments
-            var transferData = new
-            {
-                transfers = new[]
-                {
-                new { account = "acc_QBOuFMPEh3zBGm", amount = 1000, currency = "INR", on_hold = false },
-                ////new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
-            }
-            };
-
-            // Serialize the transfer data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(transferData);
-
-            // Create HttpClient instance
-            using (var client = new HttpClient())
-            {
-                // Set up Basic Authentication
-                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId2}:{RazorpayKeySecret2}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
-
-                // Set up the request content
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-                try
-                {
-                    // Send the POST request to Razorpay API
-                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl2.Replace("PAYMENT_ID", paymentId), content);
-
-                    // Handle the response
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Transfer created successfully:");
-                        Console.WriteLine(responseBody);
-                    }
-                    else
-                    {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating transfer:");
-                        Console.WriteLine(errorResponse);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
 
         [HttpPost]
         [Route("RazorPay/Settlement/CreateAnAccount")]
