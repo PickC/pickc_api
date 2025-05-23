@@ -43,5 +43,13 @@ namespace appify.Business
         {
             return repository.CheckUserMobileNo(mobileNo);
         }
+        public bool UpdateInvitationSend(string mobileNo)
+        {
+            return repository.UpdateInvitationSend(mobileNo);
+        }
+        public short CheckInvitationSend(string mobileNo)
+        {
+            return repository.CheckInvitationSend(mobileNo);
+        }
     }
 }

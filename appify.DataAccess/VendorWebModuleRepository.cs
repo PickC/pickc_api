@@ -25,6 +25,9 @@ namespace appify.DataAccess
         public const string UPDATEVEUSERPASSWORD = "[Operation].[usp_UserPasswordUpdate]";
         public const string MEMBERUSERLOGIN = "[Operation].[usp_MemberUserLogIn]";
         public const string CHECKUSERMOBILENO = "[Operation].[usp_CheckUserMobileNo]";
+        public const string CHECKISINVITATIONSEND = "[Operation].[usp_CheckUserInvitationSend]";
+        public const string UPDATEISINVITATIONSEND = "[Operation].[usp_UpdateInvitationSend]";
+        
         public VendorWebModuleRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -205,6 +208,73 @@ namespace appify.DataAccess
                 throw;
             }
 
+        }
+
+        public short CheckInvitationSend(string mobileNo)
+        {
+            try
+            {
+                short item = 0;
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, CHECKISINVITATIONSEND, mobileNo);
+                    item = Convert.ToInt16(ds.Tables[0].Rows[0][0]);
+                }
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        //public short UpdateInvitationSend(string mobileNo)
+        //{
+        //    try
+        //    {
+        //        short item = 0;
+        //        using (SqlConnection con = new SqlConnection(appify_connectionstring))
+        //        {
+        //            con.Open();
+        //            DataSet ds = SqlHelper.ExecuteDataset(con, UPDATEISINVITATIONSEND, mobileNo);
+        //            item = Convert.ToInt16(ds.Tables[0].Rows[0][0]);
+        //        }
+        //        return item;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        public bool UpdateInvitationSend(string mobileNo)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATEISINVITATIONSEND))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@MobileNo", mobileNo);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
         }
     }
 }

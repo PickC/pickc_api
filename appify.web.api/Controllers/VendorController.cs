@@ -1505,13 +1505,14 @@ namespace appify.web.api.Controllers
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
 
-                var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(itemData.MobileNo);
-                if (mobileNo!="")
+                var mobileNo = this.vendorWebModuleBusiness.CheckInvitationSend(itemData.MobileNo);
+
+                if (mobileNo>0)
                 {
                     rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "Mobile No Already Exits";
+                    rm.message = "Invitation has been already sent";
                     rm.name = StatusName.ok;
-                    rm.data = "Mobile No Already Exits";
+                    rm.data = "Invitation has been already sent";
                     return Ok(rm);
                 }
                 string OTPValue = utility.Common.GenerateRandomPassword();
@@ -1524,7 +1525,8 @@ namespace appify.web.api.Controllers
                     rm.message = "INVITATION HAS BEEN SUCCESSFULLY SENT!";
                     rm.name = StatusName.ok;
                     rm.data = true;
-                    //await Common.UpdateEventLogsNew("INVITATION HAS BEEN SUCCESSFULLY SENT!", reqHeader, controllerURL, result, null, StatusName.ok, this.eventLogBusiness);
+
+                    this.vendorWebModuleBusiness.UpdateInvitationSend(itemData.MobileNo);
                     await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Invitation has been sent successfully", itemData.UserID.ToString(), AppName, sourceIPAddress, itemData);
 
                 }
