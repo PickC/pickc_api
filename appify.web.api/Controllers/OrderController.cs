@@ -3028,7 +3028,7 @@ namespace appify.web.api.Controllers
                         {
                             OrderID = orderUpdateDetail.OrderID;
                             MemberID = orderUpdateDetail.MemberID;
-                            if (orderTrackingUpdate.Status == "RTO" && orderTrackingUpdate.StatusType == "DL") //// Cancelled by Customer
+                            if ((orderTrackingUpdate.Status == "RTO" && orderTrackingUpdate.StatusType == "DL") || (orderTrackingUpdate.Status == "Not Picked" && orderTrackingUpdate.StatusType == "UD") || (orderTrackingUpdate.Instructions== "Consignee refused to accept/order cancelled") || (orderTrackingUpdate.Instructions == "Whatsapp verified cancellation")) //// Cancelled by Customer
                             {
                                 if (orderUpdateDetail.VendorID != 0)
                                 {
