@@ -15,6 +15,11 @@ namespace appify.DataAccess
 {
     public partial class VendorPaymentRepository : IVendorPaymentRepository
     {
+        public const string VENDORSOAHEADER = "[Billing].[usp_VendorSOAHeader]";
+        public const string VENDORSOADETAILS = "[Billing].[usp_VendorSOADetails]";
+
+
+
         private IConfiguration configuration;
         private string appify_connectionstring;
         public VendorPaymentRepository(IConfiguration configuration) { 
@@ -179,5 +184,36 @@ namespace appify.DataAccess
             return payments;
 
         }
+
+        public VendorStatement GetStatement(Int64 VendorID,DateTime? dateFrom,DateTime? dateTo) {
+            VendorStatement item = new VendorStatement();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, VENDORSOAHEADER, VendorID,dateFrom,dateTo);
+                item = DataTableHelper.ConvertDataTable<VendorStatement>(ds.Tables[0]).FirstOrDefault();
+            }
+
+            item.Orders = GetStatementDetails(VendorID,dateFrom,dateTo);
+
+            return item;
+
+        }
+
+        private List<VendorStatementData> GetStatementDetails(Int64 VendorID, DateTime? dateFrom, DateTime? dateTo)
+        {
+            List<VendorStatementData> items = new List<VendorStatementData>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, VENDORSOADETAILS, VendorID, dateFrom, dateTo);
+                items = DataTableHelper.ConvertDataTable<VendorStatementData>(ds.Tables[0]);
+            }
+            return items;
+
+        }
+
+
+
     }
 }
