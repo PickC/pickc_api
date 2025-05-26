@@ -1,4 +1,5 @@
 ﻿using appify.models;
+using Newtonsoft.Json.Linq;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 
@@ -201,11 +202,11 @@ namespace appify.utility
                 decimal totalAmount = order.OrderAmount + order.DeliveryCost;
                 decimal finalPayout = order.OrderStatus == "RTO" ? 0 :
                     totalAmount - order.AppifyCommission - order.CommissionGST - order.TCS;
-
+                string orderStatus = String.IsNullOrEmpty(order.OrderStatus) ? "" : order.OrderStatus;
                 orders.Add(new string[] {
                 order.OrderID.ToString(),
                 order.OrderDate,
-                order.OrderStatus,
+                orderStatus.ToString(),
                 order.OrderAmount.ToString("#,##0.00"),
                 order.DeliveryCost.ToString("#,##0.00"),
                 totalAmount.ToString("#,##0.00"),
@@ -227,11 +228,11 @@ namespace appify.utility
             gfx.DrawString("Settlement Summary", new XFont("Arial", 12, XFontStyleEx.Bold),
                           XBrushes.Black, 50, yPos);
             yPos += 20;
-
+            var SettlementDate = System.String.IsNullOrEmpty((string?)vendorData.SettlementDate) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime(vendorData.SettlementDate);
             var settlementData = new Dictionary<string, string>
         {
             { "Amount Settled", "₹3,514.72" }, // Should be calculated
-            { "Settlement Date", vendorData.SettlementDate },
+            { "Settlement Date", SettlementDate.ToString() },
             { "Payment Reference", vendorData.PaymentReference },
             { "Status", $"Settled (Bank Transfer to {vendorData.AccountNumber})" }
         };
