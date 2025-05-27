@@ -146,13 +146,13 @@ namespace appify.DataAccess
             }
             return item;
         }
-        public List<User> ListbyPageView(int pageNo, int rows)
+        public List<User> ListbyPageView(int parentID, int pageNo, int rows)
         {
             List<User> item = new List<User>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWLISTUSER, pageNo, rows);
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PAGEVIEWLISTUSER, pageNo, rows, parentID);
                 item = DataTableHelper.ConvertDataTable<User>(ds.Tables[0]);
             }
             return item;

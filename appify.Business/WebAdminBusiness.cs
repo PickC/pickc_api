@@ -33,9 +33,9 @@ namespace appify.Business
         {
             return repository.GetUsersCount();
         }
-        public List<User> ListbyPageView(int pageNo, int rows)
+        public List<User> ListbyPageView(int parentID, int pageNo=0, int rows = 0)
         {
-            return repository.ListbyPageView(pageNo, rows);
+            return repository.ListbyPageView(parentID, pageNo, rows);
         }
         public bool CheckUser(string userID)
         {
