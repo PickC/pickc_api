@@ -88,6 +88,9 @@ namespace appify.utility
 
             // Page 2 - Order Details
             PdfPage page2 = document.AddPage();
+
+            //page2.Orientation = PdfSharp.PageOrientation.Landscape;
+
             gfx = XGraphics.FromPdfPage(page2);
             yPos = 50;
 
@@ -204,7 +207,7 @@ namespace appify.utility
                     totalAmount - order.AppifyCommission - order.CommissionGST - order.TCS;
                 string orderStatus = String.IsNullOrEmpty(order.OrderStatus) ? "" : order.OrderStatus;
                 orders.Add(new string[] {
-                order.OrderID.ToString(),
+                order.OrderNo.ToString(),
                 order.OrderDate,
                 orderStatus.ToString(),
                 order.OrderAmount.ToString("#,##0.00"),
