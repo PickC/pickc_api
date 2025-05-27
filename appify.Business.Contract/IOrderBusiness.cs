@@ -44,5 +44,8 @@ namespace appify.Business.Contract
         public List<DailyOrderSummary> GetDailyOrderSummary();
         public List<EmailConfig> GetAlertHeader();
         public bool StockUpdate(long orderID, short OrderStatus);
+
+        public OrderData? GetOrderDataForAuditLog(long orderID);
+
     }
 }
