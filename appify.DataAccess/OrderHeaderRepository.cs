@@ -101,6 +101,19 @@ namespace appify.DataAccess
             }
             return item;
         }
+
+        public OrderData? GetOrderDataForAuditLog(long orderID)
+        {
+            using var con = new SqlConnection(appify_connectionstring);
+            con.Open();
+
+            var ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERDATAFORAUDITLOG, orderID);
+            return ds.Tables.Count > 0
+                ? DataTableHelper.ConvertDataTable<OrderData>(ds.Tables[0]).FirstOrDefault()
+                : null;
+        }
+
+
         public OrderUpdateDetail GetOrderUpdateDetail(long orderID)
         {
             OrderUpdateDetail item = new OrderUpdateDetail();

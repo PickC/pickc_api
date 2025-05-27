@@ -647,4 +647,18 @@ namespace appify.models
         public string? OrderStatusGroup { get; set; }
     }
 
+
+    public class OrderData
+    {
+
+        public Int64 OrderID { get; set; }
+        public string? StoreName { get; set; }
+        public string? StoreMobileNo { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerMobileNo { get; set; }
+        public List<IOrderAuditLog>? OrderLogs { get; set; }
+
+    }
+
+
 }

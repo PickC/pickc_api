@@ -190,6 +190,10 @@ namespace appify.dbroutine
         public const string ORDERDELIVERYTRACKINGDETAILS = "[Operation].[usp_OrderDeliveryTrack]";
         public const string STOCKUPDATE = "[Audit].[usp_OrderStockUpdate]";
 
+        public const string ORDERDATAFORAUDITLOG = "[Operation].[usp_GetOrderDataForAuditLog]";
+
+
+
         /// <summary>
         /// [Operation].[OrderDetail]
         /// </summary>
