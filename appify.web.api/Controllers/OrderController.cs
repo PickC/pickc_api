@@ -1352,15 +1352,24 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var item = await auditService.GetLogsByEntityAsync(EntityType.Order, itemData.OrderID);
-                if (item != null)
+
+                var orderItem = orderBusiness.GetOrderDataForAuditLog(itemData.OrderID);
+
+
+                if (orderItem != null)
                 {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH order Audit Log";
-                    rm.name = StatusName.ok;
-                    rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                    var item = await auditService.GetLogsByEntityAsync(EntityType.Order, itemData.OrderID);
+                    if (item != null)
+                    {
+                        orderItem.OrderLogs =(List<IOrderAuditLog>?) item;
+
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "FETCH order Audit Log";
+                        rm.name = StatusName.ok;
+                        rm.data = orderItem;
+                        //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                    }
                 }
                 else
                 {
