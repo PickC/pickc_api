@@ -239,10 +239,22 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000", "https://appifyvendor.azurewebsites.net", "https://appifydashboard.azurewebsites.net", "https://appify-dashboard-two.vercel.app", "https://vendor-web-ten.vercel.app") // your React app's origin
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Optional: Only if using cookies/auth
+    });
+});
+
 //ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072;
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 var app = builder.Build();
-
+app.UseCors("AllowFrontend");
 // Example: Use Redis in a controller or service
 app.MapGet("/redis-test", async (IConnectionMultiplexer redis) =>
 {

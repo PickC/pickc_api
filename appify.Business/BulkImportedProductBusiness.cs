@@ -148,24 +148,31 @@ namespace appify.Business
 
         public List<VariantData> GetVariantMappings(string sizesA, string pricesA, string weightsA, string stockA)
         {
-            var variants = sizesA.Split(',');
-            var prices = pricesA.Split(',');
-            var weights = weightsA.Split(',');
-            var stocks = stockA.Split(',');
+            var variants = string.IsNullOrWhiteSpace(sizesA) ? Array.Empty<string>() : sizesA.Split(',');
+            var prices = string.IsNullOrWhiteSpace(pricesA) ? Array.Empty<string>() : pricesA.Split(',');
+            var weights = string.IsNullOrWhiteSpace(weightsA) ? Array.Empty<string>() : weightsA.Split(',');
+            var stocks = string.IsNullOrWhiteSpace(stockA) ? Array.Empty<string>() : stockA.Split(',');
 
             var result = new List<VariantData>();
-
+            string variant = "";
+            decimal price = 0;
+            decimal weight = 0;
+            short stock = 0;
             for (int i = 0; i < variants.Length; i++)
             {
-                string variant = variants[i];
+                if (variants.Length > 0)
+                    variant = variants[i].Trim();
 
                 // Use price if exists, else last price
-                decimal price = i < prices.Length ? Convert.ToDecimal(prices[i]) : Convert.ToDecimal(prices[prices.Length - 1]);
+                if (prices.Length > 0)
+                    price = i < prices.Length ? Convert.ToDecimal(prices[i]) : Convert.ToDecimal(prices[prices.Length - 1]);
 
                 // Use weight if exists, else last weight
-                decimal weight = i < weights.Length ? Convert.ToDecimal(weights[i]) : Convert.ToDecimal(weights[weights.Length - 1]);
+                if (weights.Length > 0)
+                    weight = i < weights.Length ? Convert.ToDecimal(weights[i]) : Convert.ToDecimal(weights[weights.Length - 1]);
 
-                short stock = i < stocks.Length ? Convert.ToInt16(stocks[i]) : Convert.ToInt16(stocks[stocks.Length - 1]);
+                if (stocks.Length > 0)
+                    stock = i < stocks.Length ? Convert.ToInt16(stocks[i]) : Convert.ToInt16(stocks[stocks.Length - 1]);
                 result.Add(new VariantData
                 {
                     Size = variant,

@@ -82,7 +82,7 @@ namespace appify.DataAccess
             return item;
         }
 
-        public List<Roles> ListAll(string? roleCode,string? roleDescription)
+        public List<Roles> ListAll(string roleCode,string roleDescription)
         {
             List<Roles> item = new List<Roles>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))

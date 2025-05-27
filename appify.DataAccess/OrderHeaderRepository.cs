@@ -528,7 +528,9 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@PaymentReferenceNo", item.PaymentReferenceNo);
                         cmd.Parameters.AddWithValue("@PaymentMode", item.PaymentMode);
                         cmd.Parameters.AddWithValue("@LookupCode", item.LookupCode);
-
+                        cmd.Parameters.AddWithValue("@ErrorCode", item.ErrorCode);
+                        cmd.Parameters.AddWithValue("@ErrorDescription", item.ErrorDescription);
+                        cmd.Parameters.AddWithValue("@ErrorSource", item.ErrorSource);
                         //Add the output parameter to the command object
                         SqlParameter outPutParameter = new SqlParameter();
                         outPutParameter.ParameterName = "@RETURNSTATUS";
