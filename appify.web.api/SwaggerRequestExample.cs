@@ -403,6 +403,11 @@ namespace appify.web.api
         public short Rows { get; set; }
     }
 
+    public class ParamUserPageView : ParamPageView {
+        public int ParentID { get; set; }
+
+    }
+
     public class ParamRole
     {
         public short RoleID { get; set; }

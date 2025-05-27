@@ -416,14 +416,14 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("User/pageview")]
         [MapToApiVersion("1.0")]
-        public IActionResult UsersByPageView(ParamPageView itemData)
+        public IActionResult UsersByPageView(ParamUserPageView itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                var result = this.webAdminBusiness.ListbyPageView(itemData.PageNo, itemData.Rows);
+                var result = this.webAdminBusiness.ListbyPageView(itemData.ParentID, itemData.PageNo, itemData.Rows);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
