@@ -313,5 +313,8 @@ namespace appify.Business
         {
             return orderRepository.StockUpdate(orderID, OrderStatus);
         }
+
+        public OrderData? GetOrderDataForAuditLog(long orderID) => orderRepository.GetOrderDataForAuditLog(orderID);
+
     }
 }

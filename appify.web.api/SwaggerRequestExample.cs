@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.models;
 using Swashbuckle.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
@@ -494,5 +495,7 @@ namespace appify.web.api
         public IFormFile ExcelFile { get; set; }
     }
 
+
+ 
 
 }
