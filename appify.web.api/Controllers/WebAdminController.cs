@@ -101,6 +101,16 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string origin = HttpContext.Request.Headers["Origin"];
+            string referer = HttpContext.Request.Headers["Referer"];
+            string refererDomain = referer;
+            if (!string.IsNullOrEmpty(referer))
+            {
+                var refererUri = new Uri(referer);
+                // Extract the host (domain) part
+                refererDomain = refererUri.GetLeftPart(UriPartial.Authority);
+            }
+            string frontendUrl = !string.IsNullOrEmpty(origin) ? origin : refererDomain;
             try
             {
                 Int64 UserID = item.UserID;
@@ -114,38 +124,35 @@ namespace appify.web.api.Controllers
                     rm.data = memberItem;
 
                     
-                    /// <summary>
-                    /// send email for the newly registered user.
-                    /// </summary>
+                    ///// <summary>
+                    ///// send email for the newly registered user.
+                    ///// </summary>
 
-                    string mailbody = string.Empty;
-                    EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.UserActivation));
-                    //List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(memberItem.EmailID);
+                    //string mailbody = string.Empty;
+                    //EmailNotificationTemplate emailNotificationTemplate = notificationBusiness.GetEmailNotificationTemplate(Convert.ToInt64(NotificationTemplateType.UserActivation));
+                    ////List<EmailUserHeader> getEmailUserHeader = notificationBusiness.GetUserDetails(memberItem.EmailID);
 
-                    Notifications notifications = new Notifications
-                    {
-                        EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
-                        EmailTemplateURL = emailNotificationTemplate.TemplateURL,
-                        ToEmail = memberItem.EmailID
-                    };
-                    string path = notifications.EmailTemplateURL;
-                    using (StreamReader reader = new StreamReader(path))
-                    {
-                        mailbody = reader.ReadToEnd();
-                    }
+                    //Notifications notifications = new Notifications
+                    //{
+                    //    EmailSubject = emailNotificationTemplate.Subject,//Replace("{{order_number}}", getEmailNotificationHeader[0].OrderNo.ToString()),
+                    //    EmailTemplateURL = emailNotificationTemplate.TemplateURL,
+                    //    ToEmail = memberItem.EmailID
+                    //};
+                    //string path = notifications.EmailTemplateURL;
+                    //using (StreamReader reader = new StreamReader(path))
+                    //{
+                    //    mailbody = reader.ReadToEnd();
+                    //}
 
-                    //mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
-                    //mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+                    ////mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
+                    ////mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
 
-                    mailbody = mailbody.Replace("{{name}}", memberItem.UserName.ToString());
-                    mailbody = mailbody.Replace("{{userId}}", memberItem.UserID.ToString());
+                    //mailbody = mailbody.Replace("{{name}}", memberItem.UserName.ToString());
+                    //mailbody = mailbody.Replace("{{userId}}", memberItem.UserID.ToString());
+                    //mailbody = mailbody.Replace("{{server_url}}", !string.IsNullOrEmpty(frontendUrl) ? frontendUrl : "https://dashboard.appi-fy.ai");
 
-
-                    notifications.EmailBody = mailbody;
-                    var emailResult = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
-
-
-
+                    //notifications.EmailBody = mailbody;
+                    //var emailResult = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
 
                     await Common.UpdateEventLogsNew("USER REGISTRATION SUCCESSFUL", reqHeader, controllerURL, item, memberItem, StatusName.ok, this.eventLogBusiness);
                 }
