@@ -244,7 +244,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000", "https://appifyvendor.azurewebsites.net", "https://appifydashboard.azurewebsites.net", "https://appify-dashboard-two.vercel.app", "https://vendor-web-ten.vercel.app") // your React app's origin
+            .WithOrigins("http://localhost:3000", "https://appifyvendor.azurewebsites.net", "https://appifydashboard.azurewebsites.net", "https://appify-dashboard-two.vercel.app", "https://vendor-web-ten.vercel.app", "https://vendor.appi-fy.ai", "https://dashboard.appi-fy.ai") // React app's origin
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials(); // Optional: Only if using cookies/auth
