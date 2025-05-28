@@ -170,6 +170,8 @@ public partial class DashboardOrderStatus
 {
     public string Type { get; set; }
     public decimal Total { get; set; }
+    public decimal TypePercentage { get; set; }
+
 }
 public partial class DashboardTopVendorsProducts
 {
