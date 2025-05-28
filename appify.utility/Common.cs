@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using Microsoft.Extensions;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using System.Security.Cryptography;
 
 namespace appify.utility
 {
@@ -196,17 +197,61 @@ namespace appify.utility
             return password;
         }
 
+        //public static string GenerateRandomPassword(int length = 12)
+        //{
+        //    const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%&@";
+        //    var random = new Random();
+
+        //    return new string(
+        //        Enumerable.Repeat(validChars, length)
+        //                  .Select(s => s[random.Next(s.Length)])
+        //                  .ToArray()
+        //    );
+        //}
+
+
         public static string GenerateRandomPassword(int length = 12)
         {
-            const string validChars = "ABCDEFGHJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#$%&@";
-            var random = new Random();
+            //if (length < 8)
+            //    throw new ArgumentException("Password length must be at least 8 characters", nameof(length));
 
-            return new string(
-                Enumerable.Repeat(validChars, length)
-                          .Select(s => s[random.Next(s.Length)])
-                          .ToArray()
-            );
+            const string lowerCase = "abcdefghijkmnopqrstuvwxyz";
+            const string upperCase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+            const string digits = "0123456789";
+            const string specialChars = "!#$%&*@?";
+
+            // Ensure at least one character from each group
+            var passwordChars = new List<char>
+            {
+                lowerCase[RandomNumberGenerator.GetInt32(lowerCase.Length)],
+                upperCase[RandomNumberGenerator.GetInt32(upperCase.Length)],
+                digits[RandomNumberGenerator.GetInt32(digits.Length)],
+                specialChars[RandomNumberGenerator.GetInt32(specialChars.Length)]
+            };
+
+            // Combine all valid characters
+            var allValidChars = lowerCase + upperCase + digits + specialChars;
+
+            // Fill the rest with random characters
+            for (int i = passwordChars.Count; i < length; i++)
+            {
+                passwordChars.Add(allValidChars[RandomNumberGenerator.GetInt32(allValidChars.Length)]);
+            }
+
+            // Shuffle the result to avoid predictable patterns
+            for (int i = 0; i < passwordChars.Count; i++)
+            {
+                int randomIndex = RandomNumberGenerator.GetInt32(passwordChars.Count);
+                (passwordChars[i], passwordChars[randomIndex]) = (passwordChars[randomIndex], passwordChars[i]);
+            }
+
+            return new string(passwordChars.ToArray());
         }
+
+
+
+
+
 
         public static async Task<string?> GetExpectedDeliveryDateAsync(string awbNumber)
         {
@@ -229,7 +274,7 @@ namespace appify.utility
 
         public long UserID { get; set; }
         public string DeviceID { get; set; }
-       // public string Role {  get; set; }
+        // public string Role {  get; set; }
 
     }
 
