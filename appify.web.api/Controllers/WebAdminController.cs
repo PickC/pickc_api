@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Razorpay.Api;
+using System.Diagnostics;
 using System.Json;
 using static appify.models.HomePageProductByCategory;
 using static appify.models.NotificationType;
@@ -706,6 +707,17 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string origin = HttpContext.Request.Headers["Origin"];
+            string referer = HttpContext.Request.Headers["Referer"];
+            string refererDomain = referer;
+            if (!string.IsNullOrEmpty(referer))
+            {
+                var refererUri = new Uri(referer);
+                // Extract the host (domain) part
+                refererDomain = refererUri.GetLeftPart(UriPartial.Authority);
+            }
+            string frontendUrl = !string.IsNullOrEmpty(origin) ? origin : refererDomain;
+
             try
             {
                 rm = new ResponseMessage();
@@ -727,7 +739,7 @@ namespace appify.web.api.Controllers
 
                 mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
                 mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
-
+                mailbody = mailbody.Replace("{{server_url}}", !string.IsNullOrEmpty(frontendUrl) ? frontendUrl : "https://dashboard.appi-fy.ai");
 
                 notifications.EmailBody = mailbody;
                 var emailResult = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
@@ -792,6 +804,16 @@ namespace appify.web.api.Controllers
             var reqHeader = Request;
             string mailbody = string.Empty;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string origin = HttpContext.Request.Headers["Origin"];
+            string referer = HttpContext.Request.Headers["Referer"];
+            string refererDomain = referer;
+            if (!string.IsNullOrEmpty(referer))
+            {
+                var refererUri = new Uri(referer);
+                // Extract the host (domain) part
+                refererDomain = refererUri.GetLeftPart(UriPartial.Authority);
+            }
+            string frontendUrl = !string.IsNullOrEmpty(origin) ? origin : refererDomain;
             try
             {
                 rm = new ResponseMessage();
@@ -814,6 +836,7 @@ namespace appify.web.api.Controllers
 
                     mailbody = mailbody.Replace("{{name}}", getEmailUserHeader.Count == 0 ? "User" : getEmailUserHeader[0].UserName.ToString());
                     mailbody = mailbody.Replace("{{userId}}", getEmailUserHeader.Count == 0 ? "1000" : getEmailUserHeader[0].UserID.ToString());
+                    mailbody = mailbody.Replace("{{server_url}}", !string.IsNullOrEmpty(frontendUrl) ? frontendUrl : "https://dashboard.appi-fy.ai");
 
                     notifications.EmailBody = mailbody;
                     var user = await EmailNotification.SendEmailCommon(notifications, notificationBusiness);
