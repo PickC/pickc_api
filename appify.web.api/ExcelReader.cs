@@ -362,7 +362,7 @@ namespace appify.web.api
 
 
                 using var httpClient = new HttpClient();
-
+                httpClient.Timeout = TimeSpan.FromMinutes(15);
                 var response = await httpClient.GetAsync(url);
                 if (response.IsSuccessStatusCode)
                 {
@@ -409,7 +409,7 @@ namespace appify.web.api
             if (string.IsNullOrEmpty(googleDriveUrl)) { return; }
             using (var httpClient = new HttpClient())
             {
-                
+                httpClient.Timeout = TimeSpan.FromMinutes(15);
                 var fileId = ExtractGoogleDriveFileId(googleDriveUrl);
                 if (string.IsNullOrEmpty(fileId))
                 {
