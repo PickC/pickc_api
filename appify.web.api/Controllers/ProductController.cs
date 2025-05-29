@@ -226,7 +226,10 @@ namespace appify.web.api.Controllers
                         //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                         //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, StatusName.ok));
                         await Common.UpdateEventLogsNew("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, rm.message, this.eventLogBusiness);
-                        await auditService.LogAsync(EntityType.Product, product.ProductID, "New Product Created", product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);
+
+                        var eventType = product.ProductID > 0 ? "Product Updated!" : "New Product Created";
+
+                        await auditService.LogAsync(EntityType.Product, product.ProductID, eventType, product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);
                     }
                     else
                     {
