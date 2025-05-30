@@ -27,6 +27,13 @@ namespace appify.Business
             return memberAppSettingRepository.GetMemberAppSetting(userID);
         }
 
+        public long GetMemberIdByAppName(string appName) { 
+            return memberAppSettingRepository.GetMemberIdByAppName(appName); 
+        }
+        
+        
+
+
         public List<MemberAppSetting> ListMemberAppSetting(long userID)
         {
             return memberAppSettingRepository.ListMemberAppSetting(userID);

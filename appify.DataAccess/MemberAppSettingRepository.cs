@@ -70,6 +70,20 @@ namespace appify.DataAccess
             return item;
         }
 
+
+
+        public long GetMemberIdByAppName(string appName) {
+            MemberAppSetting item = new MemberAppSetting();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGBYAPPNAME, appName);
+                item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
+            }
+            return item.UserID;
+
+        }
+
         public List<MemberAppSetting> ListMemberAppSetting(long userID)
         {
             List<MemberAppSetting> items = new List<MemberAppSetting>();
