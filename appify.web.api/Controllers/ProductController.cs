@@ -309,6 +309,7 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                     await auditService.LogAsync(EntityType.Product, itemData.productID, "Product Has Been Removed", UserId, AppName, sourceIPAddress, result);
+                    await auditService.LogAsync(EntityType.Product, itemData.productID, "Product Has Been Removed","", AppName, sourceIPAddress, result);
                 }
                 else
                 {
