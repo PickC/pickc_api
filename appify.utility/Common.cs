@@ -218,7 +218,7 @@ namespace appify.utility
             const string lowerCase = "abcdefghijkmnopqrstuvwxyz";
             const string upperCase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
             const string digits = "0123456789";
-            const string specialChars = "!#$%&*@?";
+            const string specialChars = "!#%&*@?";
 
             // Ensure at least one character from each group
             var passwordChars = new List<char>

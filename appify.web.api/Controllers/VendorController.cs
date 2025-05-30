@@ -1076,6 +1076,7 @@ namespace appify.web.api.Controllers
         ///       "firstName": "John",
         ///       "lastName": "Abraham",
         ///       "mobileNo": "98989898989",
+        ///       "password" : "",
         ///       "createdby": 1060,
         ///       "createdOn": "2025-05-06T06:17:35.187Z",
         ///       "modifiedBy": 1060,
@@ -1096,6 +1097,7 @@ namespace appify.web.api.Controllers
         ///         "firstName": "John",
         ///         "lastName": "Abraham",
         ///         "mobileNo": "98989898989",
+        ///         "password" : ""
         ///         "createdby": 1060,
         ///         "createdOn": "2025-05-06T06:17:35.187Z",
         ///         "modifiedBy": 1060,
@@ -1124,15 +1126,19 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(itemData.MobileNo);
-                if (mobileNo != "")
+                if(itemData.UserID==0)
                 {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "Mobile No Already Exits";
-                    rm.name = StatusName.ok;
-                    rm.data = "Mobile No Already Exits";
-                    return Ok(rm);
+                    var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(itemData.MobileNo);
+                    if (mobileNo != "")
+                    {
+                        rm.statusCode = StatusCodes.ERROR;
+                        rm.message = "Mobile No Already Exits";
+                        rm.name = StatusName.ok;
+                        rm.data = "Mobile No Already Exits";
+                        return Ok(rm);
+                    }
                 }
+
                 var item = this.vendorWebModuleBusiness.SaveVendorUser(itemData);
                 if (item != null)
                 {
@@ -1646,7 +1652,7 @@ namespace appify.web.api.Controllers
                 var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(MobileNo);
                 if (mobileNo != "")
                 {
-                    rm.statusCode = StatusCodes.ERROR;
+                    rm.statusCode = StatusCodes.ALREADYEXIST;
                     rm.message = "Mobile No Already Exits";
                     rm.name = StatusName.ok;
                     rm.data = "Mobile No Already Exits";
@@ -1656,7 +1662,7 @@ namespace appify.web.api.Controllers
             }
             catch (Exception ex)
             {
-                rm.statusCode = StatusCodes.ERROR;
+                rm.statusCode = StatusCodes.ALREADYEXIST;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalidCred;
                 rm.data = ex.Message.ToString();

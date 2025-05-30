@@ -15,6 +15,7 @@ namespace appify.models
         public string FirstName {  set; get; }
         public string LastName { set; get; }
         public string MobileNo { set; get; }
+        public string? Password { get; set; }
         public short Createdby {  set; get; }
         public DateTime CreatedOn {  set; get; }
         public short ModifiedBy { set; get; }
