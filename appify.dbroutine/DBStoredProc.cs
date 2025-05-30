@@ -59,6 +59,9 @@ namespace appify.dbroutine
         public const string SAVEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingSave]";
         public const string DELETEMEMBERAPPSETTING = "[Operation].[usp_MemberAppSettingDelete]";
 
+        public const string SELECTMEMBERAPPSETTINGBYAPPNAME  = "[Operation].[usp_MemberAppSettingSelectByAppName]";
+        
+
         /// <summary>
         /// [Operation].[MemberKYC]
         /// </summary>

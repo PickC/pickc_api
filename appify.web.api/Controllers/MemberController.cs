@@ -259,6 +259,88 @@ namespace appify.web.api.Controllers
 
 
         /// <summary>
+        /// Get a MemberID by Store URL
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///        "storeUrl": "makxoutfit"
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///         "statusCode": 200,
+        ///         "name": "SUCCESS_OK",
+        ///         "message": "FETCH MEMBER ID",v
+        ///         "data": 1064
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH MEMBER ID BY STORE URL</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost,Route("getVendorByStoreUrl")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> GetMemberByStoreRUL(ParamVendorStoreUrl itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var memberID = this.memberAppSettingBusiness.GetMemberIdByAppName(itemData.StoreUrl);
+                if (memberID != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH MEMBER ID BY STORE URL";
+                    rm.name = StatusName.ok;
+                    rm.data = memberID;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH MEMBER SUCCESSFULLY", reqHeader, controllerURL, userID, member, StatusName.ok));
+
+                    //await Common.UpdateEventLogsNew("FETCH MEMBER ID SUCCESSFULLY", reqHeader, controllerURL, userID, member, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH MEMBER - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message));
+                    //await Common.UpdateEventLogsNew("FETCH MEMBER - NO CONTENT", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH MEMBER - ERROR", reqHeader, controllerURL, userID, null, rm.message));
+                //await Common.UpdateEventLogsNew("FETCH MEMBER - ERROR", reqHeader, controllerURL, userID, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
         /// Add/Update Member.
         /// </summary>
         /// <remarks>
