@@ -323,7 +323,7 @@ namespace appify.DataAccess
             return result;
 
         }
-        public List<EmailUserHeader> GetUserDetails(string EmailID, bool isAcceptedUsers = true)
+        public List<EmailUserHeader> GetUserDetails(string EmailID, bool isAcceptedUsers)
         {
             List<EmailUserHeader> items = new List<EmailUserHeader>();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
