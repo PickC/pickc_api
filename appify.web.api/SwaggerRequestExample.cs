@@ -9,6 +9,7 @@ using appify.models;
 using Swashbuckle.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 
 namespace appify.web.api
@@ -495,7 +496,9 @@ namespace appify.web.api
         public IFormFile ExcelFile { get; set; }
     }
 
-
+    public class ParamVendorStoreUrl {
+        public string StoreUrl{ get; set; }
+    }
  
 
 }

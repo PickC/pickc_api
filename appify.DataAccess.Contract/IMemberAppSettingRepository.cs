@@ -13,6 +13,8 @@ namespace appify.DataAccess.Contract
 
 		public bool DeleteMemberAppSetting(long userID);
 
+        public long GetMemberIdByAppName(string appName);
+
 
         #region Member App CICD Settings
 
