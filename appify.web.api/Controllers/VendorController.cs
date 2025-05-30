@@ -1646,7 +1646,7 @@ namespace appify.web.api.Controllers
                 var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(MobileNo);
                 if (mobileNo != "")
                 {
-                    rm.statusCode = StatusCodes.ERROR;
+                    rm.statusCode = StatusCodes.ALREADYEXIST;
                     rm.message = "Mobile No Already Exits";
                     rm.name = StatusName.ok;
                     rm.data = "Mobile No Already Exits";
@@ -1656,7 +1656,7 @@ namespace appify.web.api.Controllers
             }
             catch (Exception ex)
             {
-                rm.statusCode = StatusCodes.ERROR;
+                rm.statusCode = StatusCodes.ALREADYEXIST;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalidCred;
                 rm.data = ex.Message.ToString();
