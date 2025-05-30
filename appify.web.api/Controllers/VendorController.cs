@@ -1597,6 +1597,74 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        [HttpPost, Route("UpdateIsReset")]
+        [MapToApiVersion("1.0")]
+        public IActionResult UpdateIsReset(ParamMemberVendorID itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic loginParams = jsondata;
+
+            try
+            {
+                rm = new ResponseMessage();
+                var returnData = this.vendorWebModuleBusiness.UpdateIsReset(itemData.userID);
+                if (returnData != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "Member User IsReset as been updated successfully";
+                    rm.name = StatusName.ok;
+                    rm.data = returnData;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Member User IsReset as been updated successfully", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalidCred;
+                rm.data = ex.Message.ToString();
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Member User IsReset - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+            return Ok(rm);
+        }
+
+        [HttpPost, Route("CheckUserMobileNo")]
+        [MapToApiVersion("1.0")]
+        public IActionResult CheckUserMobileNo(string MobileNo)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            //dynamic loginParams = jsondata;
+
+            try
+            {
+                rm = new ResponseMessage();
+                var mobileNo = this.vendorWebModuleBusiness.CheckUserMobileNo(MobileNo);
+                if (mobileNo != "")
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "Mobile No Already Exits";
+                    rm.name = StatusName.ok;
+                    rm.data = "Mobile No Already Exits";
+                    return Ok(rm);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalidCred;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
+
         [HttpPost]
         [Route("GenerateVendorSOA")]
         public async Task<IActionResult> GenerateVendorSOA(ParamMemberDashboard itemData)
