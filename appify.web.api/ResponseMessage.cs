@@ -31,6 +31,7 @@ namespace appify.web.api
 
         public const Int16 OK = 200;
         public const Int16 ERROR = 400;
+        public const Int16 ALREADYEXIST = 403;
         public const Int16 SERVER_ERROR = 501;
     }
 
