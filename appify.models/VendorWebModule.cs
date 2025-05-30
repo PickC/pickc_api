@@ -20,6 +20,8 @@ namespace appify.models
         public short ModifiedBy { set; get; }
         public DateTime ModifiedOn { set; get; }
         public bool IsActive { set; get; }
+        public bool IsEmail { set; get; }
+        public bool IsReset { set; get; }
     }
     public partial class MemberUserLite
     {

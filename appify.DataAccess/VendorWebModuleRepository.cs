@@ -27,7 +27,7 @@ namespace appify.DataAccess
         public const string CHECKUSERMOBILENO = "[Operation].[usp_CheckUserMobileNo]";
         public const string CHECKISINVITATIONSEND = "[Operation].[usp_CheckUserInvitationSend]";
         public const string UPDATEISINVITATIONSEND = "[Operation].[usp_UpdateInvitationSend]";
-        
+        public const string UPDATEISRESETPASSWORD = "[Operation].[usp_UserIsResetPasswordUpdate]";
         public VendorWebModuleRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -189,6 +189,35 @@ namespace appify.DataAccess
             {
                 throw;
             }
+        }
+        public bool UpdateIsReset(long UserID)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATEISRESETPASSWORD))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@UserID", UserID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
         }
         public string CheckUserMobileNo(string mobileNo)
         {

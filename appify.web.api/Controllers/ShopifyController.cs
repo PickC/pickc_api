@@ -151,7 +151,7 @@ namespace appify.web.api.Controllers
         //}
 
         /// <summary>
-        /// CREATE A Shopify Product
+        /// Upload Shopify Product Image
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
@@ -166,29 +166,29 @@ namespace appify.web.api.Controllers
         /// <returns>ResponseMessage Object</returns>
         /// <response code="200">SHPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED</response>
         /// <response code="500">ResponseMessage with Error Description</response> 
-        //[HttpPost, Route("CreateProductAsync")]
-        //[MapToApiVersion("1.0")]
-        //public async Task<IActionResult> CreateProductAsync()
-        //{
-        //    var reqHeader = Request;
-        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        rm = new ResponseMessage();
-        //        ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService();
-        //    }
-        //    catch (Exception ex)
-        //    {
+        [HttpPost, Route("UploadProductImage")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> CreateProductAsync(ParamVendorRef item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
+            }
+            catch (Exception ex)
+            {
 
-        //        rm.statusCode = StatusCodes.ERROR;
-        //        rm.message = ex.Message.ToString();
-        //        rm.name = StatusName.invalid;
-        //        rm.data = null;
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
 
-        //        await Common.UpdateEventLogsNew("SHPIFY CREATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-        //    }
-        //    return View();
-        //}
+                await Common.UpdateEventLogsNew("SHPIFY CREATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return View();
+        }
 
         /// <summary>
         /// Update A Shopify Product
