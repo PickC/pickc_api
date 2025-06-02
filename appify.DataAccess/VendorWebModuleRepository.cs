@@ -53,6 +53,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@FirstName", item.@FirstName);
                         cmd.Parameters.AddWithValue("@LastName", item.@LastName);
                         cmd.Parameters.AddWithValue("@MobileNo", item.@MobileNo);
+                        cmd.Parameters.AddWithValue("@Password", item.Password);
                         cmd.Parameters.AddWithValue("@Createdby", item.@Createdby);
                         cmd.Parameters.AddWithValue("@CreatedOn", item.@CreatedOn);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.@ModifiedBy);

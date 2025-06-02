@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("appify.dbroutine")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+eac2f2aae1fb88707adaf176c548392bb32d576b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+718c4eabd67632b2e0a9861a03ed2e1800dd1302")]
 [assembly: System.Reflection.AssemblyProductAttribute("appify.dbroutine")]
 [assembly: System.Reflection.AssemblyTitleAttribute("appify.dbroutine")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

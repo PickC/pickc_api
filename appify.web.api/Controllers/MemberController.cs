@@ -285,7 +285,6 @@ namespace appify.web.api.Controllers
         // GET api/<MemberController>/5
         [HttpPost,Route("getVendorByStoreUrl")]
         [MapToApiVersion("1.0")]
-        [Authorize]
         public async Task<IActionResult> GetMemberByStoreRUL(ParamVendorStoreUrl itemData)
         {
             var reqHeader = Request;
