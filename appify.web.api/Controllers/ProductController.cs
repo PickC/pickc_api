@@ -2344,7 +2344,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getvendorcategories")]
         [MapToApiVersion("1.0")]
-        [Authorize]
+
         public async Task<IActionResult> GetVendorCategories(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -2354,7 +2354,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                //TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetVendorCategories(itemData.userID);
                 if (item != null)
                 {
@@ -2389,7 +2389,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("getvendorcategories")]
         [MapToApiVersion("1.1")]
-        [Authorize]
+
         public async Task<IActionResult> GetALLVendorCategories(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
@@ -2399,7 +2399,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                //TokenValidator.IsValidToken(Request, configuration, env);
                 var item = this.productBusiness.GetALLVendorCategories(itemData.userID);
                 if (item != null)
                 {
