@@ -215,7 +215,7 @@ namespace appify.utility
             //if (length < 8)
             //    throw new ArgumentException("Password length must be at least 8 characters", nameof(length));
 
-            const string lowerCase = "abcdefghijkmnopqrstuvwxyz";
+            const string lowerCase = "abcdefghkmnpqrstuvwxyz";
             const string upperCase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
             const string digits = "0123456789";
             const string specialChars = "!#%&*@?";
