@@ -39,6 +39,7 @@ namespace appify.models
         public Int16 Weight { get; set; }
         public string WeightUnit { get; set; }
         public Int16 InventoryQuantity { get; set; }
+        public string InventoryItemID { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
