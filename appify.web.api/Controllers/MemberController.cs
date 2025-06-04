@@ -293,7 +293,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
+                //TokenValidator.IsValidToken(Request, configuration, env);
                 var memberID = this.memberAppSettingBusiness.GetMemberIdByAppName(itemData.StoreUrl);
                 if (memberID != null)
                 {
