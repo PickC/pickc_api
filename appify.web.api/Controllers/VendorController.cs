@@ -1132,9 +1132,9 @@ namespace appify.web.api.Controllers
                     if (mobileNo != "")
                     {
                         rm.statusCode = StatusCodes.ERROR;
-                        rm.message = "Mobile No Already Exits";
+                        rm.message = "Member already exists, Contact System Administrator!";
                         rm.name = StatusName.ok;
-                        rm.data = "Mobile No Already Exits";
+                        rm.data = "Member already exists, Contact System Administrator!";
                         return Ok(rm);
                     }
                 }

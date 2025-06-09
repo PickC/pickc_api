@@ -732,7 +732,7 @@ namespace appify.web.api.Controllers
                                     WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                 }
                             }
-                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Canlled By Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, result);
+                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Canlled By Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, statusData);
                         }
                         if (OrderStatus == "Declined") //statusData.OrderStatus == 3588//// Declined by Vendor
                         {
@@ -775,7 +775,7 @@ namespace appify.web.api.Controllers
                                     WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                 }
                             }
-                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Declined By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, result);
+                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Declined By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, statusData);
                         }
                         if (OrderStatus== "Manifested") //statusData.OrderStatus == 3577//// Order Confirmed by Vendor
                         {
@@ -822,7 +822,7 @@ namespace appify.web.api.Controllers
                                     WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                 }
                             }
-                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Confirmed By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, result);
+                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Confirmed By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, statusData);
                         }
                         MemberID= orderUpdateDetail.MemberID;
                     }
@@ -837,7 +837,7 @@ namespace appify.web.api.Controllers
                 rm.data = result;
                 //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER NOT UPDATED", reqHeader, controllerURL, statusData, null, rm.message));
-                 await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order has been not updated", MemberID.ToString(), AppName, sourceIPAddress, result);
+                 await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order has been not updated", MemberID.ToString(), AppName, sourceIPAddress, statusData);
                 }
         }
         catch (Exception ex)
@@ -906,7 +906,7 @@ namespace appify.web.api.Controllers
                     rm.data = statusData.OrderID.ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS UPDATED SUCCESSFULLY", reqHeader, controllerURL, statusData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order pickup status updated successfully", "", AppName, sourceIPAddress, result);
+                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order pickup status updated successfully", "", AppName, sourceIPAddress, statusData);
                 }
                 else
                 {
@@ -916,7 +916,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO UPDATE ORDER PICKUP STATUS", reqHeader, controllerURL, statusData, null, rm.message));
-                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Unable to update the pickup status", "", AppName, sourceIPAddress, result);
+                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Unable to update the pickup status", "", AppName, sourceIPAddress, statusData);
                 }
             }
             catch (Exception ex)
@@ -985,7 +985,7 @@ namespace appify.web.api.Controllers
                     rm.data = statusData.OrderID.ToString();
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ORDER PICKUP STATUS UPDATED SUCCESSFULLY", reqHeader, controllerURL, statusData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order AWB status has been successfully updated", "", AppName, sourceIPAddress, result);
+                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Order AWB status has been successfully updated", "", AppName, sourceIPAddress, statusData);
                 }
                 else
                 {
@@ -995,7 +995,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO UPDATE ORDER PICKUP STATUS", reqHeader, controllerURL, statusData, null, rm.message));
-                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Unable to Update Order AWB status", "", AppName, sourceIPAddress, result);
+                    await auditService.LogAsync(EntityType.Order, statusData.OrderID, "Unable to Update Order AWB status", "", AppName, sourceIPAddress, statusData);
                 }
             }
             catch (Exception ex)
@@ -2560,7 +2560,7 @@ namespace appify.web.api.Controllers
                             //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok));
                             await Common.UpdateEventLogsNew("RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "RAZORPAY Webhook - Success Response", request, StatusName.ok, this.eventLogBusiness);
                             OrderID = orderPayment.OrderID;
-                            await auditService.LogAsync(EntityType.Order, orderPayment.OrderID, "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", "", AppName, sourceIPAddress, body);
+                            await auditService.LogAsync(EntityType.Order, orderPayment.OrderID, "RECEIVED WEBHOOK - RAZORPAY RESPONSE SUCCESSFULLY", "", AppName, sourceIPAddress, request);
                             }
                     }
                     else if (paymentType == "oneTimeSubscription")
@@ -2585,7 +2585,7 @@ namespace appify.web.api.Controllers
                 rm.data = null;
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response", null, rm.message));
                 await Common.UpdateEventLogsNew("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response->"+ body, null, rm.message, this.eventLogBusiness);
-                await auditService.LogAsync(EntityType.Order, OrderID, "RAZORPAY Webhook Error Response", "", AppName, sourceIPAddress, body);
+                await auditService.LogAsync(EntityType.Order, OrderID, "RAZORPAY Webhook Error Response", "", AppName, sourceIPAddress, ex.Message.ToString());
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);
@@ -2747,7 +2747,7 @@ namespace appify.web.api.Controllers
                                         WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                     }
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             else if (orderTrackingUpdate.OrderStatus == 6) //// Shipped
                             {
@@ -2786,7 +2786,7 @@ namespace appify.web.api.Controllers
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             else if (orderTrackingUpdate.OrderStatus == 19) //// In Transit
                             {
@@ -2824,7 +2824,7 @@ namespace appify.web.api.Controllers
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order is in transit", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order is in transit", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             else if (orderTrackingUpdate.OrderStatus == 37) //// Delivery Delayed
                             {
@@ -2909,7 +2909,7 @@ namespace appify.web.api.Controllers
                                         WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                     }
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been cancelled by customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been cancelled by customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                         }
                     }
@@ -3084,7 +3084,7 @@ namespace appify.web.api.Controllers
                                     }
                                 }
 
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Cancelled by Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Cancelled by Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             if (orderTrackingUpdate.Status == "Delivered" && orderTrackingUpdate.StatusType == "DL") //// Delivered 
                             {
@@ -3132,7 +3132,7 @@ namespace appify.web.api.Controllers
                                         WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                     }
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             if (orderTrackingUpdate.Status == "In Transit" && orderTrackingUpdate.StatusType == "UD" && orderTrackingUpdate.Instructions== "Shipment picked up") //// Shipped
                             {
@@ -3170,7 +3170,7 @@ namespace appify.web.api.Controllers
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "UD" && orderTrackingUpdate.Instructions == "Out for delivery") //// Out for Delivery
                             {
@@ -3191,7 +3191,7 @@ namespace appify.web.api.Controllers
                                     //// In App Notification
                                     InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                 }
-                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "The delivery person is out for delivery", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, body);
+                                await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "The delivery person is out for delivery", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
                             //if (orderTrackingUpdate.Status == "Dispatched" && orderTrackingUpdate.StatusType == "RT") //// Dispatched for RTO
                             //{
