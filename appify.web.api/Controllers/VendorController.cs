@@ -25,6 +25,7 @@ using NPOI.HPSF;
 using System.IO;
 using NPOI.SS.Formula.Functions;
 using Org.BouncyCastle.Utilities;
+using System.Linq;
 
 namespace appify.web.api.Controllers
 {
@@ -1662,7 +1663,9 @@ namespace appify.web.api.Controllers
             }
             catch (Exception ex)
             {
-                rm.statusCode = StatusCodes.ALREADYEXIST;
+
+                bool isVendor = ex.Message.ToString().Contains("Do you want to Register again?");
+                rm.statusCode = isVendor==true? StatusCodes.ERROR : StatusCodes.ALREADYEXIST;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalidCred;
                 rm.data = ex.Message.ToString();
