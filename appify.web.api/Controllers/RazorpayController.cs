@@ -18,6 +18,9 @@ using System.Net;
 using System.Text.Json;
 using System.Text;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Microsoft.Identity.Client;
+using Azure.Storage.Blobs.Models;
 
 namespace appify.web.api.Controllers
 {
@@ -44,10 +47,10 @@ namespace appify.web.api.Controllers
         //// 3. The number of accounts in the file should not exceed 500.
         //// </summary>
         //[HttpPost]
-        //[Route("bulkupload")]
+        //[Route("CreateLinkedAccounts")]
         //[MapToApiVersion("1.0")]
         ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> createmerchants([Required] IFormFile file)//([Required]IFormFile file)
+        //public async Task<IActionResult> CreateLinkedAccounts([Required] IFormFile file)//([Required]IFormFile file)
         //{
         //    var reqHeader = Request;
         //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -106,138 +109,48 @@ namespace appify.web.api.Controllers
         //}
 
         [HttpPost]
-        [Route("CreateSubmerchant")]
+        [Route("CreateLinkedAccount")] ////// Working to create new route link account
         [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> createsubmerchant(Merchant itemData)
+        public async Task<IActionResult> CreateLinkedAccount(Merchant itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                var rr = ($"🔍 Current Security Protocol: {ServicePointManager.SecurityProtocol}");
-                rm = new ResponseMessage();
-                //RazorpayClient rr = new RazorpayClient()
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
-                //RazorpayClient client = new RazorpayClient(Common.RazorPayCreateAccount,Common.RazorPayKey, Common.RazorPaySecret);
-                RazorpayClient client = new RazorpayClient(authValue);
-                Dictionary<string, object> accountRequest = new Dictionary<string, object>();
-                accountRequest.Add("email", itemData.EmailID);
-                accountRequest.Add("phone", itemData.Phone);
-                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-                accountRequest.Add("business_type", itemData.BusinessType);
-                accountRequest.Add("contact_name", "Gurjeet Singh");
-
-                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                //legalInfo.Add("pan", itemData.PAN);
-                //legalInfo.Add("gst", itemData.GST);
-
-                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                bankInfo.Add("account_number", itemData.BankAccountNo);
-                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
-
-
-                //accountRequest.Add("profile", profile);
-
-                //if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
-                //{
-                //    accountRequest.Add("legal_info", legalInfo);
-                //}
-
-                accountRequest.Add("bank_account", bankInfo);
-
-                string json = System.Text.Json.JsonSerializer.Serialize(accountRequest, new JsonSerializerOptions { WriteIndented = true });
-                Console.WriteLine(json);
-
-                Account payment = client.Account.Create(accountRequest);
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = payment;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                //await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("CreateAnAccount")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CreateAnAccount()
-        {
-            await CreateSubMerchantAccountAsync();
-            return Ok(0);
-        }
-
-        public static async Task<string> CreateSubMerchantAccountAsync()
-        {
-            // Define the sub-merchant account payload
-            var accountData = new
-            {
-                email = "submerchant@example.com",
-                phone = "9876543210",
-                legal_business_name = "Sub Merchant Business",
-                business_type = "partnership",
-                customer_facing_business_name = "Sub Merchant Store",
-                profile = new
-                {
-                    category = "health_beauty",
-                    subcategory = "health_beauty",
-                    description = "Health and beauty products"
-                },
-                legal_info = new
-                {
-                    pan = "ABCDE1234F",
-                    gst = "22ABCDE1234F1Z5"
-                },
-                brand = new
-                {
-                    color = "#FFFFFF"
-                },
-                notes = new
-                {
-                    internal_ref_id = "123456"
-                },
-                contact_info = new
-                {
-                    chargeback = new
-                    {
-                        email = "chargeback@example.com",
-                        phone = "9876543210"
-                    },
-                    refund = new
-                    {
-                        email = "refund@example.com",
-                        phone = "9876543210"
-                    },
-                    support = new
-                    {
-                        email = "support@example.com",
-                        phone = "9876543210"
-                    }
-                },
-                apps = new
-                {
-                    websites = new[] { "https://www.submerchantstore.com" },
-                    android = new[] { "https://play.google.com/store/apps/details?id=com.submerchantstore" },
-                    ios = new[] { "https://apps.apple.com/in/app/submerchantstore/id123456789" }
-                }
-            };
+            rm = new ResponseMessage();
+            //var accountData0 = new
+            //{
+            //    email = "saurabhbag08@gmail.com",
+            //    phone = "7972391084",
+            //    type = "route",
+            //    reference_id = "124124",
+            //    legal_business_name = "S Garments",
+            //    business_type = "individual",
+            //    contact_name = "Saurabh Bag",
+            //    profile = new
+            //    {
+            //        category = "healthcare",
+            //        subcategory = "clinic",
+            //        addresses = new
+            //        {
+            //            registered = new
+            //            {
+            //                street1 = "507, Koramangala 1st block",
+            //                street2 = "MG Road",
+            //                city = "Bengaluru",
+            //                state = "KARNATAKA",
+            //                postal_code = "560034",
+            //                country = "IN"
+            //            }
+            //        }
+            //    },
+            //    legal_info = new
+            //    {
+            //        pan = "AAACL1234C",
+            //        gst = "18AABCU9603R1ZM"
+            //    }
+            //};
 
             // Serialize the account data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(accountData);
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);//accountData0
 
             // Create HttpClient instance
             using (var client = new HttpClient())
@@ -258,32 +171,39 @@ namespace appify.web.api.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Sub-merchant account created successfully:");
-                        Console.WriteLine(responseBody);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been created successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                     else
                     {
                         string errorResponse = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating sub-merchant account:");
-                        Console.WriteLine(errorResponse);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error creating linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = errorResponse;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message.ToString();
                 }
             }
-            return "";
+            return Ok(rm);
         }
 
         [HttpPost]
-        [Route("CheckSubMerchantAccountStatus")]
-        public async Task<string> CheckSubMerchantAccountStatusAsync(string accountId)
+        [Route("CheckLinkedAccountStatus")] ////// Working to check created route link account
+        public async Task<IActionResult> CheckLinkedAccountStatusAsync(string accountId)
         {
-            string result = "";
             string url = $"{Common.RazorPayCreateAccount}/{accountId}";
-
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
             using (var client = new HttpClient())
             {
                 try
@@ -303,121 +223,147 @@ namespace appify.web.api.Controllers
                         dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
 
                         // Extract useful info (status, activation status, etc.)
-                        string status = json.status;
-                        string email = json.email;
-                        string contact = json.contact_name;
-                        string createdAt = json.created_at;
+                        //string status = json.status;
+                        //string email = json.email;
+                        //string contact = json.contact_name;
+                        //string createdAt = json.created_at;
 
-                        result = $"✅ Sub-Account Status: {status}, Contact: {contact}, Email: {email}, Created At: {createdAt}";
+                        //result = $"✅ Sub-Account Status: {status}, Contact: {contact}, Email: {email}, Created At: {createdAt}";
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been successfully fetched";
+                        rm.name = StatusName.ok;
+                        rm.data = json;
                     }
                     else
                     {
-                        result = $"❌ API Error ({response.StatusCode}): {responseBody}";
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error fetching linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"❌ API Error ({response.StatusCode}): {responseBody}";
                     }
                 }
                 catch (Exception ex)
                 {
-                    result = $"❌ Exception occurred: {ex.Message}";
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message.ToString();
                 }
             }
 
-            return result;
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Updates details of a Razorpay submerchant (linked) account.
+        /// </summary>
+        /// <param name="accountId">The account ID to update</param>
+        /// <param name="updatedDataJson">JSON string of the updated fields</param>
+        /// <returns>True if update was successful, false otherwise</returns>
+        [HttpPost]
+        [Route("UpdateLinkedAccount")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateLinkedAccountAsync(string accountId, string updatedDataJson)
+        {   
+            rm = new ResponseMessage();
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // Set Basic Auth
+                    var byteArray = Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
+                    var requestUri = $"{Common.RazorPayCreateAccount}/{accountId}";
+
+                    var content = new StringContent(updatedDataJson, Encoding.UTF8, "application/json");
+
+                    // Send PATCH request
+                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), requestUri)
+                    {
+                        Content = content
+                    };
+
+                    var response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been updated successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = response;
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error Update linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"Update failed. Status: {response.StatusCode}, Message: {errorContent}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            return Ok(rm);
         }
 
-        //[HttpPost]
-        //[Route("RazorPay/Settlement/updatesubmerchant")]
-        //[MapToApiVersion("1.0")]
-        ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> updatesubmerchant(Merchant itemData)
-        //{
-        //    var reqHeader = Request;
-        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        rm = new ResponseMessage();
+        [HttpPost]
+        [Route("DeleteLinkedAccount")] //////// Working to delete Route Link Account(Suspended)
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> DeleteLinkedAccount(string AccountID)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // Set Basic Auth Header
+                    var byteArray = Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-        //        string accountId = itemData.RazorPayAccountID;
+                    var requestUri = $"{Common.RazorPayCreateAccount}/{AccountID}";
 
-        //        RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-        //        Dictionary<string, object> accountRequest = new Dictionary<string, object>();
-        //        accountRequest.Add("email", itemData.EmailID);
-        //        accountRequest.Add("phone", itemData.Phone);
-        //        accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-        //        accountRequest.Add("business_type", itemData.BusinessType);
+                    // Send DELETE request
+                    var response = await client.DeleteAsync(requestUri);
 
-        //        //Dictionary<string, object> profile = new Dictionary<string, object>();
-        //        //profile.Add("category", itemData.Profile_Category_Name);
-        //        //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = $"Successfully deleted account: {AccountID}";
+                        rm.name = StatusName.ok;
+                        rm.data = response;
+                    }
+                    else
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to delete linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"Failed to delete account: {AccountID}. Status: {response.StatusCode}, Message: {content}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            return Ok(rm);
 
-        //        Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-        //        legalInfo.Add("pan", itemData.PAN);
-        //        legalInfo.Add("gst", itemData.GST);
-
-        //        Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-        //        bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-        //        bankInfo.Add("account_number", itemData.BankAccountNo);
-        //        bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
-
-        //        //accountRequest.Add("profile", profile);
-        //        accountRequest.Add("legal_info", legalInfo);
-        //        accountRequest.Add("bank_account", bankInfo);
-
-        //        Account accouunt = client.Account.Fetch(accountId).Edit(accountRequest);
-
-        //        rm.statusCode = StatusCodes.OK;
-        //        rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-        //        rm.name = StatusName.ok;
-        //        rm.data = accouunt;
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        rm.statusCode = StatusCodes.ERROR;
-        //        rm.message = ex.Message.ToString();
-        //        rm.name = StatusName.invalid;
-        //        rm.data = ex.Message.ToString();
-        //        await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-        //    }
-        //    return Ok(rm);
-
-        //}
-
-        //[HttpPost]
-        //[Route("RazorPay/Settlement/deletesubmerchant")]
-        //[MapToApiVersion("1.0")]
-        ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> deletesubmerchant(string AccountID)
-        //{
-        //    var reqHeader = Request;
-        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        rm = new ResponseMessage();
-
-        //        RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-        //        Account accouunt = client.Account.Fetch(AccountID).Delete();
-
-        //        rm.statusCode = StatusCodes.OK;
-        //        rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-        //        rm.name = StatusName.ok;
-        //        rm.data = accouunt;
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        rm.statusCode = StatusCodes.ERROR;
-        //        rm.message = ex.Message.ToString();
-        //        rm.name = StatusName.invalid;
-        //        rm.data = ex.Message.ToString();
-        //        await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-        //    }
-        //    return Ok(rm);
-
-        //}
+        }
 
         /// <summary>
         /// Create Split Payment
@@ -428,6 +374,7 @@ namespace appify.web.api.Controllers
         ///     {
         ///       "paymentId": "pay_QdAROHL12qtHHg",
         ///       "totalAmount":10000,
+        ///       "currency": "INR",
         ///       "onHold": false,
         ///       "accountId": "acc_QBOuFMPEh3zBGm"
         ///     }
@@ -474,23 +421,19 @@ namespace appify.web.api.Controllers
         /// <returns></returns>
 
         [HttpPost]
-        [Route("SplitPayment")]
+        [Route("SplitPayment")]  //// Working to transfer money
         public async Task<IActionResult> PaymentBaseSplitPayment(SplitPayment itemData)
         {
-            //string paymentId = "pay_QdAROHL12qtHHg";
-            var result = await CreateTransferSplitPaymentAsync2(itemData.PaymentId, itemData.TotalAmount, itemData.OnHold, itemData.AccountId);
-            return Ok(result);
-        }
-
-        private async Task<string> CreateTransferSplitPaymentAsync2(string paymentId, decimal TotalAmount, bool OnHold, string accountId)
-        {
             string responseBody = "";
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
             var transferData = new
             {
                 transfers = new[]
                 {
-                    new { account = accountId, amount = 8000, currency = "INR", on_hold = OnHold },
-                    //new { account = "acc_QfUIav98eYnJXd", amount = 10000 , currency = "INR" , on_hold = OnHold }
+                    new { account = itemData.AccountId, amount = 10000, currency = "INR", on_hold = itemData.OnHold },
+                    new { account = "acc_QfrQMLZB9pgQ7n", amount = 10000 , currency = "INR" , on_hold = itemData.OnHold }
             }
             };
 
@@ -505,29 +448,35 @@ namespace appify.web.api.Controllers
 
                 try
                 {
-                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", paymentId), content);
+                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", itemData.PaymentId), content);
 
                     if (response.IsSuccessStatusCode)
                     {
                         responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Transfer created successfully:");
-                        Console.WriteLine(responseBody);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = $"Transfer created successfully:";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                     else
                     {
                         responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating transfer:");
-                        Console.WriteLine(responseBody);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error creating transfer";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
                     responseBody = ex.Message;
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = responseBody;
                 }
             }
-            return responseBody;
+            return Ok(rm);
         }
 
         /// <summary>
@@ -558,7 +507,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// <returns></returns>
 
-        [HttpPost("CreateOrderAndLink")]
+        [HttpPost("CreateOrderAndLink")]  //// Working Create and Generate Payment Link
         public IActionResult CreateOrderAndLink([FromBody] CreateOrderLinkRequest request)
         {
             try
