@@ -57,7 +57,13 @@ namespace appify.utility
 
         public static readonly string OneDelhiveryToken = "9c0afe4ffc2f6ffd70fa4d1ee3a652f7f033f81c";
 
+        public static readonly string OneDelhiveryShipmentCost = "https://track.delhivery.com/api/kinko/v1/invoice/charges/.json";
+
+        public static readonly string OnDeliveryPincodeService = "https://track.delhivery.com/c/api/pin-codes/json";
+
         public static readonly string RazorPayCreateAccount = "https://api.razorpay.com/v2/accounts";
+
+        public static readonly string RazorpayPaymentTransfers = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
 
         public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
         public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";

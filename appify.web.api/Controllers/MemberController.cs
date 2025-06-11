@@ -836,7 +836,7 @@ namespace appify.web.api.Controllers
                 }
                 else
                 {
-                    rm.statusCode = StatusCodes.ERROR;
+                    rm.statusCode = StatusCodes.OK;
                     rm.message = "MEMBER DOES NOT EXIST!";
                     rm.name = StatusName.invalid;
                     rm.data = null;
