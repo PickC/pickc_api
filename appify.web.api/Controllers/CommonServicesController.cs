@@ -28,6 +28,12 @@ using System.Text;
 using System.Net;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
+using Azure.Core;
+using NPOI.SS.Formula.Functions;
+using Twilio.TwiML.Fax;
+using Twilio.TwiML.Voice;
+using System.Buffers.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace appify.web.api.Controllers
@@ -55,921 +61,13 @@ namespace appify.web.api.Controllers
             this.notificationBusiness = notificationBusiness;
             this.env = env;
         }
-        /// <summary>
-        /// ShipRocket WebHook for DeliveryEvents.
-        /// </summary>
-        /// <remarks>
-        /// Sample Response:
-        /// NOTE : ShipRocket WebHook for DeliveryEvents.
-        /// 
-        ///     {
-        ///        "awb":"19041424751540",
-        ///        "courier_name":"Delhivery Surface",
-        ///        "current_status":"IN TRANSIT",
-        ///        "current_status_id":20,
-        ///        "shipment_status":"IN TRANSIT",
-        ///        "shipment_status_id":18,
-        ///        "current_timestamp":"23 05 2023 11:43:52",
-        ///        "order_id":"1373900_150876814",
-        ///        "sr_order_id":348456385,
-        ///        "awb_assigned_date":"2023-05-19 11:59:16",
-        ///        "pickup_scheduled_date":"2023-05-19 11:59:17",
-        ///        "etd":"2023-05-23 15:40:19",
-        ///        "scans":[
-        ///           {
-        ///              "date":"2023-05-19 11:59:16",
-        ///              "status":"X-UCI",
-        ///              "activity":"Manifested - Manifest uploaded",
-        ///              "location":"Chomu_SamodRd_D (Rajasthan)",
-        ///              "sr-status":"5",
-        ///              "sr-status-label":"MANIFEST GENERATED"
-        ///           }
-        ///           ]
-        ///     }
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY</response>
-        /// <response code="500">ResponseMessage with Error Description</response>
-
-        [HttpPost]
-        [Route("WebhookShipRocket")]
-        [MapToApiVersion("1.0")]
-        [Authorize]
-        public async Task<IActionResult> WebhookShipRocket()
-        {
-            var body = "";
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            rm = new ResponseMessage();
-            try
-            {
-                // Verify the X-VERIFY header.
-                string xVerifyHeader = reqHeader.Headers["x-api-key"];////verifyRequestModel.X_VERIFY;
-
-                //xVerifyHeader = "Appify@1234#";
-                if (xVerifyHeader == null || xVerifyHeader == "")//// || !VerifyXVerifyHeaderShipRocket(xVerifyHeader)
-                {
-                    await Common.UpdateEventLogsNew("SHIPROCKET Webhook Null Payload", reqHeader, controllerURL, "SHIPROCKET Webhook Null Payload", "Received null payload", StatusName.ok, this.eventLogBusiness);
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "Invalid payload";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                }
-                else
-                {
-                    using var reader = new StreamReader(HttpContext.Request.Body);
-                    // You now have the body string raw
-                    body = await reader.ReadToEndAsync();
-
-                    var requestObj = (JObject)JsonConvert.DeserializeObject(body);
-
-                    OrderTrackingUpdate orderTrackingUpdate = new OrderTrackingUpdate
-                    {
-                        OrderNo = System.String.IsNullOrEmpty((string?)(JValue)requestObj["order_id"]) ? "" : Convert.ToString((JValue)requestObj["order_id"]),
-                        OrderStatus = Convert.ToInt16((JValue)requestObj["current_status_id"]),
-                        Remarks = System.String.IsNullOrEmpty((string?)(JValue)requestObj["current_status"]) ? "" : Convert.ToString((JValue)requestObj["current_status"]),
-                        CourierRefID = System.String.IsNullOrEmpty((string?)(JValue)requestObj["channel_id"]) ? "" : Convert.ToString((JValue)requestObj["channel_id"]),
-                        ShipmentID = "",////Convert.ToString((JValue)trackingObj["tracking_data"]["shipment_track"]["shipment_id"]),
-                        AWB = System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : Convert.ToString((JValue)requestObj["awb"]),
-                        DeliveredOn = Convert.ToDateTime((JValue)requestObj["etd"]),
-                        CourierName = System.String.IsNullOrEmpty((string?)(JValue)requestObj["courier_name"]) ? "" : Convert.ToString((JValue)requestObj["courier_name"]),
-                        TrackURL = Common.ShiproketDeliveryTrackingURL + (System.String.IsNullOrEmpty((string?)(JValue)requestObj["awb"]) ? "" : (JValue)requestObj["awb"].ToString())
-                    };
-
-                    var result = orderBusiness.UpdateOrderTrackingStatus(orderTrackingUpdate);
-                    if (result > 0)
-                    {
-                        rm.statusCode = StatusCodes.OK;
-                        rm.message = "SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY";
-                        rm.name = StatusName.ok;
-                        rm.data = requestObj;
-                        /*
-                        Shiprocket Order Status Table
-
-                        ->	3	Ready To Ship
-                        ->	4	Pickup Scheduled
-                        ->	5	Canceled
-                        ->	6	Shipped
-                        ->	7	Delivered
-                        ->	8	ePayment Failed
-                        ->	9	Returned
-                        ->	19	Out for Delivery
-                        ->	20	In Transit
-                        ->	34	Out For Pickup
-                        ->	51	Picked Up
-                        ->  37  Delivery Delayed
-                        */
-                        OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
-
-                        if (orderUpdateDetail.SkipNo != orderUpdateDetail.VendorMobileNo && orderUpdateDetail.SkipNo != orderUpdateDetail.MemberMobileNo)
-                        {
-                            if (orderTrackingUpdate.OrderStatus == 7) //// Delivered
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 6) //// Shipped
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 19) //// In Transit
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                            else if (orderTrackingUpdate.OrderStatus == 37) //// Delivery Delayed
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    /*if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDelayVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }*/
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    /*if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDelayCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }*/
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                            if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled by Customer
-                            {
-                                if (orderUpdateDetail.VendorID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                                }
-                                if (orderUpdateDetail.MemberID != 0)
-                                {
-                                    if (orderUpdateDetail.IsEmail == true)
-                                    {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsSMS == true)
-                                    {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    if (orderUpdateDetail.IsPush == true)
-                                    {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                    }
-                                    //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                                }
-                            }
-                        }
-                    }
-                    await Common.UpdateEventLogsNew("SHIPROCKET WEBHOOK - SHIPROCKET RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHIPROCKET Webhook Sucess Response", requestObj, StatusName.ok, this.eventLogBusiness);
-                }
-
-            }
-            catch (Exception ex)
-            {
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                await Common.UpdateEventLogsNew("SHIPROCKET Webhook Error Received", reqHeader, controllerURL, "SHIPROCKET Webhook Error Received->" + body, null, rm.message, this.eventLogBusiness);
-            }
-            // Respond with a 200 OK status to acknowledge the receipt of the webhook
-            return Ok(rm);
-        }
-
-        private bool VerifyXVerifyHeaderShipRocket(string xVerifyHeader)
-        {
-            string Secret = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("ShipRocketKey:Secret").Value;
-            // TODO: Implement the logic to verify the X-VERIFY header.
-            if (Secret == xVerifyHeader)
-                return true;
-            else
-                return false;
-        }
-
-        #region Razorpay Split Payment
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/PaymentBaseSplitPayment")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> PaymentBaseSplitPayment()
-        {
-            // Replace with the actual payment ID
-            string paymentId = "pay_QBO6jc1IqTCOXi";
-            await CreateTransferSplitPaymentAsync(paymentId);
-            return Ok("");
-        }
-
-        private static readonly string RazorpayKeyId2 = Common.RazorPayKey;
-        private static readonly string RazorpayKeySecret2 = Common.RazorPaySecret;
-        private static readonly string RazorpayApiUrl2 = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
-
-        public static async Task CreateTransferSplitPaymentAsync(string paymentId)
-        {
-            // Define the transfer payload for split payments
-            var transferData = new
-            {
-                transfers = new[]
-                {
-                new { account = "acc_QBOuFMPEh3zBGm", amount = 1000, currency = "INR", on_hold = false },
-                ////new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
-            }
-            };
-
-            // Serialize the transfer data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(transferData);
-
-            // Create HttpClient instance
-            using (var client = new HttpClient())
-            {
-                // Set up Basic Authentication
-                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId2}:{RazorpayKeySecret2}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
-
-                // Set up the request content
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-                try
-                {
-                    // Send the POST request to Razorpay API
-                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl2.Replace("PAYMENT_ID", paymentId), content);
-
-                    // Handle the response
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Transfer created successfully:");
-                        Console.WriteLine(responseBody);
-                    }
-                    else
-                    {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating transfer:");
-                        Console.WriteLine(errorResponse);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-        //// <summary>
-        //// 1. Name and email fields are mandatory for each account & phone number is optional
-        //// 2. (50.00 MB Max)
-        //// 3. The number of accounts in the file should not exceed 500.
-        //// </summary>
-        [HttpPost]
-        [Route("RazorPay/Settlement/bulkupload")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> createmerchants([Required] IFormFile file)//([Required]IFormFile file)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                string responseBody = "NO FILE OR INVALID FILE FORMAT";
-                //////[FromForm] ParamEmailFields item
-                if (file == null || file.Length == 0)
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    return Ok(rm);
-                }
-                if (Path.GetExtension(file.FileName).ToLower() != ".csv"
-                    && Path.GetExtension(file.FileName).ToLower() != ".xls"
-                    && Path.GetExtension(file.FileName).ToLower() != ".xlsx"
-                    && Path.GetExtension(file.FileName).ToLower() != ".xlsb")
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    return Ok(rm);
-                }
-
-                if (file.Length > Common.IMAGE_SIZE)
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.name = StatusName.invalid;
-                    rm.message = "FILE SIZE GREATER THAN 50 MB";
-                    rm.data = null;
-                    return Ok(rm);
-                }
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = responseBody;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/createsubmerchant")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> createsubmerchant(Merchant itemData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                var rr = ($"🔍 Current Security Protocol: {ServicePointManager.SecurityProtocol}");
-                rm = new ResponseMessage();
-                //RazorpayClient rr = new RazorpayClient()
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
-                //RazorpayClient client = new RazorpayClient(Common.RazorPayCreateAccount,Common.RazorPayKey, Common.RazorPaySecret);
-                RazorpayClient client = new RazorpayClient(authValue);
-                Dictionary<string,object> accountRequest = new Dictionary<string,object>();
-                accountRequest.Add("email", itemData.EmailID);
-                accountRequest.Add("phone", itemData.Phone);
-                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-                accountRequest.Add("business_type", itemData.BusinessType);
-                accountRequest.Add("contact_name", "Gurjeet Singh");
-
-                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                //legalInfo.Add("pan", itemData.PAN);
-                //legalInfo.Add("gst", itemData.GST);
-
-                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                bankInfo.Add("account_number", itemData.BankAccountNo);
-                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
-
-
-                //accountRequest.Add("profile", profile);
-
-                //if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
-                //{
-                //    accountRequest.Add("legal_info", legalInfo);
-                //}
-
-                accountRequest.Add("bank_account", bankInfo);
-
-                string json = System.Text.Json.JsonSerializer.Serialize(accountRequest, new JsonSerializerOptions { WriteIndented = true });
-                Console.WriteLine(json);
-
-                Account payment = client.Account.Create(accountRequest);
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = payment;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                //await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/updatesubmerchant")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> updatesubmerchant(Merchant itemData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-
-                string accountId = itemData.RazorPayAccountID;
-
-                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-                Dictionary<string, object> accountRequest = new Dictionary<string, object>();
-                accountRequest.Add("email", itemData.EmailID);
-                accountRequest.Add("phone", itemData.Phone);
-                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-                accountRequest.Add("business_type", itemData.BusinessType);
-
-                //Dictionary<string, object> profile = new Dictionary<string, object>();
-                //profile.Add("category", itemData.Profile_Category_Name);
-                //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
-
-                Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                legalInfo.Add("pan", itemData.PAN);
-                legalInfo.Add("gst", itemData.GST);
-
-                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                bankInfo.Add("account_number", itemData.BankAccountNo);
-                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
-
-                //accountRequest.Add("profile", profile);
-                accountRequest.Add("legal_info", legalInfo);
-                accountRequest.Add("bank_account", bankInfo);
-
-                Account accouunt = client.Account.Fetch(accountId).Edit(accountRequest);
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = accouunt;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/deletesubmerchant")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> deletesubmerchant(string AccountID)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-
-                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-                Account accouunt = client.Account.Fetch(AccountID).Delete();
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = accouunt;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/paymenttosubmerchant")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> paymenttosubmerchant(string PaymentID)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-
-                Dictionary<string, object> transferRequest = new Dictionary<string, object>();
-                List<Dictionary<string, object>> transfers = new List<Dictionary<string, object>>();
-                Dictionary<string, object> transferParams = new Dictionary<string, object>();
-                transferParams.Add("account", "acc_QBOuFMPEh3zBGm");
-                transferParams.Add("amount", 100);
-                transferParams.Add("currency", "INR");
-                Dictionary<string, object> notes = new Dictionary<string, object>();
-                notes.Add("name", "Gaurav Kumar");
-                notes.Add("roll_no", "IEC2011025");
-                transferParams.Add("notes", notes);
-                List<string> linkedAccountNotes = new List<string>();
-                linkedAccountNotes.Add("roll_no");
-                transferParams.Add("linked_account_notes", linkedAccountNotes);
-                transferParams.Add("on_hold", true);
-                transfers.Add(transferParams);
-                transferRequest.Add("transfers", transfers);
-
-                List<Transfer> transfer = client.Payment.Fetch(PaymentID).Transfer(transferRequest);
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = "";
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        //private static readonly string RazorpayKeyId = Common.RazorPayKey;
-        //private static readonly string RazorpayKeySecret = Common.RazorPaySecret;
-        //private static readonly string RazorpayApiUrl = "https://api.razorpay.com/v1/orders";
-
-        //public static async Task CreateSplitPaymentOrderAsync()
-        //{
-        //    // Define the order payload with split payments
-        //    var orderData = new
-        //    {
-        //        amount = 1000, // Amount in paise (e.g., 10000 = ₹100)
-        //        currency = "INR",
-        //        receipt = "order_rcpt_123",
-        //        payment_capture = 1, // Auto-capture payment
-        //        notes = new { description = "Order for multiple vendors" },
-        //        transfers = new[]
-        //        {
-        //        new { account = "acc_Q9N1ccfvK0eFMm", amount = 1000, currency = "INR", on_hold = false },
-        //        //new { account = "acc_Q96hNnQAQf5pLk", amount = 4000, currency = "INR", on_hold = false }
-        //    }
-        //    };
-
-        //    // Serialize the order data to JSON
-        //    string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(orderData);
-
-        //    // Create HttpClient instance
-        //    using (var client = new HttpClient())
-        //    {
-        //        // Set up Basic Authentication
-        //        var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId}:{RazorpayKeySecret}"));
-        //        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
-
-        //        // Set up the request content
-        //        var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-        //        // Send the POST request to Razorpay API
-        //        HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl, content);
-
-        //        // Handle the response
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            string responseBody = await response.Content.ReadAsStringAsync();
-        //            Console.WriteLine("Order created successfully:");
-        //            Console.WriteLine(responseBody);
-        //        }
-        //        else
-        //        {
-        //            string errorResponse = await response.Content.ReadAsStringAsync();
-        //            Console.WriteLine("Error creating order:");
-        //            Console.WriteLine(errorResponse);
-        //        }
-        //    }
-        //}
-
-        //[HttpPost]
-        //[Route("RazorPay/Settlement/OrderBaseSplitPayment")]
-        //[MapToApiVersion("1.0")]
-        //public async Task<IActionResult> OrderBaseSplitPayment()
-        //{
-        //    await CreateSplitPaymentOrderAsync();
-        //    return Ok("");
-        //}
-
-        [HttpPost]
-        [Route("RazorPay/Settlement/CreateAnAccount")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CreateAnAccount()
-        {
-            //await CreateSubMerchantAccountAsync();
-
-            string orderId = await CreateOrderAsync(500, "INR", "ORD_12345");
-
-            Console.WriteLine("Order ID: " + orderId);
-
-            return Ok(0);
-        }
-
-        private static readonly string RazorpayKeyId3 = Common.RazorPayKey;
-        private static readonly string RazorpayKeySecret3 = Common.RazorPaySecret;
-        private static readonly string RazorpayApiUrl3 = "https://api.razorpay.com/v2/accounts";
-
-        public static async Task CreateSubMerchantAccountAsync()
-        {
-            // Define the sub-merchant account payload
-            var accountData = new
-            {
-                email = "submerchant@example.com",
-                phone = "9876543210",
-                legal_business_name = "Sub Merchant Business",
-                business_type = "partnership",
-                customer_facing_business_name = "Sub Merchant Store",
-                profile = new
-                {
-                    category = "health_beauty",
-                    subcategory = "health_beauty",
-                    description = "Health and beauty products"
-                },
-                legal_info = new
-                {
-                    pan = "ABCDE1234F",
-                    gst = "22ABCDE1234F1Z5"
-                },
-                brand = new
-                {
-                    color = "#FFFFFF"
-                },
-                notes = new
-                {
-                    internal_ref_id = "123456"
-                },
-                contact_info = new
-                {
-                    chargeback = new
-                    {
-                        email = "chargeback@example.com",
-                        phone = "9876543210"
-                    },
-                    refund = new
-                    {
-                        email = "refund@example.com",
-                        phone = "9876543210"
-                    },
-                    support = new
-                    {
-                        email = "support@example.com",
-                        phone = "9876543210"
-                    }
-                },
-                apps = new
-                {
-                    websites = new[] { "https://www.submerchantstore.com" },
-                    android = new[] { "https://play.google.com/store/apps/details?id=com.submerchantstore" },
-                    ios = new[] { "https://apps.apple.com/in/app/submerchantstore/id123456789" }
-                }
-            };
-
-            // Serialize the account data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(accountData);
-
-            // Create HttpClient instance
-            using (var client = new HttpClient())
-            {
-                // Set up Basic Authentication
-                var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{RazorpayKeyId3}:{RazorpayKeySecret3}"));
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
-
-                // Set up the request content
-                var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-
-                try
-                {
-                    // Send the POST request to Razorpay API
-                    HttpResponseMessage response = await client.PostAsync(RazorpayApiUrl3, content);
-
-                    // Handle the response
-                    if (response.IsSuccessStatusCode)
-                    {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Sub-merchant account created successfully:");
-                        Console.WriteLine(responseBody);
-                    }
-                    else
-                    {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating sub-merchant account:");
-                        Console.WriteLine(errorResponse);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
-
-
-        private string KeyId = Common.RazorPayKey;       // 🔹 Replace with Razorpay Key ID
-        private string KeySecret = Common.RazorPaySecret; // 🔹 Replace with Razorpay Secret
-        private const string RazorpayOrderUrl = "https://api.razorpay.com/v1/orders"; // ✅ Razorpay API URL
-
-        private async Task<string> CreateOrderAsync(int amount, string currency, string receipt)
-        {
-            try
-            {
-                using (HttpClient client = new HttpClient())
-                {
-                    // 🔹 Encode API credentials (Basic Authentication)
-                    string auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{KeyId}:{KeySecret}"));
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
-
-                    // 🔹 Order request payload
-                    var orderData = new
-                    {
-                        amount = amount * 100,  // Amount in paise (₹10 = 1000 paise)
-                        currency = currency,
-                        receipt = receipt,
-                        payment_capture = 1  // Auto capture payment
-                    };
-
-                    // 🔹 Convert payload to JSON
-                    string jsonBody = JsonConvert.SerializeObject(orderData);
-                    HttpContent content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
-
-                    // 🔹 Send HTTP POST request to Razorpay API
-                    HttpResponseMessage response = await client.PostAsync(RazorpayOrderUrl, content);
-                    string responseContent = await response.Content.ReadAsStringAsync();
-
-                    // 🔹 Check if response is successful
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // ✅ Order Created Successfully, Extract Order ID
-                        var jsonResponse = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContent);
-                        return jsonResponse["id"].ToString();
-                    }
-                    else
-                    {
-                        // ❌ Error Response from Razorpay
-                        return $"Error: {responseContent}";
-                    }
-                }
-            }
-            catch (HttpRequestException httpEx)
-            {
-                return $"HTTP Request Error: {httpEx.Message}";
-            }
-            catch (Exception ex)
-            {
-                return $"Exception: {ex.Message}";
-            }
-        }
 
         [HttpPost]
         [Route("Delhivery/GetOrderStatus")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> GetDelhiveryOrderStatus()
+        public async Task<IActionResult> GetDelhiveryOrderStatus(string awbNumber)
         {
-
-            GetExpectedDeliveryDateAsync("27334010002612");
-            //GetExpectedDeliveryDateAsync("27334010002586");
-            //GetExpectedDeliveryDateAsync("27334010002564");
-            //GetExpectedDeliveryDateAsync("27334010002553");
-            //GetExpectedDeliveryDateAsync("27334010002601"); ///// Getting Null
-            //GetExpectedDeliveryDateAsync("27334010002575"); //// Getting Null
-            //GetExpectedDeliveryDateAsync("27334010002590"); //// Getting Null
-
+            GetExpectedDeliveryDateAsync(awbNumber);
             return Ok(0);
         }
         private async Task<string?> GetExpectedDeliveryDateAsync(string awbNumber)
@@ -987,8 +85,135 @@ namespace appify.web.api.Controllers
             var edd = data["ShipmentData"]?[0]?["Shipment"]?["ExpectedDeliveryDate"]?.ToString();
             return edd;
         }
-    }
-    #endregion
 
+        /// <summary>
+        ///     Get The One Delivery Shipment Cost
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "startPin": "500081",
+        ///       "destPin": "500001",
+        ///       "weight": 500.0,
+        ///       "payType": "COD",
+        ///       "codAmount": 900.0
+        ///     } 
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">DELHIVERY SHIPMENT COST HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost]
+        [Route("Delhivery/GetShipmentCost")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> getShipmentCost(DelhiveryShipmentCost itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Clear();
+                var ApiToken = configuration["OneDelhiveryKey:Key"].ToString();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Token {ApiToken}");
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var weightInGrams = itemData.Weight;
+                var codValue = itemData.CODAmount;
+
+                var url = $"{Common.OneDelhiveryShipmentCost}?md=S&ss=Delivered&o_pin={itemData.StartPin}&d_pin={itemData.DestPin}&cod={codValue}&cgm={weightInGrams}";
+
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode(); // throws if status code is not 2xx
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                JArray jsonArray = JArray.Parse(jsonResponse);
+                //string cleanJson = jsonArray.ToString(Formatting.None);
+                //return jsonResponse;
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "Delhivery Shipment Cost has been successfully fetched";
+                rm.name = StatusName.ok;
+                rm.data = jsonArray;
+            }
+            catch (HttpRequestException ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GET SHIPMENT COST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        ///     Get The One Delivery Pincode
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///    {
+        ///      "pinCode": "500081"
+        ///    }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">DELHIVERY PINCODE HAS BEEN SUCCESSFULLY FETCHED!</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost]
+        [Route("Delhivery/GetPincode")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> getPinCode(DeliveryPinCode itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Clear();
+                var ApiToken = configuration["OneDelhiveryKey:Key"].ToString();
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Token {ApiToken}");
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var url = $"{Common.OnDeliveryPincodeService}/?filter_codes={itemData.PinCode}";
+
+                HttpResponseMessage response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                var parsedJson = JsonConvert.DeserializeObject(jsonResponse);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "Delhivery Pincode has been successfully fetched";
+                rm.name = StatusName.ok;
+                rm.data = parsedJson;
+            }
+            catch (HttpRequestException ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GET PINCODE - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+    }
 
 }
