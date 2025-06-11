@@ -58,6 +58,7 @@ namespace appify.utility
         public static readonly string OneDelhiveryToken = "9c0afe4ffc2f6ffd70fa4d1ee3a652f7f033f81c";
 
         public static readonly string RazorPayCreateAccount = "https://api.razorpay.com/v2/accounts";
+
         public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
         public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";
 

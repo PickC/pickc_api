@@ -206,6 +206,7 @@ namespace appify.DataAccess
                         bulkProductVariant.ColumnMappings.Add("Weight", "Weight");
                         bulkProductVariant.ColumnMappings.Add("WeightUnit", "WeightUnit");
                         bulkProductVariant.ColumnMappings.Add("InventoryQuantity", "InventoryQuantity");
+                        bulkProductVariant.ColumnMappings.Add("InventoryItemID", "InventoryItemID");
                         bulkProductVariant.ColumnMappings.Add("CreatedAt", "CreatedAt");
                         bulkProductVariant.ColumnMappings.Add("UpdatedAt", "UpdatedAt");
                         bulkProductVariant.ColumnMappings.Add("IsActive", "IsActive");
