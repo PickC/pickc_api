@@ -499,6 +499,4 @@ namespace appify.web.api
     public class ParamVendorStoreUrl {
         public string StoreUrl{ get; set; }
     }
- 
-
 }
