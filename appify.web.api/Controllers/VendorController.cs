@@ -1133,9 +1133,9 @@ namespace appify.web.api.Controllers
                     if (mobileNo != "")
                     {
                         rm.statusCode = StatusCodes.ERROR;
-                        rm.message = "Member already exists, Contact System Administrator!";
+                        rm.message = $"This {mobileNo} is already a Vendor of appify, Try using different number!";
                         rm.name = StatusName.ok;
-                        rm.data = "Member already exists, Contact System Administrator!";
+                        rm.data = $"This {mobileNo} is already a Vendor of appify, Try using different number!";
                         return Ok(rm);
                     }
                 }
@@ -1149,8 +1149,6 @@ namespace appify.web.api.Controllers
                     rm.data = item;
 
                     await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, "New User Created", item.UserID.ToString(), AppName, sourceIPAddress, item);
-
-
 
                     await Common.UpdateEventLogsNew("USER HAS BEEN SUCCESSFULLY REGISTERED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
 
