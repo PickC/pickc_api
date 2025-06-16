@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,43 +15,107 @@ namespace appify.models
 
     public partial class Merchant
     {
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Type { get; set; }
-        public string ReferenceId { get; set; }
-        public string LegalBusinessName { get; set; }
-        public string BusinessType { get; set; }
-        public string ContactName { get; set; }
-        public Profile Profile { get; set; }
-        public LegalInfo LegalInfo { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string contact_name { get; set; }
+        public string type { get; set; }
+        public string legal_business_name { get; set; }
+        public string business_type { get; set; }
+        public Profile profile { get; set; }
+        //public LegalInfo LegalInfo { get; set; }
     }
 
     public class Profile
     {
-        public string Category { get; set; }
-        public string Subcategory { get; set; }
-        public Addresses Addresses { get; set; }
+        public string category { get; set; }
+        public string subcategory { get; set; }
+        public Addresses addresses { get; set; }
     }
 
     public class Addresses
     {
-        public Registered Registered { get; set; }
+        public Registered registered { get; set; }
     }
 
     public class Registered
     {
-        public string Street1 { get; set; }
-        public string Street2 { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string PostalCode { get; set; }
-        public string Country { get; set; }
+        public string street1 { get; set; }
+        public string street2 { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+        public string postal_code { get; set; }
+        public string country { get; set; }
     }
 
     public class LegalInfo
     {
         public string Pan { get; set; }
         public string Gst { get; set; }
+    }
+    public partial class MerchantUpdate
+    {
+        public string phone { get; set; }
+        public string legal_business_name { get; set; }
+        public string contact_name { get; set; }
+        public Profile profile { get; set; }
+        //public LegalInfo LegalInfo { get; set; }
+    }
+
+    public partial class LinkedAccount
+    {
+        public string AccountID { get; set; }
+    }
+
+    public class StakeholderPayload
+    {
+        public string name { get; set; }
+        public string email { get; set; }
+        public Phone phone { get; set; }
+        public int percentage_ownership { get; set; }
+        public Relationship relationship { get; set; }
+        public StakeholderAddress addresses { get; set; }
+        public Kyc kyc { get; set; }
+    }
+
+    public class Phone
+    {
+        public string primary { get; set; }
+    }
+    public class Relationship
+    {
+        public bool director { get; set; }
+        public bool executive { get; set; }
+    }
+    public class StakeholderAddress
+    {
+        public Residential residential { get; set; }
+    }
+
+    public class Residential
+    {
+        public string street { get; set; }
+        public string city { get; set; }
+        public string state { get; set; }
+        public string postal_code { get; set; }
+        public string country { get; set; }
+    }
+    public class Kyc
+    {
+        public string pan { get; set; }
+    }
+
+
+    public class UpdateProductConfigPayload
+    {
+        public Settlements settlements { get; set; }
+        public bool tnc_accepted { get; set; }
+    }
+
+    public class Settlements
+    {
+        public string account_number { get; set; }
+        public string ifsc_code { get; set; }
+        public string beneficiary_name { get; set; }
     }
 
     public partial class DelhiveryShipmentCost

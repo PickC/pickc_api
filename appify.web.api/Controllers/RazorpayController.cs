@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using Microsoft.Identity.Client;
 using Azure.Storage.Blobs.Models;
+using System;
 
 namespace appify.web.api.Controllers
 {
@@ -108,6 +109,76 @@ namespace appify.web.api.Controllers
 
         //}
 
+        /// <summary>
+        /// Create Linked Account - STEP 1
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "email": "vrajbrahm007@gmail.com",
+        ///       "phone": "9810722970",
+        ///       "type": "route",
+        ///       "legal_business_name": "KP Furniture",
+        ///       "contact_name": "Vraj Brahm",
+        ///       "business_type": "individual",
+        ///       "profile": {
+        ///         "category": "ecommerce",
+        ///         "subcategory": "ecommerce_marketplace",
+        ///         "addresses": {
+        ///           "registered": {
+        ///             "street1": "507, Koramangala 1st block",
+        ///             "street2": "MG Road",
+        ///             "city": "Bengaluru",
+        ///             "state": "KARNATAKA",
+        ///             "postal_code": "560034",
+        ///             "country": "IN"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been created successfully",
+        ///       "data": {
+        ///         "id": "acc_QgGd0eULKGM8gd",
+        ///         "type": "route",
+        ///         "status": "created",
+        ///         "email": "vrajbrahm007@gmail.com",
+        ///         "profile": {
+        ///           "category": "ecommerce",
+        ///           "subcategory": "ecommerce_marketplace",
+        ///           "addresses": {
+        ///             "registered": {
+        ///               "street1": "507, Koramangala 1st block",
+        ///               "street2": "MG Road",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "postal_code": "560034",
+        ///               "country": "IN"
+        ///             }
+        ///           }
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749727496,
+        ///         "live": false,
+        ///         "hold_funds": false,
+        ///         "phone": "+919810722970",
+        ///         "contact_name": "Vraj Brahm",
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "KP Furniture",
+        ///         "customer_facing_business_name": "KP Furniture"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
         [HttpPost]
         [Route("CreateLinkedAccount")] ////// Working to create new route link account
         [MapToApiVersion("1.0")]
@@ -127,7 +198,7 @@ namespace appify.web.api.Controllers
             //    contact_name = "Saurabh Bag",
             //    profile = new
             //    {
-            //        category = "healthcare",
+            //    category = "healthcare",
             //        subcategory = "clinic",
             //        addresses = new
             //        {
@@ -149,8 +220,34 @@ namespace appify.web.api.Controllers
             //    }
             //};
 
+            var accountData = new
+            {
+                email = "vrajbrahm08@gmail.com",
+                phone = "9810722910",
+                type = "route",
+                legal_business_name = "KP Furniture",
+                business_type = "individual",
+                profile = new
+                {
+                    category = "services",
+                    subcategory = "contractors",
+                    addresses = new
+                    {
+                        registered = new
+                        {
+                            street1 = "507, Koramangala 1st block",
+                            street2 = "MG Road",
+                            city = "Bengaluru",
+                            state = "KARNATAKA",
+                            postal_code = "560034",
+                            country = "IN"
+                        }
+                    }
+                }
+            };
+
             // Serialize the account data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);//accountData0
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
 
             // Create HttpClient instance
             using (var client = new HttpClient())
@@ -170,7 +267,8 @@ namespace appify.web.api.Controllers
                     // Handle the response
                     if (response.IsSuccessStatusCode)
                     {
-                        string responseBody = await response.Content.ReadAsStringAsync();
+                        dynamic responseBody =  JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                        //string status = responseBody.;
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Linked Account has been created successfully";
                         rm.name = StatusName.ok;
@@ -178,7 +276,7 @@ namespace appify.web.api.Controllers
                     }
                     else
                     {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
+                        var errorResponse = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Error creating linked account";
                         rm.name = StatusName.ok;
@@ -196,11 +294,417 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+        /// <summary>
+        /// Create Stake Holder - STEP 2
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "name": "Saurabh Bag",
+        ///       "email": "saurabh@example.com",
+        ///       "phone": {
+        ///         "primary": "9876543210"
+        ///       },
+        ///       "percentage_ownership": 100,
+        ///       "relationship": {
+        ///         "director": false,
+        ///         "executive": true
+        ///       },
+        ///       "addresses": {
+        ///         "residential": {
+        ///           "street": "Koramangala",
+        ///           "city": "Bangalore",
+        ///           "state": "Karnataka",
+        ///           "postal_code": "560034",
+        ///           "country": "IN"
+        ///         }
+        ///       },
+        ///       "kyc": {
+        ///         "pan": "CEWPB1197K"
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Stakeholder successfully added",
+        ///       "data": {
+        ///         "id": "sth_QgHiQh5wHHeKIP",
+        ///         "entity": "stakeholder",
+        ///         "relationship": {
+        ///           "executive": true
+        ///         },
+        ///         "phone": {
+        ///           "primary": "9876543210"
+        ///         },
+        ///         "notes": [],
+        ///         "kyc": {
+        ///           "pan": "CEWPB1197K"
+        ///         },
+        ///         "name": "Saurabh Bag",
+        ///         "email": "saurabh@example.com",
+        ///         "percentage_ownership": 100,
+        ///         "addresses": {
+        ///           "residential": {
+        ///             "street": "Koramangala",
+        ///             "city": "Bangalore",
+        ///             "state": "Karnataka",
+        ///             "postal_code": "560034",
+        ///             "country": "in"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("CreateAStakeHolder")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> AddStakeholderAsync(string accountId, StakeholderPayload itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{accountId}/stakeholders";
+            rm = new ResponseMessage();
+
+            var payload = new
+            {
+                name = "Saurabh Bag",
+                email = "saurabh@example.com",
+                phone = new
+                {
+                    primary = "9876543210"
+                },
+                percentage_ownership = 100,
+                relationship = new
+                {
+                    director = false,
+                    executive = true
+                },
+                addresses = new
+                {
+                    residential = new
+                    {
+                        street = "Koramangala",
+                        city = "Bangalore",
+                        state = "Karnataka",
+                        postal_code = "560034",
+                        country = "IN"
+                    }
+                },
+                kyc = new { pan = "CEWPB1197K" }
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(itemData);
+                    HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Stakeholder successfully added";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to add stakeholder";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Request Route Product Configuration - STEP 3
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "accountID": "acc_QgDTR3dlYgZuZF"
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Route product configuration requested successfully",
+        ///       "data": {
+        ///         "requested_configuration": [],
+        ///         "active_configuration": {
+        ///           "settlements": {
+        ///             "account_number": null,
+        ///             "beneficiary_name": null,
+        ///             "ifsc_code": null
+        ///           }
+        ///         },
+        ///         "requirements": [
+        ///           {
+        ///             "field_reference": "settlements.beneficiary_name",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           },
+        ///           {
+        ///             "field_reference": "settlements.account_number",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           },
+        ///           {
+        ///         "field_reference": "settlements.ifsc_code",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           }
+        ///         ],
+        ///         "tnc": {
+        ///         "id": "tnc_QgI3hE6AaTha4f",
+        ///           "accepted": true,
+        ///           "accepted_at": 1749732533
+        ///         },
+        ///         "id": "acc_prd_QgI3hMXQRyRXyW",
+        ///         "product_name": "route",
+        ///         "activation_status": "needs_clarification",
+        ///         "account_id": "acc_QgDTR3dlYgZuZF",
+        ///         "requested_at": 1749732533
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("RequestRouteProduct")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> RequestRouteProductAsync([FromBody] LinkedAccount itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}/products";
+            rm = new ResponseMessage();
+
+            var payload = new
+            {
+                product_name = "route",
+                tnc_accepted = true
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(payload);
+                    HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Route product configuration requested successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to request product";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Update Route Product Configuration - STEP 4
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "settlements": {
+        ///         "account_number": "000501687518",
+        ///         "ifsc_code": "ICIC0000005",
+        ///         "beneficiary_name": "Saurabh Bag"
+        ///       },
+        ///       "tnc_accepted": true
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Bank info updated successfully",
+        ///       "data": {
+        ///         "requested_configuration": [],
+        ///         "active_configuration": {
+        ///           "settlements": {
+        ///             "account_number": "000501687518",
+        ///             "beneficiary_name": "Saurabh Bag",
+        ///             "ifsc_code": "ICIC0000005"
+        ///           }
+        ///         },
+        ///         "requirements": [],
+        ///         "tnc": {
+        ///           "id": "tnc_QgI3hE6AaTha4f",
+        ///           "accepted": true,
+        ///           "accepted_at": 1749732533
+        ///         },
+        ///         "id": "acc_prd_QgI3hMXQRyRXyW",
+        ///         "product_name": "route",
+        ///         "activation_status": "needs_clarification",
+        ///         "account_id": "acc_QgDTR3dlYgZuZF",
+        ///         "requested_at": 1749732533
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("UpdateRouteProduct")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UpdateRouteProductAsync(string accountId, string productId, UpdateProductConfigPayload itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{accountId}/products/{productId}";
+            rm = new ResponseMessage();
+
+            var payload = new
+            {
+                bank_account = new
+                {
+                    ifsc_code = "ICIC0000005",
+                    account_number = "000501687518",
+                    beneficiary_name = "Saurabh Bag"
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(itemData);
+                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), url)
+                    {
+                        Content = new StringContent(json, Encoding.UTF8, "application/json")
+                    };
+
+                    HttpResponseMessage response = await client.SendAsync(request);
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Bank info updated successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to update bank info";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get Linked Account Status
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "accountID": "acc_QfrfMDvUqTdDgR"
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been successfully fetched",
+        ///       "data": {
+        ///         "id": "acc_QfrfMDvUqTdDgR",
+        ///         "type": "route",
+        ///         "status": "activated",
+        ///         "email": "saurabh@appi-fy.ai",
+        ///         "profile": {
+        ///           "category": null,
+        ///           "subcategory": null,
+        ///           "addresses": []
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749639589,
+        ///         "live": true,
+        ///         "hold_funds": false,
+        ///         "activated_at": 1749639708,
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "Saurabh Collections",
+        ///         "customer_facing_business_name": "Saurabh Collections"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
         [HttpPost]
         [Route("CheckLinkedAccountStatus")] ////// Working to check created route link account
-        public async Task<IActionResult> CheckLinkedAccountStatusAsync(string accountId)
+        public async Task<IActionResult> CheckLinkedAccountStatusAsync(LinkedAccount itemData)
         {
-            string url = $"{Common.RazorPayCreateAccount}/{accountId}";
+            string url = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}";
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
@@ -220,7 +724,7 @@ namespace appify.web.api.Controllers
 
                     if (response.IsSuccessStatusCode)
                     {
-                        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                        dynamic json = JsonConvert.DeserializeObject(responseBody);
 
                         // Extract useful info (status, activation status, etc.)
                         //string status = json.status;
@@ -253,55 +757,146 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
         /// <summary>
-        /// Updates details of a Razorpay submerchant (linked) account.
+        /// Update Linked Account
         /// </summary>
-        /// <param name="accountId">The account ID to update</param>
-        /// <param name="updatedDataJson">JSON string of the updated fields</param>
-        /// <returns>True if update was successful, false otherwise</returns>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "phone": "9000090005",
+        ///       "legal_business_name": "Acme Corp V4",
+        ///       "contact_name": "New Contact new",
+        ///       "profile": {
+        ///         "category": "services",
+        ///         "subcategory": "contractors",
+        ///         "addresses": {
+        ///           "registered": {
+        ///             "street1": "5071, Koramangala 6th block4",
+        ///             "street2": "Koramangala",
+        ///             "city": "Bengaluru",
+        ///             "state": "Karnataka",
+        ///             "postal_code": "560040",
+        ///             "country": "IN"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been updated successfully",
+        ///       "data": {
+        ///         "id": "acc_QgDTR3dlYgZuZF",
+        ///         "type": "route",
+        ///         "status": "created",
+        ///         "email": "vrajbrahm@gmail.com",
+        ///         "profile": {
+        ///           "category": "services",
+        ///           "subcategory": "contractors",
+        ///           "addresses": {
+        ///             "registered": {
+        ///               "street1": "5071, Koramangala 6th block3",
+        ///               "street2": "Koramangala",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "postal_code": "560048",
+        ///               "country": "IN"
+        ///             },
+        ///             "operation": {
+        ///               "street1": "5071, Koramangala 6th block",
+        ///               "street2": "Koramangala",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "country": "IN",
+        ///               "postal_code": "560047"
+        ///             }
+        ///           }
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749716387,
+        ///         "live": false,
+        ///         "hold_funds": false,
+        ///         "phone": "+919000090004",
+        ///         "contact_name": "New Contact Name",
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "Acme Corp V3",
+        ///         "customer_facing_business_name": "Acme Corp V2"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
         [HttpPost]
         [Route("UpdateLinkedAccount")]
         [MapToApiVersion("1.0")]
         //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> UpdateLinkedAccountAsync(string accountId, string updatedDataJson)
-        {   
+        public async Task<IActionResult> UpdateLinkedAccountAsync(string accountId, MerchantUpdate itemData)
+        {
+            //                customer_facing_business_name = "Acme Corp V2",
+            var payload = new
+            {
+                phone = "9000090004",
+                legal_business_name = "Acme Corp V3",
+                profile = new
+                {
+                    addresses = new
+                    {
+                        registered = new
+                        {
+                            street1 = "5071, Koramangala 6th block3",
+                            street2 = "Koramangala",
+                            city = "Bengaluru",
+                            state = "Karnataka",
+                            postal_code = "560048",
+                            country = "IN"
+                        }
+                    }
+                },
+                contact_name = "New Contact Name",
+            };
+
             rm = new ResponseMessage();
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
+                var uri = $"{Common.RazorPayCreateAccount}/{accountId}";
                 using (var client = new HttpClient())
                 {
-                    // Set Basic Auth
-                    var byteArray = Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}");
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+                    var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    var requestUri = $"{Common.RazorPayCreateAccount}/{accountId}";
-
-                    var content = new StringContent(updatedDataJson, Encoding.UTF8, "application/json");
-
-                    // Send PATCH request
-                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), requestUri)
+                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), uri)
                     {
-                        Content = content
+                        Content = new StringContent(json, Encoding.UTF8, "application/json")
                     };
 
                     var response = await client.SendAsync(request);
+                    var respContent = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)
                     {
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Linked Account has been updated successfully";
                         rm.name = StatusName.ok;
-                        rm.data = response;
+                        rm.data = JsonConvert.DeserializeObject(respContent.ToString());
                     }
                     else
                     {
-                        var errorContent = await response.Content.ReadAsStringAsync();
+                        //var errorContent = await response.Content.ReadAsStringAsync();
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Error Update linked account";
                         rm.name = StatusName.ok;
-                        rm.data = $"Update failed. Status: {response.StatusCode}, Message: {errorContent}";
+                        rm.data = $"Update failed. Status: {response.StatusCode}, Message: {respContent}";
                     }
                 }
             }
@@ -319,7 +914,7 @@ namespace appify.web.api.Controllers
         [Route("DeleteLinkedAccount")] //////// Working to delete Route Link Account(Suspended)
         [MapToApiVersion("1.0")]
         //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> DeleteLinkedAccount(string AccountID)
+        public async Task<IActionResult> DeleteLinkedAccount(LinkedAccount itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -332,7 +927,7 @@ namespace appify.web.api.Controllers
                     var byteArray = Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}");
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-                    var requestUri = $"{Common.RazorPayCreateAccount}/{AccountID}";
+                    var requestUri = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}";
 
                     // Send DELETE request
                     var response = await client.DeleteAsync(requestUri);
@@ -340,17 +935,17 @@ namespace appify.web.api.Controllers
                     if (response.IsSuccessStatusCode)
                     {
                         rm.statusCode = StatusCodes.OK;
-                        rm.message = $"Successfully deleted account: {AccountID}";
+                        rm.message = $"Successfully deleted account: {itemData.AccountID}";
                         rm.name = StatusName.ok;
                         rm.data = response;
                     }
                     else
                     {
-                        var content = await response.Content.ReadAsStringAsync();
+                        var content = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Failed to delete linked account";
                         rm.name = StatusName.ok;
-                        rm.data = $"Failed to delete account: {AccountID}. Status: {response.StatusCode}, Message: {content}";
+                        rm.data = $"Failed to delete account: {itemData.AccountID}. Status: {response.StatusCode}, Message: {content}";
                     }
                 }
             }

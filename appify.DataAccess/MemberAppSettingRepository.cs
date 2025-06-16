@@ -72,15 +72,15 @@ namespace appify.DataAccess
 
 
 
-        public long GetMemberIdByAppName(string appName) {
-            MemberAppSetting item = new MemberAppSetting();
+        public MemberAppSettingStore GetMemberIdByAppName(string appName) {
+            MemberAppSettingStore item = new MemberAppSettingStore();
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERAPPSETTINGBYAPPNAME, appName);
-                item = DataTableHelper.ConvertDataTable<MemberAppSetting>(ds.Tables[0]).FirstOrDefault();
+                item = DataTableHelper.ConvertDataTable<MemberAppSettingStore>(ds.Tables[0]).FirstOrDefault();
             }
-            return item.UserID;
+            return item;
 
         }
 
