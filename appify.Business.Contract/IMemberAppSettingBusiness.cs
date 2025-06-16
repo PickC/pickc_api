@@ -26,7 +26,7 @@ namespace appify.Business.Contract
 
         public bool UpdateMemberAppStatus(MemberAppSettingUpdate item);
 
-        public long GetMemberIdByAppName(string appName);
+        public MemberAppSettingStore GetMemberIdByAppName(string appName);
 
 
         #region Member App Publish Settings
