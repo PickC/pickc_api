@@ -164,8 +164,8 @@ namespace appify.models
 
     public partial class  MemberAppStatus
     {
-        public short DeploymentStatusAndroid { get; set; }
-        public short DeploymentStatusApple { get; set; }
+        public string DeploymentStatusAndroid { get; set; }
+        public string DeploymentStatusApple { get; set; }
         public string AndroidAppURL { get; set; }
         public string AppleAppURL { get; set; }
     }
