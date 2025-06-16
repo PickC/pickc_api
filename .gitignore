@@ -468,3 +468,10 @@ FodyWeavers.xsd
 /appify.DataAccess.zip
 /appify.audit.service.zip
 /appify.DataAccess.zip
+/appify.Business/bin/Release/net7.0/appify.models.dll
+/appify.web.api/wwwroot/EmailTemplates/05-order-cancelby-customer-vendor.html
+/appify.Business/bin/Release/net7.0/appify.models.dll
+/.gitignore
+/.gitignore
+/appify.web.api/appsettings.json
+/appify.web.api/wwwroot/EmailTemplates/05-order-cancelby-customer-vendor.html
