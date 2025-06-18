@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("appify.utility")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b6d061c466124fa60734eb04ba0dfcb754ff6007")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c6563576631ad2374c7cf92ca1558d1338dec1b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("appify.utility")]
 [assembly: System.Reflection.AssemblyTitleAttribute("appify.utility")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

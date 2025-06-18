@@ -751,6 +751,8 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+
+
         /// <summary>
         /// Check Member with emailid and mobile no
         /// </summary>
@@ -855,6 +857,118 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+
+
+
+        /// <summary>
+        /// Check Member with emailid and mobile no
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "emailID": "rama@appi-fy.ai",
+        ///       "mobileNo": "9959625612",
+        ///       "memberType": 1000,
+        ///       "vendorID": 0
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "CUSTOMER WITH SIMILAR MOBILE NO. EXISTS!",
+        ///       "data": {
+        ///         "userID": 1937,
+        ///         "emailID": "rama@appi-fy.ai",
+        ///         "mobileNo": "9959625612",
+        ///         "password": "Appify@123",
+        ///         "firstName": "appify",
+        ///         "lastName": "kalyan",
+        ///         "memberType": 1000,
+        ///         "otp": "078862",
+        ///         "isOTPSent": true,
+        ///         "otpSentDate": "2024-09-19T16:40:11.967",
+        ///         "isResendOTP": false,
+        ///         "isOTPVerified": true,
+        ///         "isEmailVerified": false,
+        ///         "isActive": true,
+        ///         "createdOn": "2024-09-19T16:40:12.643",
+        ///         "profilePhoto": "",
+        ///         "token": "CD9BF9EB-A940-4430-A7DA-D51B02CF4AD7",
+        ///         "platformType": 0,
+        ///         "parentID": 0,
+        ///         "isRegisteredByMobile": true,
+        ///         "isOnlinePaymentEnabled": true,
+        ///         "isEnterprise": null,
+        ///         "isEcommerce": null,
+        ///         "isWelcomeEmail": null
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">CUSTOMER WITH SIMILAR MOBILE NO. EXISTS </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("CheckCustomer")]
+        public IActionResult CheckCustomer(ParamCheckMember itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+
+            try
+            {
+                //dynamic data = jsondata;
+
+                //var objData = new
+                //{
+                //    EmailID = data.emailID,
+                //    MobileNo = data.mobileNo
+                //};
+
+
+                rm = new ResponseMessage();
+                Member result = this.memberBusiness.IsCustomerExist(itemData.emailID, itemData.mobileNo, itemData.memberType, itemData.vendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER WITH SIMILAR MOBILE NO. EXISTS!";
+                    rm.name = StatusName.ok;
+
+                    //var itemdata = this.memberBusiness.GetMember();
+
+                    rm.data = result;
+                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CUSTOMER WITH SIMILAR MOBILE NO. EXISTS", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "MEMBER DOES NOT EXIST!";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER DOES NOT EXIST", reqHeader, controllerURL, itemData, null, rm.message));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER EXIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
+
+
+
+
         /// <summary>
         /// Get Member Order Count
         /// </summary>
