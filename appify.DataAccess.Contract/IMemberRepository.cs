@@ -24,6 +24,10 @@ namespace appify.DataAccess.Contract
         public bool DeleteMember(long userID);
           
         public Member IsMemberExist(string emailID,string mobileNo, short memberType, Int64 parentID);
+
+        public Member IsCustomerExist(string emailID, string mobileNo, short memberType, Int64 parentID);
+
+
         public CheckOTPSent GetOTPSent(string mobileNo);
         public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo);
         public Member MemberLogIn(string emailID, string mobileNo, string password,Int64 parentID);

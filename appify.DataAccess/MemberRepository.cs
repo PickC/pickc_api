@@ -199,6 +199,21 @@ namespace appify.DataAccess
             return member;
 
         }
+
+        public Member IsCustomerExist(string emailID, string mobileNo, short memberType, Int64 parentID)
+        {
+            Member member = new Member();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.CHECKCUSTOMER, emailID, mobileNo, memberType, parentID);
+                member = DataTableHelper.ConvertDataTable<Member>(ds.Tables[0]).FirstOrDefault();
+            }
+            return member;
+
+        }
+
+
         public CheckOTPSent GetOTPSent(string mobileNo)
         {
             CheckOTPSent member = new CheckOTPSent();
