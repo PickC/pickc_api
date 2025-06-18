@@ -18,6 +18,10 @@ using System.Net;
 using System.Text.Json;
 using System.Text;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using Microsoft.Identity.Client;
+using Azure.Storage.Blobs.Models;
+using System;
 
 namespace appify.web.api.Controllers
 {
@@ -44,10 +48,10 @@ namespace appify.web.api.Controllers
         //// 3. The number of accounts in the file should not exceed 500.
         //// </summary>
         //[HttpPost]
-        //[Route("bulkupload")]
+        //[Route("CreateLinkedAccounts")]
         //[MapToApiVersion("1.0")]
         ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> createmerchants([Required] IFormFile file)//([Required]IFormFile file)
+        //public async Task<IActionResult> CreateLinkedAccounts([Required] IFormFile file)//([Required]IFormFile file)
         //{
         //    var reqHeader = Request;
         //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -105,139 +109,145 @@ namespace appify.web.api.Controllers
 
         //}
 
+        /// <summary>
+        /// Create Linked Account - STEP 1
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "email": "vrajbrahm007@gmail.com",
+        ///       "phone": "9810722970",
+        ///       "type": "route",
+        ///       "legal_business_name": "KP Furniture",
+        ///       "contact_name": "Vraj Brahm",
+        ///       "business_type": "individual",
+        ///       "profile": {
+        ///         "category": "ecommerce",
+        ///         "subcategory": "ecommerce_marketplace",
+        ///         "addresses": {
+        ///           "registered": {
+        ///             "street1": "507, Koramangala 1st block",
+        ///             "street2": "MG Road",
+        ///             "city": "Bengaluru",
+        ///             "state": "KARNATAKA",
+        ///             "postal_code": "560034",
+        ///             "country": "IN"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been created successfully",
+        ///       "data": {
+        ///         "id": "acc_QgGd0eULKGM8gd",
+        ///         "type": "route",
+        ///         "status": "created",
+        ///         "email": "vrajbrahm007@gmail.com",
+        ///         "profile": {
+        ///           "category": "ecommerce",
+        ///           "subcategory": "ecommerce_marketplace",
+        ///           "addresses": {
+        ///             "registered": {
+        ///               "street1": "507, Koramangala 1st block",
+        ///               "street2": "MG Road",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "postal_code": "560034",
+        ///               "country": "IN"
+        ///             }
+        ///           }
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749727496,
+        ///         "live": false,
+        ///         "hold_funds": false,
+        ///         "phone": "+919810722970",
+        ///         "contact_name": "Vraj Brahm",
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "KP Furniture",
+        ///         "customer_facing_business_name": "KP Furniture"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
         [HttpPost]
-        [Route("CreateSubmerchant")]
+        [Route("CreateLinkedAccount")] ////// Working to create new route link account
         [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> createsubmerchant(Merchant itemData)
+        public async Task<IActionResult> CreateLinkedAccount(Merchant itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                var rr = ($"🔍 Current Security Protocol: {ServicePointManager.SecurityProtocol}");
-                rm = new ResponseMessage();
-                //RazorpayClient rr = new RazorpayClient()
-                var authValue = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
-                //RazorpayClient client = new RazorpayClient(Common.RazorPayCreateAccount,Common.RazorPayKey, Common.RazorPaySecret);
-                RazorpayClient client = new RazorpayClient(authValue);
-                Dictionary<string, object> accountRequest = new Dictionary<string, object>();
-                accountRequest.Add("email", itemData.EmailID);
-                accountRequest.Add("phone", itemData.Phone);
-                accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-                accountRequest.Add("business_type", itemData.BusinessType);
-                accountRequest.Add("contact_name", "Gurjeet Singh");
+            rm = new ResponseMessage();
+            //var accountData0 = new
+            //{
+            //    email = "saurabhbag08@gmail.com",
+            //    phone = "7972391084",
+            //    type = "route",
+            //    reference_id = "124124",
+            //    legal_business_name = "S Garments",
+            //    business_type = "individual",
+            //    contact_name = "Saurabh Bag",
+            //    profile = new
+            //    {
+            //    category = "healthcare",
+            //        subcategory = "clinic",
+            //        addresses = new
+            //        {
+            //            registered = new
+            //            {
+            //                street1 = "507, Koramangala 1st block",
+            //                street2 = "MG Road",
+            //                city = "Bengaluru",
+            //                state = "KARNATAKA",
+            //                postal_code = "560034",
+            //                country = "IN"
+            //            }
+            //        }
+            //    },
+            //    legal_info = new
+            //    {
+            //        pan = "AAACL1234C",
+            //        gst = "18AABCU9603R1ZM"
+            //    }
+            //};
 
-                //Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-                //legalInfo.Add("pan", itemData.PAN);
-                //legalInfo.Add("gst", itemData.GST);
-
-                Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-                bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-                bankInfo.Add("account_number", itemData.BankAccountNo);
-                bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
-
-
-                //accountRequest.Add("profile", profile);
-
-                //if ((itemData.PAN != null || itemData.PAN != "") || (itemData.GST != null || itemData.GST != ""))
-                //{
-                //    accountRequest.Add("legal_info", legalInfo);
-                //}
-
-                accountRequest.Add("bank_account", bankInfo);
-
-                string json = System.Text.Json.JsonSerializer.Serialize(accountRequest, new JsonSerializerOptions { WriteIndented = true });
-                Console.WriteLine(json);
-
-                Account payment = client.Account.Create(accountRequest);
-
-                rm.statusCode = StatusCodes.OK;
-                rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-                rm.name = StatusName.ok;
-                rm.data = payment;
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-                //await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("CreateAnAccount")]
-        [MapToApiVersion("1.0")]
-        public async Task<IActionResult> CreateAnAccount()
-        {
-            await CreateSubMerchantAccountAsync();
-            return Ok(0);
-        }
-
-        public static async Task<string> CreateSubMerchantAccountAsync()
-        {
-            // Define the sub-merchant account payload
             var accountData = new
             {
-                email = "submerchant@example.com",
-                phone = "9876543210",
-                legal_business_name = "Sub Merchant Business",
-                business_type = "partnership",
-                customer_facing_business_name = "Sub Merchant Store",
+                email = "vrajbrahm08@gmail.com",
+                phone = "9810722910",
+                type = "route",
+                legal_business_name = "KP Furniture",
+                business_type = "individual",
                 profile = new
                 {
-                    category = "health_beauty",
-                    subcategory = "health_beauty",
-                    description = "Health and beauty products"
-                },
-                legal_info = new
-                {
-                    pan = "ABCDE1234F",
-                    gst = "22ABCDE1234F1Z5"
-                },
-                brand = new
-                {
-                    color = "#FFFFFF"
-                },
-                notes = new
-                {
-                    internal_ref_id = "123456"
-                },
-                contact_info = new
-                {
-                    chargeback = new
+                    category = "services",
+                    subcategory = "contractors",
+                    addresses = new
                     {
-                        email = "chargeback@example.com",
-                        phone = "9876543210"
-                    },
-                    refund = new
-                    {
-                        email = "refund@example.com",
-                        phone = "9876543210"
-                    },
-                    support = new
-                    {
-                        email = "support@example.com",
-                        phone = "9876543210"
+                        registered = new
+                        {
+                            street1 = "507, Koramangala 1st block",
+                            street2 = "MG Road",
+                            city = "Bengaluru",
+                            state = "KARNATAKA",
+                            postal_code = "560034",
+                            country = "IN"
+                        }
                     }
-                },
-                apps = new
-                {
-                    websites = new[] { "https://www.submerchantstore.com" },
-                    android = new[] { "https://play.google.com/store/apps/details?id=com.submerchantstore" },
-                    ios = new[] { "https://apps.apple.com/in/app/submerchantstore/id123456789" }
                 }
             };
 
             // Serialize the account data to JSON
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(accountData);
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
 
             // Create HttpClient instance
             using (var client = new HttpClient())
@@ -257,33 +267,447 @@ namespace appify.web.api.Controllers
                     // Handle the response
                     if (response.IsSuccessStatusCode)
                     {
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Sub-merchant account created successfully:");
-                        Console.WriteLine(responseBody);
+                        dynamic responseBody =  JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                        //string status = responseBody.;
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been created successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                     else
                     {
-                        string errorResponse = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating sub-merchant account:");
-                        Console.WriteLine(errorResponse);
+                        var errorResponse = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error creating linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = errorResponse;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message.ToString();
                 }
             }
-            return "";
+            return Ok(rm);
         }
 
+        /// <summary>
+        /// Create Stake Holder - STEP 2
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "name": "Saurabh Bag",
+        ///       "email": "saurabh@example.com",
+        ///       "phone": {
+        ///         "primary": "9876543210"
+        ///       },
+        ///       "percentage_ownership": 100,
+        ///       "relationship": {
+        ///         "director": false,
+        ///         "executive": true
+        ///       },
+        ///       "addresses": {
+        ///         "residential": {
+        ///           "street": "Koramangala",
+        ///           "city": "Bangalore",
+        ///           "state": "Karnataka",
+        ///           "postal_code": "560034",
+        ///           "country": "IN"
+        ///         }
+        ///       },
+        ///       "kyc": {
+        ///         "pan": "CEWPB1197K"
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Stakeholder successfully added",
+        ///       "data": {
+        ///         "id": "sth_QgHiQh5wHHeKIP",
+        ///         "entity": "stakeholder",
+        ///         "relationship": {
+        ///           "executive": true
+        ///         },
+        ///         "phone": {
+        ///           "primary": "9876543210"
+        ///         },
+        ///         "notes": [],
+        ///         "kyc": {
+        ///           "pan": "CEWPB1197K"
+        ///         },
+        ///         "name": "Saurabh Bag",
+        ///         "email": "saurabh@example.com",
+        ///         "percentage_ownership": 100,
+        ///         "addresses": {
+        ///           "residential": {
+        ///             "street": "Koramangala",
+        ///             "city": "Bangalore",
+        ///             "state": "Karnataka",
+        ///             "postal_code": "560034",
+        ///             "country": "in"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
         [HttpPost]
-        [Route("CheckSubMerchantAccountStatus")]
-        public async Task<string> CheckSubMerchantAccountStatusAsync(string accountId)
+        [Route("CreateAStakeHolder")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> AddStakeholderAsync(string accountId, StakeholderPayload itemData)
         {
-            string result = "";
-            string url = $"{Common.RazorPayCreateAccount}/{accountId}";
+            string url = $"{Common.RazorPayCreateAccount}/{accountId}/stakeholders";
+            rm = new ResponseMessage();
 
+            var payload = new
+            {
+                name = "Saurabh Bag",
+                email = "saurabh@example.com",
+                phone = new
+                {
+                    primary = "9876543210"
+                },
+                percentage_ownership = 100,
+                relationship = new
+                {
+                    director = false,
+                    executive = true
+                },
+                addresses = new
+                {
+                    residential = new
+                    {
+                        street = "Koramangala",
+                        city = "Bangalore",
+                        state = "Karnataka",
+                        postal_code = "560034",
+                        country = "IN"
+                    }
+                },
+                kyc = new { pan = "CEWPB1197K" }
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(itemData);
+                    HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Stakeholder successfully added";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to add stakeholder";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Request Route Product Configuration - STEP 3
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "accountID": "acc_QgDTR3dlYgZuZF"
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Route product configuration requested successfully",
+        ///       "data": {
+        ///         "requested_configuration": [],
+        ///         "active_configuration": {
+        ///           "settlements": {
+        ///             "account_number": null,
+        ///             "beneficiary_name": null,
+        ///             "ifsc_code": null
+        ///           }
+        ///         },
+        ///         "requirements": [
+        ///           {
+        ///             "field_reference": "settlements.beneficiary_name",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           },
+        ///           {
+        ///             "field_reference": "settlements.account_number",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           },
+        ///           {
+        ///         "field_reference": "settlements.ifsc_code",
+        ///             "resolution_url": "/accounts/acc_QgDTR3dlYgZuZF/products/acc_prd_QgI3hMXQRyRXyW",
+        ///             "reason_code": "field_missing",
+        ///             "status": "required"
+        ///           }
+        ///         ],
+        ///         "tnc": {
+        ///         "id": "tnc_QgI3hE6AaTha4f",
+        ///           "accepted": true,
+        ///           "accepted_at": 1749732533
+        ///         },
+        ///         "id": "acc_prd_QgI3hMXQRyRXyW",
+        ///         "product_name": "route",
+        ///         "activation_status": "needs_clarification",
+        ///         "account_id": "acc_QgDTR3dlYgZuZF",
+        ///         "requested_at": 1749732533
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("RequestRouteProduct")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> RequestRouteProductAsync([FromBody] LinkedAccount itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}/products";
+            rm = new ResponseMessage();
+
+            var payload = new
+            {
+                product_name = "route",
+                tnc_accepted = true
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(payload);
+                    HttpResponseMessage response = await client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Route product configuration requested successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to request product";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Update Route Product Configuration - STEP 4
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "settlements": {
+        ///         "account_number": "000501687518",
+        ///         "ifsc_code": "ICIC0000005",
+        ///         "beneficiary_name": "Saurabh Bag"
+        ///       },
+        ///       "tnc_accepted": true
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Bank info updated successfully",
+        ///       "data": {
+        ///         "requested_configuration": [],
+        ///         "active_configuration": {
+        ///           "settlements": {
+        ///             "account_number": "000501687518",
+        ///             "beneficiary_name": "Saurabh Bag",
+        ///             "ifsc_code": "ICIC0000005"
+        ///           }
+        ///         },
+        ///         "requirements": [],
+        ///         "tnc": {
+        ///           "id": "tnc_QgI3hE6AaTha4f",
+        ///           "accepted": true,
+        ///           "accepted_at": 1749732533
+        ///         },
+        ///         "id": "acc_prd_QgI3hMXQRyRXyW",
+        ///         "product_name": "route",
+        ///         "activation_status": "needs_clarification",
+        ///         "account_id": "acc_QgDTR3dlYgZuZF",
+        ///         "requested_at": 1749732533
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("UpdateRouteProduct")] ////// Working to create new stake holder account
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UpdateRouteProductAsync(string accountId, string productId, UpdateProductConfigPayload itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{accountId}/products/{productId}";
+            rm = new ResponseMessage();
+
+            var payload = new
+            {
+                bank_account = new
+                {
+                    ifsc_code = "ICIC0000005",
+                    account_number = "000501687518",
+                    beneficiary_name = "Saurabh Bag"
+                }
+            };
+
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    var authString = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authString);
+
+                    var json = JsonConvert.SerializeObject(itemData);
+                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), url)
+                    {
+                        Content = new StringContent(json, Encoding.UTF8, "application/json")
+                    };
+
+                    HttpResponseMessage response = await client.SendAsync(request);
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Bank info updated successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
+                    }
+                    else
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to update bank info";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message;
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message;
+                }
+            }
+
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Get Linked Account Status
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "accountID": "acc_QfrfMDvUqTdDgR"
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been successfully fetched",
+        ///       "data": {
+        ///         "id": "acc_QfrfMDvUqTdDgR",
+        ///         "type": "route",
+        ///         "status": "activated",
+        ///         "email": "saurabh@appi-fy.ai",
+        ///         "profile": {
+        ///           "category": null,
+        ///           "subcategory": null,
+        ///           "addresses": []
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749639589,
+        ///         "live": true,
+        ///         "hold_funds": false,
+        ///         "activated_at": 1749639708,
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "Saurabh Collections",
+        ///         "customer_facing_business_name": "Saurabh Collections"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("CheckLinkedAccountStatus")] ////// Working to check created route link account
+        public async Task<IActionResult> CheckLinkedAccountStatusAsync(LinkedAccount itemData)
+        {
+            string url = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}";
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
             using (var client = new HttpClient())
             {
                 try
@@ -300,124 +724,241 @@ namespace appify.web.api.Controllers
 
                     if (response.IsSuccessStatusCode)
                     {
-                        dynamic json = Newtonsoft.Json.JsonConvert.DeserializeObject(responseBody);
+                        dynamic json = JsonConvert.DeserializeObject(responseBody);
 
                         // Extract useful info (status, activation status, etc.)
-                        string status = json.status;
-                        string email = json.email;
-                        string contact = json.contact_name;
-                        string createdAt = json.created_at;
+                        //string status = json.status;
+                        //string email = json.email;
+                        //string contact = json.contact_name;
+                        //string createdAt = json.created_at;
 
-                        result = $"✅ Sub-Account Status: {status}, Contact: {contact}, Email: {email}, Created At: {createdAt}";
+                        //result = $"✅ Sub-Account Status: {status}, Contact: {contact}, Email: {email}, Created At: {createdAt}";
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been successfully fetched";
+                        rm.name = StatusName.ok;
+                        rm.data = json;
                     }
                     else
                     {
-                        result = $"❌ API Error ({response.StatusCode}): {responseBody}";
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error fetching linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"❌ API Error ({response.StatusCode}): {responseBody}";
                     }
                 }
                 catch (Exception ex)
                 {
-                    result = $"❌ Exception occurred: {ex.Message}";
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = ex.Message.ToString();
                 }
             }
 
-            return result;
+            return Ok(rm);
         }
 
-        //[HttpPost]
-        //[Route("RazorPay/Settlement/updatesubmerchant")]
-        //[MapToApiVersion("1.0")]
-        ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> updatesubmerchant(Merchant itemData)
-        //{
-        //    var reqHeader = Request;
-        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        rm = new ResponseMessage();
+        /// <summary>
+        /// Update Linked Account
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "phone": "9000090005",
+        ///       "legal_business_name": "Acme Corp V4",
+        ///       "contact_name": "New Contact new",
+        ///       "profile": {
+        ///         "category": "services",
+        ///         "subcategory": "contractors",
+        ///         "addresses": {
+        ///           "registered": {
+        ///             "street1": "5071, Koramangala 6th block4",
+        ///             "street2": "Koramangala",
+        ///             "city": "Bengaluru",
+        ///             "state": "Karnataka",
+        ///             "postal_code": "560040",
+        ///             "country": "IN"
+        ///           }
+        ///         }
+        ///       }
+        ///     }
+        ///     
+        /// Sample Response JSON:
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "Linked Account has been updated successfully",
+        ///       "data": {
+        ///         "id": "acc_QgDTR3dlYgZuZF",
+        ///         "type": "route",
+        ///         "status": "created",
+        ///         "email": "vrajbrahm@gmail.com",
+        ///         "profile": {
+        ///           "category": "services",
+        ///           "subcategory": "contractors",
+        ///           "addresses": {
+        ///             "registered": {
+        ///               "street1": "5071, Koramangala 6th block3",
+        ///               "street2": "Koramangala",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "postal_code": "560048",
+        ///               "country": "IN"
+        ///             },
+        ///             "operation": {
+        ///               "street1": "5071, Koramangala 6th block",
+        ///               "street2": "Koramangala",
+        ///               "city": "Bengaluru",
+        ///               "state": "KARNATAKA",
+        ///               "country": "IN",
+        ///               "postal_code": "560047"
+        ///             }
+        ///           }
+        ///         },
+        ///         "notes": [],
+        ///         "created_at": 1749716387,
+        ///         "live": false,
+        ///         "hold_funds": false,
+        ///         "phone": "+919000090004",
+        ///         "contact_name": "New Contact Name",
+        ///         "business_type": "not_yet_registered",
+        ///         "legal_business_name": "Acme Corp V3",
+        ///         "customer_facing_business_name": "Acme Corp V2"
+        ///       }
+        ///     }
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        [HttpPost]
+        [Route("UpdateLinkedAccount")]
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateLinkedAccountAsync(string accountId, MerchantUpdate itemData)
+        {
+            //                customer_facing_business_name = "Acme Corp V2",
+            var payload = new
+            {
+                phone = "9000090004",
+                legal_business_name = "Acme Corp V3",
+                profile = new
+                {
+                    addresses = new
+                    {
+                        registered = new
+                        {
+                            street1 = "5071, Koramangala 6th block3",
+                            street2 = "Koramangala",
+                            city = "Bengaluru",
+                            state = "Karnataka",
+                            postal_code = "560048",
+                            country = "IN"
+                        }
+                    }
+                },
+                contact_name = "New Contact Name",
+            };
 
-        //        string accountId = itemData.RazorPayAccountID;
+            rm = new ResponseMessage();
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
+                var uri = $"{Common.RazorPayCreateAccount}/{accountId}";
+                using (var client = new HttpClient())
+                {
+                    var auth = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        //        RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-        //        Dictionary<string, object> accountRequest = new Dictionary<string, object>();
-        //        accountRequest.Add("email", itemData.EmailID);
-        //        accountRequest.Add("phone", itemData.Phone);
-        //        accountRequest.Add("legal_business_name", itemData.LegalBusinessName);
-        //        accountRequest.Add("business_type", itemData.BusinessType);
+                    var request = new HttpRequestMessage(new System.Net.Http.HttpMethod("PATCH"), uri)
+                    {
+                        Content = new StringContent(json, Encoding.UTF8, "application/json")
+                    };
 
-        //        //Dictionary<string, object> profile = new Dictionary<string, object>();
-        //        //profile.Add("category", itemData.Profile_Category_Name);
-        //        //profile.Add("subcategory", itemData.Profile_SubCategory_Name);
+                    var response = await client.SendAsync(request);
+                    var respContent = await response.Content.ReadAsStringAsync();
 
-        //        Dictionary<string, object> legalInfo = new Dictionary<string, object>();
-        //        legalInfo.Add("pan", itemData.PAN);
-        //        legalInfo.Add("gst", itemData.GST);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Linked Account has been updated successfully";
+                        rm.name = StatusName.ok;
+                        rm.data = JsonConvert.DeserializeObject(respContent.ToString());
+                    }
+                    else
+                    {
+                        //var errorContent = await response.Content.ReadAsStringAsync();
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error Update linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"Update failed. Status: {response.StatusCode}, Message: {respContent}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            return Ok(rm);
+        }
 
-        //        Dictionary<string, object> bankInfo = new Dictionary<string, object>();
-        //        bankInfo.Add("ifsc_code", itemData.IFSCCODE);
-        //        bankInfo.Add("account_number", itemData.BankAccountNo);
-        //        bankInfo.Add("beneficiary_name", itemData.BeneficiaryName);
+        [HttpPost]
+        [Route("DeleteLinkedAccount")] //////// Working to delete Route Link Account(Suspended)
+        [MapToApiVersion("1.0")]
+        //[Consumes("multipart/form-data")]
+        public async Task<IActionResult> DeleteLinkedAccount(LinkedAccount itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    // Set Basic Auth Header
+                    var byteArray = Encoding.ASCII.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
-        //        //accountRequest.Add("profile", profile);
-        //        accountRequest.Add("legal_info", legalInfo);
-        //        accountRequest.Add("bank_account", bankInfo);
+                    var requestUri = $"{Common.RazorPayCreateAccount}/{itemData.AccountID}";
 
-        //        Account accouunt = client.Account.Fetch(accountId).Edit(accountRequest);
+                    // Send DELETE request
+                    var response = await client.DeleteAsync(requestUri);
 
-        //        rm.statusCode = StatusCodes.OK;
-        //        rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-        //        rm.name = StatusName.ok;
-        //        rm.data = accouunt;
+                    if (response.IsSuccessStatusCode)
+                    {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = $"Successfully deleted account: {itemData.AccountID}";
+                        rm.name = StatusName.ok;
+                        rm.data = response;
+                    }
+                    else
+                    {
+                        var content = JsonConvert.DeserializeObject(await response.Content.ReadAsStringAsync());
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Failed to delete linked account";
+                        rm.name = StatusName.ok;
+                        rm.data = $"Failed to delete account: {itemData.AccountID}. Status: {response.StatusCode}, Message: {content}";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            return Ok(rm);
 
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        rm.statusCode = StatusCodes.ERROR;
-        //        rm.message = ex.Message.ToString();
-        //        rm.name = StatusName.invalid;
-        //        rm.data = ex.Message.ToString();
-        //        await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-        //    }
-        //    return Ok(rm);
-
-        //}
-
-        //[HttpPost]
-        //[Route("RazorPay/Settlement/deletesubmerchant")]
-        //[MapToApiVersion("1.0")]
-        ////[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> deletesubmerchant(string AccountID)
-        //{
-        //    var reqHeader = Request;
-        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-        //    try
-        //    {
-        //        rm = new ResponseMessage();
-
-        //        RazorpayClient client = new RazorpayClient(Common.RazorPayKey, Common.RazorPaySecret);
-        //        Account accouunt = client.Account.Fetch(AccountID).Delete();
-
-        //        rm.statusCode = StatusCodes.OK;
-        //        rm.message = "BULK UPLOAD HAS BEEN SUCCESSFULLY SAVED";
-        //        rm.name = StatusName.ok;
-        //        rm.data = accouunt;
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        rm.statusCode = StatusCodes.ERROR;
-        //        rm.message = ex.Message.ToString();
-        //        rm.name = StatusName.invalid;
-        //        rm.data = ex.Message.ToString();
-        //        await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
-        //    }
-        //    return Ok(rm);
-
-        //}
+        }
 
         /// <summary>
         /// Create Split Payment
@@ -428,6 +969,7 @@ namespace appify.web.api.Controllers
         ///     {
         ///       "paymentId": "pay_QdAROHL12qtHHg",
         ///       "totalAmount":10000,
+        ///       "currency": "INR",
         ///       "onHold": false,
         ///       "accountId": "acc_QBOuFMPEh3zBGm"
         ///     }
@@ -474,23 +1016,19 @@ namespace appify.web.api.Controllers
         /// <returns></returns>
 
         [HttpPost]
-        [Route("SplitPayment")]
+        [Route("SplitPayment")]  //// Working to transfer money
         public async Task<IActionResult> PaymentBaseSplitPayment(SplitPayment itemData)
         {
-            //string paymentId = "pay_QdAROHL12qtHHg";
-            var result = await CreateTransferSplitPaymentAsync2(itemData.PaymentId, itemData.TotalAmount, itemData.OnHold, itemData.AccountId);
-            return Ok(result);
-        }
-
-        private async Task<string> CreateTransferSplitPaymentAsync2(string paymentId, decimal TotalAmount, bool OnHold, string accountId)
-        {
             string responseBody = "";
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
             var transferData = new
             {
                 transfers = new[]
                 {
-                    new { account = accountId, amount = 8000, currency = "INR", on_hold = OnHold },
-                    //new { account = "acc_QfUIav98eYnJXd", amount = 10000 , currency = "INR" , on_hold = OnHold }
+                    new { account = itemData.AccountId, amount = 10000, currency = "INR", on_hold = itemData.OnHold },
+                    new { account = "acc_QfrQMLZB9pgQ7n", amount = 10000 , currency = "INR" , on_hold = itemData.OnHold }
             }
             };
 
@@ -505,29 +1043,35 @@ namespace appify.web.api.Controllers
 
                 try
                 {
-                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", paymentId), content);
+                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", itemData.PaymentId), content);
 
                     if (response.IsSuccessStatusCode)
                     {
                         responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Transfer created successfully:");
-                        Console.WriteLine(responseBody);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = $"Transfer created successfully:";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                     else
                     {
                         responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine("Error creating transfer:");
-                        Console.WriteLine(responseBody);
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "Error creating transfer";
+                        rm.name = StatusName.ok;
+                        rm.data = responseBody;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception occurred:");
-                    Console.WriteLine(ex.Message);
                     responseBody = ex.Message;
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = ex.Message.ToString();
+                    rm.name = StatusName.invalid;
+                    rm.data = responseBody;
                 }
             }
-            return responseBody;
+            return Ok(rm);
         }
 
         /// <summary>
@@ -558,7 +1102,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         /// <returns></returns>
 
-        [HttpPost("CreateOrderAndLink")]
+        [HttpPost("CreateOrderAndLink")]  //// Working Create and Generate Payment Link
         public IActionResult CreateOrderAndLink([FromBody] CreateOrderLinkRequest request)
         {
             try
