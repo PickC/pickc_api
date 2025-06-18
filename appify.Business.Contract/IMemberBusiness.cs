@@ -18,6 +18,9 @@ namespace appify.Business.Contract
         public bool RemoveMember(long userID);
 
         public Member IsMemberExist(string emailID,string mobileNo,short memberType,Int64 parentID);
+
+        public Member IsCustomerExist(string emailID, string mobileNo, short memberType, Int64 parentID);
+
         public CheckOTPSent GetOTPSent(string mobileNo);
         public Member MemberLogIn(string emailID, string mobileNo, string password, Int64 parentID);
         public object MemberLogOut(long userID);

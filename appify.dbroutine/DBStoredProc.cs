@@ -22,6 +22,7 @@ namespace appify.dbroutine
         public const string DELETEMEMBERBYMOBILENO = "[Operation].[usp_MemberDeleteByMobileNo]";
         public const string LISTMEMBERFORCOUNT = "[Operation].[usp_MemberListForCount]";
         public const string CHECKMEMBER = "[Operation].[usp_MemberExist]";
+        public const string CHECKCUSTOMER = "[Operation].[usp_CustomerExist]";
         public const string CHECKOTPSENT = "[Operation].[usp_GetOTPSent]";
         public const string UPDATEPASSWORD = "[Operation].[usp_MemberUpdatePassword]";
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";

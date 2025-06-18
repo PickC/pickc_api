@@ -24,8 +24,11 @@ namespace appify.Business
 
         public Member IsMemberExist(string emailID, string mobileNo, short memberType, Int64 parentID)
         {
-            return repository.IsMemberExist(emailID, mobileNo,memberType,parentID);
+            return repository.IsMemberExist(emailID, mobileNo, memberType, parentID);
         }
+
+        public Member IsCustomerExist(string emailID, string mobileNo, short memberType, Int64 parentID) => repository.IsCustomerExist(emailID,mobileNo, memberType, parentID);
+
         public CheckOTPSent GetOTPSent(string mobileNo)
         {
             return repository.GetOTPSent(mobileNo);
