@@ -135,7 +135,16 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.OK;
                 rm.message = "Delhivery Shipment Cost has been successfully fetched";
                 rm.name = StatusName.ok;
-                rm.data = jsonArray;
+                //rm.data = jsonArray;
+
+
+                var jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonResponse);
+                decimal totalAmount = jsonObj[0].total_amount;
+
+                
+                rm.data = new { total_amount = totalAmount };
+
+
             }
             catch (HttpRequestException ex)
             {
@@ -196,6 +205,20 @@ namespace appify.web.api.Controllers
                 rm.message = "Delhivery Pincode has been successfully fetched";
                 rm.name = StatusName.ok;
                 rm.data = parsedJson;
+
+
+
+                // Get the delivery_codes array
+
+                var jsonObj = JObject.Parse(jsonResponse);
+                var deliveryCodes = jsonObj["delivery_codes"] as JArray;
+
+                // Return true if array exists and has elements, false otherwise
+                bool canDeliver= deliveryCodes != null && deliveryCodes.Count > 0;
+                
+                rm.data = canDeliver;
+
+
             }
             catch (HttpRequestException ex)
             {
