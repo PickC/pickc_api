@@ -156,11 +156,16 @@ namespace appify.models
 
     public partial class SplitPayment
     {
-        public string PaymentId { get; set; }
-        public decimal TotalAmount { get; set; }
-        public string Currency { get; set; }
-        public bool OnHold { get; set; }
-        public string AccountId { get; set; }
+        public string account { get; set; }
+        public decimal amount { get; set; }
+        public string currency { get; set; }
+        public bool on_hold { get; set; }
+
+    }
+
+    public class TransferRequest
+    {
+        public List<SplitPayment> transfers { get; set; }
     }
     public partial class CapturePaymentRequest
     {

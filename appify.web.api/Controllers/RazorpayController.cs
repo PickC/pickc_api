@@ -108,6 +108,66 @@ namespace appify.web.api.Controllers
         //    return Ok(rm);
 
         //}
+        /// <summary>
+        /// Get All LinkedAccounts Async
+        /// </summary>
+        /// <remarks>
+        /// Sample Response JSON:
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">Returns Product Item against the VendorID </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// <returns></returns>
+        //[HttpPost]
+        //[Route("GetAllLinkedAccountsAsync")] ////// Working to create new route link account
+        //[MapToApiVersion("1.0")]
+        //public async Task<IActionResult> GetAllLinkedAccountsAsync()
+        //{
+        //    var reqHeader = Request;
+        //    string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        //    rm = new ResponseMessage();
+        //    var url = "https://api.razorpay.com/v2/accounts";
+        //    using (var client = new HttpClient())
+        //    {
+        //        try
+        //        {
+        //            // Razorpay Basic Auth setup
+        //            var authToken = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Common.RazorPayKey}:{Common.RazorPaySecret}"));
+        //            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authToken);
+
+        //            // Make GET request to fetch linked accounts
+        //            HttpResponseMessage response = await client.GetAsync(url);
+        //            string responseBody = await response.Content.ReadAsStringAsync();
+
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                var accountsList = JsonConvert.DeserializeObject<dynamic>(responseBody);
+
+        //                rm.statusCode = StatusCodes.OK;
+        //                rm.message = "✅ Linked accounts fetched successfully";
+        //                rm.name = StatusName.ok;
+        //                rm.data = accountsList;
+        //            }
+        //            else
+        //            {
+        //                rm.statusCode = StatusCodes.ERROR;
+        //                rm.message = $"❌ Failed to fetch linked accounts: {response.StatusCode}";
+        //                rm.name = StatusName.invalid;
+        //                rm.data = responseBody;
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            rm.statusCode = StatusCodes.ERROR;
+        //            rm.message = "🚨 Exception occurred while fetching linked accounts.";
+        //            rm.name = StatusName.invalid;
+        //            rm.data = ex.Message;
+        //        }
+        //    }
+
+        //    return Ok(rm);
+        //}
 
         /// <summary>
         /// Create Linked Account - STEP 1
@@ -187,19 +247,18 @@ namespace appify.web.api.Controllers
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
-            //var accountData0 = new
+
+            //var accountData = new
             //{
-            //    email = "saurabhbag08@gmail.com",
-            //    phone = "7972391084",
+            //    email = "vrajbrahm08@gmail.com",
+            //    phone = "9810722910",
             //    type = "route",
-            //    reference_id = "124124",
-            //    legal_business_name = "S Garments",
+            //    legal_business_name = "KP Furniture",
             //    business_type = "individual",
-            //    contact_name = "Saurabh Bag",
             //    profile = new
             //    {
-            //    category = "healthcare",
-            //        subcategory = "clinic",
+            //        category = "services",
+            //        subcategory = "contractors",
             //        addresses = new
             //        {
             //            registered = new
@@ -212,39 +271,8 @@ namespace appify.web.api.Controllers
             //                country = "IN"
             //            }
             //        }
-            //    },
-            //    legal_info = new
-            //    {
-            //        pan = "AAACL1234C",
-            //        gst = "18AABCU9603R1ZM"
             //    }
             //};
-
-            var accountData = new
-            {
-                email = "vrajbrahm08@gmail.com",
-                phone = "9810722910",
-                type = "route",
-                legal_business_name = "KP Furniture",
-                business_type = "individual",
-                profile = new
-                {
-                    category = "services",
-                    subcategory = "contractors",
-                    addresses = new
-                    {
-                        registered = new
-                        {
-                            street1 = "507, Koramangala 1st block",
-                            street2 = "MG Road",
-                            city = "Bengaluru",
-                            state = "KARNATAKA",
-                            postal_code = "560034",
-                            country = "IN"
-                        }
-                    }
-                }
-            };
 
             // Serialize the account data to JSON
             string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
@@ -371,33 +399,33 @@ namespace appify.web.api.Controllers
             string url = $"{Common.RazorPayCreateAccount}/{accountId}/stakeholders";
             rm = new ResponseMessage();
 
-            var payload = new
-            {
-                name = "Saurabh Bag",
-                email = "saurabh@example.com",
-                phone = new
-                {
-                    primary = "9876543210"
-                },
-                percentage_ownership = 100,
-                relationship = new
-                {
-                    director = false,
-                    executive = true
-                },
-                addresses = new
-                {
-                    residential = new
-                    {
-                        street = "Koramangala",
-                        city = "Bangalore",
-                        state = "Karnataka",
-                        postal_code = "560034",
-                        country = "IN"
-                    }
-                },
-                kyc = new { pan = "CEWPB1197K" }
-            };
+            //var payload = new
+            //{
+            //    name = "Saurabh Bag",
+            //    email = "saurabh@example.com",
+            //    phone = new
+            //    {
+            //        primary = "9876543210"
+            //    },
+            //    percentage_ownership = 100,
+            //    relationship = new
+            //    {
+            //        director = false,
+            //        executive = true
+            //    },
+            //    addresses = new
+            //    {
+            //        residential = new
+            //        {
+            //            street = "Koramangala",
+            //            city = "Bangalore",
+            //            state = "Karnataka",
+            //            postal_code = "560034",
+            //            country = "IN"
+            //        }
+            //    },
+            //    kyc = new { pan = "CEWPB1197K" }
+            //};
 
             using (var client = new HttpClient())
             {
@@ -607,15 +635,15 @@ namespace appify.web.api.Controllers
             string url = $"{Common.RazorPayCreateAccount}/{accountId}/products/{productId}";
             rm = new ResponseMessage();
 
-            var payload = new
-            {
-                bank_account = new
-                {
-                    ifsc_code = "ICIC0000005",
-                    account_number = "000501687518",
-                    beneficiary_name = "Saurabh Bag"
-                }
-            };
+            //var payload = new
+            //{
+            //    bank_account = new
+            //    {
+            //        ifsc_code = "ICIC0000005",
+            //        account_number = "000501687518",
+            //        beneficiary_name = "Saurabh Bag"
+            //    }
+            //};
 
             using (var client = new HttpClient())
             {
@@ -839,28 +867,27 @@ namespace appify.web.api.Controllers
         //[Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateLinkedAccountAsync(string accountId, MerchantUpdate itemData)
         {
-            //                customer_facing_business_name = "Acme Corp V2",
-            var payload = new
-            {
-                phone = "9000090004",
-                legal_business_name = "Acme Corp V3",
-                profile = new
-                {
-                    addresses = new
-                    {
-                        registered = new
-                        {
-                            street1 = "5071, Koramangala 6th block3",
-                            street2 = "Koramangala",
-                            city = "Bengaluru",
-                            state = "Karnataka",
-                            postal_code = "560048",
-                            country = "IN"
-                        }
-                    }
-                },
-                contact_name = "New Contact Name",
-            };
+            //var payload = new
+            //{
+            //    phone = "9000090004",
+            //    legal_business_name = "Acme Corp V3",
+            //    profile = new
+            //    {
+            //        addresses = new
+            //        {
+            //            registered = new
+            //            {
+            //                street1 = "5071, Koramangala 6th block3",
+            //                street2 = "Koramangala",
+            //                city = "Bengaluru",
+            //                state = "Karnataka",
+            //                postal_code = "560048",
+            //                country = "IN"
+            //            }
+            //        }
+            //    },
+            //    contact_name = "New Contact Name",
+            //};
 
             rm = new ResponseMessage();
             var reqHeader = Request;
@@ -967,12 +994,22 @@ namespace appify.web.api.Controllers
         /// Sample Request JSON:
         /// 
         ///     {
-        ///       "paymentId": "pay_QdAROHL12qtHHg",
-        ///       "totalAmount":10000,
-        ///       "currency": "INR",
-        ///       "onHold": false,
-        ///       "accountId": "acc_QBOuFMPEh3zBGm"
+        ///       "transfers": [
+        ///         {
+        ///           "account": "acc_QfrfMDvUqTdDgR",
+        ///           "amount": 10000,
+        ///           "currency": "INR",
+        ///           "on_hold": false
+        ///         },
+        ///         {
+        ///           "account": "acc_QfrQMLZB9pgQ7n",
+        ///           "amount": 5000,
+        ///           "currency": "INR",
+        ///           "on_hold": false
+        ///         }
+        ///       ]
         ///     }
+        ///     
         /// Sample Response JSON:
         /// 
         ///     {
@@ -1017,22 +1054,22 @@ namespace appify.web.api.Controllers
 
         [HttpPost]
         [Route("SplitPayment")]  //// Working to transfer money
-        public async Task<IActionResult> PaymentBaseSplitPayment(SplitPayment itemData)
+        public async Task<IActionResult> PaymentBaseSplitPayment(string paymentId, TransferRequest itemData)
         {
             string responseBody = "";
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            rm = new ResponseMessage();
-            var transferData = new
-            {
-                transfers = new[]
-                {
-                    new { account = itemData.AccountId, amount = 10000, currency = "INR", on_hold = itemData.OnHold },
-                    new { account = "acc_QfrQMLZB9pgQ7n", amount = 10000 , currency = "INR" , on_hold = itemData.OnHold }
-            }
-            };
+            rm = new ResponseMessage();////--- payment id: - pay_QdAROHL12qtHHg
+            //var transferData = new
+            //{
+            //    transfers = new[]
+            //    {
+            //        new { account = itemData.AccountId, amount = 100, currency = "INR", on_hold = itemData.OnHold },
+            //        new { account = "acc_QfrQMLZB9pgQ7n", amount = 100 , currency = "INR" , on_hold = itemData.OnHold }
+            //}
+            //};
 
-            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(transferData);
+            string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(itemData);
 
             using (var client = new HttpClient())
             {
@@ -1043,7 +1080,7 @@ namespace appify.web.api.Controllers
 
                 try
                 {
-                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", itemData.PaymentId), content);
+                    HttpResponseMessage response = await client.PostAsync(Common.RazorpayPaymentTransfers.Replace("PAYMENT_ID", paymentId), content);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -1051,7 +1088,7 @@ namespace appify.web.api.Controllers
                         rm.statusCode = StatusCodes.OK;
                         rm.message = $"Transfer created successfully:";
                         rm.name = StatusName.ok;
-                        rm.data = responseBody;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
                     }
                     else
                     {
@@ -1059,7 +1096,7 @@ namespace appify.web.api.Controllers
                         rm.statusCode = StatusCodes.OK;
                         rm.message = "Error creating transfer";
                         rm.name = StatusName.ok;
-                        rm.data = responseBody;
+                        rm.data = JsonConvert.DeserializeObject(responseBody);
                     }
                 }
                 catch (Exception ex)
@@ -1068,7 +1105,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = ex.Message.ToString();
                     rm.name = StatusName.invalid;
-                    rm.data = responseBody;
+                    rm.data = JsonConvert.DeserializeObject(responseBody);
                 }
             }
             return Ok(rm);
