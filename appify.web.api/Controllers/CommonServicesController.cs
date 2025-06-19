@@ -141,9 +141,9 @@ namespace appify.web.api.Controllers
                 var jsonObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonResponse);
                 decimal totalAmount = jsonObj[0].total_amount;
 
+                rm.data = new { total_amount = totalAmount };
                 
                 rm.data = new { total_amount = totalAmount };
-
 
             }
             catch (HttpRequestException ex)
@@ -163,6 +163,7 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+
 
         /// <summary>
         ///     Get The One Delivery Pincode
@@ -206,6 +207,16 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.ok;
                 rm.data = parsedJson;
 
+                // Get the delivery_codes array
+                var jsonObj = JObject.Parse(jsonResponse);
+                var deliveryCodes = jsonObj["delivery_codes"] as JArray;
+                // Return true if array exists and has elements, false otherwise
+                bool canDeliver = deliveryCodes != null && deliveryCodes.Count > 0;
+
+                if (canDeliver == true)
+                    rm.data = new { isDeliverable = true, message = "Deliverable to this pincode" };
+                else
+                    rm.data = new { isDeliverable = false, message = "Not deliverable to this pincode" };
 
 
                 // Get the delivery_codes array
@@ -217,7 +228,6 @@ namespace appify.web.api.Controllers
                 bool canDeliver= deliveryCodes != null && deliveryCodes.Count > 0;
                 
                 rm.data = canDeliver;
-
 
             }
             catch (HttpRequestException ex)
