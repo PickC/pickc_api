@@ -457,7 +457,8 @@ namespace appify.models
         public bool CanCancel { get; set; }
         public string? EstimateDeliveryDate { get; set; }
         public string? OrderStatusGroup { get; set; }
-
+        public DateTime? SettlementDate { get; set; }
+        public DateTime? OrderCancelledDate { get; set; }
     }
 
     public partial class CustomerOrderNew

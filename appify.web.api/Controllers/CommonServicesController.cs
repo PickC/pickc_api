@@ -234,6 +234,37 @@ namespace appify.web.api.Controllers
             }
             return Ok(rm);
         }
+
+        [HttpPost]
+        [Route("CleanJson")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> CleanJson()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                string jsonResult = "";
+
+                jsonResult = "\"RAZORPAY Webhook Error Response->{\\\"account_id\\\":\\\"acc_OCjTrbZShxQc7y\\\",\\\"contains\\\":[\\\"payment_link\\\"],\\\"created_at\\\":1729600072,\\\"entity\\\":\\\"event\\\",\\\"event\\\":\\\"payment_link.expired\\\",\\\"payload\\\":{\\\"payment_link\\\":{\\\"entity\\\":{\\\"accept_partial\\\":false,\\\"amount\\\":1000,\\\"amount_paid\\\":0,\\\"cancelled_at\\\":0,\\\"created_at\\\":1729600072,\\\"currency\\\":\\\"INR\\\",\\\"customer\\\":{},\\\"description\\\":\\\"Testing\\\",\\\"expire_by\\\":0,\\\"expired_at\\\":1745324888,\\\"first_min_partial_amount\\\":0,\\\"id\\\":\\\"plink_PC5EQOOdkv1ZqE\\\",\\\"notes\\\":null,\\\"notify\\\":{\\\"email\\\":false,\\\"sms\\\":false,\\\"whatsapp\\\":false},\\\"order_id\\\":\\\"order_PC5EiKlw7SR2Gj\\\",\\\"reference_id\\\":\\\"\\\",\\\"reminder_enable\\\":false,\\\"reminders\\\":{\\\"status\\\":\\\"failed\\\"},\\\"short_url\\\":\\\"https://rzp.io/rzp/LxgQCmf\\\",\\\"status\\\":\\\"expired\\\",\\\"updated_at\\\":1729600088,\\\"upi_link\\\":true,\\\"user_id\\\":\\\"OyzjrIN2q7kVXN\\\",\\\"whatsapp_link\\\":false}}}}\"";
+
+                var parsedJson = JsonConvert.DeserializeObject(jsonResult);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "Delhivery Pincode has been successfully fetched";
+                rm.name = StatusName.ok;
+                rm.data = parsedJson;
+
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+            return Ok(rm);
+        }
     }
 
 }

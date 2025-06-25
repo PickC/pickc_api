@@ -8,7 +8,8 @@ using appify.Business;
 using appify.Business.Contract;
 using appify.models;
 using System.Net;
-using System.Net.Sockets; 
+using System.Net.Sockets;
+using appify.utility;
 
 namespace appify.audit.service
 {
@@ -36,7 +37,7 @@ namespace appify.audit.service
         public async Task LogAsync(EntityType entityType, long entityID, string eventType, string changedBy, string source, string ipAddress, object payLoad)
         {
 
-            string payLoadJSON = System.Text.Json.JsonSerializer.Serialize(payLoad);
+            string payLoadJSON = Common.ConvertObjectToJson(payLoad);
 
             var auditLog = AuditLogFactory.CreateAuditLog(entityType,entityID, eventType, changedBy, source, ipAddress, payLoadJSON);
 

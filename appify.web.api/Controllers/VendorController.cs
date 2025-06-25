@@ -136,7 +136,7 @@ namespace appify.web.api.Controllers
         [Route("productlist")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult GetVendorProductsList(ParamMemberUserID itemData)
+        public async Task<IActionResult> GetVendorProductsList(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -152,18 +152,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
 
 
@@ -174,8 +171,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -185,7 +182,7 @@ namespace appify.web.api.Controllers
         [Route("productlist")]
         [MapToApiVersion("1.1")]
         [Authorize]
-        public IActionResult GetVendorProductsLists(ParamMemberUserID itemData)
+        public async Task<IActionResult> GetVendorProductsLists(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -201,18 +198,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
 
 
@@ -223,8 +217,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

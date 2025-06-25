@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Razorpay.Api;
 
 namespace appify.web.api.Controllers
 {
@@ -107,7 +108,7 @@ namespace appify.web.api.Controllers
         [Route("notificationlistbyvendor")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult GetNotificationByVendor(ParamMemberVendorID itemData)
+        public async Task<IActionResult> GetNotificationByVendor(ParamMemberVendorID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -123,17 +124,17 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH NOTIFICATION LIST!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+
+                    await Common.UpdateEventLogsNew("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+
+                    await Common.UpdateEventLogsNew("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, result, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -141,8 +142,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);
@@ -152,7 +153,7 @@ namespace appify.web.api.Controllers
         [Route("notificationlistbyvendor")]
         [MapToApiVersion("1.1")]
         [Authorize]
-        public IActionResult GetNotificationByVendorPagination(ParamMemberVendorIDPagination itemData)
+        public async Task<IActionResult> GetNotificationByVendorPagination(ParamMemberVendorIDPagination itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -168,17 +169,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH NOTIFICATION LIST!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("GetNotificationByVendor SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("GetNotificationByVendor - NO CONTENT", reqHeader, controllerURL, itemData, result, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -186,8 +185,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GetNotificationByVendor - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);
@@ -413,7 +412,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("IsRead")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult isReadNotification(ParamMemberNotificationID itemData)
+        public async Task<IActionResult> isReadNotification(ParamMemberNotificationID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -429,16 +428,15 @@ namespace appify.web.api.Controllers
                     rm.message = "ISREAD NOTIFICATION HAS BEEN SUCCESSFULLY SET!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION HAS BEEN SUCCESSFULLY SET", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("ISREAD NOTIFICATION HAS BEEN SUCCESSFULLY SET", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("ISREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, result, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -446,8 +444,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ISREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("ISREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);
@@ -472,22 +470,22 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("UnReadCount")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult unReadCountNotification(ParamMemberUserID itemData)
+        public async Task<IActionResult> unReadCountNotification(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);                //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env); var result = this.notificationBusiness.unReadCountNotification(itemData.userID);
+                TokenValidator.IsValidToken(Request, configuration, env); 
+                var result = this.notificationBusiness.unReadCountNotification(itemData.userID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "UNREAD NOTIFICATION COUNT HAS BEEN SUCCESSFULLY RETURNED!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION COUNT HAS BEEN SUCCESSFULLY RETURNED", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    await Common.UpdateEventLogsNew("UNREAD NOTIFICATION COUNT HAS BEEN SUCCESSFULLY RETURNED", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -495,8 +493,7 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    await Common.UpdateEventLogsNew("UNREAD NOTIFICATION - NO CONTENT", reqHeader, controllerURL, itemData, result, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -505,7 +502,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("UNREAD NOTIFICATION - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);

@@ -193,6 +193,8 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            var eventType = product.ProductID > 0 ? "Product Updated!" : "New Product Created";
+            var eventTypeError = product.ProductID > 0 ? "Unable to Update Product!" : "Unable to Add Product!";
             try
             {
                 rm = new ResponseMessage();////To Do Need to check internal - price, image is empty then return exception message
@@ -227,8 +229,6 @@ namespace appify.web.api.Controllers
                         //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, StatusName.ok));
                         await Common.UpdateEventLogsNew("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, rm.message, this.eventLogBusiness);
 
-                        var eventType = product.ProductID > 0 ? "Product Updated!" : "New Product Created";
-
                         await auditService.LogAsync(EntityType.Product, product.ProductID, eventType, product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);
                     }
                     else
@@ -240,7 +240,8 @@ namespace appify.web.api.Controllers
                         //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                         //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message));
                         await Common.UpdateEventLogsNew("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message, this.eventLogBusiness);
-                        await auditService.LogAsync(EntityType.Product, product.ProductID, "Unable to Add/Update Product", product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);
+
+                        await auditService.LogAsync(EntityType.Product, product.ProductID, eventTypeError, product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);
                     }
                 }
                 else
@@ -250,7 +251,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     await Common.UpdateEventLogsNew("UNABLE TO ADD/UPDATE PRODUCT", reqHeader, controllerURL, product, null, rm.message, this.eventLogBusiness);
-                    await auditService.LogAsync(EntityType.Product, product.ProductID, "Unable to Add/Update Product", product.VendorID.ToString(), AppName, sourceIPAddress, rm.message);
+                    await auditService.LogAsync(EntityType.Product, product.ProductID, eventTypeError, product.VendorID.ToString(), AppName, sourceIPAddress, rm.message);
                 }
 
             }
@@ -309,7 +310,6 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
                     await auditService.LogAsync(EntityType.Product, itemData.productID, "Product Has Been Removed", UserId, AppName, sourceIPAddress, result);
-                    await auditService.LogAsync(EntityType.Product, itemData.productID, "Product Has Been Removed","", AppName, sourceIPAddress, result);
                 }
                 else
                 {
@@ -318,8 +318,8 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = result;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("UNABLE TO DE-ACTIVATE PRODUCT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await auditService.LogAsync(EntityType.Product, itemData.productID, "Unable to De-Activate Product", UserId, AppName, sourceIPAddress, result);
+                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Unable to remove the product", reqHeader, controllerURL, itemData, null, rm.message));
+                    await auditService.LogAsync(EntityType.Product, itemData.productID, "Unable to remove the product", UserId, AppName, sourceIPAddress, result);
                 }
             }
             catch (Exception ex)
@@ -330,7 +330,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await auditService.LogAsync(EntityType.Product, itemData.productID, "Unable to De-Activate Product", UserId, AppName, sourceIPAddress, rm.message);
+                await auditService.LogAsync(EntityType.Product, itemData.productID, "Unable to remove Product", UserId, AppName, sourceIPAddress, rm.message);
             }
             return Ok(rm);
 
@@ -384,7 +384,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult GetProduct(ParamProduct itemData)
+        public async Task<IActionResult> GetProduct(ParamProduct itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -401,17 +401,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT";
                     rm.name = StatusName.ok;
                     rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    await Common.UpdateEventLogsNew("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, item, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -421,8 +419,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -518,8 +516,6 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT";
                     rm.name = StatusName.ok;
                     rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
                     await Common.UpdateEventLogsNew("GET PRODUCT - SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
@@ -527,9 +523,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("GET PRODUCT - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -540,8 +534,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("GET PRODUCT - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -682,7 +675,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult List(ParamMemberUserID itemData)
+        public async Task<IActionResult> List(ParamMemberUserID itemData)
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -699,17 +692,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST - SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST - SUCCESSFULLY", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
 
 
@@ -721,7 +712,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -796,7 +787,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("listall")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListAll()
+        public async Task<IActionResult> ListAll()
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -813,17 +804,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("GET PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("GET PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
                 }
 
 
@@ -834,8 +823,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GET PRODUCT LIST - ERROR", reqHeader, controllerURL, null, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GET PRODUCT LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -905,7 +894,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("price/list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListProductPrice(ParamProduct itemData)
+        public async Task<IActionResult> ListProductPrice(ParamProduct itemData)
         {
             //dynamic data=jsonData;
             var reqHeader = Request;
@@ -922,17 +911,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT-PRICE LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-PRICE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT-PRICE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-PRICE LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT-PRICE LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -941,8 +928,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-PRICE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH PRODUCT-PRICE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -1054,6 +1041,8 @@ namespace appify.web.api.Controllers
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            var eventType = price.PriceID > 0 ? "Product Price Has Been Updated!" : "Product Price Has Been Saved";
+            var eventTypeError = price.PriceID > 0 ? "Unable to update Product's Price!" : "Unable to Add Product's Price!";
             try
             {
                 rm = new ResponseMessage();
@@ -1068,7 +1057,8 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED SUCCESSFULLY", reqHeader, controllerURL, price, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Product, 0, "Product Price Has Been Saved Successfully", UserId, AppName, sourceIPAddress, price);
+
+                    await auditService.LogAsync(EntityType.Product, 0, eventType, UserId, AppName, sourceIPAddress, price);
                 }
                 else
                 {
@@ -1078,7 +1068,8 @@ namespace appify.web.api.Controllers
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-PRICE SAVED - NO CONTENT", reqHeader, controllerURL, price, null, rm.message));
-                    await auditService.LogAsync(EntityType.Product, 0, "Product Price - No Content", UserId, AppName, sourceIPAddress, price);
+
+                    await auditService.LogAsync(EntityType.Product, 0, eventTypeError, UserId, AppName, sourceIPAddress, price);
                 }
 
 
@@ -1209,7 +1200,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("image/list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListProductImage(ParamProduct itemData)
+        public async Task<IActionResult> ListProductImage(ParamProduct itemData)
         {
             //dynamic data = jsonData;
             var reqHeader = Request;
@@ -1226,17 +1217,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH PRODUCT-IMAGE LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT-IMAGE LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("FETCH PRODUCT-IMAGE LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -1245,8 +1234,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT-IMAGE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH PRODUCT-IMAGE LIST - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -1367,6 +1356,8 @@ namespace appify.web.api.Controllers
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            var eventType = item.ImageID > 0 ? "Product Image Updated!" : "New Product Image Created";
+            var eventTypeError = item.ImageID > 0 ? "Unable to Update Product's Image!" : "Unable to New Product's Image!";
             try
             {
                 rm = new ResponseMessage();
@@ -1381,7 +1372,8 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Product, 0, "New Product Image Created", UserId, AppName, sourceIPAddress, item);
+
+                    await auditService.LogAsync(EntityType.Product, 0, eventType, UserId, AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -1391,7 +1383,8 @@ namespace appify.web.api.Controllers
                     rm.data = null;
                     //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT-IMAGE SAVED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
-                    await auditService.LogAsync(EntityType.Product, 0, "Product Image - No Content", UserId, AppName, sourceIPAddress, item);
+
+                    await auditService.LogAsync(EntityType.Product, 0, eventTypeError, UserId, AppName, sourceIPAddress, item);
                 }
 
 

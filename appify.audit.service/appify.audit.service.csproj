@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\appify.Business.Contract\appify.Business.Contract.csproj" />
     <ProjectReference Include="..\appify.models\appify.models.csproj" />
+    <ProjectReference Include="..\appify.utility\appify.utility.csproj" />
   </ItemGroup>
 
 </Project>
