@@ -108,7 +108,8 @@ namespace appify.web.api
 
                 try
                 {
-                    if (!string.IsNullOrEmpty(GetCellValue(row, columnMap["Product Name"]).ToString()))
+                    var cellValue = GetCellValue(row, columnMap["Product Name"]);
+                    if (cellValue != null && !string.IsNullOrEmpty(cellValue.ToString()))
                     {
 
                         //var product = new BulkImportedProduct

@@ -23,6 +23,7 @@ using static appify.models.NotificationType;
 using appify.audit.service;
 using StackExchange.Redis;
 using FirebaseAdmin;
+using Org.BouncyCastle.Utilities;
 
 namespace appify.web.api.Controllers
 {
@@ -732,7 +733,7 @@ namespace appify.web.api.Controllers
                                     WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
                                 }
                             }
-                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Canlled By Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, statusData);
+                            await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Cancelled By Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, statusData);
                         }
                         if (OrderStatus == "Declined") //statusData.OrderStatus == 3588//// Declined by Vendor
                         {
@@ -1106,15 +1107,15 @@ namespace appify.web.api.Controllers
         ///       "data": {
         ///         "items": [
         ///           {
-        ///             "itemID": 6,
+        ///             "itemID": 2494,
         ///             "orderID": 0,
-        ///             "productID": 0,
+        ///             "productID": 1080,
         ///             "sellerID": 0,
         ///             "quantity": 1,
-        ///             "unitPrice": 599,
+        ///             "unitPrice": 880,
         ///             "discountType": 0,
         ///             "discountAmount": 0,
-        ///             "sellingPrice": 599,
+        ///             "sellingPrice": 880,
         ///             "isCancel": false,
         ///             "isDelivered": false,
         ///             "deliveryID": null,
@@ -1122,50 +1123,54 @@ namespace appify.web.api.Controllers
         ///             "createdOn": null,
         ///             "modifiedOn": null,
         ///             "cancelBy": null,
-        ///             "priceID": 0,
-        ///             "size": "",
-        ///             "price": null,
-        ///             "weight": 0,
-        ///             "productDescription": "Geometric Pattern Cotton Shirt Pack of 3",
+        ///             "priceID": 5681,
+        ///             "size": "S",
+        ///             "price": 880,
+        ///             "weight": 150,
+        ///             "productDescription": "I AM BACK Men's Casual Wear Shirt idon",
         ///             "hsnCode": "",
-        ///             "color": "Mixed colour ",
-        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701860737832.png"
+        ///             "color": "Green ",
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1698923214990.jpg"
         ///           }
         ///         ],
-        ///         "orderID": 1005,
-        ///         "orderNo": "PO1473240202312161138",
-        ///         "orderDate": "2023-12-16T17:08:23.247",
-        ///         "vendorID": 1473,
-        ///         "memberID": 1563,
-        ///         "orderStatus": 3932,
-        ///         "orderAmount": 599,
+        ///         "orderID": 2744,
+        ///         "orderNo": "OD10602506089",
+        ///         "orderDate": "2025-06-16T17:42:04.843",
+        ///         "vendorID": 1060,
+        ///         "memberID": 2200,
+        ///         "orderStatus": 113,
+        ///         "orderAmount": 880,
         ///         "discountAmount": 0,
-        ///         "taxAmount": 29.95,
-        ///         "totalAmount": 791.24,
+        ///         "taxAmount": 0,
+        ///         "totalAmount": 966.06,
         ///         "isCancel": false,
         ///         "isDelivered": false,
         ///         "remarks": "",
         ///         "deliveryInstruction": "",
-        ///         "deliveryCost": 0,
-        ///         "orderStatusDescription": "Order Placed",
-        ///         "firstName": null,
-        ///         "lastName": null,
+        ///         "deliveryCost": 86.06,
+        ///         "orderStatusDescription": "Declined",
+        ///         "firstName": "Internal Testing application",
+        ///         "lastName": "Ramakrishna",
         ///         "paymentType": 3703,
         ///         "paymentTypeDescription": "CASH ON DELIVERY",
-        ///         "addressID": 1212,
-        ///         "mobileNo": null,
-        ///         "zipCode": "500081",
-        ///         "address1": "Krishe Emerald",
-        ///         "address2": "Sy. 11, Kondapur, Hi tech city",
-        ///         "city": "Hyderabad",
+        ///         "addressID": 5438,
+        ///         "mobileNo": "7995995962",
+        ///         "zipCode": "500023",
+        ///         "address1": "gsynxjkbh",
+        ///         "address2": "bzundl",
+        ///         "city": "Yakutpurh",
         ///         "state": "Telangana",
-        ///         "country": "In",
-        ///         "landmark": "",
+        ///         "country": "IN",
+        ///         "landmark": "opp to TCS kohinoor park ",
         ///         "alternateNo": "",
-        ///         "productID": 1286,
-        ///         "productDescription": "Geometric Pattern Cotton Shirt Pack of 3",
-        ///         "deliveryChannel": 3921,
-        ///         "deliveryChannelDescription": "SHIP ROCKET"
+        ///         "productID": 1080,
+        ///         "productDescription": "I AM BACK Men's Casual Wear Shirt idon",
+        ///         "deliveryChannel": 3922,
+        ///         "deliveryChannelDescription": "DELHIVERY",
+        ///         "canCancel": false,
+        ///         "estimateDeliveryDate": null,
+        ///         "orderStatusGroup": "Declined",
+        ///         "settlementDate": "2025-06-17T11:44:57.623"
         ///       }
         ///     }
         /// 
@@ -1178,7 +1183,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("getitem")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult Getorder(long orderID)
+        public async Task<IActionResult> Getorder(long orderID)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1195,17 +1200,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH order";
                     rm.name = StatusName.ok;
                     rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok));
+                    await Common.UpdateEventLogsNew("GetCustomerOrder IS SUCCESSFULLY", reqHeader, controllerURL, orderID, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("GetCustomerOrder - NO CONTENT", reqHeader, controllerURL, orderID, item, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -1215,8 +1218,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("GetCustomerOrder - ERROR", reqHeader, controllerURL, orderID, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -1716,8 +1719,6 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH order LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    ////this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, items, StatusName.ok));
                     await Common.UpdateEventLogsNew("FETCH ORDER LIST SUCCESSFULLY", reqHeader, controllerURL, null, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
@@ -1725,9 +1726,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("FETCH ORDER LIST - NO CONTENT", reqHeader, controllerURL, null, items, rm.message, this.eventLogBusiness);
                 }
 
@@ -1739,8 +1738,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Transaction", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("FETCH ORDER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -1809,8 +1807,6 @@ namespace appify.web.api.Controllers
                 rm.message = "FETCH order LIST";
                 rm.name = StatusName.ok;
                 rm.data = items;
-                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
                 await Common.UpdateEventLogsNew("CustomerSummaryList IS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
             }
             else
@@ -1818,9 +1814,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = "NO CONTENT";
                 await Common.UpdateEventLogsNew("CustomerSummaryList - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
 
@@ -1832,8 +1826,7 @@ namespace appify.web.api.Controllers
             rm.statusCode = StatusCodes.ERROR;
             rm.message = ex.Message.ToString();
             rm.name = StatusName.invalid;
-            rm.data = null;
-            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            rm.data = ex.Message.ToString();
             await Common.UpdateEventLogsNew("CustomerSummaryList - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
         }
         return Ok(rm);
@@ -2489,7 +2482,7 @@ namespace appify.web.api.Controllers
             bool eventResult = false;
             string[] eventSearch ={
               "downtime",
-              ////"payment_link",
+              "payment_link",
               "notification",
               "authorized",
               "order.paid"
@@ -2522,7 +2515,13 @@ namespace appify.web.api.Controllers
                 }
                 if(eventResult==false)
                 {
-                    paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
+                    var notesToken = request["payload"]?["payment"]?["entity"]?["notes"];
+                    if (notesToken != null && notesToken.Type == JTokenType.Object)
+                    {
+                        paymentType = string.IsNullOrEmpty((string?)notesToken["paymentType"])? "" : notesToken["paymentType"]?.ToString();
+                    }
+
+                        //paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
 
                     if(paymentType== "orderPayment")
                     {
@@ -2567,6 +2566,11 @@ namespace appify.web.api.Controllers
                     {
 
                     }
+                    else if(paymentType =="")
+                    {
+                        await Common.UpdateEventLogsNew("RAZORPAY Webhook Error Response", reqHeader, controllerURL, body, null, rm.message, this.eventLogBusiness);
+                        await auditService.LogAsync(EntityType.Order, OrderID, "RAZORPAY Webhook Error Response", "", AppName, sourceIPAddress, body);
+                        }
                  }
                 else
                 {
@@ -2584,8 +2588,8 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = null;
                 //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response", null, rm.message));
-                await Common.UpdateEventLogsNew("RAZORPAY Webhook Error Response", reqHeader, controllerURL, "RAZORPAY Webhook Error Response->"+ body, null, rm.message, this.eventLogBusiness);
-                await auditService.LogAsync(EntityType.Order, OrderID, "RAZORPAY Webhook Error Response", "", AppName, sourceIPAddress, ex.Message.ToString());
+                await Common.UpdateEventLogsNew("RAZORPAY Webhook Error Response", reqHeader, controllerURL, body, null, rm.message, this.eventLogBusiness);
+                await auditService.LogAsync(EntityType.Order, OrderID, "RAZORPAY Webhook Error Response", "", AppName, sourceIPAddress, body);
             }
             // Respond with a 200 OK status to acknowledge the receipt of the webhook
             return Ok(rm);

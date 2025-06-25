@@ -136,6 +136,10 @@ namespace appify.Business
                         this.productBusiness.UpdateProductImagePrice(productMaster.ProductID);
                         this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Success", "");
                     }
+                    else
+                    {
+                        this.productBusiness.UpdateBulkImportedProductRemark(productItem.ItemID, "Failed", "Unable to add the product");
+                    }
                 }
                 catch (Exception ex)
                 {

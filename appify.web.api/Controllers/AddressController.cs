@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Utilities;
 using Razorpay.Api;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace appify.web.api.Controllers
@@ -124,9 +125,6 @@ namespace appify.web.api.Controllers
                     rm.message = "ADDRESS SAVED SUCCESSFULLY!";
                     rm.name = StatusName.ok;
                     rm.data = result;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                     await Common.UpdateEventLogsNew("ADDRESS SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
@@ -134,9 +132,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("ADDRESS SAVED - NO CONTENT", reqHeader, controllerURL, item, result, rm.message, this.eventLogBusiness);
                 }
 
@@ -147,8 +143,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("ADDRESS SAVED - ERROR", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -183,7 +178,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("remove")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult Remove(ParamAddress itemData)
+        public async Task<IActionResult> Remove(ParamAddress itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -201,17 +196,17 @@ namespace appify.web.api.Controllers
                     rm.message = "ADDRESS REMOVED";
                     rm.name = StatusName.ok;
                     rm.data = result;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+
+                    await Common.UpdateEventLogsNew("ADDRESS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+
+                    await Common.UpdateEventLogsNew("ADDRESS REMOVED - NO CONTENT", reqHeader, controllerURL, itemData, result, StatusName.ok, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -220,8 +215,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("ADDRESS REMOVED - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("ADDRESS REMOVED - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -303,7 +298,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("GET ADDRESS NO CONTENT", reqHeader, controllerURL, itemData, item, rm.message, this.eventLogBusiness);
                 }
@@ -314,7 +309,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("GET ADDRESS - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
@@ -397,7 +392,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("GET DEFAULT ADDRESS NO CONTENT", reqHeader, controllerURL, itemData, item, rm.message, this.eventLogBusiness);
                 }
@@ -514,6 +509,7 @@ namespace appify.web.api.Controllers
             //dynamic data = jsonData;
             try
             {
+                //var sw = Stopwatch.StartNew();
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
@@ -522,10 +518,11 @@ namespace appify.web.api.Controllers
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "ADDRESS LIST";
+                    rm.message = "ADDRESS LIST";//+ $" DB + Processing Time: {sw.ElapsedMilliseconds}ms";
                     rm.name = StatusName.ok;
                     rm.data = items;
-
+                    //sw.Stop();
+                    //Console.WriteLine($"DB + Processing Time: {sw.ElapsedMilliseconds}ms");
                     await Common.UpdateEventLogsNew("ADDRESS LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
@@ -533,7 +530,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("ADDRESS LIST - NO CENTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);
                 }
