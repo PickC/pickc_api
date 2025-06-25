@@ -187,19 +187,9 @@ namespace appify.DataAccess
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(dbroutine.DBStoredProc.UNREADNOTIFICATION))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@UserID", UserID);
-
-
-                        con.Open();
-                        result = Convert.ToString(cmd.ExecuteScalar());
-
-                        con.Close();
-                    }
-
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.UNREADNOTIFICATION, UserID);
+                    result = ds.Tables[0].Rows.Count > 0 ? ds.Tables[0].Rows[0][0].ToString() : "0";
                 }
             }
             catch (Exception ex)
@@ -207,7 +197,6 @@ namespace appify.DataAccess
 
                 throw ex;
             }
-
             return result;
 
         }

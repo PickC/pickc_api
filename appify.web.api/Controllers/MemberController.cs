@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Utilities;
 using Razorpay.Api;
 using static appify.models.NotificationType;
 
@@ -997,7 +999,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("OrdersCount")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult OrdersCount(ParamMemberUserID item)
+        public async Task<IActionResult> OrdersCount(ParamMemberUserID item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1013,17 +1015,15 @@ namespace appify.web.api.Controllers
                     rm.message = "ORDERS COUNT";
                     rm.name = StatusName.ok;
                     rm.data = count;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberOrderCount SUCCESSFULLY", reqHeader, controllerURL, item, count, StatusName.ok));
+                    await Common.UpdateEventLogsNew("MemberOrderCount SUCCESSFULLY", reqHeader, controllerURL, item, count, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberOrderCount - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("MemberOrderCount - NO CONTENT", reqHeader, controllerURL, item, count, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -1032,8 +1032,9 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberOrderCount - ERROR", reqHeader, controllerURL, item, null, rm.message));
+                rm.data = ex.Message.ToString();
+
+                await Common.UpdateEventLogsNew("MemberOrderCount - ERROR", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
         }
@@ -1689,7 +1690,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("appsetting/get")]
         [MapToApiVersion("1.0")]
-        public IActionResult GetAppSetting(ParamMemberUserID itemData)
+        public async Task<IActionResult> GetAppSetting(ParamMemberUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -1722,17 +1723,15 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH APP SETTINGS";
                     rm.name = StatusName.ok;
                     rm.data = itemLite;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, itemData, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("FETCH APP SETTINGS - NO CONTENT", reqHeader, controllerURL, itemData, item, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -1742,8 +1741,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP SETTINGS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("FETCH APP SETTINGS - ERROR", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 

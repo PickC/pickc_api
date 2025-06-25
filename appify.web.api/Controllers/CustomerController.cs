@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Json;
 
 namespace appify.web.api.Controllers
@@ -103,12 +104,13 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                var sw = Stopwatch.StartNew();
                 List<MemberProduct> items = customerBusiness.ProductList(itemData.userID);
                 if (items?.Any() == true)
                 {
+                    sw.Stop();
                     rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT LIST";
+                    rm.message = "FETCH PRODUCT LIST " + $"{ sw.ElapsedMilliseconds}ms";
                     rm.name = StatusName.ok;
                     rm.data = items;
 
@@ -119,7 +121,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }
@@ -132,7 +134,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
             }
@@ -166,7 +168,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
                 }

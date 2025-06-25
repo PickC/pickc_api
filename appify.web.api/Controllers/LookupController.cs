@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using NPOI.SS.Formula.Functions;
+using Org.BouncyCastle.Utilities;
+using Razorpay.Api;
 
 namespace appify.web.api.Controllers
 {
@@ -91,7 +94,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("list")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult List(ParamLookupCategory jsonData)
+        public async Task<IActionResult> List(ParamLookupCategory jsonData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -102,24 +105,22 @@ namespace appify.web.api.Controllers
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
 
-                List<Lookup> items = lookupBusiness.GetList(jsonData.category);
+                List<models.Lookup> items = lookupBusiness.GetList(jsonData.category);
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "LOOK-UP LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("MemberOrderCount SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - NO CONTENT", reqHeader, controllerURL, jsonData, null, rm.message));
+                    rm.data = "NO CONTENT";
+                    await Common.UpdateEventLogsNew("MemberOrderCount - NO CONTENT", reqHeader, controllerURL, jsonData, items, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -129,7 +130,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST - ERROR", reqHeader, controllerURL, jsonData, null, rm.message));
+                await Common.UpdateEventLogsNew("LOOK-UP LIST - ERROR", reqHeader, controllerURL, jsonData, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -185,7 +186,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("save")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult Add(Lookup item)
+        public IActionResult Add(models.Lookup item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -197,7 +198,7 @@ namespace appify.web.api.Controllers
                 var result = lookupBusiness.SaveLookUp(item);
                 if (result != null)
                 {
-                    var newitem = new Lookup();
+                    var newitem = new models.Lookup();
 
                     //newitem = lookupBusiness.GetLookUp(item.LookupCode, item.LookupCategory);
 
@@ -479,12 +480,12 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("listbymember")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult ListByMember(ParamLookupByMember jsonData)
+        public async Task<IActionResult> ListByMember(ParamLookupByMember jsonData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
-            List<Lookup> items = new List<Lookup>();
+            List<models.Lookup> items = new List<models.Lookup>();
             try
             {
                 rm = new ResponseMessage();
@@ -498,18 +499,16 @@ namespace appify.web.api.Controllers
                     rm.message = "LOOK-UP LIST";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST BY MEMBER SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok));
+                    await Common.UpdateEventLogsNew("LOOK-UP LIST BY MEMBER SUCCESSFULLY", reqHeader, controllerURL, jsonData, items, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
-                    items = new List<Lookup>();
+                    items = new List<models.Lookup>();
                     rm.statusCode = StatusCodes.OK;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.ok;
                     rm.data = items;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST BY MEMBER - NO CONTENT", reqHeader, controllerURL, jsonData, null, rm.message));
+                    await Common.UpdateEventLogsNew("LOOK-UP LIST BY MEMBER - NO CONTENT", reqHeader, controllerURL, jsonData, items, rm.message, this.eventLogBusiness);
                 }
             }
             catch (Exception ex)
@@ -518,8 +517,8 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("LOOK-UP LIST BY MEMBER - ERROR", reqHeader, controllerURL, jsonData, null, rm.message));
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("LOOK-UP LIST BY MEMBER - ERROR", reqHeader, controllerURL, jsonData, items, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -579,7 +578,7 @@ namespace appify.web.api.Controllers
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
 
-                List<Lookup> items = lookupBusiness.GetAllList();
+                List<models.Lookup> items = lookupBusiness.GetAllList();
                 if (items?.Any() == true)
                 {
                     rm.statusCode = StatusCodes.OK;
