@@ -142,6 +142,8 @@ namespace appify.web.api.Controllers
                 decimal totalAmount = jsonObj[0].total_amount;
 
                 rm.data = new { total_amount = totalAmount };
+                
+                rm.data = new { total_amount = totalAmount };
 
             }
             catch (HttpRequestException ex)
@@ -215,6 +217,17 @@ namespace appify.web.api.Controllers
                     rm.data = new { isDeliverable = true, message = "Deliverable to this pincode" };
                 else
                     rm.data = new { isDeliverable = false, message = "Not deliverable to this pincode" };
+
+
+                // Get the delivery_codes array
+
+                var jsonObj = JObject.Parse(jsonResponse);
+                var deliveryCodes = jsonObj["delivery_codes"] as JArray;
+
+                // Return true if array exists and has elements, false otherwise
+                bool canDeliver= deliveryCodes != null && deliveryCodes.Count > 0;
+                
+                rm.data = canDeliver;
 
             }
             catch (HttpRequestException ex)
