@@ -65,11 +65,11 @@ namespace appify.utility
 
         public static readonly string RazorpayPaymentTransfers = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
 
-        public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
-        public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";
+        //public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
+        //public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";
 
-        //public static readonly string RazorPayKey = "rzp_live_uSkTSnmcPZUeVA";
-        //public static readonly string RazorPaySecret = "nU2y93R7YEJv4QgWuKt3eptV";
+        public static readonly string RazorPayKey = "rzp_live_uSkTSnmcPZUeVA";
+        public static readonly string RazorPaySecret = "nU2y93R7YEJv4QgWuKt3eptV";
 
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
                                                 string? eventLogStatus)

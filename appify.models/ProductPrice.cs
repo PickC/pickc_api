@@ -44,4 +44,18 @@ namespace appify.models
         public decimal? Weight { get; set; }
 
     }
+
+    public partial class ProductPriceLite
+    {
+        public Int64 PriceID { get; set; }
+        public string ProductName { get; set; }
+        public string Color { get; set; }
+        public string ImageName { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Discount { get; set; }
+        public Int16? DiscountType { get; set; }
+        public short Stock { get; set; }
+        public string Size { get; set; }
+        public decimal? Weight { get; set; }
+    }
 }

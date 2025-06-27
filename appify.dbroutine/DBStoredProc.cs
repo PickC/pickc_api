@@ -41,6 +41,10 @@ namespace appify.dbroutine
 
         public const string GETMEMBERPASSWORDLIST = "[Operation].[USP_GENERATEPASSWORD_SELECT]";
         public const string GENERATEMEMBERPASSWORD = "[Operation].[USP_GENERATEPASSWORD_HASHCODE]";
+
+        public const string PRODUCTSBYFEATUREDCAT = "[Operation].[usp_ProductsByFeaturedCategoriesPageView]";
+        public const string PRODUCTSBYPRICEID = "[Operation].[usp_ProductsByPriceIDPageView]";
+
         /// <summary>
         /// [Operation].[MemberReturnPolicy]
         /// </summary>
