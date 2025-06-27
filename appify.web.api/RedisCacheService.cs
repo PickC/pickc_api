@@ -13,6 +13,7 @@ using StackExchange.Redis;
 using System;
 using Microsoft.Extensions.FileProviders;
 using System.Diagnostics;
+using NPOI.OpenXmlFormats.Dml;
 namespace appify.web.api
 {
     public class RedisCacheService
@@ -50,6 +51,21 @@ namespace appify.web.api
         {
             var key = $"customer:{customerId}:deviceID:{deviceID}:token";
             return _redisDb.KeyDelete(key);
+        }
+        public void SetApiCache(string key, string jsonResponse, TimeSpan expiry)
+        {
+            if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(jsonResponse))
+            {
+                _redisDb.StringSet(key, jsonResponse, expiry);
+            }
+        }
+        public string GetApiCache(string key)
+        {
+            if (!string.IsNullOrEmpty(key))
+            {
+                return _redisDb.StringGet(key);
+            }
+            return null;
         }
     }
     public static class CheckToken
