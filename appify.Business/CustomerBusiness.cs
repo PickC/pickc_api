@@ -47,5 +47,13 @@ namespace appify.Business
         {
             return this.repository.SaveMemberPassword(userID, password);
         }
+        public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData)
+        {
+            return this.repository.ProductListByFeaturedCat(itemData);
+        }
+        public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
+        {
+            return this.repository.GetProductListbyPriceID(PriceID);
+        }
     }
 }

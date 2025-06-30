@@ -217,15 +217,6 @@ namespace appify.web.api.Controllers
                     rm.data = new { isDeliverable = true, message = "Deliverable to this pincode" };
                 else
                     rm.data = new { isDeliverable = false, message = "Not deliverable to this pincode" };
-
-
-                // Get the delivery_codes array
-
-                var jsonObj = JObject.Parse(jsonResponse);
-                var deliveryCodes = jsonObj["delivery_codes"] as JArray;
-
-                // Return true if array exists and has elements, false otherwise
-                bool canDeliver= deliveryCodes != null && deliveryCodes.Count > 0;
                 
                 rm.data = canDeliver;
 
@@ -259,7 +250,7 @@ namespace appify.web.api.Controllers
             {
                 string jsonResult = "";
 
-                jsonResult = "\"RAZORPAY Webhook Error Response->{\\\"account_id\\\":\\\"acc_OCjTrbZShxQc7y\\\",\\\"contains\\\":[\\\"payment_link\\\"],\\\"created_at\\\":1729600072,\\\"entity\\\":\\\"event\\\",\\\"event\\\":\\\"payment_link.expired\\\",\\\"payload\\\":{\\\"payment_link\\\":{\\\"entity\\\":{\\\"accept_partial\\\":false,\\\"amount\\\":1000,\\\"amount_paid\\\":0,\\\"cancelled_at\\\":0,\\\"created_at\\\":1729600072,\\\"currency\\\":\\\"INR\\\",\\\"customer\\\":{},\\\"description\\\":\\\"Testing\\\",\\\"expire_by\\\":0,\\\"expired_at\\\":1745324888,\\\"first_min_partial_amount\\\":0,\\\"id\\\":\\\"plink_PC5EQOOdkv1ZqE\\\",\\\"notes\\\":null,\\\"notify\\\":{\\\"email\\\":false,\\\"sms\\\":false,\\\"whatsapp\\\":false},\\\"order_id\\\":\\\"order_PC5EiKlw7SR2Gj\\\",\\\"reference_id\\\":\\\"\\\",\\\"reminder_enable\\\":false,\\\"reminders\\\":{\\\"status\\\":\\\"failed\\\"},\\\"short_url\\\":\\\"https://rzp.io/rzp/LxgQCmf\\\",\\\"status\\\":\\\"expired\\\",\\\"updated_at\\\":1729600088,\\\"upi_link\\\":true,\\\"user_id\\\":\\\"OyzjrIN2q7kVXN\\\",\\\"whatsapp_link\\\":false}}}}\"";
+                jsonResult = "\"{\\\"account_id\\\":\\\"acc_OCjTrbZShxQc7y\\\",\\\"contains\\\":[\\\"payment_link\\\"],\\\"created_at\\\":1729600072,\\\"entity\\\":\\\"event\\\",\\\"event\\\":\\\"payment_link.expired\\\",\\\"payload\\\":{\\\"payment_link\\\":{\\\"entity\\\":{\\\"accept_partial\\\":false,\\\"amount\\\":1000,\\\"amount_paid\\\":0,\\\"cancelled_at\\\":0,\\\"created_at\\\":1729600072,\\\"currency\\\":\\\"INR\\\",\\\"customer\\\":{},\\\"description\\\":\\\"Testing\\\",\\\"expire_by\\\":0,\\\"expired_at\\\":1745324888,\\\"first_min_partial_amount\\\":0,\\\"id\\\":\\\"plink_PC5EQOOdkv1ZqE\\\",\\\"notes\\\":null,\\\"notify\\\":{\\\"email\\\":false,\\\"sms\\\":false,\\\"whatsapp\\\":false},\\\"order_id\\\":\\\"order_PC5EiKlw7SR2Gj\\\",\\\"reference_id\\\":\\\"\\\",\\\"reminder_enable\\\":false,\\\"reminders\\\":{\\\"status\\\":\\\"failed\\\"},\\\"short_url\\\":\\\"https://rzp.io/rzp/LxgQCmf\\\",\\\"status\\\":\\\"expired\\\",\\\"updated_at\\\":1729600088,\\\"upi_link\\\":true,\\\"user_id\\\":\\\"OyzjrIN2q7kVXN\\\",\\\"whatsapp_link\\\":false}}}}\"";
 
                 var parsedJson = JsonConvert.DeserializeObject(jsonResult);
                 rm.statusCode = StatusCodes.OK;

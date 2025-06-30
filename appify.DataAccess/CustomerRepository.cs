@@ -139,5 +139,27 @@ namespace appify.DataAccess
 
             return result;
         }
+        public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData)
+        {
+            List<MemberProduct> products = new List<MemberProduct>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYFEATUREDCAT, itemData.VendorID, itemData.CategoryID, itemData.ParentID, itemData.Count, itemData.ProductCount, itemData.PageNo,itemData.Rows);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
+            return products;
+        }
+        public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
+        {
+            List<ProductPriceLite> products = new List<ProductPriceLite>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYPRICEID, PriceID);
+                products = DataTableHelper.ConvertDataTable<ProductPriceLite>(ds.Tables[0]);
+            }
+            return products;
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace appify.web.api
                 Console.WriteLine($"Page: {page}");
                 var query = $@"
                 query {{
-                    products(first: 1{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
+                    products(first: 50{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
                         edges {{
                             cursor
                             node {{
@@ -248,8 +248,8 @@ namespace appify.web.api
                 shopifyProductMaster.Rows.Clear();
                 shopifyProductVariant.Rows.Clear();
                 shopifyProductImage.Rows.Clear();
-                page++;
-                if (page > 1) break; //Added break to stop after 3 pages.
+                //page++;
+                //if (page > 1) break; //Added break to stop after 3 pages.
             }
             return result;
         }
