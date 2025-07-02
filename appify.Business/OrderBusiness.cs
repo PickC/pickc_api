@@ -111,6 +111,10 @@ namespace appify.Business
         {
             return orderRepository.OrderList(userID, userType);
         }
+        public Task<List<OrderList>> OrderListPageView(OrderSearch itemData)
+        {
+            return orderRepository.OrderListPageView(itemData);
+        }
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows)
         {
             List<CustomerOrderSummary> orders = orderRepository.CustomerSummaryList(sellerID, OrderStatus, PageNo, Rows);

@@ -21,5 +21,6 @@ namespace appify.Business.Contract
         public List<ManagementDashboardSummary> OperationsDashboardSummary(DateTime StartDate, DateTime EndDate);
         public List<DashboardTopVendorsProducts> DashboardTopVendorsProducts(DateTime StartDate, DateTime EndDate);
         public List<GlobalSearch> GlobalSearch(string FilterType, string SearchText, short PageNo, short Rows);
+        public GlobalProductSearchResponse GlobalProductSearch(string ProductName, bool IsActive, decimal MinPrice, decimal MaxPrice, short PageNo, short Rows);
     }
 }

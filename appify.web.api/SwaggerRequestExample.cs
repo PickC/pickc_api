@@ -358,6 +358,8 @@ namespace appify.web.api
     {
         public Int64 VendorID { get; set; }
         public short ReferenceID { get; set; }
+        public long ProductID { get; set; }
+        public IFormFile file { get; set; }
     }
     public class ParamSMSCredentials
     {
@@ -445,6 +447,15 @@ namespace appify.web.api
     {
         public string FilterType { get; set; }
         public string SearchText { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamGlobalProductSearch
+    {
+        public string ProductName { get; set; }
+        public bool IsActive { get; set; }
+        public decimal MinPrice {  get; set; }
+        public decimal MaxPrice { get; set; }
         public short PageNo { get; set; }
         public short Rows { get; set; }
     }

@@ -35,6 +35,7 @@ namespace appify.dbroutine
         public const string PAGEVIEWCUSTOMERBYMEMBER = "[Operation].[usp_CustomerPageView]";
         public const string PRODUCTSBYVENDOR = "[Operation].[usp_ProductsByVendor]";
         public const string PRODUCTSBYVENDORNEW = "[Operation].[usp_ProductsByVendorNew]";
+        public const string PRODUCTSBYVENDORPAGEVIEW = "[Operation].[usp_ProductsByVendorPageView]";
         public const string PRODUCTSBYCATEGORY = "[Operation].[usp_ProductsByCategory]";
         public const string MEMBERALLDETAILS = "[Operation].[usp_GetMemberAllDetails]";
         public const string PRODUCTSBYCATEGORIES = "[Operation].[usp_CategoriesProductsByVendor]";
@@ -424,6 +425,7 @@ namespace appify.dbroutine
 
         public const string LISTPRODUCTMASTERNEW = "[Security].[usp_ProductMasterList]";
         public const string LISTORDER = "[Operation].[usp_OrderListSelect]";
+        public const string LISTORDERPAGEVIEW = "[Operation].[usp_OrderListPageView]";
 
         public const string SELECTORDERSBYORDERID = "[Operation].[usp_OrderHeaderItemNew]";
 
@@ -464,6 +466,7 @@ namespace appify.dbroutine
         public const string LISTOPERATIONDASHBOARDSUMMARY = "[Operation].[usp_OperationDashboardMetrics]";
         public const string LISTDASHBOARDTOPVENDORSPRODUCTS= "[Operation].[usp_DashboardTopVendorsProducts]";
         public const string GLOBALSEARCH = "[Operation].[GetFilteredOrders]";
+        public const string GLOBALPRODUCTSEARCH = "[Operation].[usp_GlobalProductSearch]";
 
 
         /// <summary>
