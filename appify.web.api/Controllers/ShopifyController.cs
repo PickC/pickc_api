@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using NPOI.HPSF;
 using System.ComponentModel.DataAnnotations;
+using NPOI.Util;
 
 namespace appify.web.api.Controllers
 {
@@ -275,7 +276,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UploadProductImageAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UploadProductImageAsync(ParamVendorRef item, [Required][FromForm] long ProductID, IFormFile file)
+        public async Task<IActionResult> UploadProductImageAsync([Required][FromForm] ParamVendorRef item)
         {
             /*
                 Files - Permissions
@@ -290,7 +291,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                if (file == null || file.Length == 0)
+                if (item.file == null || item.file.Length == 0)
                 {
                     rm.statusCode = api.StatusCodes.ERROR;
                     rm.message = "No file uploaded";
@@ -300,7 +301,7 @@ namespace appify.web.api.Controllers
                     return Ok(rm);
                 }
 
-                if (!Path.GetExtension(file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+                if (!Path.GetExtension(item.file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
                 {
                     rm.statusCode = api.StatusCodes.ERROR;
                     rm.message = "only .jpg files are allowed";
@@ -310,7 +311,7 @@ namespace appify.web.api.Controllers
                 }
 
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
-                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(file, ProductID);
+                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(item.file, item.ProductID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;

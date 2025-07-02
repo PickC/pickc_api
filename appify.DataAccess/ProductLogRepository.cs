@@ -35,7 +35,7 @@ namespace appify.DataAccess
                 con.Close();
             }
 
-            return item;
+            return (IProductAuditLog)item;
         }
 
         public async Task<IEnumerable<IProductAuditLog>> ListProductLog(Int64 productID)

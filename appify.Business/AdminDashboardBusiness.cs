@@ -63,5 +63,9 @@ namespace appify.Business
         {
             return repository.GlobalSearch(FilterType, SearchText, PageNo, Rows);
         }
+        public GlobalProductSearchResponse GlobalProductSearch(string ProductName, bool IsActive, decimal MinPrice, decimal MaxPrice, short PageNo, short Rows)
+        {
+            return repository.GlobalProductSearch(ProductName, IsActive, MinPrice, MaxPrice, PageNo, Rows);
+        }
     }
 }

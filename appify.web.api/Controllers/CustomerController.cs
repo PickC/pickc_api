@@ -208,6 +208,76 @@ namespace appify.web.api.Controllers
         }
         return Ok(rm);
 
+        }
+
+    /// <summary>
+    /// gets Product items information based on Search Filters
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "vendorID": 1060,
+    ///       "productName": "",
+    ///       "categoryID": 0,
+    ///       "pageNo": 1,
+    ///       "rows": 20,
+    ///       "priceFrom": 0,
+    ///       "priceTo": 0,
+    ///       "stockFrom": 0,
+    ///       "stockTo": 0,
+    ///       "productCount": 20
+    ///     } 
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistpageview")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GetMemberProductsListPageView(ProductSearch itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            var items = customerBusiness.ProductListPageView(itemData);
+            if (items!=null)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
     }
 
     /// <summary>
