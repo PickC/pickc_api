@@ -196,14 +196,14 @@ namespace appify.models
     {
         public long UserID { get; set; }
         public string AppName { get; set; }
-        public string LongDescription { get; set; }
+        //public string LongDescription { get; set; }
         public string ShortDescription { get; set; }
-        public string Icon { get; set; }
-        public string FavIcon { get; set; }
-        public string Icon192 { get; set; }
-        public string Icon512 { get; set; }
-        public string IconMaskable192 { get; set; }
-        public string IconMaskable512 { get; set; }
+        //public string Icon { get; set; }
+        //public string FavIcon { get; set; }
+        //public string Icon192 { get; set; }
+        //public string Icon512 { get; set; }
+        //public string IconMaskable192 { get; set; }
+        //public string IconMaskable512 { get; set; }
     }
 }
 

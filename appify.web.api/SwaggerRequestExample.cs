@@ -345,6 +345,11 @@ namespace appify.web.api
     {
         public Int64 VendorID { get; set; }
     }
+    public class ParamShopifyInventory : ParamVendor
+    {
+        public string InventoryItemID { get; set; }
+        public int QuantityPurchased { get; set; }
+    }
     public class ParamVendorID
     {
         public long VendorID { get; set; }
@@ -354,13 +359,25 @@ namespace appify.web.api
         public Int64 VendorID { get; set; }
         public string productFileName {  get; set; }
     }
+
+    public class ParamVendorUploadImg
+    {
+        public Int64 VendorID { get; set; }
+        public short ReferenceID { get; set; }
+        public string ProductID { get; set; }
+        public IFormFile file { get; set; }
+    }
     public class ParamVendorRef
     {
         public Int64 VendorID { get; set; }
         public short ReferenceID { get; set; }
-        public long ProductID { get; set; }
-        public IFormFile file { get; set; }
     }
+    public class ParamVendorDeleteImg : ParamVendorRef
+    {
+        public string ImageID { get; set; }
+        public string ProductID { get; set; }
+    }
+
     public class ParamSMSCredentials
     {
         public Int16 SMSTemplateID { get; set; }
@@ -509,5 +526,11 @@ namespace appify.web.api
 
     public class ParamVendorStoreUrl {
         public string StoreUrl{ get; set; }
+    }
+    public class ParamVendorUploadImgage
+    {
+        public Int64 VendorID { get; set; }
+        public string FolderName { get; set; }
+        public IFormFile file { get; set; }
     }
 }
