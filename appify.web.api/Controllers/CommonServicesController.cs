@@ -5,7 +5,6 @@
  * Date: 2025-01-02
  * Description:
 */
-using appify.Business;
 using appify.Business.Contract;
 using appify.models;
 using Asp.Versioning;
@@ -14,27 +13,17 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using static appify.models.NotificationType;
 using appify.utility;
 
-
 using System.ComponentModel.DataAnnotations;
-using Razorpay.Api;
-using Twilio.Types;
-using System.Text.Json;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.DataProtection;
-using System.Text;
-using System.Net;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
-using Azure.Core;
-using NPOI.SS.Formula.Functions;
-using Twilio.TwiML.Fax;
-using Twilio.TwiML.Voice;
-using System.Buffers.Text;
-using Microsoft.AspNetCore.Http.HttpResults;
-
+using Azure.Storage.Blobs;
+using System.IO.Compression;
+using Azure.Storage.Blobs.Models;
+using Microsoft.AspNetCore.StaticFiles;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
+using Google.Apis.Services;
 
 namespace appify.web.api.Controllers
 {
@@ -237,6 +226,194 @@ namespace appify.web.api.Controllers
                 await Common.UpdateEventLogsNew("GET PINCODE - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
+        }
+
+        [HttpPost]
+        [Route("UploadImagesToAzureAsync")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> UploadImagesToAzureAsync([Required][FromForm] ParamVendorUploadImgage itemData)
+        {
+            string storageConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+            string containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            rm = new ResponseMessage();
+            if (itemData.file == null || itemData.file.Length == 0)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "No file uploaded.";
+                rm.name = StatusName.invalid;
+                rm.data = "No file uploaded.";
+                return Ok(rm);
+            }
+
+
+            if (!Path.GetExtension(itemData.file.FileName).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "Only ZIP files are supported.";
+                rm.name = StatusName.invalid;
+                rm.data = "Only ZIP files are supported.";
+                return Ok(rm);
+            }
+
+
+
+            string tempZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
+            string extractPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+            try
+            {
+                using (var stream = new FileStream(tempZipPath, FileMode.Create))
+                {
+                    await itemData.file.CopyToAsync(stream);
+                }
+
+                ZipFile.ExtractToDirectory(tempZipPath, extractPath);
+
+                var containerClient = new BlobContainerClient(storageConnectionString, containerName);
+                await containerClient.CreateIfNotExistsAsync();
+
+                foreach (var file in Directory.GetFiles(extractPath, "*.*", SearchOption.AllDirectories))
+                {
+                    var provider = new FileExtensionContentTypeProvider();
+                    string contentType;
+
+                    if (!provider.TryGetContentType(file, out contentType))
+                    {
+                        contentType = "application/octet-stream";
+                    }
+
+                    var blobHttpHeaders = new BlobHttpHeaders
+                    {
+                        ContentType = contentType
+                    };
+                    string relativePath = Path.GetRelativePath(extractPath, file).Replace("\\", "/");
+
+                    if (relativePath.Contains("/"))
+                    {
+                        relativePath = string.Join("/", relativePath.Split('/').Skip(1));
+                    }
+
+                    string blobPath = $"{itemData.VendorID}/{itemData.FolderName}/{relativePath}";
+                    var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+                    using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                    {
+                        var blobClient = containerClient.GetBlobClient(blobPath);
+                        try
+                        {
+                            //await blobClient.UploadAsync(fileStream, overwrite: true, cancellationToken: cts.Token);
+                            if (await blobClient.ExistsAsync())
+                            {
+                                await blobClient.DeleteAsync();
+                            }
+
+                            await blobClient.UploadAsync(fileStream, new BlobUploadOptions
+                            {
+                                HttpHeaders = blobHttpHeaders
+                            }, cancellationToken: cts.Token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            Console.WriteLine("Upload cancelled due to timeout or cancellation token.");
+                        }
+                    }
+                }
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "ZIP extracted and uploaded successfully.";
+                rm.name = StatusName.ok;
+                rm.data = "ZIP extracted and uploaded successfully.";
+                return Ok(rm);
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = $"Upload failed: {ex.Message}";
+                rm.name = StatusName.invalid;
+                rm.data = $"Upload failed: {ex.Message}";
+                return Ok(rm);
+            }
+            finally
+            {
+                if (System.IO.File.Exists(tempZipPath))
+                    System.IO.File.Delete(tempZipPath);
+
+                if (Directory.Exists(extractPath))
+                    Directory.Delete(extractPath, true);
+            }
+        }
+
+        [HttpPost]
+        [Route("fetchdrivetoazure")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> DownloadVendorIconsFromDriveAndUploadToAzure(string parentFolderId)
+        {
+            string storageConnectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+            string containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+            var driveService = GetDriveService();
+
+            var listRequest = driveService.Files.List();
+            listRequest.Q = $"'{parentFolderId}' in parents and trashed = false";
+            listRequest.Fields = "files(id, name, mimeType)";
+
+            var files = await listRequest.ExecuteAsync();
+
+
+            foreach (var file in files.Files)
+            {
+                Console.WriteLine($"{file.Name} - {file.MimeType} - {file.Id}");
+
+                // If it's a folder
+                if (file.MimeType == "application/vnd.google-apps.folder")
+                {
+                    // Recursively list files inside this folder
+                    var childRequest = driveService.Files.List();
+                    childRequest.Q = $"'{file.Id}' in parents and trashed = false";
+                    childRequest.Fields = "files(id, name, mimeType)";
+                    var childFiles = await childRequest.ExecuteAsync();
+
+                    foreach (var child in childFiles.Files)
+                    {
+                        Console.WriteLine($"  └ {child.Name} - {child.Id}");
+                    }
+                }
+            }
+
+            //foreach (var file in files.Files)
+            //{
+            //    var stream = new MemoryStream();
+            //    await driveService.Files.Get(file.Id).DownloadAsync(stream);
+            //    stream.Position = 0;
+
+            //    // Upload to Azure
+            //    var blobClient = new BlobContainerClient(storageConnectionString, containerName);
+            //    await blobClient.CreateIfNotExistsAsync();
+            //    var blob = blobClient.GetBlobClient($"vendor-icons/{file.Name}");
+            //    await blob.UploadAsync(stream, overwrite: true);
+            //    stream.Close();
+            //}
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = "No file uploaded.";
+            rm.name = StatusName.invalid;
+            rm.data = "No file uploaded.";
+            return Ok(rm);
+            // If folderIds exist (subfolders), you could recurse similarly...
+        }
+
+        private DriveService GetDriveService()
+        {
+            var credential = GoogleCredential
+                .FromFile("zeta-cortex-464910-m3-75e0f14f518a.json")
+                .CreateScoped(DriveService.ScopeConstants.DriveReadonly);
+
+            return new DriveService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "DriveToAzureUploader"
+            });
         }
 
         [HttpPost]

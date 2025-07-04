@@ -11,6 +11,7 @@ using System.Data;
 using appify.Business;
 using Razorpay.Api;
 using System.Net.Http.Headers;
+using appify.utility;
 
 namespace appify.web.api
 {
@@ -43,8 +44,9 @@ namespace appify.web.api
         {
             try
             {
+                var url = $"{storeUrl}"+Common.GetShopifyProducts;
                 var requestBody = System.Text.Json.JsonSerializer.Serialize(new { query });
-                var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, $"{storeUrl}");
+                var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, url);
                 request.Headers.Add("X-Shopify-Access-Token", accessToken);
                 request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
@@ -63,7 +65,7 @@ namespace appify.web.api
         }
         public async Task<JObject> QueryAsync(string query, object variables = null)
         {
-            string apiUrl = $"{storeUrl}";
+            string apiUrl = $"{storeUrl}" + Common.GetShopifyProducts;
 
             var payload = new
             {
@@ -396,7 +398,7 @@ namespace appify.web.api
                     }}";
 
                 var client = new HttpClient();
-                client.BaseAddress = new Uri($"{storeUrl}/admin/api/2024-04/graphql.json");
+                client.BaseAddress = new Uri($"{storeUrl}"+Common.UpdateShopifyProductURL);
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
                 var content = new StringContent(JsonConvert.SerializeObject(new { query }), Encoding.UTF8, "application/json");
@@ -412,14 +414,6 @@ namespace appify.web.api
                 // Handle variant update separately
                 foreach (var variant in productData.Variants)
                 {
-                    variant.VariantId = "gid://shopify/ProductVariant/50261009858848";
-                    variant.Sku = "DB1-BLK-O-" + DateTime.Now.Microsecond.ToString();
-                    variant.Price = Convert.ToDecimal("18.99");
-                    variant.Inventory = 89;
-                    variant.Weight = Convert.ToDecimal("0.0");
-                    variant.WeightUnit = "KILOGRAMS";
-                    variant.InventoryItemID = 52283253391648;
-                    variant.QuantityPurchased = 2;
                     await UpdateProductVariantAsync(variant);
                     if (variant.QuantityPurchased > 0)
                         await UpdateShopifyInventoryAsync(variant.InventoryItemID, variant.QuantityPurchased);
@@ -453,7 +447,7 @@ namespace appify.web.api
               }}
             }}";
             var client = new HttpClient();
-            client.BaseAddress = new Uri($"{storeUrl}/admin/api/2024-04/graphql.json");
+            client.BaseAddress = new Uri($"{storeUrl}" + Common.UpdateShopifyProductURL);
             client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
             var content = new StringContent(JsonConvert.SerializeObject(new { query }), Encoding.UTF8, "application/json");
@@ -467,60 +461,125 @@ namespace appify.web.api
         }
 
         // Update Existing Product Inventory
-        public async Task<bool> UpdateShopifyInventoryAsync(long inventoryItemId, int quantityPurchased)
+        public async Task<bool> UpdateShopifyInventoryAsync(string inventoryItemId, int quantityPurchased)
         {
             try
             {
-                // 1. Get the Inventory Level using the inventoryItemId
-                using var client = new HttpClient();
+                var client = new HttpClient();
+                client.BaseAddress = new Uri($"{storeUrl}" + Common.UpdateShopifyProductURL);
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                var response = await client.GetAsync($"{storeUrl}/admin/api/2024-04/inventory_levels.json?inventory_item_ids={inventoryItemId}");
-                response.EnsureSuccessStatusCode();
+                var step1Query = $@"
+                {{
+                  inventoryItem(id: ""{inventoryItemId}"") {{
+                    inventoryLevels(first: 1) {{
+                      edges {{
+                        node {{ id }}
+                      }}
+                    }}
+                  }}
+                }}";
 
-                var json = await response.Content.ReadAsStringAsync();
-                dynamic inventoryData = JsonConvert.DeserializeObject(json);
-                var inventoryLevel = inventoryData.inventory_levels[0];
-                string locationId = inventoryLevel.location_id;
-                int available = inventoryLevel.available;
+                var step1Content = new StringContent(JsonConvert.SerializeObject(new { query = step1Query }), Encoding.UTF8, "application/json");
+                var step1Response = client.PostAsync("", step1Content).GetAwaiter().GetResult();
+                var step1Json = step1Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                // 2. Calculate updated quantity
+                var j = JObject.Parse(step1Json);
+                var levelId = j["data"]?["inventoryItem"]?["inventoryLevels"]?["edges"]?.First?["node"]?["id"]?.ToString();
+
+                if (string.IsNullOrEmpty(levelId))
+                    Console.WriteLine($"Error: No InventoryLevel found for item {inventoryItemId}");
+
+                var step2Query = $@"
+                {{
+                  inventoryLevel(id: ""{levelId}"") {{
+                    quantities(names: [""available"", ""incoming""]) {{
+                      name
+                      quantity
+                    }}
+                    location {{ id name }}
+                  }}
+                }}";
+
+                var step2Content = new StringContent(JsonConvert.SerializeObject(new { query = step2Query }), Encoding.UTF8, "application/json");
+                var step2Response = client.PostAsync("", step2Content).GetAwaiter().GetResult();
+                var step2Json = step2Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                dynamic inventoryData = JsonConvert.DeserializeObject(step2Json);
+
+                var j2 = JObject.Parse(step2Json);
+                // Get location ID
+                string locationId = ExtractShopifyLocationId(j2["data"]?["inventoryLevel"]?["location"]?["id"]?.ToString());
+                long inventory_item_id = long.Parse(ExtractShopifyLocationId(inventoryItemId));
+
+                int available = j2["data"]?["inventoryLevel"]?["quantities"]?
+                    .FirstOrDefault(q => q["name"]?.ToString() == "available")?["quantity"]?.Value<int>() ?? 0;
+                if (!step2Response.IsSuccessStatusCode)
+                    throw new Exception($"Error fetching quantities: {step2Response.StatusCode} - {step2Json}");
+
                 int newQuantity = available - quantityPurchased;
                 if (newQuantity < 0) newQuantity = 0;
 
-                // 3. Set the new inventory quantity
+
                 var payload = new
                 {
                     location_id = locationId,
-                    inventory_item_id = inventoryItemId,
+                    inventory_item_id = inventory_item_id,
                     available = newQuantity
                 };
 
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
 
-                var setResponse = await client.PostAsync($"{storeUrl}/admin/api/2024-04/inventory_levels/set.json", jsonContent);
+                var inventoryUrl = $"{storeUrl}" +Common.UpdateShopifyInventoryLevel;
+
+                var setResponse = await client.PostAsync(inventoryUrl, jsonContent);
                 setResponse.EnsureSuccessStatusCode();
 
-                // ✅ Successfully updated
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                // Network-related errors
                 Console.WriteLine($"HTTP Request Error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // All other errors
                 Console.WriteLine($"General Error: {ex.Message}");
             }
 
             return false;
         }
 
+        public string ExtractShopifyLocationId(string gid)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(gid))
+                    throw new ArgumentException("GID is null or empty.");
+
+                // Expected format: "gid://shopify/Location/104131690784"
+                var parts = gid.Split('/');
+                var idString = parts.LastOrDefault();
+
+                if (string.IsNullOrWhiteSpace(idString))
+                    throw new FormatException("Invalid GID format: unable to extract ID.");
+
+                if (!long.TryParse(idString, out long locationId))
+                    throw new FormatException("GID does not contain a valid numeric ID.");
+
+                return locationId.ToString();
+            }
+            catch (Exception ex)
+            {
+                // You can log the error or rethrow with more context if needed
+                throw new Exception($"Failed to extract Shopify Location ID from GID. Details: {ex.Message}", ex);
+            }
+        }
+
         // Delete Product
         public async Task<string> DeleteProductAsync(string productId)
         {
+            string result = "";
             try
             {
                 var mutation = $@"
@@ -536,15 +595,19 @@ namespace appify.web.api
               }}
             }}";
 
-                return await PostGraphQLRequestAsync(mutation);
+                await PostGraphQLRequestAsync(mutation);
+                result = "Product has been successfully removed!";
             }
             catch (Exception ex)
             {
+                result = "Failed to delete product";
                 throw new ApplicationException($"Failed to delete product: {ex.Message}", ex);
             }
+
+            return result;
         }
 
-        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, long productId)
+        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, string productId)
         {
 
             if (file == null || file.Length == 0)
@@ -571,7 +634,7 @@ namespace appify.web.api
                     alt = "Uploaded via API"
                 }
             };
-
+            string ProductId = ExtractShopifyLocationId(productId);
             string json = System.Text.Json.JsonSerializer.Serialize(payload);
 
             using var httpClient = new HttpClient();
@@ -579,8 +642,8 @@ namespace appify.web.api
             httpClient.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            string url = $"{storeUrl}/admin/api/2024-04/products/{productId}/images.json";
-
+            //string url = $"{storeUrl}/admin/api/2024-04/products/{productId}/images.json";
+            string url = $"{storeUrl}"+Common.UploadImageToShopify.Replace("{productId}", ProductId.ToString().Trim());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(url, httpContent);
@@ -597,28 +660,35 @@ namespace appify.web.api
             }
         }
 
-        public async Task<string> DeleteProductImageAsync(long productId, long imageId)
+        public async Task<string> DeleteProductImageAsync(string productId, string imageId)
         {
+            string result = "";
             try
             {
+
+                string ProductID = ExtractShopifyLocationId(productId);
+                string ImageID = ExtractShopifyLocationId(imageId);
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
-                var endpoint = $"{storeUrl}/admin/api/2024-04/products/{productId}/images/{imageId}.json";
+                //var endpoint = $"{storeUrl}/admin/api/2024-04/products/{productId}/images/{imageId}.json";
+                var endpoint = $"{storeUrl}"+Common.DeleteShopifyProductImage.Replace("{productId}", ProductID.ToString().Trim()).Replace("{imageId}", ImageID.ToString().Trim());
                 var response = await client.DeleteAsync(endpoint);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
+                    result = "Failed to delete image";
                     throw new Exception($"Failed to delete image: {response.StatusCode} - {content}");
                 }
+                result = "Image has been successfully removed!";
             }
             catch (Exception ex)
             {
                 throw new ApplicationException($"Failed to delete product's image: {ex.Message}", ex);
             }
 
-            return "";
+            return result;
         }
 
 
@@ -924,7 +994,7 @@ namespace appify.web.api
         public string Sku { get; set; }
         public decimal Price { get; set; }
         public int Inventory { get; set; }
-        public Int64 InventoryItemID { get; set; }
+        public string InventoryItemID { get; set; }
         public int QuantityPurchased { get; set; }
         public decimal Weight { get; set; }
         public string WeightUnit { get; set; } // e.g., "KILOGRAMS"
