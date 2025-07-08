@@ -162,7 +162,7 @@ namespace appify.DataAccess
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GLOBALPRODUCTSEARCH, ProductName, IsActive, MinPrice, MaxPrice, PageNo, Rows);
                 item.Products = DataTableHelper.ConvertDataTable<GlobalProductSearch>(ds.Tables[0]);
-                item.TotalCount = ds.Tables[0].Rows.Count > 0 ? Convert.ToInt32(ds.Tables[0].Rows[0][0]) : 0;
+                item.TotalCount = ds.Tables[1].Rows.Count > 0 ? Convert.ToInt32(ds.Tables[1].Rows[0][0]) : 0;
             }
             return item;
         }

@@ -93,10 +93,10 @@ namespace appify.web.api.Controllers
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in discountHeader)
                 {
-                    var eventType = item.DiscountID > 0 ? "Discount Updated!" : "New Discount Created";
+                    var eventType = item.DiscountID > 0 ? "Discount Updated" : "New Discount Created";
                     var createdModifiedBy = item.DiscountID > 0 ? item.ModifiedBy.ToString() : item.CreatedBy.ToString();
                     returnItem.Add(this.discountHeaderBusiness.Save(item));
-                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), eventType, createdModifiedBy, AppName, sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(createdModifiedBy), eventType, createdModifiedBy, AppName, sourceIPAddress, item);
                 }
                 if (result)
                 {
@@ -636,7 +636,7 @@ namespace appify.web.api.Controllers
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in orderDiscount)
                 {
-                    var eventType = item.DiscountID > 0 ? "Order Discount Updated!" : "New Order Discount Created";
+                    var eventType = item.DiscountID > 0 ? "Order Discount Updated" : "New Order Discount Created";
                     var createdModifiedBy = item.DiscountID > 0 ? item.ModifiedBy.ToString() : item.CreatedBy.ToString();
                     returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
                     await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), eventType, createdModifiedBy, AppName, sourceIPAddress, item);

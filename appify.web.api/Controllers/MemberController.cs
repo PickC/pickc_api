@@ -395,7 +395,7 @@ namespace appify.web.api.Controllers
             var fullName = item.FirstName + ' ' + item.LastName;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = item.UserID > 0 ? "Vendor Updated!" : "New Vendor Created";
+            var eventType = item.UserID > 0 ? "Vendor Updated" : "New Vendor Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -456,7 +456,9 @@ namespace appify.web.api.Controllers
 
                         if(item.MemberType == 1000)
                         {
-                            await auditService.LogAsync(EntityType.Vendor, item.UserID, eventType + " - " + fullName, VendorID.ToString(), AppName, sourceIPAddress, item);
+                            await auditService.LogAsync(EntityType.Vendor, item.UserID, eventType, item.UserID.ToString(), AppName, sourceIPAddress, item);
+                            if(eventType == "New Vendor Created")
+                                await auditService.LogAsync(EntityType.Vendor, item.UserID, "New AppSetting Created", item.UserID.ToString(), AppName, sourceIPAddress, item);
                         }
 
                     }
@@ -1812,7 +1814,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = item.UserID > 0 ? "AppSetting Updated!" : "New AppSetting Created";
+            var eventType = item.UserID > 0 ? "AppSetting Updated" : "New AppSetting Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -1842,7 +1844,7 @@ namespace appify.web.api.Controllers
                     rm.data = returndata;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS SAVED SUCCESSFULLY", reqHeader, controllerURL, item, returndata, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, item.UserID, eventType, VendorID.ToString(), AppName, sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, item.UserID, eventType, item.UserID.ToString(), AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -1907,7 +1909,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("APP SETTINGS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, itemData.userID, "AppSetting Removed", VendorID.ToString(), AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.userID, "AppSetting Removed", itemData.userID.ToString(), AppName, sourceIPAddress, itemData);
                 }
                 else
                 {
@@ -2459,7 +2461,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = item.ThemeID > 0 ? "Theme Updated!" : "New Theme Created";
+            var eventType = item.ThemeID > 0 ? "Theme Updated" : "New Theme Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -2479,7 +2481,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME SETTINGS SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, item.MemberID, eventType, VendorID.ToString(), AppName, sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, item.MemberID, eventType, item.MemberID.ToString(), AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -2547,7 +2549,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("THEME SETTINGS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, itemData.MemberID, "Theme Removed", VendorID.ToString(), AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.MemberID, "Theme Removed", itemData.MemberID.ToString(), AppName, sourceIPAddress, itemData);
                 }
                 else
                 {
@@ -2707,7 +2709,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = item.MemberID > 0 ? "Member KYC Updated!" : "Member KYC Created";
+            var eventType = item.MemberID > 0 ? "Member KYC Updated" : "Member KYC Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -2726,7 +2728,7 @@ namespace appify.web.api.Controllers
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, result, StatusName.ok));
                     await Common.UpdateEventLogsNew("KYC SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok, this.eventLogBusiness);
-                    await auditService.LogAsync(EntityType.Vendor, item.MemberID, eventType, VendorID.ToString(), AppName, sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, item.MemberID, eventType, item.MemberID.ToString(), AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -2794,7 +2796,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("KYC SETTINGS REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, itemData.userID, "Member KYC Removed", VendorID.ToString(), AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.userID, "Member KYC Removed", itemData.userID.ToString(), AppName, sourceIPAddress, itemData);
                 }
                 else
                 {
@@ -3024,7 +3026,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = item.MemberID > 0 ? "Contact Updated!" : "New Contact Created";
+            var eventType = item.MemberID > 0 ? "Contact Updated" : "New Contact Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -3039,8 +3041,6 @@ namespace appify.web.api.Controllers
                     rm.data = null;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("INVALID MEMBER ID", reqHeader, controllerURL, item, null, rm.message));
-
-                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), eventType + " - " + fullName, VendorID, AppName, sourceIPAddress, item);
                 }
 
 
@@ -3053,6 +3053,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER CONTACT SAVED SUCCESSFULLY", reqHeader, controllerURL, item, result, StatusName.ok));
+                    await auditService.LogAsync(EntityType.Vendor, item.MemberID, eventType, item.MemberID.ToString(), AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -3125,7 +3126,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER CONTACT BULK SAVED SUCCESSFULLY", reqHeader, controllerURL, items, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "Bulk Contacts Created", VendorID, AppName, sourceIPAddress, items);
+                    await auditService.LogAsync(EntityType.Vendor, items[0].MemberID, "Bulk Contacts Created", items[0].MemberID.ToString(), AppName, sourceIPAddress, items);
                 }
                 else
                 {
@@ -3193,7 +3194,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER CONTACT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "Contact Removed - " + itemData.MemberID.ToString(), VendorID, AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.MemberID, "Contact Removed - " + itemData.MemberID.ToString(), VendorID, AppName, sourceIPAddress, itemData);
                 }
                 else
                 {
@@ -3250,7 +3251,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            var eventType = memberBanner.BannerID > 0 ? "Banner Updated!" : "New Banner Created";
+            var eventType = memberBanner.BannerID > 0 ? "Banner Updated" : "New Banner Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
@@ -3266,7 +3267,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MEMBER BANNER SAVED SUCCESSFULLY", reqHeader, controllerURL, memberBanner, result, StatusName.ok));
-                    await auditService.LogAsync(EntityType.Vendor, memberBanner.MemberID, eventType, VendorID.ToString(), AppName, sourceIPAddress, memberBanner);
+                    await auditService.LogAsync(EntityType.Vendor, memberBanner.MemberID, eventType, memberBanner.MemberID.ToString(), AppName, sourceIPAddress, memberBanner);
                 }
                 else
                 {
