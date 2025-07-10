@@ -2210,6 +2210,8 @@ namespace appify.web.api.Controllers
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            var eventType = vendorCategories[0].UserID > 0 ? "Categories Updated" : "New Categories Created";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             //dynamic data = jsonData;
             try
             {
@@ -2229,7 +2231,8 @@ namespace appify.web.api.Controllers
                     rm.data = returnItem;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     await Common.UpdateEventLogsNew("VENDOR SELECTED PARENT CATEGORIES SAVED SUCCESSFULLY!", reqHeader, controllerURL, vendorCategories, returnItem, StatusName.ok, this.eventLogBusiness);
-                    await auditService.LogAsync(EntityType.Product, 0, "Vendor Selected Categories Saved", UserId, AppName, sourceIPAddress, vendorCategories);
+                    await auditService.LogAsync(EntityType.Product, long.Parse(UserId), "Vendor Selected Categories Saved", UserId, AppName, sourceIPAddress, vendorCategories);
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(UserId), eventType, UserId, AppName, sourceIPAddress, vendorCategories);
                 }
                 else
                 {
@@ -2553,6 +2556,8 @@ namespace appify.web.api.Controllers
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
             string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            var eventType = itemData[0].VendorID > 0 ? "Featured Categories Updated" : "New Featured Categories Created";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             //dynamic data = jsonData;
             try
             {
@@ -2571,6 +2576,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //await Common.UpdateEventLogsNew("SAVE FEATURED CATEGORIES", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
                     await auditService.LogAsync(EntityType.Product, 0, "Vendor Featured Categories Saved", UserId, AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(UserId), eventType, UserId, AppName, sourceIPAddress, itemData);
                 }
                 else
                 {

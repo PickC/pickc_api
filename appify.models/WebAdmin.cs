@@ -188,3 +188,21 @@ public partial class GlobalSearch
     public string AppName { get; set; }
     public string Value { get; set; }
 }
+public partial class GlobalProductSearch
+{
+    public long ProductID { get; set; }
+    public long VendorID { get; set; }
+    public string ImageName { get; set; }
+    public string ProductName { get; set; }
+    public decimal Price { get; set; }
+    public string AppName { get; set; }
+    public string SellerName { get; set; }
+    public bool IsActive { get; set; }
+    public string Category { get; set; }
+    public long CategoryID { get; set; }
+}
+public partial class GlobalProductSearchResponse
+{
+    public List<GlobalProductSearch> Products { get; set; }
+    public int TotalCount { get; set; }
+}

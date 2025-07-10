@@ -5,6 +5,7 @@
  * Date: 2024-09-01
  * Description:
 */
+using appify.audit.service;
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Razorpay.Api;
 
 namespace appify.web.api.Controllers
 {
@@ -29,16 +31,18 @@ namespace appify.web.api.Controllers
         private readonly IDiscountHeaderBusiness discountHeaderBusiness;
         private readonly IDiscountDetailBusiness discountDetailBusiness;
         private readonly IWebHostEnvironment env;
+        private readonly IAuditService auditService;
 
         private ResponseMessage rm;
         public DiscountController(IConfiguration configuration, IDiscountHeaderBusiness discountHeaderBusiness, IDiscountDetailBusiness discountDetailBusiness, 
-            IEventLogBusiness eventLogBusiness, IWebHostEnvironment env)
+            IEventLogBusiness eventLogBusiness, IWebHostEnvironment env, IAuditService auditService)
         {
             this._configuration = configuration;
             this.discountHeaderBusiness = discountHeaderBusiness;
             this.discountDetailBusiness = discountDetailBusiness;
             this.eventLogBusiness = eventLogBusiness;
             this.env = env;
+            this.auditService = auditService;
         }
 
 
@@ -77,6 +81,9 @@ namespace appify.web.api.Controllers
             var result = true;
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 List<DiscountHeader> returnItem = new List<DiscountHeader>();
@@ -86,7 +93,10 @@ namespace appify.web.api.Controllers
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in discountHeader)
                 {
+                    var eventType = item.DiscountID > 0 ? "Discount Updated" : "New Discount Created";
+                    var createdModifiedBy = item.DiscountID > 0 ? item.ModifiedBy.ToString() : item.CreatedBy.ToString();
                     returnItem.Add(this.discountHeaderBusiness.Save(item));
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(createdModifiedBy), eventType, createdModifiedBy, AppName, sourceIPAddress, item);
                 }
                 if (result)
                 {
@@ -142,10 +152,13 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("Remove")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult discountHeaderRemove(ParamDiscountDetail itemData)
+        public async Task<IActionResult> discountHeaderRemove(ParamDiscountDetail itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 rm = new ResponseMessage();
@@ -160,6 +173,8 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "Discount Removed", VendorID.ToString(), AppName, sourceIPAddress, itemData);
+                    
                 }
                 else
                 {
@@ -609,6 +624,9 @@ namespace appify.web.api.Controllers
             var result = true;
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 List<OrderDiscount> returnItem = new List<OrderDiscount>();
@@ -618,7 +636,10 @@ namespace appify.web.api.Controllers
                 TokenValidator.IsValidToken(Request, _configuration, env);
                 foreach (var item in orderDiscount)
                 {
+                    var eventType = item.DiscountID > 0 ? "Order Discount Updated" : "New Order Discount Created";
+                    var createdModifiedBy = item.DiscountID > 0 ? item.ModifiedBy.ToString() : item.CreatedBy.ToString();
                     returnItem.Add(this.discountHeaderBusiness.DiscountSave(item));
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), eventType, createdModifiedBy, AppName, sourceIPAddress, item);
                 }
                 if (result)
                 {
@@ -671,10 +692,13 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("DiscountRemove")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public IActionResult orderDiscountRemove(ParamDiscount itemData)
+        public async Task<IActionResult> orderDiscountRemove(ParamDiscount itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 rm = new ResponseMessage();
@@ -689,6 +713,7 @@ namespace appify.web.api.Controllers
                     rm.data = result;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DISCOUNT REMOVED SUCCESSFULLY", reqHeader, controllerURL, itemData, result, StatusName.ok));
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "Order Discount Removed", VendorID.ToString(), AppName, sourceIPAddress, itemData);
                 }
                 else
                 {

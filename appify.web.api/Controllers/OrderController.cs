@@ -1676,6 +1676,14 @@ namespace appify.web.api.Controllers
         /// Get an Order List
         /// </summary>
         /// <remarks> 
+        /// 
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "userID": 1060,
+        ///       "userType": 1000
+        ///     }
+        ///     
         /// Sample response JSON :
         /// 
         ///     {
@@ -1740,6 +1748,85 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("FETCH ORDER LIST - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+
+        }
+
+        /// <summary>
+        /// Get an Order List Page View
+        /// </summary>
+        /// <remarks> 
+        /// Sample Request JSON:
+        /// 
+        ///     {
+        ///       "userID": 1060,
+        ///       "userType": 1000,
+        ///       "pageNo": 1,
+        ///       "rows": 10,
+        ///       "filterBy": 114,
+        ///       "orderNo": "",
+        ///       "productName": ""
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH order LIST",
+        ///       "data": [
+        ///         {
+        ///           "orderID": 1000,
+        ///           "orderNo": "PO1473150202312150614",
+        ///           "orderStatus": 3735,
+        ///           "orderStatusDescription": null,
+        ///           "productID": 1217,
+        ///           "productDescription": "shirt",
+        ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1701443047420.jpg"
+        ///         },
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">FETCH ORDER LIST SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        [HttpPost, Route("listpageview")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> ListPageView(OrderSearch itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                List<OrderList> items = await orderBusiness.OrderListPageView(itemData);
+                if (items?.Any() == true)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH order LIST";
+                    rm.name = StatusName.ok;
+                    rm.data = items;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = null;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
             }
             return Ok(rm);
 

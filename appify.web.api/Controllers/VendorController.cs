@@ -1112,9 +1112,13 @@ namespace appify.web.api.Controllers
         public async Task<IActionResult> SaveUser(MemberUser itemData)
         {
             var reqHeader = Request;
+            var fullName = itemData.FirstName + ' ' + itemData.LastName;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            var eventType = itemData.UserID > 0 ? "User Updated" : "New User Created";
+            //var eventTypeError = itemData.UserID > 0 ? "Unable to Update User!" : "Unable to Add User!";
+            var createdModifiedBy = itemData.UserID > 0 ? itemData.ModifiedBy.ToString() : itemData.Createdby.ToString();
             //dynamic data = jsonData;
             try
             {
@@ -1142,7 +1146,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
 
-                    await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, "New User Created", item.UserID.ToString(), AppName, sourceIPAddress, item);
+                    await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, eventType + " - " + fullName + " (" +(item.UserID.ToString()) + ") ", createdModifiedBy, AppName, sourceIPAddress, item);
 
                     await Common.UpdateEventLogsNew("USER HAS BEEN SUCCESSFULLY REGISTERED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
 
@@ -1153,7 +1157,10 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
+                    rm.data = "NO CONTENT";
+
+                    //await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, eventTypeError + " - " + fullName, item.UserID.ToString(), AppName, sourceIPAddress, item);
+
                     await Common.UpdateEventLogsNew("USER REGISTERED - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
                 }
 
@@ -1165,6 +1172,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
+                //await auditService.LogAsync(EntityType.Vendor, itemData.VendorID, eventTypeError + " - " + fullName, itemData.UserID.ToString(), AppName, sourceIPAddress, ex.Message.ToString());
                 await Common.UpdateEventLogsNew("USER REGISTERED - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
@@ -1425,6 +1433,9 @@ namespace appify.web.api.Controllers
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             //dynamic data = jsonData;
             try
             {
@@ -1439,6 +1450,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.ok;
                     rm.data = item;
                     await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "User Removed - " + itemData.UserID, VendorID, AppName, sourceIPAddress, item);
                 }
                 else
                 {
@@ -1447,6 +1459,7 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     await Common.UpdateEventLogsNew("USER'S STATUS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message, this.eventLogBusiness);
+                    //await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Unable to Remove User - " + itemData.UserID, VendorID, AppName, sourceIPAddress, item);
                 }
 
             }
@@ -1458,6 +1471,7 @@ namespace appify.web.api.Controllers
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
                 await Common.UpdateEventLogsNew("USER'S STATUS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                //await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Unable to Remove User - " + itemData.UserID, VendorID, AppName, sourceIPAddress, itemData);
             }
             return Ok(rm);
 
@@ -1498,6 +1512,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 rm = new ResponseMessage();
@@ -1526,7 +1541,7 @@ namespace appify.web.api.Controllers
                     rm.data = true;
 
                     this.vendorWebModuleBusiness.UpdateInvitationSend(itemData.MobileNo);
-                    await auditService.LogAsync(EntityType.Vendor, itemData.UserID, "Invitation has been sent successfully", itemData.UserID.ToString(), AppName, sourceIPAddress, itemData);
+                    await auditService.LogAsync(EntityType.Vendor, long.Parse(VendorID), "Invitation has been sent successfully - " + itemData.UserID.ToString(), VendorID, AppName, sourceIPAddress, itemData);
 
                 }
                 else
@@ -1535,7 +1550,6 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = "NO CONTENT";
-                    //await Common.UpdateEventLogsNew("INVITATION - NO CONTENT!", reqHeader, controllerURL, result, null, StatusName.invalid, this.eventLogBusiness);
                 }
 
             }
@@ -1546,7 +1560,6 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
-                //await Common.UpdateEventLogsNew("USER'S STATUS HAS BEEN SUCCESSFULLY UPDATED!", reqHeader, controllerURL, null, null, StatusName.ok, this.eventLogBusiness);
             }
             return Ok(rm);
 
@@ -1554,12 +1567,13 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("SignIn")]
         [MapToApiVersion("1.0")]
-        public IActionResult SignIn(ParamLoginIn itemData)
+        public async Task<IActionResult> SignIn(ParamLoginIn itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic loginParams = jsondata;
-
+            string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
+            string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
+            string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             try
             {
                 rm = new ResponseMessage();
@@ -1572,6 +1586,10 @@ namespace appify.web.api.Controllers
                     rm.data = returnData;
                     //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
                     this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("MemberLogIn - SUCCESSFULLY", reqHeader, controllerURL, itemData, returnData, StatusName.ok));
+                    //if (itemData.parentID == 0)
+                    //{
+                    //    await auditService.LogAsync(EntityType.Vendor, 0, "Vendor SignIn - " + itemData.MobileNo, "0", AppName, sourceIPAddress, itemData);
+                    //}
                 }
                 else
                 {

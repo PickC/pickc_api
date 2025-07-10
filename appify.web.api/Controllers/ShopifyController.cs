@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using NPOI.HPSF;
 using System.ComponentModel.DataAnnotations;
+using NPOI.Util;
 
 namespace appify.web.api.Controllers
 {
@@ -116,11 +117,35 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "productId": "gid://shopify/Product/9899667226900",
+        ///       "title": "women solid sleeveless tiered dress",
+        ///       "description": "Occasion : Casual wear color : Pink print and pattern : Solids length : Knee Length type : Fit and flare,tiered dress neck type : key hole fit : Regular fit sleeve type : Sleeveless material : Polyester",
+        ///       "vendor": "Saurabh wallpapers",
+        ///       "productType": "Accessories",
+        ///       "status": "Active",
+        ///       "variants": [
+        ///         {
+        ///           "variantId": "gid://shopify/ProductVariant/51034392953108",
+        ///           "sku": "DB1-BLK-O",
+        ///           "price": 1349.00,
+        ///           "inventory": 12,
+        ///           "inventoryItemID": "gid://shopify/InventoryItem/52996731732244",
+        ///           "quantityPurchased": 1,
+        ///           "weight": 123,
+        ///           "weightUnit": "GRAMS"
+        ///         }
+        ///       ]
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": "Product updated successfully."
         ///     }
         /// 
         /// </remarks>
@@ -145,13 +170,6 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                productData.ProductId = "gid://shopify/Product/9963806064928";
-                productData.Title = "Skeleton Black Hoody" + DateTime.Now.Microsecond.ToString();
-                productData.Description = "Lovely black zip-up black hoodie with all over skeleton print." + DateTime.Now.Microsecond.ToString();
-                productData.Vendor = "Docblack-" + DateTime.Now.Microsecond.ToString();
-                productData.ProductType = "Accessories";
-                productData.Status = "Active";
-
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, VendorID);
                 var result = await shopifyGraphQLService.UpdateShopifyProductAsync(productData);
                 if (result != null)
@@ -167,9 +185,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS ASYNC - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
                 }
             }
@@ -179,7 +195,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("SHOPIFY UPDATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
@@ -191,11 +207,20 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "vendorID": 1060,
+        ///       "inventoryItemID": "gid://shopify/InventoryItem/52996731732244",
+        ///       "quantityPurchased": 1
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S INVENTORY HAVE BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": true
         ///     }
         /// 
         /// </remarks>
@@ -204,7 +229,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateProductInvantoryAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UpdateProductInvantoryAsync(string InventoryItemID, int QuantityPurchased, ParamVendorProduct item)
+        public async Task<IActionResult> UpdateProductInvantoryAsync(ParamShopifyInventory item)
         {
             /*
              * 
@@ -219,12 +244,9 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
-                InventoryItemID = "gid://shopify/InventoryItem/52283253391648";
-                rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
-
-                var result = await shopifyGraphQLService.UpdateShopifyInventoryAsync(52283253391648, QuantityPurchased);
+                //"52283253391648"//long.Parse(InventoryItemID)
+                var result = await shopifyGraphQLService.UpdateShopifyInventoryAsync(item.InventoryItemID, item.QuantityPurchased);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -238,9 +260,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("SHOPIFY PRODUCT'S INVENTORY - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
                 }
             }
@@ -250,7 +270,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("SHPIFY PRODUCT'S INVENTORY - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
@@ -261,12 +281,14 @@ namespace appify.web.api.Controllers
         /// Upload Shopify Product Image
         /// </summary>
         /// <remarks>
-        /// Sample request JSON :
-        ///     {
-        ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S IMAGE HAS BEEN SUCCESSFULLY UPLOADED!",
+        ///       "data": "https://cdn.shopify.com/s/files/1/0942/7219/2788/files/tshirts_b6932816-2a7a-4f20-93e8-fc883ee03f99.jpeg?v=1751510835"
         ///     }
         /// 
         /// </remarks>
@@ -275,7 +297,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UploadProductImageAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UploadProductImageAsync(ParamVendorRef item, [Required][FromForm] long ProductID, IFormFile file)
+        public async Task<IActionResult> UploadProductImageAsync([Required][FromForm] ParamVendorUploadImg item)
         {
             /*
                 Files - Permissions
@@ -290,7 +312,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                if (file == null || file.Length == 0)
+                if (item.file == null || item.file.Length == 0)
                 {
                     rm.statusCode = api.StatusCodes.ERROR;
                     rm.message = "No file uploaded";
@@ -299,18 +321,20 @@ namespace appify.web.api.Controllers
 
                     return Ok(rm);
                 }
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".svg" , ".webp"};
 
-                if (!Path.GetExtension(file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+                if (!allowedExtensions.Contains(Path.GetExtension(item.file.FileName).ToLowerInvariant()))
                 {
+                    //if (!Path.GetExtension(item.file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
                     rm.statusCode = api.StatusCodes.ERROR;
-                    rm.message = "only .jpg files are allowed";
+                    rm.message = "only .jpg, .jpeg, .png, .svg, .webp files are allowed";
                     rm.name = StatusName.ok;
-                    rm.data = "only .jpg files are allowed";
+                    rm.data = "only .jpg, .jpeg, .png, .svg, .webp files are allowed";
                     return Ok(rm);
                 }
 
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
-                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(file, ProductID);
+                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(item.file, item.ProductID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -339,7 +363,7 @@ namespace appify.web.api.Controllers
 
                 await Common.UpdateEventLogsNew("SHOPIFY CREATE IMAGE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
-            return View();
+            return Ok(rm);
         }
 
         /// <summary>
@@ -347,11 +371,21 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "vendorID": 1060,
+        ///       "referenceID": 0,
+        ///       "imageID": "gid://shopify/ProductImage/52397812580628",
+        ///       "productID": "gid://shopify/Product/9899667226900"
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S IMAGE HAS BEEN SUCCESSFULLY DELETED!",
+        ///       "data": "Image has been successfully removed!"
         ///     }
         /// 
         /// </remarks>
@@ -360,7 +394,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductImageAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductImageAsync(ParamVendorRef item, string ImageID, string ProductID)
+        public async Task<IActionResult> DeleteProductImageAsync(ParamVendorDeleteImg item)
         {
             /*
                 Files - Permissions
@@ -369,15 +403,13 @@ namespace appify.web.api.Controllers
                 read_files
 
              */
-            ImageID = "gid://shopify/ProductImage/49587254624544";
-            ProductID = "gid://shopify/Product/9776279585056";
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
-                var result =  await shopifyGraphQLService.DeleteProductImageAsync(9776279585056, 49587254624544);
+                var result =  await shopifyGraphQLService.DeleteProductImageAsync(item.ProductID, item.ImageID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -406,7 +438,7 @@ namespace appify.web.api.Controllers
 
                 await Common.UpdateEventLogsNew("SHOPIFY CREATE IMAGE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
-            return View();
+            return Ok(rm);
         }
 
         /// <summary>
@@ -414,11 +446,19 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
-        ///     {
-        ///     }
+        /// 
+        ///{
+        ///  "vendorID": 1060,
+        ///  "productID": "gid://shopify/Product/9899667226900"
+        ///}
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY DELETED!",
+        ///       "data": "Product has been successfully removed!"
         ///     }
         /// 
         /// </remarks>
@@ -427,16 +467,16 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductAsync(ShopifyProductStock item, [Required] string ProductID)
+        public async Task<IActionResult> DeleteProductAsync([Required] ParamVendorProduct item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                ProductID = "gid://shopify/Product/9776279585056";
+
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
-                var result = await shopifyGraphQLService.DeleteProductAsync(ProductID);
+                var result = await shopifyGraphQLService.DeleteProductAsync(item.ProductID);
 
                 if (result != null)
                 {

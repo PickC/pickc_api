@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("appify.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0799896f1ba87a3c369296ce9f18f52ae3d8515b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96e6dff2da5c975295da3b37269782ef81aaccad")]
 [assembly: System.Reflection.AssemblyProductAttribute("appify.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("appify.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

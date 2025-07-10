@@ -2638,5 +2638,88 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+        /// <summary>
+        /// Get Orders List based on filter
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     Method Type : POST
+        ///     
+        ///     {
+        ///       "productName": "Shirt",
+        ///       "isActive": true,
+        ///       "minPrice": 200,
+        ///       "maxPrice": 10000,
+        ///       "pageNo": 1,
+        ///       "rows": 10
+        ///     }
+        /// 
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "FETCH ORDERS BY GLOBAL PRODUCT SEARCH",
+        ///       "data": {
+        ///         "products": [
+        ///           {
+        ///             "productID": 3481,
+        ///             "vendorID": 1060,
+        ///             "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/P   la in_Men_Cotton_Shirt_Formal_Half_Sleeves_20250624182808.jpg",
+        ///             "productName": "Plain Men Cotton Shirt, Formal, Half Sleeves",
+        ///             "price": 533,
+        ///             "appName": "UAT testing Application",
+        ///             "sellerName": "Appify   UAT",
+        ///             "isActive": true,
+        ///             "category": "OTHERS",
+        ///             "categoryID": 4191
+        ///           }
+        ///         ],
+        ///         "totalCount": 3481
+        ///       }
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>Boolean value</returns>
+        /// <response code="200">Orders By Global Search</response>
+        /// <response code="500">Returns Error ResponseMessages </response> 
+        /// 
+        [HttpPost, Route("globalproductsearch")]
+        [MapToApiVersion("1.0")]
+        public IActionResult GlobalProductSearch(ParamGlobalProductSearch itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = this.adminDashboardBusiness.GlobalProductSearch(itemData.ProductName, itemData.IsActive, itemData.MinPrice, itemData.MaxPrice, itemData.PageNo, itemData.Rows);
+                if (result!=null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "FETCH ORDERS BY GLOBAL PRODUCT SEARCH";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
     }
 }

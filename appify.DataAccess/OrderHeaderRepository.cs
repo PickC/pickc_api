@@ -214,7 +214,19 @@ namespace appify.DataAccess
 
             return items;
         }
+        public Task<List<OrderList>> OrderListPageView(OrderSearch itemData)
+        {
+            List<OrderList> items = new List<OrderList>();
 
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERPAGEVIEW, itemData.UserID, itemData.UserType, itemData.PageNo, itemData.Rows, itemData.FilterBy, itemData.OrderNo, itemData.ProductName);
+                items = DataTableHelper.ConvertDataTable<OrderList>(ds.Tables[0]);
+            }
+
+            return Task.FromResult(items);
+        }
         public List<DailyOrderSummary> GetDailyOrderSummary()
         {
             List<DailyOrderSummary> items = new List<DailyOrderSummary>();
