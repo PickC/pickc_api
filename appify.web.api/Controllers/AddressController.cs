@@ -527,9 +527,9 @@ namespace appify.web.api.Controllers
                 }
                 else
                 {
-                    rm.statusCode = StatusCodes.ERROR;
+                    rm.statusCode = StatusCodes.OK;
                     rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
+                    rm.name = StatusName.ok;
                     rm.data = "NO CONTENT";
 
                     await Common.UpdateEventLogsNew("ADDRESS LIST - NO CENTENT", reqHeader, controllerURL, itemData, items, rm.message, this.eventLogBusiness);

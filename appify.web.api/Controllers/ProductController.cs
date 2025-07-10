@@ -2241,7 +2241,6 @@ namespace appify.web.api.Controllers
                     rm.name = StatusName.invalid;
                     rm.data = null;
                     await Common.UpdateEventLogsNew("VENDOR SELECTED PARENT CATEGORIES - NO CONTENT", reqHeader, controllerURL, vendorCategories, returnItem, rm.message, this.eventLogBusiness);
-                    await auditService.LogAsync(EntityType.Product, 0, "Vendor Selected Categories - No Content", UserId, AppName, sourceIPAddress, vendorCategories);
                 }
 
             }

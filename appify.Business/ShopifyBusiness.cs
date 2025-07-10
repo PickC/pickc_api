@@ -57,10 +57,17 @@ namespace appify.Business
         {
             return repository.SaveShopifyProductVarientImage(item);
         }
-
+        public bool DeleteShopifyProduct(string ProductID, long VendorID)
+        {
+            return repository.DeleteShopifyProduct(ProductID, VendorID);
+        }
         public ShopifyConfig GetShopifyConfigByVendor(long VendorID)
         {
             return repository.GetShopifyConfigByVendor(VendorID);
+        }
+        public ShopifyConfigLite GetShopifyConfigByStoreUrl(string StoreURL)
+        {
+            return repository.GetShopifyConfigByStoreUrl(StoreURL);
         }
         public bool BulkInsertShopifyProducts(DataTable shopifyProductMaster, DataTable shopifyProductVariant, DataTable shopifyProductImage)
         {
@@ -69,6 +76,10 @@ namespace appify.Business
         public bool SaveShopifyProductToAppify(long VendorID)
         {
             return repository.SaveShopifyProductToAppify(VendorID);
+        }
+        public List<ShopifyProductID> GetShopifyProductIDByVendor(long VendorID)
+        {
+            return repository.GetShopifyProductIDByVendor(VendorID);
         }
     }
 }
