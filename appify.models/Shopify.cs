@@ -23,6 +23,9 @@ namespace appify.models
         public string LegacyResourceId { get; set; }
         public Int16 TotalInventory { get; set; }
         public bool IsActive { get; set; }
+        public string CategoryID { get; set; }
+        public string Category { get; set; }
+        public string BreadCrumb { get; set; }
     }
     public partial class ShopifyProductVariant
     {
@@ -71,12 +74,23 @@ namespace appify.models
         public string StoreURL { get; set; }
         public string AccessToken { get; set; }
         public string APIVersion { get; set; }
+        public string SecretKey { get; set; }
 
+    }
+
+    public partial class ShopifyConfigLite
+    {
+        public long VendorID { get; set; }
+        public string SecretKey { get; set; }
     }
     public partial class ShopifyProductStock
     {
         public long VendorID { get; set; }
         public string ProductID { get; set; }
         public Int16 InventoryQuantity { get; set; }
+    }
+    public partial class ShopifyProductID
+    {
+        public string ProductID { get; set; }
     }
 }
