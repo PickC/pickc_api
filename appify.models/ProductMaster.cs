@@ -257,4 +257,33 @@ namespace appify.models
 
         }
     }
+    public partial class ProductsByFeaturedCat
+    {
+        public Int64 VendorID { get; set; }
+        public Int64? CategoryID { get; set; }
+        public Int64? ParentID { get; set; }
+        public Int32? Count { get; set; }
+        public Int32? ProductCount { get; set; }
+        public Int32? PageNo { get; set; }
+        public Int32? Rows { get; set; }
+    }
+    public partial class ProductSearch
+    {
+        public Int64 VendorID { get; set; }
+        public string? ProductName { get; set; }
+        public Int64? CategoryID { get; set; }
+        public Int32? PageNo { get; set; }
+        public Int32? Rows { get; set; }
+        public Int32? PriceFrom { get; set; }
+        public Int32? PriceTo { get; set; }
+        public Int32? StockFrom { get; set; }
+        public Int32? StockTo { get; set; }
+        public Int32? ProductCount { get; set; }
+    }
+
+    public class ProductListResponse
+    {
+        public List<MemberProduct> Products { get; set; }
+        public int TotalCount { get; set; }
+    }
 }

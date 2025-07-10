@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "zeta-cortex-464910-m3",
+  "private_key_id": "75e0f14f518a3c5d4588a516917aa11988f2349d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQDW/9JUB7LYvCpl\nsMJMjvd6E50jkeKxh886hLmkcJNftb7vsv786+L4SlB8K608akpAPP4LNK2OYGFe\ni03m5X1GMOW8IyImf0O/qy1z/qxf1etnj858V6IxOTNUMLy30NNh6elkhA8oNcl6\nLm3UK8Mx0qJrUBjUwL99sS1VDT18l/k3PbSDD3FGNjf+5MHL0QHXR5WRCiHgPzpH\nZCBku2hepAOUSJj0xi4IG2uBM3HIZXJj25X1qOLXyRx3m6Nc11qXDj+UqlTL6ljX\neUbnOTbLQaRes4s98WVW/93XmLy1qBCu1wWvyxW5azaug0l7FEjn6ON33eiNNCD7\nOBcSDguPAgMBAAECgf8NNSu4TEy45RPDV9zAxjCTV9DnWV8oPbZqh25J6vJxQmH0\n/vc96x2of0fLOkal4dQNdvKYXg+Z59OK72AEbe8gXwmU94lTB06iJ3Zgzax3R8aP\nohEO+NTrI4x820eXFEj/8y01O04E/EV95PlK6DIhgvZRzbpIJGmYRpbt2viOJIjV\nVlyxWAgiAr2MKbfXEwzz005va1S0tlCm04TCcTgjz6DixpraOHxlBbV8mFR+H0Jf\nYa/jgmW8T9Q46RdeO9SzFXKUlmdUZfKHkKuO839vuwPZgASC1PUIYjm/v1UIEYMW\nPu0vTe4fg7dKz0ebrz+jDzzXg2hLQQuGmO6kEtUCgYEA/zxuljLaBPxropv8pk2k\nr5ooEwYBqQ7+zBU6oOlreA/d5uHHIkydwqafQj6iDY2+JsNQZjDKzkqGx19WFWeF\ns8r4HkRUgyqAUwzJcQGoPXp/4ZErqf41opgHms+8rDrRn2T2ICDL+lKF0t56t8+I\nM46Yj8KcSmIHyuRZnz8c6UUCgYEA16SPKmllpB7+dROF6b10GICwFA8Cura5Fv3V\njZqNYVnkQOKeltyzPofEfJDa6bFJH1Qhmg9e5zfPxL/V4fnLpUdz/jF8mnBw6EGH\ny9sEt/iArb9k7VShzIvXu5t0FSn7EHTHZK5KLUtBbh7xsZxI2p1VMIZp8guR0c4e\n9mL2rMMCgYBRRmgckgLU1aBcvnk8Z7sKY/dg32fF8s12JUhvFwUuzTanH7wukuEl\nq7NI//LQiBNF+qnucJkUCa1TbWtXE4kC0J4j3TRgNDd6uramspVlRk3UgUq7LgTc\nSrcZOA9ndK9tp1OstWTeyEpu9IN1ZrODX2P7W0gzc3XxyLc1O360VQKBgQC7OUCj\njgaVS+OZOm4V1kspyvEVOUMhYOuqLpBu9TSyxR0LyLXwPYXSUIYjsJCgPTBDZwQV\ngirfjPFy3SuRmxNYWIU4uTZ50A33WI3STEH4iGUQdQ/njoc71F5loD5U8bHtQ7aq\njzgPwzr3pR4rGomWZOtFyi3J3ImqIs93E80fiQKBgAjXa5o/Z+UxxTK6p1pYt+Az\nPE7mrEYivp76ApaCGtLB96WmxzCwa0ve4OuapDq6JAwJ+JZEGEE2u8p5fMFrp6WM\n3NJyd1mM8jI/yXbcD6+q9PplxUMRlWjExI7KbpLDERBYMLWDMpG15qWDdHupIqfO\nhVHZluBgR1jnW+L0/7Yf\n-----END PRIVATE KEY-----\n",
+  "client_email": "gurjeet@zeta-cortex-464910-m3.iam.gserviceaccount.com",
+  "client_id": "111123346952227984551",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/gurjeet%40zeta-cortex-464910-m3.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

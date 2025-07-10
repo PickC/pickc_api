@@ -19,6 +19,22 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using NPOI.HPSF;
 using System.ComponentModel.DataAnnotations;
+using NPOI.Util;
+using ICSharpCode.SharpZipLib.GZip;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.Hosting;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.Formula.Functions;
+using NPOI.XWPF.UserModel;
+using Org.BouncyCastle.Utilities.Zlib;
+using System.Security.Policy;
+using System.Text;
+using Twilio.Rest;
+using Twilio.TwiML.Voice;
+using Twilio.TwiML.Messaging;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.DataProtection;
+using Org.BouncyCastle.Ocsp;
 
 namespace appify.web.api.Controllers
 {
@@ -116,11 +132,35 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "productId": "gid://shopify/Product/9899667226900",
+        ///       "title": "women solid sleeveless tiered dress",
+        ///       "description": "Occasion : Casual wear color : Pink print and pattern : Solids length : Knee Length type : Fit and flare,tiered dress neck type : key hole fit : Regular fit sleeve type : Sleeveless material : Polyester",
+        ///       "vendor": "Saurabh wallpapers",
+        ///       "productType": "Accessories",
+        ///       "status": "Active",
+        ///       "variants": [
+        ///         {
+        ///           "variantId": "gid://shopify/ProductVariant/51034392953108",
+        ///           "sku": "DB1-BLK-O",
+        ///           "price": 1349.00,
+        ///           "inventory": 12,
+        ///           "inventoryItemID": "gid://shopify/InventoryItem/52996731732244",
+        ///           "quantityPurchased": 1,
+        ///           "weight": 123,
+        ///           "weightUnit": "GRAMS"
+        ///         }
+        ///       ]
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": "Product updated successfully."
         ///     }
         /// 
         /// </remarks>
@@ -145,13 +185,6 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                productData.ProductId = "gid://shopify/Product/9963806064928";
-                productData.Title = "Skeleton Black Hoody" + DateTime.Now.Microsecond.ToString();
-                productData.Description = "Lovely black zip-up black hoodie with all over skeleton print." + DateTime.Now.Microsecond.ToString();
-                productData.Vendor = "Docblack-" + DateTime.Now.Microsecond.ToString();
-                productData.ProductType = "Accessories";
-                productData.Status = "Active";
-
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, VendorID);
                 var result = await shopifyGraphQLService.UpdateShopifyProductAsync(productData);
                 if (result != null)
@@ -167,9 +200,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS ASYNC - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
                 }
             }
@@ -179,7 +210,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("SHOPIFY UPDATE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
@@ -191,11 +222,20 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "vendorID": 1060,
+        ///       "inventoryItemID": "gid://shopify/InventoryItem/52996731732244",
+        ///       "quantityPurchased": 1
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S INVENTORY HAVE BEEN SUCCESSFULLY UPDATED!",
+        ///       "data": true
         ///     }
         /// 
         /// </remarks>
@@ -204,7 +244,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateProductInvantoryAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UpdateProductInvantoryAsync(string InventoryItemID, int QuantityPurchased, ParamVendorProduct item)
+        public async Task<IActionResult> UpdateProductInvantoryAsync(ParamShopifyInventory item)
         {
             /*
              * 
@@ -219,12 +259,9 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
-                InventoryItemID = "gid://shopify/InventoryItem/52283253391648";
-                rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
-
-                var result = await shopifyGraphQLService.UpdateShopifyInventoryAsync(52283253391648, QuantityPurchased);
+                //"52283253391648"//long.Parse(InventoryItemID)
+                var result = await shopifyGraphQLService.UpdateShopifyInventoryAsync(item.InventoryItemID, item.QuantityPurchased);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -238,9 +275,7 @@ namespace appify.web.api.Controllers
                     rm.statusCode = StatusCodes.ERROR;
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("Master", reqHeader, controllerURL, item, null, rm.message));
+                    rm.data = "NO CONTENT";
                     await Common.UpdateEventLogsNew("SHOPIFY PRODUCT'S INVENTORY - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
                 }
             }
@@ -250,7 +285,7 @@ namespace appify.web.api.Controllers
                 rm.statusCode = StatusCodes.ERROR;
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
-                rm.data = null;
+                rm.data = ex.Message.ToString();
 
                 await Common.UpdateEventLogsNew("SHPIFY PRODUCT'S INVENTORY - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
@@ -261,12 +296,14 @@ namespace appify.web.api.Controllers
         /// Upload Shopify Product Image
         /// </summary>
         /// <remarks>
-        /// Sample request JSON :
-        ///     {
-        ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S IMAGE HAS BEEN SUCCESSFULLY UPLOADED!",
+        ///       "data": "https://cdn.shopify.com/s/files/1/0942/7219/2788/files/tshirts_b6932816-2a7a-4f20-93e8-fc883ee03f99.jpeg?v=1751510835"
         ///     }
         /// 
         /// </remarks>
@@ -275,7 +312,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UploadProductImageAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> UploadProductImageAsync(ParamVendorRef item, [Required][FromForm] long ProductID, IFormFile file)
+        public async Task<IActionResult> UploadProductImageAsync([Required][FromForm] ParamVendorUploadImg item)
         {
             /*
                 Files - Permissions
@@ -290,7 +327,7 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
 
-                if (file == null || file.Length == 0)
+                if (item.file == null || item.file.Length == 0)
                 {
                     rm.statusCode = api.StatusCodes.ERROR;
                     rm.message = "No file uploaded";
@@ -299,18 +336,20 @@ namespace appify.web.api.Controllers
 
                     return Ok(rm);
                 }
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".svg" , ".webp"};
 
-                if (!Path.GetExtension(file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
+                if (!allowedExtensions.Contains(Path.GetExtension(item.file.FileName).ToLowerInvariant()))
                 {
+                    //if (!Path.GetExtension(item.file.FileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase))
                     rm.statusCode = api.StatusCodes.ERROR;
-                    rm.message = "only .jpg files are allowed";
+                    rm.message = "only .jpg, .jpeg, .png, .svg, .webp files are allowed";
                     rm.name = StatusName.ok;
-                    rm.data = "only .jpg files are allowed";
+                    rm.data = "only .jpg, .jpeg, .png, .svg, .webp files are allowed";
                     return Ok(rm);
                 }
 
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
-                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(file, ProductID);
+                var result = await shopifyGraphQLService.UploadImageToShopifyAsync(item.file, item.ProductID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -339,7 +378,7 @@ namespace appify.web.api.Controllers
 
                 await Common.UpdateEventLogsNew("SHOPIFY CREATE IMAGE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
-            return View();
+            return Ok(rm);
         }
 
         /// <summary>
@@ -347,11 +386,21 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
+        /// 
         ///     {
+        ///       "vendorID": 1060,
+        ///       "referenceID": 0,
+        ///       "imageID": "gid://shopify/ProductImage/52397812580628",
+        ///       "productID": "gid://shopify/Product/9899667226900"
         ///     }
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCT'S IMAGE HAS BEEN SUCCESSFULLY DELETED!",
+        ///       "data": "Image has been successfully removed!"
         ///     }
         /// 
         /// </remarks>
@@ -360,7 +409,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductImageAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductImageAsync(ParamVendorRef item, string ImageID, string ProductID)
+        public async Task<IActionResult> DeleteProductImageAsync(ParamVendorDeleteImg item)
         {
             /*
                 Files - Permissions
@@ -369,15 +418,13 @@ namespace appify.web.api.Controllers
                 read_files
 
              */
-            ImageID = "gid://shopify/ProductImage/49587254624544";
-            ProductID = "gid://shopify/Product/9776279585056";
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
-                var result =  await shopifyGraphQLService.DeleteProductImageAsync(9776279585056, 49587254624544);
+                var result =  await shopifyGraphQLService.DeleteProductImageAsync(item.ProductID, item.ImageID);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -406,7 +453,7 @@ namespace appify.web.api.Controllers
 
                 await Common.UpdateEventLogsNew("SHOPIFY CREATE IMAGE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
-            return View();
+            return Ok(rm);
         }
 
         /// <summary>
@@ -414,11 +461,19 @@ namespace appify.web.api.Controllers
         /// </summary>
         /// <remarks>
         /// Sample request JSON :
-        ///     {
-        ///     }
+        /// 
+        ///{
+        ///  "vendorID": 1060,
+        ///  "productID": "gid://shopify/Product/9899667226900"
+        ///}
         ///     
         /// Sample response JSON :
+        /// 
         ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY DELETED!",
+        ///       "data": "Product has been successfully removed!"
         ///     }
         /// 
         /// </remarks>
@@ -427,16 +482,16 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductAsync")]
         [MapToApiVersion("1.0")]
-        public async Task<IActionResult> DeleteProductAsync(ShopifyProductStock item, [Required] string ProductID)
+        public async Task<IActionResult> DeleteProductAsync([Required] ParamVendorProduct item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
                 rm = new ResponseMessage();
-                ProductID = "gid://shopify/Product/9776279585056";
+
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
-                var result = await shopifyGraphQLService.DeleteProductAsync(ProductID);
+                var result = await shopifyGraphQLService.DeleteProductAsync(item.ProductID);
 
                 if (result != null)
                 {
@@ -466,6 +521,30 @@ namespace appify.web.api.Controllers
                 await Common.UpdateEventLogsNew("SHOPIFY DELETE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
+        }
+
+        private bool VerifyWebhookRequestAsync(HttpRequest request, string shopifySecret)
+        {
+            using var reader = new StreamReader(request.Body);
+            var requestBody = reader.ReadToEndAsync().Result;
+
+            // Get the Shopify HMAC header
+            var shopifyHmac = request.Headers["X-Shopify-Hmac-Sha256"].ToString();
+
+            // Convert secret to bytes
+            var secretBytes = Encoding.UTF8.GetBytes(shopifySecret);
+
+            // Compute the hash of the body
+            using var hmacSha256 = new HMACSHA256(secretBytes);
+            var hashBytes = hmacSha256.ComputeHash(Encoding.UTF8.GetBytes(requestBody));
+
+            // Convert hash to base64 string
+            var calculatedHmac = Convert.ToBase64String(hashBytes);
+
+            // OPTIONAL: Log both for debugging
+            Console.WriteLine($"Key - {shopifyHmac} -- calculatedHmac: {calculatedHmac}");
+
+            return shopifyHmac.Equals(calculatedHmac, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -501,84 +580,198 @@ namespace appify.web.api.Controllers
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> WebhookPaymentEvents()
         {
-            var body = "";
-            string paymentType = "";
+
+            /*
+             * 
+             * Shopify - Headers (For Reference)
+             * 
+                headers - Accept:
+                Accept - Encoding: gzip; q = 1.0,deflate; q = 0.6,identity; q = 0.3--
+                Content - Length: 4968--
+                Content - Type: application / json--
+                Host: appifyapi.azurewebsites.net--
+                Max - Forwards: 10--
+                User - Agent: Shopify - Captain - Hook--
+                X - Shopify - Api - Version: 2025 - 01--
+                X - Shopify - Event - Id: e04cd3d0 - b977 - 41b5 - b855 - 8d182178d8b1--
+                X - Shopify - Hmac - Sha256: z / 8HXPYxM4qKmI4bot5q1BX5s5u / MBaLrgIesfvbgNw = --
+                X - Shopify - Product - Id: 9903995289876--
+                X - Shopify - Shop - Domain: d9nnfq - s0.myshopify.com--
+                X - Shopify - Topic: products / update--
+                X - Shopify - Triggered - At: 2025 - 07 - 08T12: 41:31.821061678Z--
+                X - Shopify - Webhook - Id: e5877a5e - f3cf - 40a5 - b4da - 5f5d493eafb5--
+                X - ARR - LOG - ID: 1bdbfe00 - 9171 - 4cac - b2f7 - f8be97f45047--
+                CLIENT - IP: 34.139.82.252:55432--
+                DISGUISED - HOST: appifyapi.azurewebsites.net--
+                X - SITE - DEPLOYMENT - ID: appifyapi--
+                WAS - DEFAULT - HOSTNAME: appifyapi.azurewebsites.net--
+                X - Forwarded - Proto: https--
+                X - AppService - Proto: https--
+                X - ARR - SSL: 2048 | 256 | CN = Microsoft Azure RSA TLS Issuing CA 07, O = Microsoft Corporation, C = US | CN = *.azurewebsites.net, O = Microsoft Corporation, L = Redmond, S = WA, C = US-- X - Forwarded - TlsVersion: 1.3--
+                X - Forwarded - For: 34.139.82.252:55432-- X - Original - URL: //api/Shopify/ShopifyWebhook -- X-WAWS-Unencoded-URL: //api/Shopify/ShopifyWebhook --
+                ***/
+
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             rm = new ResponseMessage();
-            bool eventResult = false;
-            string[] eventSearch ={
-              "downtime",
-              ////"payment_link",
-              "notification",
-              "authorized",
-              "order.paid"
-            };
-
+            var body = "";
             try
             {
-                // Verify the X-VERIFY header.
-                string xVerifyHeader = reqHeader.Headers["X-Razorpay-Signature"];
-                                                                                 
-                if (xVerifyHeader == null)//// || !VerifyXVerifyHeadeRazorpay(xVerifyHeader)
+                string topic = "products/create";//Request.Headers["X-Shopify-Topic"];
+                string shopDomain = "d9nnfq-s0.myshopify.com";//Request.Headers["X-Shopify-Shop-Domain"];
+                string xVerifyHeader = "Sl7sUmG3db0RePvoIg37dtYrYBclxttx3Ce/qAGzsmI=";/////Request.Headers["X-Shopify-Hmac-Sha256"];
+                ShopifyConfigLite shopifyConfig;
+                string inputJson = "Topic - " + topic + " - Domain - " + shopDomain;
+                if (shopDomain != null)
                 {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "Invalid payload";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK RECEIVED NULL PAYLOAD", reqHeader, controllerURL, "SHOPIFY WEBHOOK RECEIVED NULL PAYLOAD-SHOpIFY-Signature-" + xVerifyHeader, "SHOPIFY WEBHOOK RECEIVED NULL PAYLOAD", StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
+                    shopifyConfig = shopifyBusiness.GetShopifyConfigByStoreUrl(shopDomain);
+                    ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, shopifyConfig.VendorID);
+                    //var isValid = VerifyWebhookRequestAsync(reqHeader, shopifyConfig.SecretKey);
                     using var reader = new StreamReader(HttpContext.Request.Body);
                     body = await reader.ReadToEndAsync();
+                    // Verify the X-Shopify-Hmac header.
+                    if (xVerifyHeader == null || xVerifyHeader == "")
+                     {
+                        rm.statusCode = StatusCodes.ERROR;
+                        rm.message = "Invalid webhook signature.";
+                        rm.name = StatusName.invalid;
+                        rm.data = null;
+                        await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK RECEIVED NULL SIGNATURE", reqHeader, controllerURL, "SHOPIFY Webhook Received Null Payload", body, StatusName.invalid, this.eventLogBusiness);
+                    }
+                    else
+                    {
+                        switch (topic)
+                        {
+                            case "products/create":
+                                var result = shopifyGraphQLService.ShopifyProductCreateAsync(body);
+                                if (result != null)
+                                {
+                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
+                                    if (products != null)
+                                    {
 
-                    //var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ", ""));
-                    //string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
-                    //foreach (var s in eventSearch)
-                    //{
-                    //    eventResult = eventname.Contains(s);
-                    //    if (eventResult == true)
-                    //        break;
-                    //}
-                    //if (eventResult == false)
-                    //{
-                    //    paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
+                                        rm.statusCode = StatusCodes.OK;
+                                        rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED!";
+                                        rm.name = StatusName.ok;
+                                        rm.data = result;
+                                        await Common.UpdateEventLogsNew("SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
+                                    }
+                                }
 
-                    //    if (paymentType == "orderPayment")
-                    //    {
-                    //        long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
+                                else
+                                {
+                                    rm.statusCode = StatusCodes.ERROR;
+                                    rm.message = "NO CONTENT";
+                                    rm.name = StatusName.invalid;
+                                    rm.data = null;
+                                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCT CREATE ASYNC - NO CONTENT", reqHeader, controllerURL, inputJson, body, rm.message, this.eventLogBusiness);
+                                }
+                                break;
 
-                    //        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
-                    //        OrderPayment orderPayment = new OrderPayment
-                    //        {
-                    //            PaymentID = 0,
-                    //            PaymentDate = dt,
-                    //            OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
-                    //            EventName = Convert.ToString(request["event"]),
-                    //            PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
-                    //            OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
-                    //            PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
-                    //            PaymentMode = 0,
-                    //            LookupCode = "RAZORPAY"
-                    //        };
-                            //var result = orderBusiness.OrderPaymentSave(orderPayment);
-                            //if (result)
-                           // {
-                                rm.statusCode = StatusCodes.OK;
-                                rm.message = "SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY";
-                                rm.name = StatusName.ok;
-                                rm.data = body;
-                                await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHOPIFY WEBHOOK - Success Response", body, StatusName.ok, this.eventLogBusiness);
-                            //}
-                    //    }
-                    //    else if (paymentType == "oneTimeSubscription")
-                    //    {
+                            case "products/update":
+                                var resultObj = shopifyGraphQLService.ShopifyProductUpdateAsync(body);
+                                if (resultObj != null)
+                                {
+                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
+                                    if (products != null)
+                                    {
 
-                    //    }
-                    //}
+                                        rm.statusCode = StatusCodes.OK;
+                                        rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED!";
+                                        rm.name = StatusName.ok;
+                                        rm.data = resultObj;
+                                        await Common.UpdateEventLogsNew("SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
+                                    }
+                                }
 
+                                else
+                                {
+                                    rm.statusCode = StatusCodes.ERROR;
+                                    rm.message = "NO CONTENT";
+                                    rm.name = StatusName.invalid;
+                                    rm.data = null;
+                                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCT UPDATE ASYNC - NO CONTENT", reqHeader, controllerURL, inputJson, body, rm.message, this.eventLogBusiness);
+                                }
+                                break;
+
+                            case "products/delete":
+                                var resultObjDel = shopifyGraphQLService.ShopifyProductDeleteAsync(body, shopifyConfig.VendorID);
+                                if (resultObjDel != null)
+                                {
+                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
+                                    if (products != null)
+                                    {
+
+                                        rm.statusCode = StatusCodes.OK;
+                                        rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY DELETED!";
+                                        rm.name = StatusName.ok;
+                                        rm.data = resultObjDel;
+                                        await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS HAS BEEN SUCCESSFULLY DELETED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
+                                    }
+                                }
+
+                                else
+                                {
+                                    rm.statusCode = StatusCodes.ERROR;
+                                    rm.message = "NO CONTENT";
+                                    rm.name = StatusName.invalid;
+                                    rm.data = null;
+                                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCT DELETE ASYNC - NO CONTENT", reqHeader, controllerURL, inputJson, body, rm.message, this.eventLogBusiness);
+                                }
+                                break;
+
+                            default:
+                                await Common.UpdateEventLogsNew($"Unhandled Shopify webhook topic: {topic}", reqHeader, controllerURL, inputJson, body, rm.message, this.eventLogBusiness);
+                                break;
+                        }
+
+                        //var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ", ""));
+                        //string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
+                        //foreach (var s in eventSearch)
+                        //{
+                        //    eventResult = eventname.Contains(s);
+                        //    if (eventResult == true)
+                        //        break;
+                        //}
+                        //if (eventResult == false)
+                        //{
+                        //    paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
+
+                        //    if (paymentType == "orderPayment")
+                        //    {
+                        //        long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
+
+                        //        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
+                        //        OrderPayment orderPayment = new OrderPayment
+                        //        {
+                        //            PaymentID = 0,
+                        //            PaymentDate = dt,
+                        //            OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
+                        //            EventName = Convert.ToString(request["event"]),
+                        //            PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
+                        //            OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
+                        //            PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
+                        //            PaymentMode = 0,
+                        //            LookupCode = "RAZORPAY"
+                        //        };
+                        //var result = orderBusiness.OrderPaymentSave(orderPayment);
+                        //if (result)
+                        // {
+                        rm.statusCode = StatusCodes.OK;
+                        rm.message = "SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY";
+                        rm.name = StatusName.ok;
+                         rm.data = body;
+                         await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHOPIFY WEBHOOK - Success Response - "+ topic, body, StatusName.ok, this.eventLogBusiness);
+                        //}
+                        //    }
+                        //    else if (paymentType == "oneTimeSubscription")
+                        //    {
+
+                        //    }
+                        //}
+                    }
                 }
+                                                                                 
 
             }
             catch (Exception ex)
@@ -587,7 +780,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = null;
-                await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK Error Response", reqHeader, controllerURL, "SHOPIFY WEBHOOK Error Response->" + body, null, rm.message, this.eventLogBusiness);
+                await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK Error Response", reqHeader, controllerURL, "SHOPIFY WEBHOOK Error Response->" + "body", null, rm.message, this.eventLogBusiness);
             }
 
             return Ok(rm);

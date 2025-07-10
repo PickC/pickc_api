@@ -15,6 +15,7 @@ namespace appify.models
         string Payload { get; set; }
         string Source { get; set; }
         string IPAddress { get; set; }
+        string Remarks {  get; set; }
     }
 
 
@@ -42,6 +43,7 @@ namespace appify.models
         public string Payload { get; set; }
         public string Source { get; set; }
         public string IPAddress { get; set; }
+        public string Remarks { get; set; }
     }
 
     public class OrderAuditLog : AuditLogBase, IOrderAuditLog 

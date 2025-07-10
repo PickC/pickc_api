@@ -27,6 +27,10 @@ namespace appify.Business
         {
             return this.repository.ProductListNew(vendorID);
         }
+        public ProductListResponse ProductListPageView(ProductSearch itemData)
+        {
+            return this.repository.ProductListPageView(itemData);
+        }
         public MemberAllDetail GetMemberAllDetails(long userID)
         {
             return this.repository.GetMemberAllDetails(userID);
@@ -46,6 +50,14 @@ namespace appify.Business
         public bool SaveMemberPassword(long userID, string password)
         {
             return this.repository.SaveMemberPassword(userID, password);
+        }
+        public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData)
+        {
+            return this.repository.ProductListByFeaturedCat(itemData);
+        }
+        public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
+        {
+            return this.repository.GetProductListbyPriceID(PriceID);
         }
     }
 }

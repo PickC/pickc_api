@@ -11,6 +11,10 @@ using System.Data;
 using appify.Business;
 using Razorpay.Api;
 using System.Net.Http.Headers;
+using appify.utility;
+using System.Security.Cryptography;
+using NPOI.POIFS.Crypt;
+using NPOI.SS.Formula.Functions;
 
 namespace appify.web.api
 {
@@ -43,8 +47,9 @@ namespace appify.web.api
         {
             try
             {
+                var url = $"{storeUrl}"+Common.GetShopifyProducts;
                 var requestBody = System.Text.Json.JsonSerializer.Serialize(new { query });
-                var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, $"{storeUrl}");
+                var request = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, url);
                 request.Headers.Add("X-Shopify-Access-Token", accessToken);
                 request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
 
@@ -63,7 +68,7 @@ namespace appify.web.api
         }
         public async Task<JObject> QueryAsync(string query, object variables = null)
         {
-            string apiUrl = $"{storeUrl}";
+            string apiUrl = $"{storeUrl}" + Common.GetShopifyProducts;
 
             var payload = new
             {
@@ -96,7 +101,7 @@ namespace appify.web.api
                 Console.WriteLine($"Page: {page}");
                 var query = $@"
                 query {{
-                    products(first: 1{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
+                    products(first: 50{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
                         edges {{
                             cursor
                             node {{
@@ -186,8 +191,10 @@ namespace appify.web.api
                     shopifyProduct.PublishedAt = System.String.IsNullOrEmpty((string?)productNode["publishedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["publishedAt"]);//productNode["publishedAt"]?.Value<DateTime>() ?? DateTime.MinValue;
                     shopifyProduct.LegacyResourceId = productNode["legacyResourceId"]?.Value<string>() ?? "";
                     shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
-
-                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1);
+                    shopifyProduct.CategoryID = "";
+                    shopifyProduct.Category = "";
+                    shopifyProduct.BreadCrumb = "";
+                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1, shopifyProduct.CategoryID, shopifyProduct.Category, shopifyProduct.BreadCrumb);
 
                     var variants = productNode["variants"]["edges"];
                     foreach (var variant2 in variants)
@@ -248,8 +255,8 @@ namespace appify.web.api
                 shopifyProductMaster.Rows.Clear();
                 shopifyProductVariant.Rows.Clear();
                 shopifyProductImage.Rows.Clear();
-                page++;
-                if (page > 1) break; //Added break to stop after 3 pages.
+                //page++;
+                //if (page > 1) break; //Added break to stop after 3 pages.
             }
             return result;
         }
@@ -273,6 +280,9 @@ namespace appify.web.api
                 shopifyProductMaster.Columns.Add("LegacyResourceId", typeof(string));
                 shopifyProductMaster.Columns.Add("TotalInventory", typeof(Int16));
                 shopifyProductMaster.Columns.Add("IsActive", typeof(bool));
+                shopifyProductMaster.Columns.Add("CategoryID", typeof(string));
+                shopifyProductMaster.Columns.Add("Category", typeof(string));
+                shopifyProductMaster.Columns.Add("BreadCrumb", typeof(string));
 
                 shopifyProductVariant.Columns.Add("ReferenceID", typeof(short));
                 shopifyProductVariant.Columns.Add("VariantID", typeof(string));
@@ -396,7 +406,7 @@ namespace appify.web.api
                     }}";
 
                 var client = new HttpClient();
-                client.BaseAddress = new Uri($"{storeUrl}/admin/api/2024-04/graphql.json");
+                client.BaseAddress = new Uri($"{storeUrl}"+Common.UpdateShopifyProductURL);
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
                 var content = new StringContent(JsonConvert.SerializeObject(new { query }), Encoding.UTF8, "application/json");
@@ -412,14 +422,6 @@ namespace appify.web.api
                 // Handle variant update separately
                 foreach (var variant in productData.Variants)
                 {
-                    variant.VariantId = "gid://shopify/ProductVariant/50261009858848";
-                    variant.Sku = "DB1-BLK-O-" + DateTime.Now.Microsecond.ToString();
-                    variant.Price = Convert.ToDecimal("18.99");
-                    variant.Inventory = 89;
-                    variant.Weight = Convert.ToDecimal("0.0");
-                    variant.WeightUnit = "KILOGRAMS";
-                    variant.InventoryItemID = 52283253391648;
-                    variant.QuantityPurchased = 2;
                     await UpdateProductVariantAsync(variant);
                     if (variant.QuantityPurchased > 0)
                         await UpdateShopifyInventoryAsync(variant.InventoryItemID, variant.QuantityPurchased);
@@ -453,7 +455,7 @@ namespace appify.web.api
               }}
             }}";
             var client = new HttpClient();
-            client.BaseAddress = new Uri($"{storeUrl}/admin/api/2024-04/graphql.json");
+            client.BaseAddress = new Uri($"{storeUrl}" + Common.UpdateShopifyProductURL);
             client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
             var content = new StringContent(JsonConvert.SerializeObject(new { query }), Encoding.UTF8, "application/json");
@@ -467,60 +469,125 @@ namespace appify.web.api
         }
 
         // Update Existing Product Inventory
-        public async Task<bool> UpdateShopifyInventoryAsync(long inventoryItemId, int quantityPurchased)
+        public async Task<bool> UpdateShopifyInventoryAsync(string inventoryItemId, int quantityPurchased)
         {
             try
             {
-                // 1. Get the Inventory Level using the inventoryItemId
-                using var client = new HttpClient();
+                var client = new HttpClient();
+                client.BaseAddress = new Uri($"{storeUrl}" + Common.UpdateShopifyProductURL);
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
+                client.DefaultRequestHeaders.Add("Accept", "application/json");
 
-                var response = await client.GetAsync($"{storeUrl}/admin/api/2024-04/inventory_levels.json?inventory_item_ids={inventoryItemId}");
-                response.EnsureSuccessStatusCode();
+                var step1Query = $@"
+                {{
+                  inventoryItem(id: ""{inventoryItemId}"") {{
+                    inventoryLevels(first: 1) {{
+                      edges {{
+                        node {{ id }}
+                      }}
+                    }}
+                  }}
+                }}";
 
-                var json = await response.Content.ReadAsStringAsync();
-                dynamic inventoryData = JsonConvert.DeserializeObject(json);
-                var inventoryLevel = inventoryData.inventory_levels[0];
-                string locationId = inventoryLevel.location_id;
-                int available = inventoryLevel.available;
+                var step1Content = new StringContent(JsonConvert.SerializeObject(new { query = step1Query }), Encoding.UTF8, "application/json");
+                var step1Response = client.PostAsync("", step1Content).GetAwaiter().GetResult();
+                var step1Json = step1Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                // 2. Calculate updated quantity
+                var j = JObject.Parse(step1Json);
+                var levelId = j["data"]?["inventoryItem"]?["inventoryLevels"]?["edges"]?.First?["node"]?["id"]?.ToString();
+
+                if (string.IsNullOrEmpty(levelId))
+                    Console.WriteLine($"Error: No InventoryLevel found for item {inventoryItemId}");
+
+                var step2Query = $@"
+                {{
+                  inventoryLevel(id: ""{levelId}"") {{
+                    quantities(names: [""available"", ""incoming""]) {{
+                      name
+                      quantity
+                    }}
+                    location {{ id name }}
+                  }}
+                }}";
+
+                var step2Content = new StringContent(JsonConvert.SerializeObject(new { query = step2Query }), Encoding.UTF8, "application/json");
+                var step2Response = client.PostAsync("", step2Content).GetAwaiter().GetResult();
+                var step2Json = step2Response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                dynamic inventoryData = JsonConvert.DeserializeObject(step2Json);
+
+                var j2 = JObject.Parse(step2Json);
+                // Get location ID
+                string locationId = ExtractShopifyLocationId(j2["data"]?["inventoryLevel"]?["location"]?["id"]?.ToString());
+                long inventory_item_id = long.Parse(ExtractShopifyLocationId(inventoryItemId));
+
+                int available = j2["data"]?["inventoryLevel"]?["quantities"]?
+                    .FirstOrDefault(q => q["name"]?.ToString() == "available")?["quantity"]?.Value<int>() ?? 0;
+                if (!step2Response.IsSuccessStatusCode)
+                    throw new Exception($"Error fetching quantities: {step2Response.StatusCode} - {step2Json}");
+
                 int newQuantity = available - quantityPurchased;
                 if (newQuantity < 0) newQuantity = 0;
 
-                // 3. Set the new inventory quantity
+
                 var payload = new
                 {
                     location_id = locationId,
-                    inventory_item_id = inventoryItemId,
+                    inventory_item_id = inventory_item_id,
                     available = newQuantity
                 };
 
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
 
-                var setResponse = await client.PostAsync($"{storeUrl}/admin/api/2024-04/inventory_levels/set.json", jsonContent);
+                var inventoryUrl = $"{storeUrl}" +Common.UpdateShopifyInventoryLevel;
+
+                var setResponse = await client.PostAsync(inventoryUrl, jsonContent);
                 setResponse.EnsureSuccessStatusCode();
 
-                // ✅ Successfully updated
                 return true;
             }
             catch (HttpRequestException ex)
             {
-                // Network-related errors
                 Console.WriteLine($"HTTP Request Error: {ex.Message}");
             }
             catch (Exception ex)
             {
-                // All other errors
                 Console.WriteLine($"General Error: {ex.Message}");
             }
 
             return false;
         }
 
+        public string ExtractShopifyLocationId(string gid)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(gid))
+                    throw new ArgumentException("GID is null or empty.");
+
+                // Expected format: "gid://shopify/Location/104131690784"
+                var parts = gid.Split('/');
+                var idString = parts.LastOrDefault();
+
+                if (string.IsNullOrWhiteSpace(idString))
+                    throw new FormatException("Invalid GID format: unable to extract ID.");
+
+                if (!long.TryParse(idString, out long locationId))
+                    throw new FormatException("GID does not contain a valid numeric ID.");
+
+                return locationId.ToString();
+            }
+            catch (Exception ex)
+            {
+                // You can log the error or rethrow with more context if needed
+                throw new Exception($"Failed to extract Shopify Location ID from GID. Details: {ex.Message}", ex);
+            }
+        }
+
         // Delete Product
         public async Task<string> DeleteProductAsync(string productId)
         {
+            string result = "";
             try
             {
                 var mutation = $@"
@@ -536,15 +603,19 @@ namespace appify.web.api
               }}
             }}";
 
-                return await PostGraphQLRequestAsync(mutation);
+                await PostGraphQLRequestAsync(mutation);
+                result = "Product has been successfully removed!";
             }
             catch (Exception ex)
             {
+                result = "Failed to delete product";
                 throw new ApplicationException($"Failed to delete product: {ex.Message}", ex);
             }
+
+            return result;
         }
 
-        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, long productId)
+        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, string productId)
         {
 
             if (file == null || file.Length == 0)
@@ -571,7 +642,7 @@ namespace appify.web.api
                     alt = "Uploaded via API"
                 }
             };
-
+            string ProductId = ExtractShopifyLocationId(productId);
             string json = System.Text.Json.JsonSerializer.Serialize(payload);
 
             using var httpClient = new HttpClient();
@@ -579,8 +650,8 @@ namespace appify.web.api
             httpClient.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            string url = $"{storeUrl}/admin/api/2024-04/products/{productId}/images.json";
-
+            //string url = $"{storeUrl}/admin/api/2024-04/products/{productId}/images.json";
+            string url = $"{storeUrl}"+Common.UploadImageToShopify.Replace("{productId}", ProductId.ToString().Trim());
             var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(url, httpContent);
@@ -597,31 +668,302 @@ namespace appify.web.api
             }
         }
 
-        public async Task<string> DeleteProductImageAsync(long productId, long imageId)
+        public async Task<string> DeleteProductImageAsync(string productId, string imageId)
         {
+            string result = "";
             try
             {
+
+                string ProductID = ExtractShopifyLocationId(productId);
+                string ImageID = ExtractShopifyLocationId(imageId);
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
 
-                var endpoint = $"{storeUrl}/admin/api/2024-04/products/{productId}/images/{imageId}.json";
+                //var endpoint = $"{storeUrl}/admin/api/2024-04/products/{productId}/images/{imageId}.json";
+                var endpoint = $"{storeUrl}"+Common.DeleteShopifyProductImage.Replace("{productId}", ProductID.ToString().Trim()).Replace("{imageId}", ImageID.ToString().Trim());
                 var response = await client.DeleteAsync(endpoint);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
+                    result = "Failed to delete image";
                     throw new Exception($"Failed to delete image: {response.StatusCode} - {content}");
                 }
+                result = "Image has been successfully removed!";
             }
             catch (Exception ex)
             {
                 throw new ApplicationException($"Failed to delete product's image: {ex.Message}", ex);
             }
 
-            return "";
+            return result;
         }
 
+        public async Task<bool> ShopifyProductCreateAsync(string body)
+        {
+            bool result = false;
+            JArray jsonList = new JArray();
+            Shopify shopifyProduct = new Shopify();
+            try
+            {
+                body = "{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/Product\\/9907832914196\",\"body_html\":\"\\u003cp\\u003eBlue Hoodie\\u003c\\/p\\u003e\",\"created_at\":\"2025-07-09T13:53:43+05:30\",\"handle\":\"blue-hoodie\",\"id\":9907832914196,\"product_type\":\"Accessories\",\"published_at\":\"2025-07-09T13:53:44+05:30\",\"template_suffix\":\"\",\"title\":\"Blue Hoodie\",\"updated_at\":\"2025-07-09T13:56:30+05:30\",\"vendor\":\"Saurabh wallpapers\",\"status\":\"active\",\"published_scope\":\"global\",\"tags\":\"\",\"variants\":[{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51072062980372\",\"barcode\":\"\",\"compare_at_price\":null,\"created_at\":\"2025-07-09T13:53:43+05:30\",\"id\":51072062980372,\"inventory_policy\":\"deny\",\"position\":1,\"price\":\"599.00\",\"product_id\":9907832914196,\"sku\":\"HDO-DGH\",\"taxable\":true,\"title\":\"Red\",\"updated_at\":\"2025-07-09T13:56:30+05:30\",\"option1\":\"Red\",\"option2\":null,\"option3\":null,\"image_id\":null,\"inventory_item_id\":53033915515156,\"inventory_quantity\":80,\"old_inventory_quantity\":80}],\"options\":[{\"name\":\"Color\",\"id\":12411298152724,\"product_id\":9907832914196,\"position\":1,\"values\":[\"Red\"]}],\"images\":[{\"id\":52558206501140,\"product_id\":9907832914196,\"position\":1,\"created_at\":\"2025-07-09T13:51:37+05:30\",\"updated_at\":\"2025-07-09T13:51:40+05:30\",\"alt\":null,\"width\":1280,\"height\":1280,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/Dark_Nevy_Blue_Hoodie_For_Men_20250512021815_4087a9b1-0273-480e-bb93-c3af9d6e1ce8.jpg?v=1752049300\",\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductImage\\/52558206501140\"}],\"image\":{\"id\":52558206501140,\"product_id\":9907832914196,\"position\":1,\"created_at\":\"2025-07-09T13:51:37+05:30\",\"updated_at\":\"2025-07-09T13:51:40+05:30\",\"alt\":null,\"width\":1280,\"height\":1280,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/Dark_Nevy_Blue_Hoodie_For_Men_20250512021815_4087a9b1-0273-480e-bb93-c3af9d6e1ce8.jpg?v=1752049300\",\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductImage\\/52558206501140\"},\"media\":[{\"id\":43035189641492,\"product_id\":9907832914196,\"position\":1,\"created_at\":\"2025-07-09T13:51:37+05:30\",\"updated_at\":\"2025-07-09T13:51:40+05:30\",\"alt\":null,\"status\":\"READY\",\"media_content_type\":\"IMAGE\",\"preview_image\":{\"width\":1280,\"height\":1280,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/Dark_Nevy_Blue_Hoodie_For_Men_20250512021815_4087a9b1-0273-480e-bb93-c3af9d6e1ce8.jpg?v=1752049300\",\"status\":\"READY\"},\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/MediaImage\\/43035189641492\"}],\"variant_gids\":[{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51072062980372\",\"updated_at\":\"2025-07-09T08:26:30.000Z\"}],\"has_variants_that_requires_components\":false,\"category\":{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/TaxonomyCategory\\/aa-1-1-7-2\",\"name\":\"Hoodies\",\"full_name\":\"Apparel \\u0026 Accessories \\u003e Clothing \\u003e Activewear \\u003e Activewear Sweatshirts \\u0026 Hoodies \\u003e Hoodies\"}}";
 
+                var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+
+
+
+
+                if (requestObj != null)
+                {
+                    jsonList.Add(requestObj);
+                    var fullnode = jsonList.ToString();
+                    var productNode = requestObj;
+                    shopifyProduct.ReferenceID = ReferenceID;
+                    shopifyProduct.ProductID = productNode["admin_graphql_api_id"]?.Value<string>() ?? "";
+                    shopifyProduct.Title = productNode["title"]?.Value<string>() ?? "";
+                    shopifyProduct.Description = productNode["body_html"]?.Value<string>() ?? "";
+                    shopifyProduct.Handle = productNode["handle"]?.Value<string>() ?? "";
+                    shopifyProduct.Status = productNode["status"]?.Value<string>().ToUpper() ?? "";
+                    shopifyProduct.Vendor = productNode["vendor"]?.Value<string>() ?? "";
+                    shopifyProduct.VendorID = VendorID;
+                    shopifyProduct.ProductType = productNode["product_type"]?.Value<string>() ?? "";
+                    shopifyProduct.CreatedAt = System.String.IsNullOrEmpty((string?)productNode["created_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["created_at"]);
+                    shopifyProduct.UpdatedAt = System.String.IsNullOrEmpty((string?)productNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["updated_at"]);
+                    shopifyProduct.PublishedAt = System.String.IsNullOrEmpty((string?)productNode["published_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["published_at"]);
+                    shopifyProduct.LegacyResourceId = productNode["id"]?.Value<string>() ?? "";
+                    shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
+                    shopifyProduct.CategoryID = productNode["category"]["admin_graphql_api_id"]?.Value<string>() ?? "";
+                    shopifyProduct.Category = productNode["category"]["name"]?.Value<string>() ?? "";
+                    shopifyProduct.BreadCrumb = productNode["category"]["full_name"]?.Value<string>() ?? "";
+                    var variants = productNode["variants"];
+                    int variantCount = 0;
+                    foreach (var variant2 in variants)
+                    {
+                        var variantNode = variant2;
+                        ShopifyProductVariant variant = new ShopifyProductVariant
+                        {
+                            ReferenceID = ReferenceID,
+                            VariantID = variantNode["admin_graphql_api_id"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Title = variantNode["title"]?.Value<string>() ?? "",
+                            SKU = variantNode["sku"]?.Value<string>() ?? "",
+                            Price = variantNode["price"]?.Value<decimal?>() ?? 0,
+                            Position = variantNode["position"]?.Value<short?>() ?? 0,
+                            Barcode = variantNode["barcode"]?.Value<string>() ?? "",
+                            Weight = variantNode["weight"]?.Value<short?>() ?? 0,
+                            WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
+                            InventoryQuantity = variantNode["inventory_quantity"]?.Value<short?>() ?? 0,
+                            CreatedAt = System.String.IsNullOrEmpty((string?)variantNode["created_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["created_at"]),
+                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updated_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updated_at"]),
+
+                        };
+                        shopifyProduct.TotalInventory += variant.InventoryQuantity;
+
+                        shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory, 1, shopifyProduct.CategoryID, shopifyProduct.Category, shopifyProduct.BreadCrumb);
+
+                        variant.InventoryItemID = "gid://shopify/InventoryItem/"+variantNode["inventory_item_id"]?.Value<string>() ?? "";
+                        var selectedOptions = productNode["options"];
+
+                        foreach (var item in selectedOptions)
+                        {
+                            if (item["name"].ToString().ToLower() == "color")
+                                variant.Color = item["values"][variantCount].ToString();
+                            if (item["name"].ToString().ToLower() == "size")
+                                variant.Size = item["values"][variantCount].ToString();
+                        }
+                        //shopifyProduct.variants.Add(variant);
+                        shopifyProductVariant.Rows.Add(variant.ReferenceID, variant.VariantID, variant.ProductID, variant.Title, variant.SKU, variant.Price, variant.Position, variant.Color, variant.Size, variant.Barcode, variant.Weight, variant.WeightUnit, variant.InventoryQuantity, variant.InventoryItemID, variant.CreatedAt, variant.UpdatedAt, 1);
+
+                        variantCount += 1;
+                    }
+
+                    var images = productNode["images"];
+                    foreach (var image2 in images)
+                    {
+                        var imageNode = image2;
+                        ShopifyProductVariantImage image = new ShopifyProductVariantImage
+                        {
+                            ReferenceID = ReferenceID,
+                            ImageID = imageNode["admin_graphql_api_id"]?.Value<string>() ?? "",
+                            ALT = imageNode["alt"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Width = imageNode["width"]?.Value<short?>() ?? 0,
+                            Height = imageNode["height"]?.Value<short?>() ?? 0,
+                            SRC = imageNode["src"]?.Value<string>() ?? ""
+                        };
+
+                        //shopifyProduct.images.Add(image);
+                        shopifyProductImage.Rows.Add(image.ReferenceID, image.ImageID, image.ProductID, image.ALT, image.Width, image.Height, image.SRC, 1);
+                    }
+
+                    List<ShopifyProductID> shopifyProductID = shopifyBusiness.GetShopifyProductIDByVendor(VendorID);
+                    List<DataRow> toRemove = new List<DataRow>();
+                    if (shopifyProductID.Count>0)
+                    {
+                        foreach(var product in shopifyProductID)
+                        {
+                            string filter = $"Convert(ProductID, 'System.String') = '{product.ProductID}'";
+
+                            // Remove from shopifyProductMaster
+                            var masterRows = shopifyProductMaster.Select(filter);
+                            foreach (var row in masterRows)
+                                shopifyProductMaster.Rows.Remove(row);
+
+                            // Remove from shopifyProductVariant
+                            var variantRows = shopifyProductVariant.Select(filter);
+                            foreach (var row in variantRows)
+                                shopifyProductVariant.Rows.Remove(row);
+
+                            // Remove from shopifyProductImage
+                            var imageRows = shopifyProductImage.Select(filter);
+                            foreach (var row in imageRows)
+                                shopifyProductImage.Rows.Remove(row);
+                        }
+                    }
+                    if (shopifyProductMaster.Rows.Count > 0 && shopifyProductVariant.Rows.Count > 0 && shopifyProductImage.Rows.Count > 0)
+                    {
+                        result = shopifyBusiness.BulkInsertShopifyProducts(shopifyProductMaster, shopifyProductVariant, shopifyProductImage);
+                    }
+                    ////shopifyBusiness.SaveShopifyProduct(shopifyProduct);
+                    shopifyProductMaster.Rows.Clear();
+                    shopifyProductVariant.Rows.Clear();
+                    shopifyProductImage.Rows.Clear();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+            }
+
+            return result;
+        }
+
+        public async Task<bool> ShopifyProductUpdateAsync(string body)
+        {
+            bool result = false;
+            JArray jsonList = new JArray();
+            Shopify shopifyProduct = new Shopify();
+            try
+            {
+                body = "{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/Product\\/9903995289876\",\"body_html\":\"\\u003cp\\u003eStylish product updated 1:30 PM\\u003c\\/p\\u003e\",\"created_at\":\"2025-07-04T10:11:10+05:30\",\"handle\":\"women-stylish-co-ord-set-pink\",\"id\":9903995289876,\"product_type\":\"Accessories\",\"published_at\":\"2025-07-09T13:48:08+05:30\",\"template_suffix\":\"\",\"title\":\"Women Stylish co-ord set pink 1:30 PM\",\"updated_at\":\"2025-07-09T14:48:40+05:30\",\"vendor\":\"Saurabh wallpapers\",\"status\":\"active\",\"published_scope\":\"global\",\"tags\":\"\",\"variants\":[{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361818900\",\"barcode\":\"\",\"compare_at_price\":null,\"created_at\":\"2025-07-04T10:11:10+05:30\",\"id\":51055361818900,\"inventory_policy\":\"deny\",\"position\":1,\"price\":\"1050.00\",\"product_id\":9903995289876,\"sku\":\"DB1-BLK-O\",\"taxable\":true,\"title\":\"L\",\"updated_at\":\"2025-07-09T14:48:40+05:30\",\"option1\":\"L\",\"option2\":null,\"option3\":null,\"image_id\":null,\"inventory_item_id\":53017523421460,\"inventory_quantity\":30,\"old_inventory_quantity\":30},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361851668\",\"barcode\":\"\",\"compare_at_price\":null,\"created_at\":\"2025-07-04T10:11:10+05:30\",\"id\":51055361851668,\"inventory_policy\":\"deny\",\"position\":2,\"price\":\"1000.00\",\"product_id\":9903995289876,\"sku\":null,\"taxable\":true,\"title\":\"XXL\",\"updated_at\":\"2025-07-09T13:44:38+05:30\",\"option1\":\"XXL\",\"option2\":null,\"option3\":null,\"image_id\":null,\"inventory_item_id\":53017523454228,\"inventory_quantity\":20,\"old_inventory_quantity\":20},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361884436\",\"barcode\":\"\",\"compare_at_price\":null,\"created_at\":\"2025-07-04T10:11:10+05:30\",\"id\":51055361884436,\"inventory_policy\":\"deny\",\"position\":3,\"price\":\"1099.00\",\"product_id\":9903995289876,\"sku\":null,\"taxable\":true,\"title\":\"XL\",\"updated_at\":\"2025-07-09T13:31:11+05:30\",\"option1\":\"XL\",\"option2\":null,\"option3\":null,\"image_id\":null,\"inventory_item_id\":53017523486996,\"inventory_quantity\":10,\"old_inventory_quantity\":10},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51072057016596\",\"barcode\":\"\",\"compare_at_price\":null,\"created_at\":\"2025-07-09T13:45:20+05:30\",\"id\":51072057016596,\"inventory_policy\":\"deny\",\"position\":4,\"price\":\"950.00\",\"product_id\":9903995289876,\"sku\":null,\"taxable\":true,\"title\":\"M\",\"updated_at\":\"2025-07-09T13:45:20+05:30\",\"option1\":\"M\",\"option2\":null,\"option3\":null,\"image_id\":52548062806292,\"inventory_item_id\":53033909551380,\"inventory_quantity\":0,\"old_inventory_quantity\":0}],\"options\":[{\"name\":\"Size\",\"id\":12406576873748,\"product_id\":9903995289876,\"position\":1,\"values\":[\"L\",\"XXL\",\"XL\",\"M\"]}],\"images\":[{\"id\":52398054310164,\"product_id\":9903995289876,\"position\":1,\"created_at\":\"2025-06-27T13:11:32+05:30\",\"updated_at\":\"2025-07-08T16:30:11+05:30\",\"alt\":null,\"width\":591,\"height\":625,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/story_p_683e9769f77e5b3682fbfd6f-1749610967.jpg?v=1751010093\",\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductImage\\/52398054310164\"},{\"id\":52548062806292,\"product_id\":9903995289876,\"position\":2,\"created_at\":\"2025-07-08T16:30:48+05:30\",\"updated_at\":\"2025-07-08T16:30:51+05:30\",\"alt\":null,\"width\":1280,\"height\":1280,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/Dark_Nevy_Blue_Hoodie_For_Men_20250512021815_f9f0195a-cf9e-4377-ba4a-f61499a7bbe8.jpg?v=1751972449\",\"variant_ids\":[51072057016596],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductImage\\/52548062806292\"}],\"image\":{\"id\":52398054310164,\"product_id\":9903995289876,\"position\":1,\"created_at\":\"2025-06-27T13:11:32+05:30\",\"updated_at\":\"2025-07-08T16:30:11+05:30\",\"alt\":null,\"width\":591,\"height\":625,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/story_p_683e9769f77e5b3682fbfd6f-1749610967.jpg?v=1751010093\",\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductImage\\/52398054310164\"},\"media\":[{\"id\":42938307674388,\"product_id\":9903995289876,\"position\":1,\"created_at\":\"2025-06-27T13:11:32+05:30\",\"updated_at\":\"2025-07-08T16:30:11+05:30\",\"alt\":null,\"status\":\"READY\",\"media_content_type\":\"IMAGE\",\"preview_image\":{\"width\":591,\"height\":625,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/story_p_683e9769f77e5b3682fbfd6f-1749610967.jpg?v=1751010093\",\"status\":\"READY\"},\"variant_ids\":[],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/MediaImage\\/42938307674388\"},{\"id\":43028823277844,\"product_id\":9903995289876,\"position\":2,\"created_at\":\"2025-07-08T16:30:48+05:30\",\"updated_at\":\"2025-07-08T16:30:51+05:30\",\"alt\":null,\"status\":\"READY\",\"media_content_type\":\"IMAGE\",\"preview_image\":{\"width\":1280,\"height\":1280,\"src\":\"https:\\/\\/cdn.shopify.com\\/s\\/files\\/1\\/0942\\/7219\\/2788\\/files\\/Dark_Nevy_Blue_Hoodie_For_Men_20250512021815_f9f0195a-cf9e-4377-ba4a-f61499a7bbe8.jpg?v=1751972449\",\"status\":\"READY\"},\"variant_ids\":[51072057016596],\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/MediaImage\\/43028823277844\"}],\"variant_gids\":[{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361818900\",\"updated_at\":\"2025-07-09T09:18:40.000Z\"},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51072057016596\",\"updated_at\":\"2025-07-09T08:15:20.000Z\"},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361851668\",\"updated_at\":\"2025-07-09T08:14:38.000Z\"},{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/ProductVariant\\/51055361884436\",\"updated_at\":\"2025-07-09T08:01:11.000Z\"}],\"has_variants_that_requires_components\":false,\"category\":{\"admin_graphql_api_id\":\"gid:\\/\\/shopify\\/TaxonomyCategory\\/aa-1-11\",\"name\":\"Outfit Sets\",\"full_name\":\"Apparel \\u0026 Accessories \\u003e Clothing \\u003e Outfit Sets\"}}";
+
+                var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+
+
+
+
+                if (requestObj != null)
+                {
+                    jsonList.Add(requestObj);
+                    var fullnode = jsonList.ToString();
+                    var productNode = requestObj;
+                    shopifyProduct.ReferenceID = ReferenceID;
+                    shopifyProduct.ProductID = productNode["admin_graphql_api_id"]?.Value<string>() ?? "";
+                    shopifyProduct.Title = productNode["title"]?.Value<string>() ?? "";
+                    shopifyProduct.Description = productNode["body_html"]?.Value<string>() ?? "";
+                    shopifyProduct.Handle = productNode["handle"]?.Value<string>() ?? "";
+                    shopifyProduct.Status = productNode["status"]?.Value<string>() ?? "";
+                    shopifyProduct.Vendor = productNode["vendor"]?.Value<string>() ?? "";
+                    shopifyProduct.VendorID = VendorID;
+                    shopifyProduct.ProductType = productNode["product_type"]?.Value<string>() ?? "";
+                    shopifyProduct.CreatedAt = System.String.IsNullOrEmpty((string?)productNode["created_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["created_at"]);
+                    shopifyProduct.UpdatedAt = System.String.IsNullOrEmpty((string?)productNode["updatedAt"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["updated_at"]);
+                    shopifyProduct.PublishedAt = System.String.IsNullOrEmpty((string?)productNode["published_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)productNode["published_at"]);
+                    shopifyProduct.LegacyResourceId = productNode["id"]?.Value<string>() ?? "";
+                    shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
+                    shopifyProduct.CategoryID = productNode["category"]["admin_graphql_api_id"]?.Value<string>() ?? "";
+                    shopifyProduct.Category = productNode["category"]["name"]?.Value<string>() ?? "";
+                    shopifyProduct.BreadCrumb = productNode["category"]["full_name"]?.Value<string>() ?? "";
+
+                    var variants = productNode["variants"];
+                    int variantCount = 0;
+                    foreach (var variant2 in variants)
+                    {
+                        var variantNode = variant2;
+                        ShopifyProductVariant variant = new ShopifyProductVariant
+                        {
+                            ReferenceID = ReferenceID,
+                            VariantID = variantNode["admin_graphql_api_id"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Title = variantNode["title"]?.Value<string>() ?? "",
+                            SKU = variantNode["sku"]?.Value<string>() ?? "",
+                            Price = variantNode["price"]?.Value<decimal?>() ?? 0,
+                            Position = variantNode["position"]?.Value<short?>() ?? 0,
+                            Barcode = variantNode["barcode"]?.Value<string>() ?? "",
+                            Weight = variantNode["weight"]?.Value<short?>() ?? 0,
+                            WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
+                            InventoryQuantity = variantNode["inventory_quantity"]?.Value<short?>() ?? 0,
+                            CreatedAt = System.String.IsNullOrEmpty((string?)variantNode["created_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["created_at"]),
+                            UpdatedAt = System.String.IsNullOrEmpty((string?)variantNode["updated_at"]) ? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")) : Convert.ToDateTime((JValue)variantNode["updated_at"]),
+
+                        };
+                        shopifyProduct.TotalInventory += variant.InventoryQuantity;
+                        variant.InventoryItemID = "gid://shopify/InventoryItem/" + variantNode["inventory_item_id"]?.Value<string>() ?? "";
+                        var selectedOptions = productNode["options"];
+
+                        foreach (var item in selectedOptions)
+                        {
+                            if (item["name"].ToString().ToLower() == "color")
+                                variant.Color = item["values"][variantCount].ToString();
+                            if (item["name"].ToString().ToLower() == "size")
+                                variant.Size = item["values"][variantCount].ToString();
+                        }
+                        shopifyProduct.variants.Add(variant);
+
+                        variantCount += 1;
+                    }
+
+                    var images = productNode["images"];
+                    foreach (var image2 in images)
+                    {
+                        var imageNode = image2;
+                        ShopifyProductVariantImage image = new ShopifyProductVariantImage
+                        {
+                            ReferenceID = ReferenceID,
+                            ImageID = imageNode["admin_graphql_api_id"]?.Value<string>() ?? "",
+                            ALT = imageNode["alt"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Width = imageNode["width"]?.Value<short?>() ?? 0,
+                            Height = imageNode["height"]?.Value<short?>() ?? 0,
+                            SRC = imageNode["src"]?.Value<string>() ?? ""
+                        };
+                        shopifyProduct.images.Add(image);
+                    }
+
+                    result= shopifyBusiness.SaveShopifyProduct(shopifyProduct);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+            }
+
+            return result;
+        }
+
+        public async Task<bool> ShopifyProductDeleteAsync(string body, long VendorID)
+        {
+            bool result = false;
+            JArray jsonList = new JArray();
+            Shopify shopifyProduct = new Shopify();
+            try
+            {
+                body = "\"{\\\"id\\\":9907832914196}\"";
+
+                var requestObj = (JObject)JsonConvert.DeserializeObject(body);
+
+                if (requestObj != null)
+                {
+                    result = shopifyBusiness.DeleteShopifyProduct(requestObj["id"]?.ToString(), VendorID);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+            }
+
+            return result;
+        }
         //// Update Existing Product
         //public async Task<string> UpdateProductAsync(string productId, string title)
         //{
@@ -924,7 +1266,7 @@ namespace appify.web.api
         public string Sku { get; set; }
         public decimal Price { get; set; }
         public int Inventory { get; set; }
-        public Int64 InventoryItemID { get; set; }
+        public string InventoryItemID { get; set; }
         public int QuantityPurchased { get; set; }
         public decimal Weight { get; set; }
         public string WeightUnit { get; set; } // e.g., "KILOGRAMS"

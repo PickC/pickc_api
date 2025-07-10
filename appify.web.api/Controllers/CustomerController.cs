@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Json;
 
 namespace appify.web.api.Controllers
@@ -42,635 +43,890 @@ namespace appify.web.api.Controllers
             this.env = env;
         }
 
-        /// <summary>
-        /// gets Product items information based on Vendor ID
-        /// </summary>
-        /// <remarks>
-        /// -----------------------------------------------------------------------------------------
-        /// 
-        /// version : 1.0 (DEFAULT version)
-        /// 
-        /// Description : Gets Product items information based on Vendor ID 
-        /// 
-        /// -----------------------------------------------------------------------------------------
-        /// 
-        /// Sample request JSON :
-        /// 
-        ///     {
-        ///         "userID": 1847
-        ///     }
-        ///     
-        /// -----------------------------------------------------------------------------------------
-        /// 
-        /// version : 1.1
-        /// 
-        /// Description : Gets Product List New Item information based on Vendor ID
-        /// 
-        /// -----------------------------------------------------------------------------------------
-        /// Sample request JSON :
-        /// 
-        ///     {
-        ///         "userID": 1505
-        ///     }
-        ///     
-        /// Sample response JSON :
-        /// 
-        ///	    [
-        ///		    {
-        ///          	"productID": 1315,
-        ///          	"vendorID": 0,
-        ///          	"productName": "ELEGANT HOODY ",
-        ///          	"category": 3713,
-        ///          	"brand": "Polo",
-        ///          	"price": 1429,
-        ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
-        ///          	"isNew": false,
-        ///          	"breadCrumb": "Clothing & Accessories>>Girls>>Unstitched Fabrics>>Trousers"
-        ///    	    }
-        ///	    ]
-        /// 
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns Product Item against the VendorID </response>
-        /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("productlist")]
-        [MapToApiVersion("1.0")]
-        ////[VendorAuthorize]
-        public async Task<IActionResult> GetMemberProducts(ParamMemberUserID itemData) {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-
-                List<MemberProduct> items = customerBusiness.ProductList(itemData.userID);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-
-                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-
-                    await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-
-                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        [HttpPost]
-        [Route("productlist")]
-        [MapToApiVersion("1.1")]
-        public async Task<IActionResult> GetMemberProductsList(ParamMemberUserID itemData)
+    /// <summary>
+    /// gets Product items information based on Vendor ID
+    /// </summary>
+    /// <remarks>
+    /// -----------------------------------------------------------------------------------------
+    /// 
+    /// version : 1.0 (DEFAULT version)
+    /// 
+    /// Description : Gets Product items information based on Vendor ID 
+    /// 
+    /// -----------------------------------------------------------------------------------------
+    /// 
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///         "userID": 1847
+    ///     }
+    ///     
+    /// -----------------------------------------------------------------------------------------
+    /// 
+    /// version : 1.1
+    /// 
+    /// Description : Gets Product List New Item information based on Vendor ID
+    /// 
+    /// -----------------------------------------------------------------------------------------
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///         "userID": 1505
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///		    {
+    ///          	"productID": 1315,
+    ///          	"vendorID": 0,
+    ///          	"productName": "ELEGANT HOODY ",
+    ///          	"category": 3713,
+    ///          	"brand": "Polo",
+    ///          	"price": 1429,
+    ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
+    ///          	"isNew": false,
+    ///          	"breadCrumb": "Clothing & Accessories>>Girls>>Unstitched Fabrics>>Trousers"
+    ///    	    }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlist")]
+    [MapToApiVersion("1.0")]
+    ////[VendorAuthorize]
+    public async Task<IActionResult> GetMemberProducts(ParamMemberUserID itemData) {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
         {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
+            rm = new ResponseMessage();
+            var sw = Stopwatch.StartNew();
+            List<MemberProduct> items = customerBusiness.ProductList(itemData.userID);
+            if (items?.Any() == true)
             {
-                rm = new ResponseMessage();
-
-                List<MemberProduct> items = customerBusiness.ProductListNew(itemData.userID);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-
-                    await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-
-                    await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = ex.Message.ToString();
-
-                await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        /// <summary>
-        /// gets Product items information based on Vendor ID
-        /// </summary>
-        /// <remarks>
-        /// Sample request JSON :
-        /// 
-        ///     {
-        ///         "userID": 1060,
-        ///         "categoryID": 3646,
-        ///         "pageNo": 1,
-        ///         "rows": 2
-        ///     }
-        ///     
-        /// Sample response JSON :
-        /// 
-        ///	    [
-        ///		    {
-        ///          	"productID": 1315,
-        ///          	"vendorID": 0,
-        ///          	"productName": "ELEGANT HOODY ",
-        ///          	"category": 3713,
-        ///          	"brand": "Polo",
-        ///          	"price": 1429,
-        ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
-        ///          	"isNew": false
-        ///    	    }
-        ///	    ]
-        /// 
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns Product Item against the VendorID </response>
-        /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("productlistbycategory")]
-        [MapToApiVersion("1.0")]
-        [Authorize]
-        public IActionResult GetMemberProductsByCategory(ParamCategoryID itemData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
-                List<MemberProduct> items = customerBusiness.ProductListByCategory(itemData.userID, itemData.categoryID, itemData.PageNo, itemData.Rows);
-                if (items?.Any() == true)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH PRODUCT LIST";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST BY CATEGORY SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST BY CATEGORY - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST BY CATEGORY - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-            }
-            return Ok(rm);
-
-        }
-
-        /// <summary>
-        /// gets All Details based on Member ID
-        /// </summary>
-        /// <remarks>
-        /// Sample request JSON :
-        /// 
-        ///     {
-        ///         "userID": 1505
-        ///     }
-        ///     
-        /// Sample response JSON :
-        /// 
-        ///	    [
-        ///         {
-        ///           "statusCode": 200,
-        ///           "name": "SUCCESS_OK",
-        ///           "message": "FETCH ALL DETAILS",
-        ///           "data": {
-        ///             "wareHouse": true,
-        ///             "products": 47,
-        ///             "category": true,
-        ///             "appDetails": true
-        ///           }
-        ///         }
-        ///	    ]
-        /// 
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns Product Item against the VendorID </response>
-        /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("AllDetails")]
-        [MapToApiVersion("1.0")]
-        [Authorize]
-        public async Task<IActionResult> GetAllDetails(ParamMemberUserID itemData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
-                var items = customerBusiness.GetMemberAllDetails(itemData.userID);
-                if (items != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH ALL DETAILS";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-
-        /// <summary>
-        /// gets Product List based on UserID
-        /// </summary>
-        /// <remarks>
-        /// Sample request JSON :
-        /// 
-        ///     {
-        ///         "userID": 1060
-        ///     }
-        ///     
-        /// Sample response JSON :
-        /// 
-        ///	    [
-        ///         {
-        ///           "statusCode": 200,
-        ///           "name": "SUCCESS_OK",
-        ///           "message": "FETCH ALL DETAILS",
-        ///           "data": {
-        ///             "wareHouse": true,
-        ///             "products": 47,
-        ///             "category": true,
-        ///             "appDetails": true
-        ///           }
-        ///         }
-        ///	    ]
-        /// 
-        /// </remarks>
-        /// <returns>ResponseMessage Object</returns>
-        /// <response code="200">Returns Product Item against the VendorID </response>
-        /// <response code="500">ResponseMessage with Error Description</response> 
-        [HttpPost]
-        [Route("productlistbyvaua")]
-        [MapToApiVersion("1.0")]
-        [Authorize]
-        public async Task<IActionResult> GetProductListByVAUA(ParamMemberUserID itemData)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                CheckToken.IsValidToken(Request, configuration);
-                var items = customerBusiness.GetProductListByVAUA(itemData.userID);
-                if (items != null)
-                {
-                    rm.statusCode = StatusCodes.OK;
-                    rm.message = "FETCH ALL DETAILS";
-                    rm.name = StatusName.ok;
-                    rm.data = items;
-
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
-                    await Common.UpdateEventLogsNew("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
-                }
-                else
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "NO CONTENT";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
-                    await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-
-                rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
-                rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
-            }
-            return Ok(rm);
-
-        }
-        /// <summary>
-        /// This END POINT JUST FOR TESTING DIFFERENT FUCNTIONS
-        /// </summary>
-        [HttpPost]
-        [Route("fortestingfunc")]
-        [MapToApiVersion("1.0")]
-        //[Consumes("multipart/form-data")]
-        public async Task<IActionResult> fortestingfuc([FromForm] ParamEmailFields item)//([Required]IFormFile file)
-        {
-            var reqHeader = Request;
-            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            try
-            {
-                rm = new ResponseMessage();
-                string responseBody = "NO FILE OR INVALID FILE FORMAT";
-                //////[FromForm] ParamEmailFields item
-                if (item.file == null || item.file.Length == 0)
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    return Ok(rm);
-                }
-                if (Path.GetExtension(item.file.FileName).ToLower() != ".csv"
-                    && Path.GetExtension(item.file.FileName).ToLower() != ".xls"
-                    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsx"
-                    && Path.GetExtension(item.file.FileName).ToLower() != ".xlsb")
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
-                    rm.name = StatusName.invalid;
-                    rm.data = null;
-                    return Ok(rm);
-                }
-
-                if (item.file.Length > Common.IMAGE_SIZE)
-                {
-                    rm.statusCode = StatusCodes.ERROR;
-                    rm.name = StatusName.invalid;
-                    rm.message = "FILE SIZE GREATER THAN 5 MB";
-                    rm.data = null;
-                    return Ok(rm);
-                }
-
-                Notifications notifications = new Notifications
-                {
-                    ToEmailCC = "", ////NotificationConfig.TO_BCC,
-                    ToEmailBCC = "", ////NotificationConfig.TO_CC,
-                    EmailSubject = item.Subject,
-                    EmailTemplateURL = "wwwroot/EmailTemplates/01-welcome-message-vendor.html",
-                    ToEmail = item.ToEmail
-                };
-                //string mailbody = string.Empty;
-                //string path = notifications.EmailTemplateURL;
-                //using (StreamReader sr = new StreamReader(path))
-                //{
-                //    mailbody = sr.ReadToEnd();
-                //}
-                //notifications.EmailBody = mailbody;
-                notifications.EmailBody = item.Body;
-                EmailNotification.SendEmail(notifications, item.file);
-
-
-                //using (var client = new HttpClient())
-                //{
-
-                //    var BaseUri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
-                //    var parameters = new Dictionary<string, string>();
-                //    parameters["userid"] = "appify";
-                //    parameters["password"] = "App1fyd3v3l0p3r";
-                //    parameters["sender"] = "APFYRT";
-                //    parameters["mobileno"] = "9810722979";
-                //    parameters["msg"] = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL";
-                //    parameters["peid"] = "1701172830092637857";
-                //    parameters["tpid"] = "1707172862932634661";
-
-                //    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        responseBody = await response.Content.ReadAsStringAsync();
-                //    }
-                //    else
-                //    {
-                //        responseBody = response.StatusCode.ToString();
-                //    }
-
-                //}
-
-                //SendSMSHeader sendSMSHeader = new SendSMSHeader
-                //{
-                //    userid = "appify",
-                //    password = "App1fyd3v3l0p3r",
-                //    sender = "APFYRT",
-                //    mobileno = "9810722979",
-                //    msg = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL",
-                //    //SendOn = DateTime.Now,
-                //    //MsgType = 0,
-                //    peid= "1701172830092637857",
-                //    tpid= "1707172862932634661"
-                //};
-
-                ////     Create an instance of HttpClient
-                //using (var client = new HttpClient())
-                //{
-                //    string responseBody = "";
-                //    var uri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
-                //    //client.BaseAddress = new Uri(Common.OneDelhiveryCreateURL);
-                //    //client.DefaultRequestHeaders.Accept.Clear();
-                //    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", Common.OneDelhiveryToken);
-
-                //    var jsonString = Common.ConvertObjectToJson(sendSMSHeader);
-                //    HttpResponseMessage Res = client.PostAsync(uri, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
-                //    //var response = await Res.Content.ReadAsStringAsync();
-
-
-                //    //HttpContent httpContent = new StringContent(json);
-                //    // StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-                //    //var response = await client.PostAsync(OneDelhiveryCreateURL, httpContent);
-                //   // HttpResponseMessage response = await client.PostAsJsonAsync(uri, sendSMSHeader);
-
-                //    //Check if the response is successful
-                //    if (Res.IsSuccessStatusCode)
-                //    {
-                //        responseBody = await Res.Content.ReadAsStringAsync();
-                //    }
-                //    else
-                //    {
-                //        responseBody = Res.StatusCode.ToString();
-                //    }
-
-                //}
-
-
-                //string clientId = "604537213086-2r3o5j2ljn2rpdkhsfsd34vspki0v4nq.apps.googleusercontent.com";
-                //string clientSecret = "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";
-                //string refreshToken = "YourRefreshToken";
-                //string fromEmail = "gurjeet@appi-fy.ai";
-                //string toEmail = "nkolweb@gmail.com";
-
-                //var clientSecrets = new ClientSecrets
-                //{
-                //    ClientId = clientId,
-                //    ClientSecret = clientSecret
-                //};
-
-                //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                //    clientSecrets,
-                //    new[] { "https://mail.google.com/" },
-                //    "user",
-                //    CancellationToken.None);
-
-                //if (credential.Token.IsExpired(credential.Flow.Clock))
-                //{
-                //    await credential.RefreshTokenAsync(CancellationToken.None);
-                //}
-
-
-
-                //var message = new MimeMessage();
-                //message.From.Add(new MailboxAddress("Your Name", fromEmail));
-                //message.To.Add(new MailboxAddress("Recipient Name", toEmail));
-                //message.Subject = "Test Email";
-                //message.Body = new TextPart(TextFormat.Plain)
-                //{
-                //    Text = "This is a test email sent using OAuth2 in .NET Core."
-                //};
-
-                //using (var client = new SmtpClient())
-                //{
-                //    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                //    var oauth2 = new SaslMechanismOAuth2(fromEmail, credential.Token.AccessToken);
-                //    await client.AuthenticateAsync(oauth2);
-                //    await client.SendAsync(message);
-                //    await client.DisconnectAsync(true);
-                //}
-
-                //return Ok(credential.Token);
-
-                //var items = customerBusiness.GetMemberPasswordList();
-                //foreach (var item in items)
-                //{
-                //string pass = DataHash.EncryptData(item.OldPassword);
-                //var result = customerBusiness.SaveMemberPassword(item.UserID, pass);
-                //}
-
-
-                /////// Twilio
-                //string accountSid = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:accountSid").Value;
-                //string authToken = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:authToken").Value;
-
-                //TwilioClient.Init(accountSid, authToken);
-                //var message = MessageResource.Create(
-                //    body: "Join Earth's mightiest heroes. Like Kevin Bacon.",
-                //    from: new Twilio.Types.PhoneNumber("+919885217825"),
-                //    to: new Twilio.Types.PhoneNumber("+919810722979")
-                //);
-
-                //var result = message.Sid;
-
-
-                /////////////// ENCRYPTION
-                // string pass = DataHash.EncryptData("Appify@123");
-                //bool repass = DataHash.DecryptData("Appify@123", "UN5QLpw54G5gRLD8yQhD915AqsAgfcEIQxhnyGT8ryCJXRO+WX1Ikl0/RntoGB9Q8P9avvjxAvfSN+LR7bpj7g==");
-                /////////////// IP2 LOCATION
-                //var result = Common.CheckIPAddress(HttpContext, allowedCountries);
-
-                //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                //new ClientSecrets
-                //{
-                //    ClientId = "853172481735-ll2ic3il1dq9nioa7c4gh9a2g8l310pr.apps.googleusercontent.com",
-                //    ClientSecret = "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"
-                //},
-                //new[] { "email", "profile", "https://mail.google.com/" },
-                //"user",
-                //CancellationToken.None
-                //);
-
-                //var jwtPayload = GoogleJsonWebSignature.ValidateAsync(credential.Token.IdToken).Result;
-                //var username = jwtPayload.Email;
-
+                sw.Stop();
                 rm.statusCode = StatusCodes.OK;
-                rm.message = "SMS HAS BEEN SUCCESSFULLY SENT";
+                rm.message = "FETCH PRODUCT LIST " + $"{ sw.ElapsedMilliseconds}ms";
                 rm.name = StatusName.ok;
-                rm.data = responseBody;
+                rm.data = items;
 
-
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
             }
-            catch (Exception ex)
+            else
             {
-
                 rm.statusCode = StatusCodes.ERROR;
-                rm.message = ex.Message.ToString();
+                rm.message = "NO CONTENT";
                 rm.name = StatusName.invalid;
-                rm.data = null;
-                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
-                await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
             }
-            return Ok(rm);
+
 
         }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+
+    [HttpPost]
+    [Route("productlist")]
+    [MapToApiVersion("1.1")]
+    public async Task<IActionResult> GetMemberProductsList(ParamMemberUserID itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            ///// Redis Cache Logic
+
+            //var cacheKey = $"customer:productlist:{itemData.userID}";
+            //string redisConnectionString = configuration["AppifyCache:Server"];
+            //var redisCacheService = new RedisCacheService(redisConnectionString);
+
+            //var cacheJson = redisCacheService.GetApiCache(cacheKey);
+            //if (!string.IsNullOrEmpty(cacheJson))
+            //{
+            //    var cacheData = JsonConvert.DeserializeObject<List<MemberProduct>>(cacheJson);
+            //    rm.statusCode = StatusCodes.OK;
+            //    rm.message = "FETCH PRODUCT LIST";
+            //    rm.name = StatusName.ok;
+            //    rm.data = cacheData;
+            //    return Ok(rm);
+            //}
+
+            List<MemberProduct> items = customerBusiness.ProductListNew(itemData.userID);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                ///// Redis Cache Logic
+                //var jsonToCache = JsonConvert.SerializeObject(items);
+                //redisCacheService.SetApiCache(cacheKey, jsonToCache, TimeSpan.FromMinutes(30));
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+        }
+
+    /// <summary>
+    /// gets Product items information based on Search Filters
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "vendorID": 1060,
+    ///       "productName": "",
+    ///       "categoryID": 0,
+    ///       "pageNo": 1,
+    ///       "rows": 20,
+    ///       "priceFrom": 0,
+    ///       "priceTo": 0,
+    ///       "stockFrom": 0,
+    ///       "stockTo": 0,
+    ///       "productCount": 20
+    ///     } 
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistpageview")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GetMemberProductsListPageView(ProductSearch itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            var items = customerBusiness.ProductListPageView(itemData);
+            if (items!=null)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+
+    /// <summary>
+    /// gets Product items information based on Vendor ID
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///         "userID": 1060,
+    ///         "categoryID": 3646,
+    ///         "pageNo": 1,
+    ///         "rows": 2
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///		    {
+    ///          	"productID": 1315,
+    ///          	"vendorID": 0,
+    ///          	"productName": "ELEGANT HOODY ",
+    ///          	"category": 3713,
+    ///          	"brand": "Polo",
+    ///          	"price": 1429,
+    ///          	"imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1702444422717.jpg",
+    ///          	"isNew": false
+    ///    	    }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistbycategory")]
+    [MapToApiVersion("1.0")]
+    [Authorize]
+    public IActionResult GetMemberProductsByCategory(ParamCategoryID itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
+            List<MemberProduct> items = customerBusiness.ProductListByCategory(itemData.userID, itemData.categoryID, itemData.PageNo, itemData.Rows);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH PRODUCT LIST BY CATEGORY SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST BY CATEGORY - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT LIST BY CATEGORY - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+        }
+        return Ok(rm);
+
+    }
+
+    /// <summary>
+    /// gets All Details based on Member ID
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///         "userID": 1505
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///         {
+    ///           "statusCode": 200,
+    ///           "name": "SUCCESS_OK",
+    ///           "message": "FETCH ALL DETAILS",
+    ///           "data": {
+    ///             "wareHouse": true,
+    ///             "products": 47,
+    ///             "category": true,
+    ///             "appDetails": true
+    ///           }
+    ///         }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("AllDetails")]
+    [MapToApiVersion("1.0")]
+    [Authorize]
+    public async Task<IActionResult> GetAllDetails(ParamMemberUserID itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
+            var items = customerBusiness.GetMemberAllDetails(itemData.userID);
+            if (items != null)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH ALL DETAILS";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                await Common.UpdateEventLogsNew("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+
+    /// <summary>
+    /// gets Product List based on UserID
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///         "userID": 1060
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///	    [
+    ///         {
+    ///           "statusCode": 200,
+    ///           "name": "SUCCESS_OK",
+    ///           "message": "FETCH ALL DETAILS",
+    ///           "data": {
+    ///             "wareHouse": true,
+    ///             "products": 47,
+    ///             "category": true,
+    ///             "appDetails": true
+    ///           }
+    ///         }
+    ///	    ]
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistbyvaua")]
+    [MapToApiVersion("1.0")]
+    [Authorize]
+    public async Task<IActionResult> GetProductListByVAUA(ParamMemberUserID itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            CheckToken.IsValidToken(Request, configuration);
+            var items = customerBusiness.GetProductListByVAUA(itemData.userID);
+            if (items != null)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH ALL DETAILS";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok));
+                await Common.UpdateEventLogsNew("FETCH ALL DETAILS SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
+                //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("FETCH ALL DETAILS - NO CONTENT", reqHeader, controllerURL, itemData, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+        }
+    /// <summary>
+    /// Get Product List based on Vendor and Featured Categories
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "vendorID": 1060,
+    ///       "categoryID": 0,
+    ///       "parentID": 0,
+    ///       "count": 2,
+    ///       "productCount": 5,
+    ///       "pageNo": 1,
+    ///       "rows": 10
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistbyfeaturedcat")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GetProductListbyFeaturedCat(ProductsByFeaturedCat itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            List<MemberProduct> items = customerBusiness.ProductListByFeaturedCat(itemData);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+        }
+    /// <summary>
+    /// Get  Product List based on PriceID
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "priceID": "8444,8445"
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    ///     {
+    ///       "statusCode": 200,
+    ///       "name": "SUCCESS_OK",
+    ///       "message": "FETCH PRODUCT LIST",
+    ///       "data": [
+    ///         {
+    ///           "priceID": 8444,
+    ///           "productName": "Plain Men Cotton Shirt, Formal, Half Sleeves",
+    ///           "color": "grey",
+    ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/",
+    ///           "price": 533,
+    ///           "discount": 0,
+    ///           "discountType": 0,
+    ///           "stock": 9,
+    ///           "size": "M",
+    ///           "weight": 500
+    ///         },
+    ///         {
+    ///           "priceID": 8445,
+    ///           "productName": "Dusty Blue Embroidered Silk Blend Men's Kurta",
+    ///           "color": "Sky blue",
+    ///           "imageName": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/",
+    ///           "price": 399,
+    ///           "discount": 0,
+    ///           "discountType": 0,
+    ///           "stock": 10,
+    ///           "size": "S",
+    ///           "weight": 200
+    ///         }
+    ///       ]
+    ///     }
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistbypriceid")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GetProductListbyPriceID(ParamPriceID itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            List<ProductPriceLite> items = customerBusiness.GetProductListbyPriceID(itemData.PriceID);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
+
+    /// <summary>
+    /// This END POINT JUST FOR TESTING DIFFERENT FUCNTIONS
+    /// </summary>
+    [HttpPost]
+    [Route("fortestingfunc")]
+    [MapToApiVersion("1.0")]
+    //[Consumes("multipart/form-data")]
+    public async Task<IActionResult> fortestingfuc([FromForm] ParamEmailFields item)//([Required]IFormFile file)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+            string responseBody = "NO FILE OR INVALID FILE FORMAT";
+            //////[FromForm] ParamEmailFields item
+            if (item.file == null || item.file.Length == 0)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                return Ok(rm);
+            }
+            if (Path.GetExtension(item.file.FileName).ToLower() != ".csv"
+                && Path.GetExtension(item.file.FileName).ToLower() != ".xls"
+                && Path.GetExtension(item.file.FileName).ToLower() != ".xlsx"
+                && Path.GetExtension(item.file.FileName).ToLower() != ".xlsb")
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "FILE TYPE ONLY ACCEPT .csv, .xls, .xlsx, .xlsb";
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                return Ok(rm);
+            }
+
+            if (item.file.Length > Common.IMAGE_SIZE)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.name = StatusName.invalid;
+                rm.message = "FILE SIZE GREATER THAN 5 MB";
+                rm.data = null;
+                return Ok(rm);
+            }
+
+            Notifications notifications = new Notifications
+            {
+                ToEmailCC = "", ////NotificationConfig.TO_BCC,
+                ToEmailBCC = "", ////NotificationConfig.TO_CC,
+                EmailSubject = item.Subject,
+                EmailTemplateURL = "wwwroot/EmailTemplates/01-welcome-message-vendor.html",
+                ToEmail = item.ToEmail
+            };
+            //string mailbody = string.Empty;
+            //string path = notifications.EmailTemplateURL;
+            //using (StreamReader sr = new StreamReader(path))
+            //{
+            //    mailbody = sr.ReadToEnd();
+            //}
+            //notifications.EmailBody = mailbody;
+            notifications.EmailBody = item.Body;
+            EmailNotification.SendEmail(notifications, item.file);
+
+
+            //using (var client = new HttpClient())
+            //{
+
+            //    var BaseUri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
+            //    var parameters = new Dictionary<string, string>();
+            //    parameters["userid"] = "appify";
+            //    parameters["password"] = "App1fyd3v3l0p3r";
+            //    parameters["sender"] = "APFYRT";
+            //    parameters["mobileno"] = "9810722979";
+            //    parameters["msg"] = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL";
+            //    parameters["peid"] = "1701172830092637857";
+            //    parameters["tpid"] = "1707172862932634661";
+
+            //    var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
+
+            //    if (response.IsSuccessStatusCode)
+            //    {
+            //        responseBody = await response.Content.ReadAsStringAsync();
+            //    }
+            //    else
+            //    {
+            //        responseBody = response.StatusCode.ToString();
+            //    }
+
+            //}
+
+            //SendSMSHeader sendSMSHeader = new SendSMSHeader
+            //{
+            //    userid = "appify",
+            //    password = "App1fyd3v3l0p3r",
+            //    sender = "APFYRT",
+            //    mobileno = "9810722979",
+            //    msg = "Welcome to APPIFY RETAIL You’ve successfully signed up and joined our community. Explore our range of products and enjoy your shopping.APPIFYRETAIL",
+            //    //SendOn = DateTime.Now,
+            //    //MsgType = 0,
+            //    peid= "1701172830092637857",
+            //    tpid= "1707172862932634661"
+            //};
+
+            ////     Create an instance of HttpClient
+            //using (var client = new HttpClient())
+            //{
+            //    string responseBody = "";
+            //    var uri = new Uri("http://tra.bulksmshyderabad.co.in/websms/sendsms.aspx");
+            //    //client.BaseAddress = new Uri(Common.OneDelhiveryCreateURL);
+            //    //client.DefaultRequestHeaders.Accept.Clear();
+            //    //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //    //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", Common.OneDelhiveryToken);
+
+            //    var jsonString = Common.ConvertObjectToJson(sendSMSHeader);
+            //    HttpResponseMessage Res = client.PostAsync(uri, new StringContent(jsonString, Encoding.UTF8, "application/json")).Result;
+            //    //var response = await Res.Content.ReadAsStringAsync();
+
+
+            //    //HttpContent httpContent = new StringContent(json);
+            //    // StringContent httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            //    //var response = await client.PostAsync(OneDelhiveryCreateURL, httpContent);
+            //   // HttpResponseMessage response = await client.PostAsJsonAsync(uri, sendSMSHeader);
+
+            //    //Check if the response is successful
+            //    if (Res.IsSuccessStatusCode)
+            //    {
+            //        responseBody = await Res.Content.ReadAsStringAsync();
+            //    }
+            //    else
+            //    {
+            //        responseBody = Res.StatusCode.ToString();
+            //    }
+
+            //}
+
+
+            //string clientId = "604537213086-2r3o5j2ljn2rpdkhsfsd34vspki0v4nq.apps.googleusercontent.com";
+            //string clientSecret = "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";
+            //string refreshToken = "YourRefreshToken";
+            //string fromEmail = "gurjeet@appi-fy.ai";
+            //string toEmail = "nkolweb@gmail.com";
+
+            //var clientSecrets = new ClientSecrets
+            //{
+            //    ClientId = clientId,
+            //    ClientSecret = clientSecret
+            //};
+
+            //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+            //    clientSecrets,
+            //    new[] { "https://mail.google.com/" },
+            //    "user",
+            //    CancellationToken.None);
+
+            //if (credential.Token.IsExpired(credential.Flow.Clock))
+            //{
+            //    await credential.RefreshTokenAsync(CancellationToken.None);
+            //}
+
+
+
+            //var message = new MimeMessage();
+            //message.From.Add(new MailboxAddress("Your Name", fromEmail));
+            //message.To.Add(new MailboxAddress("Recipient Name", toEmail));
+            //message.Subject = "Test Email";
+            //message.Body = new TextPart(TextFormat.Plain)
+            //{
+            //    Text = "This is a test email sent using OAuth2 in .NET Core."
+            //};
+
+            //using (var client = new SmtpClient())
+            //{
+            //    await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            //    var oauth2 = new SaslMechanismOAuth2(fromEmail, credential.Token.AccessToken);
+            //    await client.AuthenticateAsync(oauth2);
+            //    await client.SendAsync(message);
+            //    await client.DisconnectAsync(true);
+            //}
+
+            //return Ok(credential.Token);
+
+            //var items = customerBusiness.GetMemberPasswordList();
+            //foreach (var item in items)
+            //{
+            //string pass = DataHash.EncryptData(item.OldPassword);
+            //var result = customerBusiness.SaveMemberPassword(item.UserID, pass);
+            //}
+
+
+            /////// Twilio
+            //string accountSid = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:accountSid").Value;
+            //string authToken = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("SMSNotification:authToken").Value;
+
+            //TwilioClient.Init(accountSid, authToken);
+            //var message = MessageResource.Create(
+            //    body: "Join Earth's mightiest heroes. Like Kevin Bacon.",
+            //    from: new Twilio.Types.PhoneNumber("+919885217825"),
+            //    to: new Twilio.Types.PhoneNumber("+919810722979")
+            //);
+
+            //var result = message.Sid;
+
+
+            /////////////// ENCRYPTION
+            // string pass = DataHash.EncryptData("Appify@123");
+            //bool repass = DataHash.DecryptData("Appify@123", "UN5QLpw54G5gRLD8yQhD915AqsAgfcEIQxhnyGT8ryCJXRO+WX1Ikl0/RntoGB9Q8P9avvjxAvfSN+LR7bpj7g==");
+            /////////////// IP2 LOCATION
+            //var result = Common.CheckIPAddress(HttpContext, allowedCountries);
+
+            //var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+            //new ClientSecrets
+            //{
+            //    ClientId = "853172481735-ll2ic3il1dq9nioa7c4gh9a2g8l310pr.apps.googleusercontent.com",
+            //    ClientSecret = "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"
+            //},
+            //new[] { "email", "profile", "https://mail.google.com/" },
+            //"user",
+            //CancellationToken.None
+            //);
+
+            //var jwtPayload = GoogleJsonWebSignature.ValidateAsync(credential.Token.IdToken).Result;
+            //var username = jwtPayload.Email;
+
+            rm.statusCode = StatusCodes.OK;
+            rm.message = "SMS HAS BEEN SUCCESSFULLY SENT";
+            rm.name = StatusName.ok;
+            rm.data = responseBody;
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = null;
+            //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH ALL DETAILS - ERROR", reqHeader, controllerURL, itemData, null, rm.message));
+            await Common.UpdateEventLogsNew("For Testing Different Functions", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
 
         /// <summary>
         /// Test BULKSMS

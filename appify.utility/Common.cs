@@ -65,12 +65,23 @@ namespace appify.utility
 
         public static readonly string RazorpayPaymentTransfers = "https://api.razorpay.com/v1/payments/PAYMENT_ID/transfers";
 
-        public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
-        public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";
+        //public static readonly string RazorPayKey = "rzp_test_OVkzHWQC4WRAMj";
+        //public static readonly string RazorPaySecret = "f0RBriXVQMJ5dwxphwDGlskH";
 
-        //public static readonly string RazorPayKey = "rzp_live_uSkTSnmcPZUeVA";
-        //public static readonly string RazorPaySecret = "nU2y93R7YEJv4QgWuKt3eptV";
+        public static readonly string RazorPayKey = "rzp_live_uSkTSnmcPZUeVA";
+        public static readonly string RazorPaySecret = "nU2y93R7YEJv4QgWuKt3eptV";
 
+        /// <summary>
+        /// Shopify API Urls
+        /// </summary>
+
+        public static readonly string GetShopifyProducts = "/admin/api/2023-10/graphql.json";
+        public static readonly string UpdateShopifyProductURL = "/admin/api/2024-04/graphql.json";
+        public static readonly string UpdateShopifyInventory = "/admin/api/2024-04/inventory_levels.json?inventory_item_ids={inventoryItemId}";
+        public static readonly string UpdateShopifyInventoryLevel = "/admin/api/2024-04/inventory_levels/set.json";
+        public static readonly string DeleteShopifyProduct = "/admin/api/2023-10/graphql.json";
+        public static readonly string UploadImageToShopify = "/admin/api/2024-04/products/{productId}/images.json";
+        public static readonly string DeleteShopifyProductImage = "/admin/api/2024-04/products/{productId}/images/{imageId}.json";
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
                                                 string? eventLogStatus)
         {

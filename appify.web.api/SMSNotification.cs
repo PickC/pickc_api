@@ -95,14 +95,22 @@ namespace appify.web.api
                 {
 
                     var BaseUri = new Uri(new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("BULKSMSCredentials:url").Value);
+
+                    var cleanMsg = (notificationModel.Title + " " + notificationModel.Body)
+                                    .Replace("’", "'")
+                                    .Replace("‘", "'")
+                                    .Replace("“", "\"")
+                                    .Replace("”", "\"");
+
                     var parameters = new Dictionary<string, string>();
                     parameters["userid"] = userID;
                     parameters["password"] = password;
                     parameters["sender"] = sender;
                     parameters["mobileno"] = MobileNo;
-                    parameters["msg"] = notificationModel.Title + ' ' + notificationModel.Body;
+                    parameters["msg"] = cleanMsg;
                     parameters["peid"] = peid;
                     parameters["tpid"] = notificationTemplate.SMSTemplateID.ToString();
+
 
                     var response = await client.PostAsync(BaseUri, new FormUrlEncodedContent(parameters));
 
@@ -126,6 +134,8 @@ namespace appify.web.api
 
             return responseBody;
         }
+
+
 public static async Task<bool> CheckBulkSMSBalance(INotificationBusiness notificationBusiness)
 {
     bool resultResponse = false;

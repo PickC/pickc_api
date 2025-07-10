@@ -154,5 +154,17 @@ namespace appify.DataAccess
             }
             return item;
         }
+        public GlobalProductSearchResponse GlobalProductSearch(string ProductName, bool IsActive, decimal MinPrice, decimal MaxPrice, short PageNo, short Rows)
+        {
+            GlobalProductSearchResponse item = new GlobalProductSearchResponse();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.GLOBALPRODUCTSEARCH, ProductName, IsActive, MinPrice, MaxPrice, PageNo, Rows);
+                item.Products = DataTableHelper.ConvertDataTable<GlobalProductSearch>(ds.Tables[0]);
+                item.TotalCount = ds.Tables[1].Rows.Count > 0 ? Convert.ToInt32(ds.Tables[1].Rows[0][0]) : 0;
+            }
+            return item;
+        }
     }
 }

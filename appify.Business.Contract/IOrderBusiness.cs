@@ -15,6 +15,7 @@ namespace appify.Business.Contract
         public Order Get(long orderID); 
         public List<CustomerOrder> List(long sellerID);
         public List<OrderList> OrderList(long userID, short userType);
+        public Task<List<OrderList>> OrderListPageView(OrderSearch itemData);
         public  CustomerOrder GetCustomerOrder(long orderID);
         public CustomerOrderNew GetCustomerOrderNew(long orderID);
         public List<CustomerOrderSummary> CustomerSummaryList(long sellerID, string OrderStatus, short PageNo, short Rows);

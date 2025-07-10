@@ -17,6 +17,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using appify.web.api;
 using appify.models;
 using appify.audit.service;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -233,21 +235,51 @@ builder.Services.AddAuthorization(Options =>
            }).Build();
 });
 
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Optimal;
+});
+
 builder.Services.AddResponseCompression(options =>
 {
+    options.Providers.Add<GzipCompressionProvider>();
     options.EnableForHttps = true;
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/json" });
 });
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
+
+///// Old
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowFrontend", policy =>
+//    {
+//        policy
+//            .WithOrigins("http://localhost:3000", "https://appifyvendor.azurewebsites.net", "https://appifydashboard.azurewebsites.net", "https://appify-dashboard-two.vercel.app", "https://vendor-web-ten.vercel.app", "https://vendor.appi-fy.ai", "https://dashboard.appi-fy.ai", "https://user-template-api.azurewebsites.net") // React app's origin
+//            .AllowAnyHeader()
+//            .AllowAnyMethod()
+//            .AllowCredentials(); // Optional: Only if using cookies/auth
+//    });
+//});
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000", "https://appifyvendor.azurewebsites.net", "https://appifydashboard.azurewebsites.net", "https://appify-dashboard-two.vercel.app", "https://vendor-web-ten.vercel.app", "https://vendor.appi-fy.ai", "https://dashboard.appi-fy.ai", "https://user-template-api.azurewebsites.net") // React app's origin
+            .SetIsOriginAllowed(origin =>
+                new Uri(origin).Host.EndsWith("appi-fy.ai") ||
+                new Uri(origin).Host.EndsWith("vercel.app") ||
+                new Uri(origin).Host.EndsWith("azurewebsites.net") ||
+                new Uri(origin).Host.EndsWith("appifystores.com") ||
+                origin == "http://localhost:3000" ||
+                origin == "https://user-template-api.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials(); // Optional: Only if using cookies/auth
+            .AllowCredentials();
     });
 });
 
@@ -278,7 +310,7 @@ app.UseCors(x=> x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseResponseCompression();
 app.MapControllers();
 
 app.Run();

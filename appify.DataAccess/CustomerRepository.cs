@@ -62,7 +62,21 @@ namespace appify.DataAccess
 
 
         }
-
+        public ProductListResponse ProductListPageView(ProductSearch itemData)
+        {
+            ProductListResponse response = new ProductListResponse();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYVENDORPAGEVIEW, itemData.VendorID, itemData.ProductName, itemData.CategoryID, itemData.PageNo, itemData.Rows, itemData.PriceFrom, itemData.PriceTo, itemData.StockFrom, itemData.StockTo,itemData.ProductCount);
+                response.Products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+                if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                {
+                    response.TotalCount = Convert.ToInt32(ds.Tables[1].Rows[0][0]);
+                }
+            }
+            return response;
+        }
         public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
         {
             List<MemberProduct> products = new List<MemberProduct>();
@@ -138,6 +152,28 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+        public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData)
+        {
+            List<MemberProduct> products = new List<MemberProduct>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYFEATUREDCAT, itemData.VendorID, itemData.CategoryID, itemData.ParentID, itemData.Count, itemData.ProductCount, itemData.PageNo,itemData.Rows);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
+            return products;
+        }
+        public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
+        {
+            List<ProductPriceLite> products = new List<ProductPriceLite>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYPRICEID, PriceID);
+                products = DataTableHelper.ConvertDataTable<ProductPriceLite>(ds.Tables[0]);
+            }
+            return products;
         }
     }
 }
