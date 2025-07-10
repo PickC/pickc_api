@@ -20,7 +20,10 @@ namespace appify.DataAccess
         public const string SAVEPRODUCTVARIANTSBYVENDOR = "[Operation].[usp_ShopifyProductVariantSave]";
         public const string SAVEPRODUCTIMAGESBYVENDOR = "[Operation].[usp_ShopifyProductImageSave]";
         public const string GETSHOPIFYCONFIGBYVENDOR = "[Operation].[usp_ShopifyConfigByVendorSelect]";
+        public const string GETSHOPIFYCONFIGBYSTOREURL = "[Operation].[usp_ShopifyConfigByStoreSelect]";
         public const string SAVESHOPIFYPRODUCTSTOAPPIFY = "[Operation].[usp_GenerateShopifyProducts]";
+        public const string DELETEPRODUCTSBYVENDOR = "[Operation].[usp_ShopifyProductDelete]";
+        public const string GETPRODUCTSBYVENDOR = "[Operation].[usp_ShopifyProductSelect]";
         public ShopifyRepository(IConfiguration config) {
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
@@ -54,6 +57,9 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@LegacyResourceId", shopifyProduct.LegacyResourceId);
                         cmd.Parameters.AddWithValue("@TotalInventory", shopifyProduct.TotalInventory);
                         cmd.Parameters.AddWithValue("@IsActive", shopifyProduct.IsActive);
+                        cmd.Parameters.AddWithValue("@CategoryID", shopifyProduct.IsActive);
+                        cmd.Parameters.AddWithValue("@Category", shopifyProduct.IsActive);
+                        cmd.Parameters.AddWithValue("@BreadCrumb", shopifyProduct.IsActive);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
@@ -147,6 +153,37 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        public bool DeleteShopifyProduct(string ProductID, long VendorID)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEPRODUCTIMAGESBYVENDOR))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public ShopifyConfig GetShopifyConfigByVendor(long VendorID)
         {
             ShopifyConfig item = new ShopifyConfig();
@@ -155,6 +192,17 @@ namespace appify.DataAccess
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, GETSHOPIFYCONFIGBYVENDOR, VendorID);
                 item = DataTableHelper.ConvertDataTable<ShopifyConfig>(ds.Tables[0]).FirstOrDefault();
+            }
+            return item;
+        }
+        public ShopifyConfigLite GetShopifyConfigByStoreUrl(string StoreURL)
+        {
+            ShopifyConfigLite item = new ShopifyConfigLite();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, GETSHOPIFYCONFIGBYSTOREURL, StoreURL);
+                item = DataTableHelper.ConvertDataTable<ShopifyConfigLite>(ds.Tables[0]).FirstOrDefault();
             }
             return item;
         }
@@ -185,6 +233,9 @@ namespace appify.DataAccess
                         bulkProductMaster.ColumnMappings.Add("LegacyResourceId", "LegacyResourceId");
                         bulkProductMaster.ColumnMappings.Add("TotalInventory", "TotalInventory");
                         bulkProductMaster.ColumnMappings.Add("IsActive", "IsActive");
+                        bulkProductMaster.ColumnMappings.Add("CategoryID", "CategoryID");
+                        bulkProductMaster.ColumnMappings.Add("Category", "Category");
+                        bulkProductMaster.ColumnMappings.Add("BreadCrumb", "BreadCrumb");
                         bulkProductMaster.BatchSize = 1000;
                         bulkProductMaster.BulkCopyTimeout = 120; // in seco
                         bulkProductMaster.WriteToServer(shopifyProductMaster);
@@ -271,6 +322,18 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+
+        public List<ShopifyProductID> GetShopifyProductIDByVendor(long VendorID)
+        {
+            List<ShopifyProductID> item = new List<ShopifyProductID>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, GETPRODUCTSBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<ShopifyProductID>(ds.Tables[0]);
+            }
+            return item;
         }
     }
 }
