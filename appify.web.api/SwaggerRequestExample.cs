@@ -499,4 +499,12 @@ namespace appify.web.api
     public class ParamVendorStoreUrl {
         public string StoreUrl{ get; set; }
     }
+
+
+    public class ParamVendorUploadImgage
+    {
+        public Int64 VendorID { get; set; }
+        public string FolderName { get; set; }
+        public IFormFile file { get; set; }
+    }
 }
