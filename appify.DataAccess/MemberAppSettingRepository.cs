@@ -140,6 +140,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@OnboardedBy", item.OnboardedBy);
                         cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@WebAppURL", item.WebAppURL);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());

@@ -260,10 +260,13 @@ namespace appify.models
     public partial class ProductsByFeaturedCat
     {
         public Int64 VendorID { get; set; }
-        public Int64? CategoryID { get; set; }
-        public Int64? ParentID { get; set; }
-        public Int32? Count { get; set; }
         public Int32? ProductCount { get; set; }
+    }
+
+    public partial class ProductsByFeaturedCatPageView
+    {
+        public Int64 VendorID { get; set; }
+        public Int64? CategoryID { get; set; }
         public Int32? PageNo { get; set; }
         public Int32? Rows { get; set; }
     }

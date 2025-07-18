@@ -1,6 +1,7 @@
 ﻿using appify.Business.Contract;
 using appify.DataAccess.Contract;
 using appify.models;
+using IP2Location;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,6 +28,7 @@ namespace appify.Business
                 var item = repository.SaveShopifyProduct(shopifyProduct);
                 if (item != null)
                 {
+                    rslt = repository.UpdateShopifyVariantsImages(shopifyProduct.ProductID, shopifyProduct.VendorID);
                     if (shopifyProduct.variants.Any() == true)
                     {
                         //shopifyProduct.variants.ForEach(v => { v.ProductID = shopifyProduct.ProductID; });
@@ -45,6 +47,7 @@ namespace appify.Business
                             rslt = repository.SaveShopifyProductVarientImage(image);
                         }
                     }
+                    repository.UpdateProductImagePrice(shopifyProduct.ProductID);
                 }
             }
             return rslt;
@@ -60,6 +63,10 @@ namespace appify.Business
         public bool DeleteShopifyProduct(string ProductID, long VendorID)
         {
             return repository.DeleteShopifyProduct(ProductID, VendorID);
+        }
+        public bool UpdateShopifyVariantsImages(string ProductID, long VendorID)
+        {
+            return repository.UpdateShopifyVariantsImages(ProductID, VendorID);
         }
         public ShopifyConfig GetShopifyConfigByVendor(long VendorID)
         {

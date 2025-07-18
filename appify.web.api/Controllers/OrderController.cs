@@ -1764,7 +1764,7 @@ namespace appify.web.api.Controllers
         ///       "userType": 1000,
         ///       "pageNo": 1,
         ///       "rows": 10,
-        ///       "filterBy": 114,
+        ///       "filterBy": "Current,Completed",
         ///       "orderNo": "",
         ///       "productName": ""
         ///     }

@@ -19,6 +19,7 @@ namespace appify.DataAccess.Contract
         public List<MemberPassword> GetMemberPasswordList();
         public bool SaveMemberPassword(long userID, string password);
         public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData);
+        public List<MemberProduct> ProductListByFeaturedCatPageView(ProductsByFeaturedCatPageView itemData);
         public List<ProductPriceLite> GetProductListbyPriceID(string PriceID);
     }
 }

@@ -84,6 +84,14 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
+                if(shopifyGraphQLService.IsFound==false)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY STORE NOT FOUND BY VENDOR";
+                    rm.name = StatusName.ok;
+                    rm.data = "SHOPIFY STORE NOT FOUND BY VENDOR";
+                    return Ok(rm);
+                }
                 var result = await shopifyGraphQLService.FetchAllProductsAsync();
                 //var jsonString = JsonConvert.SerializeObject(result, Formatting.Indented);
                 //var bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
@@ -617,11 +625,16 @@ namespace appify.web.api.Controllers
             var body = "";
             try
             {
-                string topic = "products/create";//Request.Headers["X-Shopify-Topic"];
-                string shopDomain = "d9nnfq-s0.myshopify.com";//Request.Headers["X-Shopify-Shop-Domain"];
-                string xVerifyHeader = "Sl7sUmG3db0RePvoIg37dtYrYBclxttx3Ce/qAGzsmI=";/////Request.Headers["X-Shopify-Hmac-Sha256"];
+                string topic = Request.Headers["X-Shopify-Topic"];
+                string shopDomain = Request.Headers["X-Shopify-Shop-Domain"];
+                string xVerifyHeader = Request.Headers["X-Shopify-Hmac-Sha256"];
+//#if DEBUG
+//                topic = "products/create";
+//                shopDomain = "dsgclothes.myshopify.com";
+//                xVerifyHeader = "Sl7sUmG3db0RePvoIg37dtYrYBclxttx3Ce/qAGzsmI=";
+//#endif
                 ShopifyConfigLite shopifyConfig;
-                string inputJson = "Topic - " + topic + " - Domain - " + shopDomain;
+                string inputJson = "Topic - " + topic + " - Domain - " + shopDomain + " - Hmac - "+ xVerifyHeader;
                 if (shopDomain != null)
                 {
                     shopifyConfig = shopifyBusiness.GetShopifyConfigByStoreUrl(shopDomain);
@@ -646,16 +659,16 @@ namespace appify.web.api.Controllers
                                 var result = shopifyGraphQLService.ShopifyProductCreateAsync(body);
                                 if (result != null)
                                 {
-                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
-                                    if (products != null)
-                                    {
+                                    //var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
+                                    //if (products != null)
+                                    //{
 
                                         rm.statusCode = StatusCodes.OK;
                                         rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED!";
                                         rm.name = StatusName.ok;
                                         rm.data = result;
                                         await Common.UpdateEventLogsNew("SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY CREATED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
-                                    }
+                                    //}
                                 }
 
                                 else
@@ -672,16 +685,12 @@ namespace appify.web.api.Controllers
                                 var resultObj = shopifyGraphQLService.ShopifyProductUpdateAsync(body);
                                 if (resultObj != null)
                                 {
-                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
-                                    if (products != null)
-                                    {
 
                                         rm.statusCode = StatusCodes.OK;
                                         rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED!";
                                         rm.name = StatusName.ok;
                                         rm.data = resultObj;
                                         await Common.UpdateEventLogsNew("SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY UPDATED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
-                                    }
                                 }
 
                                 else
@@ -698,16 +707,11 @@ namespace appify.web.api.Controllers
                                 var resultObjDel = shopifyGraphQLService.ShopifyProductDeleteAsync(body, shopifyConfig.VendorID);
                                 if (resultObjDel != null)
                                 {
-                                    var products = shopifyBusiness.SaveShopifyProductToAppify(shopifyConfig.VendorID);
-                                    if (products != null)
-                                    {
-
-                                        rm.statusCode = StatusCodes.OK;
-                                        rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY DELETED!";
-                                        rm.name = StatusName.ok;
-                                        rm.data = resultObjDel;
-                                        await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS HAS BEEN SUCCESSFULLY DELETED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
-                                    }
+                                    rm.statusCode = StatusCodes.OK;
+                                    rm.message = "SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY DELETED!";
+                                    rm.name = StatusName.ok;
+                                    rm.data = resultObjDel;
+                                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS HAS BEEN SUCCESSFULLY DELETED", reqHeader, controllerURL, inputJson, body, StatusName.ok, this.eventLogBusiness);
                                 }
 
                                 else
@@ -725,50 +729,6 @@ namespace appify.web.api.Controllers
                                 break;
                         }
 
-                        //var request = JsonConvert.DeserializeObject<JObject>(body.Replace("Response: ", ""));
-                        //string eventname = System.String.IsNullOrEmpty((string?)request["event"]) ? "" : Convert.ToString(request["event"]);
-                        //foreach (var s in eventSearch)
-                        //{
-                        //    eventResult = eventname.Contains(s);
-                        //    if (eventResult == true)
-                        //        break;
-                        //}
-                        //if (eventResult == false)
-                        //{
-                        //    paymentType = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["paymentType"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["notes"]["paymentType"]);
-
-                        //    if (paymentType == "orderPayment")
-                        //    {
-                        //        long ts = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["created_at"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["created_at"]);
-
-                        //        DateTime dt = new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(ts).ToLocalTime();
-                        //        OrderPayment orderPayment = new OrderPayment
-                        //        {
-                        //            PaymentID = 0,
-                        //            PaymentDate = dt,
-                        //            OrderID = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["notes"]["orderId"]) ? 0 : Convert.ToInt64(request["payload"]["payment"]["entity"]["notes"]["orderId"]),
-                        //            EventName = Convert.ToString(request["event"]),
-                        //            PaymentAmount = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["amount"]) ? 0 : Convert.ToDecimal(request["payload"]["payment"]["entity"]["amount"]) / 100,
-                        //            OrderReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["order_id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["order_id"]),
-                        //            PaymentReferenceNo = System.String.IsNullOrEmpty((string?)request["payload"]["payment"]["entity"]["id"]) ? "" : Convert.ToString(request["payload"]["payment"]["entity"]["id"]),
-                        //            PaymentMode = 0,
-                        //            LookupCode = "RAZORPAY"
-                        //        };
-                        //var result = orderBusiness.OrderPaymentSave(orderPayment);
-                        //if (result)
-                        // {
-                        rm.statusCode = StatusCodes.OK;
-                        rm.message = "SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY";
-                        rm.name = StatusName.ok;
-                         rm.data = body;
-                         await Common.UpdateEventLogsNew("SHOPIFY WEBHOOK - SHOPIFY RESPONSE SUCCESSFULLY", reqHeader, controllerURL, "SHOPIFY WEBHOOK - Success Response - "+ topic, body, StatusName.ok, this.eventLogBusiness);
-                        //}
-                        //    }
-                        //    else if (paymentType == "oneTimeSubscription")
-                        //    {
-
-                        //    }
-                        //}
                     }
                 }
                                                                                  

@@ -73,7 +73,7 @@ namespace appify.models
         public string City { get; set; }
         public Int32 TotalOrders { get; set; }
         public string ContactNo { get; set; }
-
+        public string? SubscriptionStatus {get;set;}
     }
     public partial class SellerOrderList
     {
