@@ -43,7 +43,8 @@ namespace appify.dbroutine
         public const string GETMEMBERPASSWORDLIST = "[Operation].[USP_GENERATEPASSWORD_SELECT]";
         public const string GENERATEMEMBERPASSWORD = "[Operation].[USP_GENERATEPASSWORD_HASHCODE]";
 
-        public const string PRODUCTSBYFEATUREDCAT = "[Operation].[usp_ProductsByFeaturedCategoriesPageView]";
+        public const string PRODUCTSBYFEATUREDCAT = "[Operation].[usp_ProductsByFeaturedCategories]";
+        public const string PRODUCTSBYFEATUREDCATPAGEVIEW = "[Operation].[usp_ProductsByFeaturedCategoriesPageView]";
         public const string PRODUCTSBYPRICEID = "[Operation].[usp_ProductsByPriceIDPageView]";
 
         /// <summary>
@@ -225,6 +226,16 @@ namespace appify.dbroutine
         /// 
         public const string SAVEORDERPAYMENT = "[Operation].[usp_OrderPaymentSave]";
 
+        /// <summary>
+        /// [Master].[Template]
+        /// </summary>
+
+        public const string SELECTTEMPLATE = "[Master].[usp_TemplateSelect]";
+        public const string LISTTEMPLATE = "[Master].[usp_TemplateList]";
+        public const string VIEWALLTEMPLATES = "[Master].[usp_TemplateViewList]";
+        public const string GetTEMPLATEBYTHEME = "[Master].[usp_TemplateByTheme]";
+        public const string SAVETEMPLATE = "[Master].[usp_TemplateSave]";
+        public const string DELETETEMPLATE = "[Master].[usp_TemplateDelete]";
 
         /// <summary>
         /// [Master].[Theme]
@@ -232,6 +243,7 @@ namespace appify.dbroutine
 
         public const string SELECTTHEME = "[Master].[usp_ThemeSelect]";
         public const string LISTTHEME = "[Master].[usp_ThemeList]";
+        public const string LISTTHEMEBYTEMPLATE = "[Master].[usp_ThemeListByTemplate]";
         public const string SAVETHEME = "[Master].[usp_ThemeSave]";
         public const string DELETETHEME = "[Master].[usp_ThemeDelete]";
 

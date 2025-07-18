@@ -292,7 +292,7 @@ namespace appify.web.api.Controllers
             var reqHeader = Request;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             //dynamic data = jsonData;
             try
@@ -1040,7 +1040,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             var eventType = price.PriceID > 0 ? "Product Price Has Been Updated!" : "Product Price Has Been Saved";
             var eventTypeError = price.PriceID > 0 ? "Unable to update Product's Price!" : "Unable to Add Product's Price!";
             try
@@ -1122,7 +1122,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             //dynamic data = jsonData;
             try
             {
@@ -1355,7 +1355,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             var eventType = item.ImageID > 0 ? "Product Image Updated!" : "New Product Image Created";
             var eventTypeError = item.ImageID > 0 ? "Unable to Update Product's Image!" : "Unable to New Product's Image!";
             try
@@ -1436,7 +1436,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             //dynamic data = jsonData;
             try
             {
@@ -1792,7 +1792,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             bool result = false;
             try
             {
@@ -2209,7 +2209,7 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             var eventType = vendorCategories[0].UserID > 0 ? "Categories Updated" : "New Categories Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             //dynamic data = jsonData;
@@ -2554,14 +2554,14 @@ namespace appify.web.api.Controllers
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             string sourceIPAddress = reqHeader.Headers["IPAddress"].Count > 0 ? reqHeader.Headers["IPAddress"] : "Not Found";
             string AppName = reqHeader.Headers["AppName"].Count > 0 ? reqHeader.Headers["AppName"] : "WEB";
-            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "";
+            string UserId = reqHeader.Headers["Userid"].Count > 0 ? reqHeader.Headers["Userid"] : "0";
             var eventType = itemData[0].VendorID > 0 ? "Featured Categories Updated" : "New Featured Categories Created";
             string VendorID = reqHeader.Headers["VendorID"].Count > 0 ? reqHeader.Headers["VendorID"] : "0";
             //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
-                this.productBusiness.DeleteFeaturedCategories(itemData[0].VendorID);
+                //this.productBusiness.DeleteFeaturedCategories(itemData[0].VendorID);
                 foreach (var item in itemData)
                 {
                     result = this.productBusiness.UpdateFeaturedCategories(item);

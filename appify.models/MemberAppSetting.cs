@@ -49,9 +49,8 @@ namespace appify.models
         public DateTime CreatedOn { get; set; }
         public Int16 ModifiedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
-
         public string? PrivacyPolicyLink { get; set; }
-
+        public string? WebAppURL { get; set; }
     }
 
 
@@ -70,7 +69,7 @@ namespace appify.models
         public string? PlayStoreID { get; set; }
         public string? AppStoreID { get; set; }
         public string AppIcon { get; set; }
-
+        public string? WebAppURL { get; set; }
     }
 
     public partial class MemberAppSettingCICD {

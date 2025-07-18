@@ -18,24 +18,59 @@ namespace appify.Business
         {
             this.repository = repository;
         }
-        public bool Delete(long themeID)
+
+        public TemplateMaster SaveTemplate(TemplateMaster item)
         {
-            return repository.Delete(themeID);
+            return repository.SaveTemplate(item);
+        }
+        public bool DeleteTemplate(long templateID)
+        {
+            return repository.DeleteTemplate(templateID);
+        }
+        public TemplateMaster GetTemplate(long templateID)
+        {
+            return repository.GetTemplate(templateID);
+        }
+        public List<TemplateMaster> ListAllTemplate()
+        {
+            return repository.ListAllTemplate();
+        }
+        public List<TemplatesMaster> ViewAllTemplateList()
+        {
+            List <TemplatesMaster> templaItem = new List<TemplatesMaster>();
+            List<TemplateThemes> templateThemes = new List<TemplateThemes>();
+            templaItem = repository.ViewAllTemplateList();
+            if (templaItem.Any()==true)
+            {
+                foreach (var theme in templaItem)
+                {
+                    theme.Themes = repository.ListAllThemesByTemplate(theme.TemplateID);
+                }
+            }
+            return templaItem;
+        }
+        public TemplateThemePages GetTemplateByTheme(long templateID, long themeID)
+        {
+            return repository.GetTemplateByTheme(templateID, themeID);
+        }
+        public bool DeleteTheme(long themeID)
+        {
+            return repository.DeleteTheme(themeID);
         }
 
-        public ThemeMaster Get(long themeID)
+        public ThemeMaster GetTheme(long themeID)
         {
-            return repository.Get(themeID);
+            return repository.GetTheme(themeID);
         }
 
-        public List<ThemeMaster> ListAll()
+        public List<ThemeMaster> ListAllTheme()
         {
-            return repository.ListAll();
+            return repository.ListAllTheme();
         }
 
-        public ThemeMaster Save(ThemeMaster item)
+        public ThemeMaster SaveTheme(ThemeMaster item)
         {
-            return repository.Save(item);
+            return repository.SaveTheme(item);
         }
     }
 }

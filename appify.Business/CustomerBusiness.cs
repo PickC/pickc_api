@@ -55,6 +55,10 @@ namespace appify.Business
         {
             return this.repository.ProductListByFeaturedCat(itemData);
         }
+        public List<MemberProduct> ProductListByFeaturedCatPageView(ProductsByFeaturedCatPageView itemData)
+        {
+            return this.repository.ProductListByFeaturedCatPageView(itemData);
+        }
         public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
         {
             return this.repository.GetProductListbyPriceID(PriceID);

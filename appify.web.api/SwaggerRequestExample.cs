@@ -281,6 +281,7 @@ namespace appify.web.api
     {
 
         public Int64 MemberID { get; set; }
+        public Int64 TemplateID { get; set; }
         public Int64 ThemeID { get; set; }
     }
 

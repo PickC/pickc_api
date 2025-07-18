@@ -9,11 +9,17 @@ namespace appify.Business.Contract
 {
     public interface IThemeMasterBusiness
     {
-        public ThemeMaster Save(ThemeMaster item);
-        public bool Delete(long themeID);
+        public TemplateMaster SaveTemplate(TemplateMaster item);
+        public bool DeleteTemplate(long templateID);
+        public TemplateMaster GetTemplate(long templateID);
+        public List<TemplateMaster> ListAllTemplate();
+        public List<TemplatesMaster> ViewAllTemplateList();
+        public TemplateThemePages GetTemplateByTheme(long templateID, long themeID);
+        public ThemeMaster SaveTheme(ThemeMaster item);
+        public bool DeleteTheme(long themeID);
 
-        public ThemeMaster Get(long themeID);
+        public ThemeMaster GetTheme(long themeID);
 
-        public List<ThemeMaster> ListAll();
+        public List<ThemeMaster> ListAllTheme();
     }
 }
