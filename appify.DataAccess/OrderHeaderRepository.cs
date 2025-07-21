@@ -221,7 +221,7 @@ namespace appify.DataAccess
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERPAGEVIEW, itemData.UserID, itemData.UserType, itemData.PageNo, itemData.Rows, itemData.FilterBy, itemData.OrderNo, itemData.ProductName);
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERPAGEVIEW, itemData.UserID, itemData.UserType, itemData.PageNo, itemData.Rows, itemData.FilterBy, itemData.Search);
                 items = DataTableHelper.ConvertDataTable<OrderList>(ds.Tables[0]);
             }
 

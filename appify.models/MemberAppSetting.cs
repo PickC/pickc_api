@@ -133,7 +133,7 @@ namespace appify.models
         public string? WarehouseAddress { get; set; }
 
         public string? PrivacyPolicyLink { get; set; }
-
+        public string? WebAppURL {  get; set; }
 
     }
 
