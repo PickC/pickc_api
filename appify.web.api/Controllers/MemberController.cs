@@ -1694,7 +1694,8 @@ namespace appify.web.api.Controllers
         ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
         ///         "playStoreID": "",
         ///         "appStoreID": "",
-        ///         "appIcon": null
+        ///         "appIcon": null,
+        ///         "webAppURL": ""
         ///       }
         ///     }
         /// 
@@ -1731,7 +1732,8 @@ namespace appify.web.api.Controllers
                         Logo = item.AppLogo,
                         AppIcon = item.AppIcon,
                         PlayStoreID = item.AndroidBundleID,
-                        AppStoreID = item.AppleAppID
+                        AppStoreID = item.AppleAppID,
+                        WebAppURL = item.WebAppURL
                     };
 
                     rm.statusCode = StatusCodes.OK;
@@ -1778,7 +1780,8 @@ namespace appify.web.api.Controllers
         ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
         ///         "playStoreID": "",
         ///         "appStoreID": "",
-        ///         "appIcon": null
+        ///         "appIcon": null,
+        ///         "webAppURL": ""
         ///     }
         ///     
         /// Sample response JSON :
@@ -1797,7 +1800,8 @@ namespace appify.web.api.Controllers
         ///         "logo": "https://appifystorage.blob.core.windows.net/appifystoragecontainer/image_cropper_1694761053957.jpg",
         ///         "playStoreID": "",
         ///         "appStoreID": "",
-        ///         "appIcon": null
+        ///         "appIcon": null,
+        ///         "webAppURL": ""
         ///       }
         ///     }
         /// 
@@ -1829,7 +1833,8 @@ namespace appify.web.api.Controllers
                     AppLogo = item.Logo,
                     AppIcon = item.AppIcon,
                     AndroidBundleID = item.PlayStoreID,
-                    AppleBundleID = item.AppStoreID
+                    AppleBundleID = item.AppStoreID,
+                    WebAppURL = item.WebAppURL
                 };
 
                 rm = new ResponseMessage();
@@ -2066,7 +2071,7 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("appsetting/web/cicd/list")]
         [MapToApiVersion("1.0")]
-        public IActionResult ListMemberAppSettingCICD()
+        public async Task<IActionResult> ListMemberAppSettingCICD()
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2361,27 +2366,7 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "memberID": 1044,
-        ///       "themeID": 1003
-        ///     }
-        ///     
-        /// Sample response JSON :
-        /// 
-        ///     {
-        ///       "statusCode": 200,
-        ///       "name": "SUCCESS_OK",
-        ///       "message": "FETCH THEME SETTINGS",
-        ///       "data": {
-        ///         "memberID": 1044,
-        ///         "themeID": 1003,
-        ///         "primaryColor": "0xF7F4AE18",
-        ///         "primaryLightColor": "0xFFF4CA0F",
-        ///         "backgroundBoxColor": "0xB8F8F0E9",
-        ///         "textColor": "0xFF7A7A7A",
-        ///         "secondaryColor": "0xFFE67E22",
-        ///         "scaffoldBgColor": "0xFFFFFFFF",
-        ///         "isDark": false
-        ///       }
+        ///       "memberID": 2391
         ///     }
         /// 
         /// </remarks>
@@ -2391,8 +2376,8 @@ namespace appify.web.api.Controllers
         /// 
         [HttpPost, Route("theme/get")]
         [MapToApiVersion("1.0")]
-        [Authorize]
-        public IActionResult GetMemberTheme(ParamMemberTheme itemData)
+
+        public IActionResult GetMemberTheme(ParamUserID itemData)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2401,8 +2386,8 @@ namespace appify.web.api.Controllers
             {
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
-                TokenValidator.IsValidToken(Request, configuration, env);
-                var item = memberThemeBusiness.Get(itemData.MemberID, itemData.ThemeID);
+                //TokenValidator.IsValidToken(Request, configuration, env);
+                var item = memberThemeBusiness.Get(itemData.userID);
 
                 if (item != null)
                 {
@@ -2443,8 +2428,12 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "memberID": 1044,
-        ///       "themeID": 1003
+        ///       "memberID": 2391,
+        ///       "templateID": 1001,
+        ///       "themeID": 1001,
+        ///       "createdBy": 1060,
+        ///       "modifiedBy": 0,
+        ///       "isActive": true
         ///     }
         ///     
         /// </remarks>
@@ -2455,7 +2444,7 @@ namespace appify.web.api.Controllers
         [HttpPost, Route("theme/save")]
         [MapToApiVersion("1.0")]
         [Authorize]
-        public async Task<IActionResult> AddMemberTheme(ParamMemberTheme item)
+        public async Task<IActionResult> AddMemberTheme(MemberThemeHeader item)
         {
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
@@ -2468,11 +2457,8 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                MemberTheme memberTheme = new MemberTheme();
-                memberTheme.ThemeID = item.ThemeID;
-                memberTheme.MemberID = item.MemberID;
 
-                var result = memberThemeBusiness.Save(memberTheme);
+                var result = memberThemeBusiness.Save(item);
                 if (result != null)
                 {
                     rm.statusCode = StatusCodes.OK;
@@ -2514,8 +2500,9 @@ namespace appify.web.api.Controllers
         /// Sample request JSON :
         /// 
         ///     {
-        ///       "memberID": 1044,
-        ///       "themeID": 1003
+        ///       "memberID": 2391,
+        ///       "templateID": 1001,
+        ///       "themeID": 1001
         ///     }
         ///     
         /// </remarks>
@@ -2539,7 +2526,7 @@ namespace appify.web.api.Controllers
                 rm = new ResponseMessage();
                 //CheckToken.IsValidToken(Request, configuration);
                 TokenValidator.IsValidToken(Request, configuration, env);
-                var result = memberThemeBusiness.Delete(itemData.MemberID, itemData.ThemeID);
+                var result = memberThemeBusiness.Delete(itemData.MemberID, itemData.TemplateID, itemData.ThemeID);
 
                 if (result)
                 {

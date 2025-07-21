@@ -669,7 +669,7 @@ namespace appify.models
         public Int32? UserType { get; set; }
         public Int32? PageNo { get; set; }
         public Int32? Rows { get; set; }
-        public Int32? FilterBy {  get; set; }
+        public string? FilterBy {  get; set; }
         public string? OrderNo {  get; set; }
         public string? ProductName { get; set; }
     }

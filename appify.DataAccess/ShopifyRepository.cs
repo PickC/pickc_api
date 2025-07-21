@@ -23,7 +23,9 @@ namespace appify.DataAccess
         public const string GETSHOPIFYCONFIGBYSTOREURL = "[Operation].[usp_ShopifyConfigByStoreSelect]";
         public const string SAVESHOPIFYPRODUCTSTOAPPIFY = "[Operation].[usp_GenerateShopifyProducts]";
         public const string DELETEPRODUCTSBYVENDOR = "[Operation].[usp_ShopifyProductDelete]";
+        public const string UPDATEVARIANTSIMAGESBYPRODUCT = "[Operation].[usp_ShopifyVariantsImagesUpdate]";
         public const string GETPRODUCTSBYVENDOR = "[Operation].[usp_ShopifyProductSelect]";
+        public const string UPDATESHOPIFYPRODUCTIMAGEPRICE = "[Operation].[usp_ShopifyProductMasterUpdatePriceImage]";
         public ShopifyRepository(IConfiguration config) {
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
@@ -57,9 +59,9 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@LegacyResourceId", shopifyProduct.LegacyResourceId);
                         cmd.Parameters.AddWithValue("@TotalInventory", shopifyProduct.TotalInventory);
                         cmd.Parameters.AddWithValue("@IsActive", shopifyProduct.IsActive);
-                        cmd.Parameters.AddWithValue("@CategoryID", shopifyProduct.IsActive);
-                        cmd.Parameters.AddWithValue("@Category", shopifyProduct.IsActive);
-                        cmd.Parameters.AddWithValue("@BreadCrumb", shopifyProduct.IsActive);
+                        cmd.Parameters.AddWithValue("@CategoryID", shopifyProduct.CategoryID);
+                        cmd.Parameters.AddWithValue("@Category", shopifyProduct.Category);
+                        cmd.Parameters.AddWithValue("@BreadCrumb", shopifyProduct.BreadCrumb);
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
@@ -95,10 +97,13 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@SKU", item.SKU);
                         cmd.Parameters.AddWithValue("@Price", item.Price);
                         cmd.Parameters.AddWithValue("@Position", item.Position);
+                        cmd.Parameters.AddWithValue("@Color", item.Color);
+                        cmd.Parameters.AddWithValue("@Size", item.Size);
                         cmd.Parameters.AddWithValue("@Barcode", item.Barcode);
                         cmd.Parameters.AddWithValue("@Weight", item.Weight);
                         cmd.Parameters.AddWithValue("@WeightUnit", item.WeightUnit);
                         cmd.Parameters.AddWithValue("@InventoryQuantity", item.InventoryQuantity);
+                        cmd.Parameters.AddWithValue("@InventoryItemID", item.InventoryItemID);
                         cmd.Parameters.AddWithValue("@CreatedAt", item.CreatedAt);
                         cmd.Parameters.AddWithValue("@UpdatedAt", item.UpdatedAt);
                         cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
@@ -162,7 +167,7 @@ namespace appify.DataAccess
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
                 {
-                    using (SqlCommand cmd = new SqlCommand(SAVEPRODUCTIMAGESBYVENDOR))
+                    using (SqlCommand cmd = new SqlCommand(DELETEPRODUCTSBYVENDOR))
                     {
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
@@ -184,6 +189,38 @@ namespace appify.DataAccess
 
             return result;
         }
+
+        public bool UpdateShopifyVariantsImages(string ProductID, long VendorID)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATEVARIANTSIMAGESBYPRODUCT))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
         public ShopifyConfig GetShopifyConfigByVendor(long VendorID)
         {
             ShopifyConfig item = new ShopifyConfig();
@@ -334,6 +371,38 @@ namespace appify.DataAccess
                 item = DataTableHelper.ConvertDataTable<ShopifyProductID>(ds.Tables[0]);
             }
             return item;
+        }
+
+        public bool UpdateProductImagePrice(string ProductID)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(UPDATESHOPIFYPRODUCTIMAGEPRICE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ProductID", ProductID);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
         }
     }
 }

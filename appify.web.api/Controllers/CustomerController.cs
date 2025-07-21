@@ -529,12 +529,7 @@ namespace appify.web.api.Controllers
     /// 
     ///     {
     ///       "vendorID": 1060,
-    ///       "categoryID": 0,
-    ///       "parentID": 0,
-    ///       "count": 2,
-    ///       "productCount": 5,
-    ///       "pageNo": 1,
-    ///       "rows": 10
+    ///       "productCount": 1
     ///     }
     ///     
     /// Sample response JSON :
@@ -589,6 +584,72 @@ namespace appify.web.api.Controllers
         return Ok(rm);
 
         }
+
+    /// <summary>
+    /// Get Product List based on Vendor and Featured Categories Pagination
+    /// </summary>
+    /// <remarks>
+    /// Sample request JSON :
+    /// 
+    ///     {
+    ///       "vendorID": 1060,
+    ///       "categoryID": 4191,
+    ///       "pageNo": 1,
+    ///       "rows": 10
+    ///     }
+    ///     
+    /// Sample response JSON :
+    /// 
+    /// </remarks>
+    /// <returns>ResponseMessage Object</returns>
+    /// <response code="200">Returns Product Item against the VendorID </response>
+    /// <response code="500">ResponseMessage with Error Description</response> 
+    [HttpPost]
+    [Route("productlistbyfeaturedcatpageview")]
+    [MapToApiVersion("1.0")]
+    public async Task<IActionResult> GetProductListbyFeaturedCatPageView(ProductsByFeaturedCatPageView itemData)
+    {
+        var reqHeader = Request;
+        string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+        try
+        {
+            rm = new ResponseMessage();
+
+            List<MemberProduct> items = customerBusiness.ProductListByFeaturedCatPageView(itemData);
+            if (items?.Any() == true)
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "FETCH PRODUCT LIST";
+                rm.name = StatusName.ok;
+                rm.data = items;
+
+                await Common.UpdateEventLogsNew("FETCH PRODUCT LIST SUCCESSFULLY", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+            else
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = "NO CONTENT";
+                rm.name = StatusName.invalid;
+                rm.data = "NO CONTENT";
+
+                await Common.UpdateEventLogsNew("PRODUCT LIST - NO CONTENT", reqHeader, controllerURL, itemData, items, StatusName.ok, this.eventLogBusiness);
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+
+            rm.statusCode = StatusCodes.ERROR;
+            rm.message = ex.Message.ToString();
+            rm.name = StatusName.invalid;
+            rm.data = ex.Message.ToString();
+
+            await Common.UpdateEventLogsNew("PRODUCT LIST - ERROR", reqHeader, controllerURL, itemData, null, StatusName.ok, this.eventLogBusiness);
+        }
+        return Ok(rm);
+
+    }
     /// <summary>
     /// Get  Product List based on PriceID
     /// </summary>
