@@ -29,6 +29,7 @@ namespace appify.models
         public Int64 ThemeID { get; set; }
         public string ThemeName { get; set; }
         public string ThemeColor { get; set; }
+        public string DarkThemeColor { get; set; }
         public string ThemePagesJSON { get; set; }
     }
 
@@ -37,6 +38,7 @@ namespace appify.models
         public Int64 ThemeID { get; set; }
         public string ThemeName { get; set; }
         public string ThemeColor { get; set; }
+        public string DarkThemeColor { get; set; }
         public string ThemeJSON { get; set; }
     }
     public class TemplateThemePages
@@ -48,6 +50,7 @@ namespace appify.models
         public Int64 ThemeID { get; set; }
         public string ThemeName { get; set; }
         public string ThemeColor { get; set; }
+        public string DarkThemeColor { get; set; }
         public Int64 TemplateID { get; set; }
         public string ThemeJSON { get; set; }
         public string ThemePagesJSON { get; set; }
