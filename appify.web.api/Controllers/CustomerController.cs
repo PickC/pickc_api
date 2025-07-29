@@ -593,7 +593,7 @@ namespace appify.web.api.Controllers
     /// 
     ///     {
     ///       "vendorID": 1060,
-    ///       "categoryID": 4191,
+    ///       "breadCrumb": "OTHERS",
     ///       "pageNo": 1,
     ///       "rows": 10
     ///     }
