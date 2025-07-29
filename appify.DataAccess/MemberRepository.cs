@@ -87,9 +87,10 @@ namespace appify.DataAccess
             }
             return result;
         }
-        public bool CheckMemberOnlinePaymentStatus(long userID) {
+        public bool CheckMemberOnlinePaymentStatus(long userID)
+        {
 
-            bool result= false;
+            bool result = false;
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
@@ -98,6 +99,22 @@ namespace appify.DataAccess
             }
             return result;
         }
+
+        public bool CheckMemberDeliveryStatus(long userID)
+        {
+
+            bool result = false;
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERDELIVERYSTATUS, userID);
+                result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
+            }
+            return result;
+        }
+
+        
+
         public bool RegisterMobileOTP(RegisterOTP item)
         {
             var result = false;
