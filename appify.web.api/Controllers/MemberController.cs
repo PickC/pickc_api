@@ -1180,6 +1180,69 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
+
+        /// <summary>
+        /// Check Member Online Payment Status
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "userID": 1060
+        ///     }
+        ///     
+        /// Sample response JSON :
+        /// 
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "ONLINE PAYMENT STATUS",
+        ///       "data": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">ONLINE PAYMENT STATUS SUCCESSFULLY </response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        /// 
+        // GET api/<MemberController>/5
+        [HttpPost, Route("IsDeliveryEnabled")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public IActionResult IsDeliveryEnabled(ParamMemberUserID item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                //CheckToken.IsValidToken(Request, configuration);
+                TokenValidator.IsValidToken(Request, configuration, env);
+                bool isAllowed = this.memberBusiness.CheckMemberDeliveryStatus(item.userID);
+
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "DELIVERY STATUS";
+                rm.name = StatusName.ok;
+                rm.data = isAllowed;
+                //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DELIVERY STATUS SUCCESSFULLY", reqHeader, controllerURL, item, isAllowed, StatusName.ok));
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("DELIVERY STATUS - ERROR", reqHeader, controllerURL, item, null, rm.message));
+            }
+            return Ok(rm);
+        }
+
+
+
+
+
+
         /// <summary>
         /// Member Login
         /// </summary>
