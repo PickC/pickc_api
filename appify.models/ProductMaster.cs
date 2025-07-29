@@ -266,7 +266,7 @@ namespace appify.models
     public partial class ProductsByFeaturedCatPageView
     {
         public Int64 VendorID { get; set; }
-        public Int64? CategoryID { get; set; }
+        public string BreadCrumb { get; set; }
         public Int32? PageNo { get; set; }
         public Int32? Rows { get; set; }
     }

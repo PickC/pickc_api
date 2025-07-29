@@ -170,7 +170,7 @@ namespace appify.DataAccess
             using (SqlConnection con = new SqlConnection(appify_connectionstring))
             {
                 con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYFEATUREDCATPAGEVIEW, itemData.VendorID, itemData.CategoryID, itemData.PageNo, itemData.Rows);
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYFEATUREDCATPAGEVIEW, itemData.VendorID, itemData.BreadCrumb, itemData.PageNo, itemData.Rows);
                 products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
             }
             return products;
