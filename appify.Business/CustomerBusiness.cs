@@ -27,6 +27,10 @@ namespace appify.Business
         {
             return this.repository.ProductListNew(vendorID);
         }
+        public List<MemberProduct> ProductListIsNewArrival(ParamProductsByArrival itemData)
+        {
+            return this.repository.ProductListIsNewArrival(itemData);
+        }
         public ProductListResponse ProductListPageView(ProductSearch itemData)
         {
             return this.repository.ProductListPageView(itemData);

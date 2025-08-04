@@ -62,6 +62,17 @@ namespace appify.DataAccess
 
 
         }
+        public List<MemberProduct> ProductListIsNewArrival(ParamProductsByArrival itemData)
+        {
+            List<MemberProduct> products = new List<MemberProduct>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.PRODUCTSBYISNEWARRIVAL, itemData.VendorID, itemData.IsNewArrival, itemData.IsDiscount, itemData.PageNo, itemData.Rows);
+                products = DataTableHelper.ConvertDataTable<MemberProduct>(ds.Tables[0]);
+            }
+            return products;
+        }
         public ProductListResponse ProductListPageView(ProductSearch itemData)
         {
             ProductListResponse response = new ProductListResponse();

@@ -46,7 +46,7 @@ namespace appify.dbroutine
         public const string PRODUCTSBYFEATUREDCAT = "[Operation].[usp_ProductsByFeaturedCategories]";
         public const string PRODUCTSBYFEATUREDCATPAGEVIEW = "[Operation].[usp_ProductsByFeaturedCategoriesPageView]";
         public const string PRODUCTSBYPRICEID = "[Operation].[usp_ProductsByPriceIDPageView]";
-
+        public const string PRODUCTSBYISNEWARRIVAL = "[Operation].[usp_ProductsByisNewArrival]";
         /// <summary>
         /// [Operation].[MemberReturnPolicy]
         /// </summary>
