@@ -40,6 +40,9 @@ namespace appify.DataAccess.Contract
         public Int32 MemberOrderCount(long userID);
         public Int32 VendorOrderCount(long userID);
         public bool CheckMemberOnlinePaymentStatus(long userID);
+        public bool CheckMemberDeliveryStatus(long userID);
+
+        
 
         public MemberBanner memberBannerAdd(MemberBanner memberBanner);
         public bool memberBannerRemove(long BannerID);

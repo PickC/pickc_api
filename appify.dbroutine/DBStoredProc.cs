@@ -28,6 +28,7 @@ namespace appify.dbroutine
         public const string MEMBERLOGIN = "[Operation].[usp_MemberLogIn]";
         public const string MEMBERLOGOUT = "[Operation].[usp_MemberLogOut]";
         public const string MEMBERONLINEPAYMENTSTATUS = "[Operation].[usp_MemberOnlinePaymentStatus]";
+        public const string MEMBERDELIVERYSTATUS = "[Operation].[usp_MemberDeliveryStatus]";
         public const string MEMBERDASHBOARD = "[Operation].[usp_VendorDashboard]";
         public const string UPDATEWELCOMEEMAIL = "[Operation].[usp_MemberUpdateWelcomeEmail]";
         public const string MEMBERDELIVERYSTATUS = "[Operation].[usp_MemberDeliveryStatus]";
