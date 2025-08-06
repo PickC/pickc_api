@@ -1,13 +1,15 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
 using appify.utility;
+using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 namespace appify.DataAccess
 {
@@ -22,10 +24,10 @@ namespace appify.DataAccess
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
 
-        public EventLogs eventLogAdd(EventLogs eventLog)
+        public bool eventLogAdd(EventLogs eventLog)
         {
 
-            var result = false;
+            var result = true;
             try
             {
                 using (SqlConnection con = new SqlConnection(appify_connectionstring))
@@ -43,20 +45,13 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@IPAddress", eventLog.IPAddress);
                         cmd.Parameters.AddWithValue("@EventLog", eventLog.EventLog);
                         cmd.Parameters.AddWithValue("@InputJSON", eventLog.InputJSON);
+                        cmd.Parameters.AddWithValue("@OutputJSON", eventLog.OutputJSON);
                         cmd.Parameters.AddWithValue("@EventTime", eventLog.EventTime);
                         cmd.Parameters.AddWithValue("@AppName", eventLog.AppName);
-
-                        //Add the output parameter to the command object
-                        SqlParameter outPutParameter = new SqlParameter();
-                        outPutParameter.ParameterName = "@EventID";
-                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
-                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
-                        cmd.Parameters.Add(outPutParameter);
+                        cmd.Parameters.AddWithValue("@Version", eventLog.Version);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
-
-                        eventLog.EventID = Convert.ToInt64(outPutParameter.Value);
 
                         con.Close();
                     }
@@ -69,7 +64,7 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return eventLog;
+            return result;
         }
 
         public bool eventLogRemove(long EventID)
@@ -108,34 +103,48 @@ namespace appify.DataAccess
         public EventLogs eventLogGet(long EventID)
         {
             EventLogs item = new EventLogs();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTEVENTLOG, EventID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTEVENTLOG, EventID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<EventLogs> eventLogList()
         {
             List<EventLogs> items = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOG);
-            items = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOG);
+                items = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<EventLogs> eventLogListByVendor(long VendorID)
         {
             List<EventLogs> item = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOGBYVENDOR, VendorID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOGBYVENDOR, VendorID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return item;
         }
 
         public List<EventLogs> eventLogListByCustomer(long CustomerID)
         {
             List<EventLogs> item = new List<EventLogs>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTEVENTLOGBYCUSTOMER, CustomerID);
-            item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTEVENTLOGBYCUSTOMER, CustomerID);
+                item = DataTableHelper.ConvertDataTable<EventLogs>(ds.Tables[0]);
+            }
             return item;
         }
     }

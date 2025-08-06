@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -24,18 +26,25 @@ namespace appify.DataAccess
         public DiscountDetail Get(long DiscountID, long ProductID)
         {
             DiscountDetail item = new DiscountDetail();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTDISCOUNTDETAIL, DiscountID, ProductID);
-            item = DataTableHelper.ConvertDataTable<DiscountDetail>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTDISCOUNTDETAIL, DiscountID, ProductID);
+                item = DataTableHelper.ConvertDataTable<DiscountDetail>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<DiscountDetail> GetAll(long DiscountID, long ProductID)
         {
             List<DiscountDetail> item = new List<DiscountDetail>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTDISCOUNTDETAIL, DiscountID, ProductID);
-            item = DataTableHelper.ConvertDataTable<DiscountDetail>(ds.Tables[0]);
-            return item;
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTDISCOUNTDETAIL, DiscountID, ProductID);
+                item = DataTableHelper.ConvertDataTable<DiscountDetail>(ds.Tables[0]);
+            }
+                return item;
         }
 
         public bool Remove(long DiscountID, long ProductID)

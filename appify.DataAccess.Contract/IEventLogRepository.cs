@@ -9,7 +9,7 @@ namespace appify.DataAccess.Contract
 {
     public interface IEventLogRepository
     {
-        public EventLogs eventLogAdd(EventLogs eventLog);
+        public bool eventLogAdd(EventLogs eventLog);
         public bool eventLogRemove(long EventID);
         public EventLogs eventLogGet(long EventID);
         public List<EventLogs> eventLogList();

@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using appify.utility;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace appify.DataAccess
 {
@@ -23,7 +25,7 @@ namespace appify.DataAccess
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
-        public bool DeleteLookUp(short lookupID)
+        public bool DeleteLookUp(long lookupID)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -58,35 +60,59 @@ namespace appify.DataAccess
         public List<Lookup> GetAllList()
         {
             List<Lookup> item = new List<Lookup>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTLOOKUP);
-            item = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTLOOKUP);
+                item = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
+            }
+            return item;
+        }
 
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey)
+        {
+            List<SystemConfigSetting> item = new List<SystemConfigSetting>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTSYSTEMCONFIGSETTING, SettingKey);
+                item = DataTableHelper.ConvertDataTable<SystemConfigSetting>(ds.Tables[0]);
+            }
             return item;
         }
 
         public List<Lookup> GetList(string category)
         {
             List<Lookup> items = new List<Lookup>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTLOOKUPBYCATEGORY, category);
-            items = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTLOOKUPBYCATEGORY, category);
+                items = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
+            }
             return items;
         }
         public List<Lookup> GetList(string category,string userID)
         {
             List<Lookup> items = new List<Lookup>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTLOOKUPBYMEMBERCATEGORY, category,userID);
-            items = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTLOOKUPBYMEMBERCATEGORY, category, userID);
+                items = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]);
+            }
             return items;
         }
 
         public Lookup GetLookUp(string lookupCode,string category)
         {
             Lookup item = new Lookup();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTLOOKUP,lookupCode, category);
-            item = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTLOOKUP, lookupCode, category);
+                item = DataTableHelper.ConvertDataTable<Lookup>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
@@ -100,7 +126,7 @@ namespace appify.DataAccess
             throw new NotImplementedException();
         }
 
-        public bool SaveLookUp(Lookup lookup)
+        public Lookup SaveLookUp(Lookup lookup)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -121,10 +147,16 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@CreatedBy",  lookup.CreatedBy);
                         cmd.Parameters.AddWithValue("@ModifiedBy", lookup.ModifiedBy);
 
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewLookupID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
 
+                        lookup.LookupID = Convert.ToInt16(outPutParameter.Value);
                         con.Close();
                     }
 
@@ -136,7 +168,19 @@ namespace appify.DataAccess
                 throw ex;
             }
 
-            return result;
+            return lookup;
+        }
+
+        public List<LookupStartUpList> GetListForStartup(string category)
+        {
+            List<LookupStartUpList> items = new List<LookupStartUpList>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTLOOKUPBYCATEGORYSTARTUP, category);
+                items = DataTableHelper.ConvertDataTable<LookupStartUpList>(ds.Tables[0]);
+            }
+            return items;
         }
     }
 }

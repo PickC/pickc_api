@@ -13,18 +13,24 @@ using System.Threading.Tasks;
 
 namespace appify.Business
 {
-    public class EventLogBusiness : IEventLogBusiness
+    public partial class EventLogBusiness : IEventLogBusiness
     {
         private IEventLogRepository repository;
         public EventLogBusiness(IEventLogRepository repository)
         {
             this.repository = repository;
         }
-        public EventLogs eventLogAdd(EventLogs eventLog)
+        public bool eventLogAdd(EventLogs eventLog)
         {
-            return repository.eventLogAdd(eventLog);
+            var result = true;
+            #if DEBUG
+            #else
+                result = repository.eventLogAdd(eventLog);
+            #endif
+
+            return result;
         }
-        public bool eventLogRemove(long EventID)
+            public bool eventLogRemove(long EventID)
         {
             return repository.eventLogRemove(EventID);
         }

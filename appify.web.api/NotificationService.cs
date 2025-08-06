@@ -1,92 +1,154 @@
-﻿//﻿
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using CorePush.Google;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
+using static appify.web.api.GoogleNotification;
 
-//using CorePush.Google;
-//using Microsoft.Extensions.Options;
-//using System.Net.Http.Headers;
-//using static appify.web.api.GoogleNotification;
+namespace appify.web.api
+{
+    public class NotificationService : IDisposable
+    {
+        private readonly FcmNotificationSetting? _fcmNotificationSetting;
+        public NotificationService(FcmNotificationSetting settings)
+        {
+            _fcmNotificationSetting = settings;
+        }
 
-//namespace appify.web.api
-//{
-//    public class NotificationService  : IDisposable
-//    {
-//        private readonly FcmNotificationSetting? _fcmNotificationSetting;
-//        public NotificationService(FcmNotificationSetting settings) 
-//        {
-//            _fcmNotificationSetting = settings;
-//        }
+        public async Task<ResponseMessage> SendNotificationAsync(NotificationModel notificationModel)
+        {
+            ResponseMessage response = new ResponseMessage();
+            try
+            {
+                /* FCM Sender (Android Device) */
+                FcmSettings settings = new FcmSettings()
+                {
+                    SenderId = _fcmNotificationSetting.SenderId,
+                    ServerKey = _fcmNotificationSetting.ServerKey
+                };
+                if (notificationModel.PlatformType == "ANDROID")
+                {
 
-//        public async Task<ResponseMessage> SendNotificationAsync(NotificationModel notificationModel)
-//        {
 
-//            ResponseMessage response = new ResponseMessage();
-//            try
-//            {
-//                if (notificationModel.IsAndroiodDevice)
-//                {
-//                    /* FCM Sender (Android Device) */
-//                    FcmSettings settings = new FcmSettings()
-//                    {
-//                        SenderId = _fcmNotificationSetting.SenderId,
-//                        ServerKey = _fcmNotificationSetting.ServerKey
-//                    };
+                    HttpClient httpClient = new HttpClient();
 
-//                    HttpClient httpClient = new HttpClient();
+                    string authorizationKey = string.Format("key={0}", settings.ServerKey);
+                    string deviceToken = notificationModel.DeviceId;
 
-//                    string authorizationKey = string.Format("key={0}", settings.ServerKey);
-//                    string deviceToken = notificationModel.DeviceId;
+                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
+                    httpClient.DefaultRequestHeaders.Accept
+                            .Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-//                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
-//                    httpClient.DefaultRequestHeaders.Accept
-//                            .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    DataPayload dataPayload = new GoogleNotification.DataPayload();
+                    dataPayload.Title = notificationModel.Title;
+                    dataPayload.Body = notificationModel.Body;
 
-//                    DataPayload dataPayload = new GoogleNotification.DataPayload();
-//                    dataPayload.Title = notificationModel.Title;
-//                    dataPayload.Body = notificationModel.Body;
+                    GoogleNotification notification = new GoogleNotification();
+                    notification.Data = dataPayload;
+                    notification.Notification = dataPayload;
 
-//                    GoogleNotification notification = new GoogleNotification();
-//                    notification.Data = dataPayload;
-//                    notification.Notification = dataPayload;
+                    var fcm = new FcmSender(settings, httpClient);
+                    var fcmSendResponse = await fcm.SendAsync(deviceToken, notification);
 
-//                    var fcm = new FcmSender(settings, httpClient);
-//                    var fcmSendResponse = await fcm.SendAsync(deviceToken, notification);
+                    if (fcmSendResponse.IsSuccess())
+                    {
+                        response.message = "true";
+                        response.data = "Notification sent successfully";
+                        return response;
+                    }
+                    else
+                    {
+                        response.message = "false";
+                        response.data = fcmSendResponse.Results[0].Error;
+                        return response;
+                    }
+                }
+                else if (notificationModel.PlatformType == "IOS")
+                {
+                    /* Code here for APN Sender (iOS Device) */
+                    //var apn = new ApnSender(apnSettings, httpClient);
+                    //await apn.SendAsync(notification, deviceToken);
 
-//                    if (fcmSendResponse.IsSuccess())
-//                    {
-//                        response.message = "true";
-//                        response.data = "Notification sent successfully";
-//                        return response;
-//                    }
-//                    else
-//                    {
-//                        response.message = "false";
-//                        response.data = fcmSendResponse.Results[0].Error;
-//                        return response;
-//                    }
-//                }
-//                else
-//                {
-//                    /* Code here for APN Sender (iOS Device) */
-//                    //var apn = new ApnSender(apnSettings, httpClient);
-//                    //await apn.SendAsync(notification, deviceToken);
-//                }
-//                return response;
-//            }
-//            catch (Exception ex)
-//            {
-//                response.message = "false";
-//                response.data = "Something went wrong";
-//                return response;
-//            }
-//        }
+                    /*
+                        NotificationModel notificationModel = new NotificationModel();
+                        notificationModel.IsAndroiodDevice = false;
+                        notificationModel.DeviceId = "orderVendorDetails.Token";
+                        notificationModel.Title = "Hi Kiran";
+                        notificationModel.Body = "You have successfully placed you order";
+                        Pushnotification.FCMPushNotification(notificationModel);
+                     */
 
-//        void IDisposable.Dispose()
-//        {
-//            //if (_fcmNotificationSetting !=null && _fcmNotificationSetting is IDisposable canDispose)
-//            //{
-//            //    canDispose.Dispose();
-//            //}
+                    WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                    tRequest.Method = "post";
 
-//            //GC.SuppressFinalize(this);
-//        }
-//    }
-//}
+                    //serverKey - Key from Firebase cloud messaging server  
+                    ///var serverKey = "Your server key"
+                    tRequest.Headers.Add(string.Format("Authorization: key={0}", settings.ServerKey));
+                    //Sender Id - From firebase project setting  
+                    ///var senderId = "Enter your SenderId";
+                    tRequest.Headers.Add(string.Format("Sender: id={0}", settings.SenderId));
+                    tRequest.ContentType = "application/json";
+                    var totoken = notificationModel.DeviceId;
+                    var payload = new
+                    {
+                        to = totoken,
+                        priority = "high",
+                        content_available = true,
+                        notification = new
+                        {
+                            body = notificationModel.Body,////firebaseModel.Data.Body,
+                            title = notificationModel.Title,////firebaseModel.Data.Title,
+                            badge = 1
+                        },
+                        data = notificationModel
+
+                    };
+
+                    string postbody = JsonConvert.SerializeObject(payload).ToString();
+                    Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+                    tRequest.ContentLength = byteArray.Length;
+                    using (Stream dataStream = tRequest.GetRequestStream())
+                    {
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                        using (WebResponse tResponse = tRequest.GetResponse())
+                        {
+                            using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                            {
+                                if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                    {
+                                        String sResponseFromServer = tReader.ReadToEnd();
+                                        //result.Response = sResponseFromServer;
+                                    }
+                            }
+                        }
+                    }
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.message = "false";
+                response.data = "Something went wrong";
+                return response;
+            }
+        }
+
+            void IDisposable.Dispose()
+            {
+                if (_fcmNotificationSetting !=null && _fcmNotificationSetting is IDisposable canDispose)
+                {
+                    canDispose.Dispose();
+                }
+
+                GC.SuppressFinalize(this);
+            }
+    }
+}

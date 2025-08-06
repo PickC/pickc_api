@@ -1,24 +1,33 @@
-﻿using appify.Business.Contract;
-using Microsoft.AspNetCore.Mvc;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.Business.Contract;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Cors;
-using appify.models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace appify.web.api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [EnableCors("AllowOrigin")]
+    [ApiVersion("1.0")]
+
     public class EventLogController : Controller
     {
         private readonly IConfiguration configuration;
         private readonly IEventLogBusiness eventLogBusiness;
-       private ResponseMessage rm;
+        private ResponseMessage rm;
         public EventLogController(IConfiguration configuration, IEventLogBusiness eventLogBusiness)
         {
             this.configuration = configuration;
             this.eventLogBusiness = eventLogBusiness;
         }
-        /// <summary>
+        /*/// <summary>
         /// Adds a Event Log.
         /// </summary>
         /// <remarks>
@@ -126,7 +135,7 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
 
-
+        */
 
         /// <summary>
         /// gets Event Log by EventID
@@ -167,6 +176,7 @@ namespace appify.web.api.Controllers
 
 
         [HttpPost, Route("get")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogGet(ParamEventID itemData)
         {
             try
@@ -236,6 +246,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("list")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogList()
         {
             try
@@ -307,6 +318,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbyvendor")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogListByVendor(ParamMemberUserID itemData)
         {
             try
@@ -378,6 +390,7 @@ namespace appify.web.api.Controllers
         /// <response code="200">Returns DiscountHeader Object </response>
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("listbycustomer")]
+        [MapToApiVersion("1.0")]
         public IActionResult eventLogListByCustomer(ParamMemberUserID itemData)
         {
             try

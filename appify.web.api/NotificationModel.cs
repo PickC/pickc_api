@@ -1,4 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using Newtonsoft.Json;
 
 namespace appify.web.api
 {
@@ -8,7 +15,17 @@ namespace appify.web.api
         public string? DeviceId { get; set; }
         [JsonProperty("isAndroiodDevice")]
         public bool IsAndroiodDevice { get; set; }
+        [JsonProperty("PlatformType")]
+        public string? PlatformType { get; set; }
         [JsonProperty("title")]
+        public string? Title { get; set; }
+        [JsonProperty("body")]
+        public string? Body { get; set; }
+        public string? FCMSenderID { get; set; }
+        public string? FCMServerKey { get; set; }
+    }
+    public class SMSNotificationModel
+    {
         public string? Title { get; set; }
         [JsonProperty("body")]
         public string? Body { get; set; }

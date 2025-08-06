@@ -17,24 +17,89 @@ namespace appify.Business
             this.memberAppSettingRepository = repository;
         }
 
-        public bool DeleteAppSetting(long userID,string appName)
+        public bool DeleteMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.DeleteAppSetting(userID, appName);
+            return memberAppSettingRepository.DeleteMemberAppSetting(userID);
         }
 
-        public MemberAppSetting GetAppSetting(long userID,string appName)
+        public MemberAppSetting GetMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.GetAppSetting(userID, appName);
+            return memberAppSettingRepository.GetMemberAppSetting(userID);
         }
 
-        public List<MemberAppSetting> GetAppSettingList(long userID)
+        public MemberAppSettingStore GetMemberIdByAppName(string appName) { 
+            return memberAppSettingRepository.GetMemberIdByAppName(appName); 
+        }
+        
+        
+
+
+        public List<MemberAppSetting> ListMemberAppSetting(long userID)
         {
-            return memberAppSettingRepository.GetAppSettingList(userID);
+            return memberAppSettingRepository.ListMemberAppSetting(userID);
         }
 
-        public bool saveAppSetting(MemberAppSetting item)
+        public bool SaveMemberAppSetting(MemberAppSetting item)
         {
-            return memberAppSettingRepository.saveAppSetting(item);
+            return memberAppSettingRepository.SaveMemberAppSetting(item);
         }
+        #region Member App CICD Settings
+
+        public MemberAppSettingCICD GetMemberAppSettingCICD(long userID)
+        {
+            return memberAppSettingRepository.GetMemberAppSettingCICD(userID);
+        }
+        public List<MemberAppSettingCICD> ListMemberAppSettingCICD()
+        {
+            return memberAppSettingRepository.ListMemberAppSettingCICD();
+        }
+        public bool UpdateMemberAppSettingCICD(MemberAppSettingCICD item)
+        {
+            return memberAppSettingRepository.UpdateMemberAppSettingCICD(item);
+        }
+
+        //public short RecordCountMemberAppSettingCICD() { 
+        //    throw new NotImplementedException();
+
+        //}
+
+        public MemberAppStatus GetAppStatusCICD(long userID)
+        {
+            return memberAppSettingRepository.GetAppStatusCICD(userID);
+        }
+
+
+        public bool UpdateMemberAppStatus(MemberAppSettingUpdate item) { 
+            return memberAppSettingRepository.UpdateMemberAppStatus(item);
+        }
+
+
+
+        #endregion
+
+        #region Member App Publish Settings
+
+        public MemberAppPublishSetting GetMemberAppPublishSetting(long userID)
+        {
+            return memberAppSettingRepository.GetMemberAppPublishSetting(userID);
+        }
+        public List<MemberAppPublishSettingLite> ListMemberAppPublishSetting()
+        {
+            return memberAppSettingRepository.ListMemberAppPublishSetting();
+        }
+        public bool UpdateMemberAppPublishSetting(MemberAppPublishSetting item)
+        {
+            return memberAppSettingRepository.UpdateMemberAppPublishSetting(item);
+        }
+
+        //public short RecordCountMemberAppSettingCICD() { 
+        //    throw new NotImplementedException();
+
+        //}
+
+        #endregion
+
+
+
     }
 }

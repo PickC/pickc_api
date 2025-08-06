@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -22,7 +24,7 @@ namespace appify.DataAccess
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
         }
-        public bool Delete(long memberID, long themeID)
+        public bool Delete(long memberID, long templateID, long themeID)
         {
 
             var result = false;
@@ -36,6 +38,7 @@ namespace appify.DataAccess
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Connection = con;
                         cmd.Parameters.AddWithValue("@MemberID", memberID);
+                        cmd.Parameters.AddWithValue("@TemplateID", templateID);
                         cmd.Parameters.AddWithValue("@ThemeID", themeID);
 
 
@@ -56,25 +59,31 @@ namespace appify.DataAccess
             return result;
         }
 
-        public MemberTheme Get(long memberID, long themeID)
+        public MemberTheme Get(long memberID)
         {
             MemberTheme item = new MemberTheme();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERTHEME, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERTHEME, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberTheme> ListAll()
         {
             List<MemberTheme> item = new List<MemberTheme>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERTHEME);
-            item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERTHEME);
+                item = DataTableHelper.ConvertDataTable<MemberTheme>(ds.Tables[0]);
+            }
             return item;
         }
 
-        public MemberTheme Save(MemberTheme item)
+        public MemberThemeHeader Save(MemberThemeHeader item)
         {
             var result = false;
             //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
@@ -88,8 +97,11 @@ namespace appify.DataAccess
                         cmd.Connection = con;
 
                         cmd.Parameters.AddWithValue("@MemberID", item.MemberID);
+                        cmd.Parameters.AddWithValue("@TemplateID", item.TemplateID);
                         cmd.Parameters.AddWithValue("@ThemeID", item.ThemeID);
-
+                        cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
 
                         con.Open();
                         result = Convert.ToBoolean(cmd.ExecuteNonQuery());
@@ -105,6 +117,18 @@ namespace appify.DataAccess
                 throw ex;
             }
 
+            return item;
+        }
+
+        public List<TemplateThemesMember> ListAllThemesByTemplate(long templateID)
+        {
+            List<TemplateThemesMember> item = new List<TemplateThemesMember>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTTHEMEBYTEMPLATE, templateID);
+                item = DataTableHelper.ConvertDataTable<TemplateThemesMember>(ds.Tables[0]);
+            }
             return item;
         }
     }

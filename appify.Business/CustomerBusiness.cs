@@ -23,5 +23,45 @@ namespace appify.Business
         public List<MemberProduct> ProductList(long vendorID) {
             return this.repository.ProductList(vendorID);
         }
+        public List<MemberProduct> ProductListNew(long vendorID)
+        {
+            return this.repository.ProductListNew(vendorID);
+        }
+        public ProductListResponse ProductListPageView(ProductSearch itemData)
+        {
+            return this.repository.ProductListPageView(itemData);
+        }
+        public MemberAllDetail GetMemberAllDetails(long userID)
+        {
+            return this.repository.GetMemberAllDetails(userID);
+        }
+        public HomePageProductByCategory GetProductListByVAUA(long userID)
+        {
+            return this.repository.GetProductListByVAUA(userID);
+        }
+        public List<MemberProduct> ProductListByCategory(long vendorID, long CategoryID, int pageNo, int rows)
+        {
+            return this.repository.ProductListByCategory(vendorID, CategoryID, pageNo, rows);
+        }
+        public List<MemberPassword> GetMemberPasswordList()
+        {
+            return this.repository.GetMemberPasswordList();
+        }
+        public bool SaveMemberPassword(long userID, string password)
+        {
+            return this.repository.SaveMemberPassword(userID, password);
+        }
+        public List<MemberProduct> ProductListByFeaturedCat(ProductsByFeaturedCat itemData)
+        {
+            return this.repository.ProductListByFeaturedCat(itemData);
+        }
+        public List<MemberProduct> ProductListByFeaturedCatPageView(ProductsByFeaturedCatPageView itemData)
+        {
+            return this.repository.ProductListByFeaturedCatPageView(itemData);
+        }
+        public List<ProductPriceLite> GetProductListbyPriceID(string PriceID)
+        {
+            return this.repository.GetProductListbyPriceID(PriceID);
+        }
     }
 }

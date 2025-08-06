@@ -1,5 +1,15 @@
-﻿using Swashbuckle.AspNetCore;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.models;
+using Swashbuckle.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 
 namespace appify.web.api
@@ -9,13 +19,82 @@ namespace appify.web.api
         public long userID { get; set; }
 
     }
-
-    public class ParamBannerID
+    public class ParamMIDMType
     {
-        public long bannerID { get; set; }  
+        public long userID { get; set; }
+        public short userType { get; set; }
+
+    }
+    public class ParamUserID
+    {
+        public Int32 userID { get; set; }
+    }
+    public class ParamCategoryID
+    {
+        public long userID { get; set; }
+        public long categoryID { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamMemberOrder : ParamMemberUserID
+    {
+        public string? OrderStatus { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamProductList : ParamMemberUserID
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamPaymentList
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
     }
 
-    public class ParamNewProductsByMember : ParamMemberUserID {
+    public class ParamPageNumber
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamMemberDashboard
+    {
+        public long userID { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+    }
+    public class ParamMemberVendorID
+    {
+        public long userID { get; set; }
+
+    }
+    public class ParamPriceID
+    {
+        public string PriceID { get; set; }
+    }
+
+    public class ParamVendorCategories : ParamMemberVendorID
+    {
+        public long ParentCatID { get; set; }
+        public bool IsActive { get; set; }
+    }
+    public class ParamMemberVendorIDPagination : ParamPageNumber {
+        public long userID { get; set; }
+
+    }
+    public class ParamMemberNotificationID
+    {
+        public long NotificationID { get; set; }
+
+    }
+    public class ParamBannerID
+    {
+        public long bannerID { get; set; }
+    }
+
+    public class ParamNewProductsByMember : ParamMemberUserID
+    {
         public bool IsNew { get; set; }
     }
     public class ParamEventID
@@ -35,7 +114,10 @@ namespace appify.web.api
 
     }
 
-
+    public class ParamSystemConfigSetting
+    {
+        public string SettingKey { get; set; }
+    }
     public class ParamDeactivateMember
     {
         public string mobileNo { get; set; }
@@ -61,12 +143,46 @@ namespace appify.web.api
 
     }
 
+    public class ParamLoginIn
+    {
+        public string MobileNo { get; set; }
+        public string Password { get; set; }
+        public Int64 parentID { get; set; }
+
+    }
+
+    public class ParamLogIn
+    {
+        public string emailID { get; set; }
+        public string password { get; set; }
+
+    }
+    public class ParamEmail
+    {
+        public string emailID { get; set; }
+    }
     public class ParamProduct
     {
         public long productID { get; set; }
 
+        public bool? IsActive { get; set; }
     }
 
+    public class ParamParent
+    {
+        public long parentID { get; set; }
+    }
+    public class ParamParentID
+    {
+        public long parentID { get; set; }
+        public string? searchFilter { get; set; }
+        public short? PageNo { get; set; }
+        public short? Rows { get; set; }
+    }
+    public class ParamCatID
+    {
+        public long categoryID { get; set; }
+    }
     public class ParamProductPrice : ParamProduct
     {
         public long priceID { get; set; }
@@ -94,7 +210,13 @@ namespace appify.web.api
 
     public class ParamLookup
     {
-        public short lookupID { get; set; }
+        public long lookupID { get; set; }
+    }
+
+    public class ParamLookupCode
+    {
+        public string lookupCode { get; set; }
+        public string category { get; set; }
     }
 
     public class ParamLookupCategory
@@ -107,7 +229,6 @@ namespace appify.web.api
         public string userID { get; set; }
 
     }
-
     public class ParamOrderStatus
     {
         public Int64 OrderID { get; set; }
@@ -116,7 +237,12 @@ namespace appify.web.api
 
     }
 
+    public class ParamSettlementStatus
+    {
+        public Int64 OrderID { get; set; }
+        public bool Status { get; set; }
 
+    }
     public class ParamOrderForPickup
     {
         public Int64 OrderID { get; set; }
@@ -130,7 +256,15 @@ namespace appify.web.api
     }
 
 
+    public class ParamLookupCategoryList
+    {
+        public List<ParamLookupCategory>? list { get; set; }
+    }
 
+    public class ParamLookupCategories
+    {
+        public string list { get; set; }
+    }
     public class ParamOrderAWB
     {
         public Int64 OrderID { get; set; }
@@ -147,6 +281,7 @@ namespace appify.web.api
     {
 
         public Int64 MemberID { get; set; }
+        public Int64 TemplateID { get; set; }
         public Int64 ThemeID { get; set; }
     }
 
@@ -175,5 +310,228 @@ namespace appify.web.api
     {
         public long DiscountID { get; set; }
         public long productID { get; set; }
+    }
+    public class ParamProductID
+    {
+        public string ProductID { get; set; }
+    }
+    public class ParamVendorProduct
+    {
+        public long VendorID { get; set; }
+        public string ProductID { get; set; }
+    }
+    public class ParamVendorOrder
+    {
+        public long VendorID { get; set; }
+        public long OrderID { get; set; }
+    }
+
+    public class ParamOrderID {
+        public long OrderID { get; set; }
+
+
+    }
+    public class ParamOrderItem
+    {
+        public Int64 OrderID { get; set; }
+        public string RazorpayPaymentId { get; set; }
+        public string RazorpayOrderId { get; set; }
+        public string RazorpaySignature { get; set; }
+    }
+    public class ParamVendorPayment
+    {
+        public Int64 PaymentID { get; set; }
+    }
+    public class ParamVendor
+    {
+        public Int64 VendorID { get; set; }
+    }
+    public class ParamShopifyInventory : ParamVendor
+    {
+        public string InventoryItemID { get; set; }
+        public int QuantityPurchased { get; set; }
+    }
+    public class ParamVendorID
+    {
+        public long VendorID { get; set; }
+    }
+    public class ParamProductLog
+    {
+        public Int64 VendorID { get; set; }
+        public string productFileName {  get; set; }
+    }
+
+    public class ParamVendorUploadImg
+    {
+        public Int64 VendorID { get; set; }
+        public short ReferenceID { get; set; }
+        public string ProductID { get; set; }
+        public IFormFile file { get; set; }
+    }
+    public class ParamVendorRef
+    {
+        public Int64 VendorID { get; set; }
+        public short ReferenceID { get; set; }
+    }
+    public class ParamVendorDeleteImg : ParamVendorRef
+    {
+        public string ImageID { get; set; }
+        public string ProductID { get; set; }
+    }
+
+    public class ParamSMSCredentials
+    {
+        public Int16 SMSTemplateID { get; set; }
+        public string Name { get; set; }
+        public string MobileNo { get; set; }
+        public string MessageTitle { get; set; }
+        public string MessageBody { get; set; }
+        public string FirstName { get; set; }
+        public string OrderNo { get; set; }
+    }
+    public class ParamEmailFields
+    {
+        [Required]
+        public string ToEmail { get; set; }
+        [Required]
+        public string Subject { get; set; }
+        [Required]
+        public string Body { get; set; }
+
+        [Required]
+        public IFormFile file { get; set; }
+    }
+    public class ParamDownTimeAlert
+    {
+        public string Service { get; set; }
+        public Int64 MemberID { get; set; }
+        public Int32 MemberType { get; set; }
+        public Int64 OrderID { get; set; }
+        public string AppVersion { get; set; }
+        public string AppName { get; set; }
+    }
+
+    public class ParamVerifySignature
+    {
+        public Int64 OrderID { get; set; }
+        public string razorpayPaymentId { get; set; }
+        public string razorpayOrderId { get; set; }
+        public string razorpaySignature { get; set; }
+    }
+
+    public class ParamPageView
+    {
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+
+    public class ParamUserPageView : ParamPageView {
+        public int ParentID { get; set; }
+
+    }
+
+    public class ParamRole
+    {
+        public short RoleID { get; set; }
+
+    }
+
+    public class ParamRoleDeactivate : ParamRole {
+        public short ModifiedBy { get; set; }
+    }
+    public class ParamRoleSearch
+    {
+        public string? RoleCode { get; set; }
+        public string? RoleDescription { get; set; }
+
+
+    }
+    public class ParamSecurableID
+    {
+        public short SecurableID { get; set; }
+
+    }
+
+    public class ParamFunctionID
+    {
+        public short FunctionID { get; set; }
+    }
+    public class ParamFilter
+    {
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+    }
+    public class ParamGlobalSearch
+    {
+        public string FilterType { get; set; }
+        public string SearchText { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+    public class ParamGlobalProductSearch
+    {
+        public string ProductName { get; set; }
+        public bool IsActive { get; set; }
+        public decimal MinPrice {  get; set; }
+        public decimal MaxPrice { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
+    }
+
+    public class ParamRoleRights {
+        public short RoleID { get; set; }
+        public short SecurableID { get; set; }
+
+    }
+
+
+    public class ParamCategoryParameter
+    {
+        public short ParameterID { get; set; }
+        public short CategoryID { get; set; }
+
+    }
+
+
+    public class ParamCategoryParameterTypes
+    {
+        public short ParameterID { get; set; }
+        public string ParameterValue { get; set; }
+
+    }
+
+    public class ParamSubscription
+    {
+        public short PlanID { get; set; }
+
+    }
+
+    public class ParamSubscriptionItem : ParamSubscription  {
+        public short ItemID { get; set; }
+        public short FeatureID { get; set; }
+    }
+
+    public class ParamSubscriptionFeature {
+        public short FeatureID { get; set; }
+    }
+
+    public class ParamSubscriptionPrice : ParamSubscription {
+        public short PriceID { get; set; }
+    }
+
+    public class ParamExcelUpload
+    {
+        public Int64 VendorID { get; set; }
+        public IFormFile ExcelFile { get; set; }
+    }
+
+    public class ParamVendorStoreUrl {
+        public string StoreUrl{ get; set; }
+    }
+    public class ParamVendorUploadImgage
+    {
+        public Int64 VendorID { get; set; }
+        public string FolderName { get; set; }
+        public IFormFile file { get; set; }
     }
 }

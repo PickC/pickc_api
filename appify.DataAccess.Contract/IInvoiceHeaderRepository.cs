@@ -15,6 +15,6 @@ namespace appify.DataAccess.Contract
         public void Remove(Int64 invoiceID);
 
         public InvoiceReport PrintInvoice(Int64 orderID);
-
+        public ReceiptReport PrintReceipt(Int64 vendorID);
     }
 }

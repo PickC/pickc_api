@@ -18,7 +18,7 @@ namespace appify.Business
             this.repository = repository;
         }
 
-        public bool DeleteLookUp(short lookupID)
+        public bool DeleteLookUp(long lookupID)
         {
             return repository.DeleteLookUp(lookupID);
         }
@@ -26,6 +26,11 @@ namespace appify.Business
         public List<Lookup> GetAllList()
         {
             return repository.GetAllList();
+        }
+
+        public List<SystemConfigSetting> GetSystemConfigurationSettings(string SettingKey)
+        {
+            return repository.GetSystemConfigurationSettings(SettingKey);
         }
 
         public List<Lookup> GetList(string category)
@@ -43,15 +48,24 @@ namespace appify.Business
             return repository.GetLookUp(lookupID);
         }
 
+        public Lookup GetLookUp(string lookupCode, string category)
+        {
+            return repository.GetLookUp(lookupCode, category);
+        }
         public bool HasLookUp(short lookupID)
         {
             throw new NotImplementedException();
         }
 
-        public bool SaveLookUp(Lookup item)
+        public Lookup SaveLookUp(Lookup item)
         {
             return repository.SaveLookUp(item);
 
+        }
+
+        public List<LookupStartUpList> GetListForStartup(string category)
+        {
+            return repository.GetListForStartup(category);
         }
     }
 }

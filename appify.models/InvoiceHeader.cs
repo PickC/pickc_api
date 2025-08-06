@@ -98,6 +98,30 @@ namespace appify.models
 
     }
 
+    public class ReceiptReport
+    {
+        public string BilledTo { get; set; }
+        public string Address { get; set; }
+        public string State {  get; set; }
+        public short GSTCode {  get; set; }
+        public decimal CGST {  get; set; }
+        public decimal SGST {  get; set; }
+        public decimal IGST { get; set; }
+        public DateTime ReceiptDate { get; set; }
+        public string ItemDescription { get; set; }
+        public string HSNCode { get; set; }
+        public int Quantity { get; set; }
+        public string ReceiptNo { get; set; }
+        public decimal PaymentAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal RoundOff { get; set; }
+        public decimal TotalAmount { get; set; }
+        public Int64 vendorid { get; set; }
+        public string SellerBankAccountName {  get; set; }
+        public string SellerBankAccountNo { get; set; }
+        public string SellerBankName { get; set; }
+        public string SellerBankCode {  get; set; }
+    }
 
     public class InvoiceItemReport
     {
@@ -114,6 +138,7 @@ namespace appify.models
 
 
         public decimal DiscountAmount { get; set; }
+        public decimal DiscountPrice { get; set; }
         public decimal CGST { get; set; }
         public decimal SGST { get; set; }
         public decimal IGST { get; set; }

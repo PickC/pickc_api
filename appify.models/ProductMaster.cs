@@ -16,7 +16,7 @@ namespace appify.models
 
         public string? Description { get; set; }
 
-        public Int16? Category { get; set; }
+        public Int32? Category { get; set; }
 
         public string? Brand { get; set; }
 
@@ -44,11 +44,13 @@ namespace appify.models
 
         public DateTime? ModifiedOn { get; set; }
 
-        public string HSNCode { get; set; }
+        public string? HSNCode { get; set; }
+        public string? SKU {  get; set; }
 
         public string? ImageName { get; set; }
 
         public bool? IsNew { get; set; }
+        public string? Source { get; set; }
     }
 
 
@@ -60,6 +62,41 @@ namespace appify.models
 
     }
 
+    public partial class ProductMasterNew
+    {
+        public ProductMasterNew()
+        {
+            prices = new List<ProductPriceNew>();
+            images = new List<ProductImageNew>();
+        }
+        public Int64 ProductID { get; set; }
+
+        public string ProductName { get; set; }
+
+        public string? Description { get; set; }
+
+        public Int32? Category { get; set; }
+
+        public string? Brand { get; set; }
+
+        public string? Color { get; set; }
+
+        public Int16? UOM { get; set; }
+
+        public string Currency { get; set; }
+
+        public bool? IsAvailable { get; set; }
+
+        public string HSNCode { get; set; }
+        public string SKU { get; set; }
+        public bool? IsNew { get; set; }
+
+        public List<ProductPriceNew>? prices { get; set; }
+        public List<ProductImageNew>? images { get; set; }
+
+        public List<MemberCategoryParametersLite>? parameters { get; set; }
+    }
+
     public partial class ProductWeb : ProductMaster
     {
 
@@ -67,7 +104,16 @@ namespace appify.models
         public string CategoryDescription { get; set; }
 
     }
-
+    public partial class MemberAllDetail
+    {
+        public bool? WareHouse { get; set; }
+        public short Products { get; set; }
+        public bool? Category { get; set; }
+        public bool? Orders { get; set; }
+        public bool? AppDetails { get; set; }
+        public bool? KYC { get; set; }
+        public bool? Subscription {  get; set; }
+    }
     public partial class MemberProduct
     {
 
@@ -76,17 +122,26 @@ namespace appify.models
         public Int64 VendorID { get; set; }
 
         public string ProductName { get; set; }
-        public Int16? Category { get; set; }
+        public Int32? Category { get; set; }
 
         public string? Brand { get; set; }
         public decimal? Price { get; set; }
         public string? ImageName { get; set; }
 
-        public bool? IsNew { get; set;}
+        public bool? IsNew { get; set; }
 
         public Int16? DiscountType { get; set; }
-        public decimal? DiscountValue {  get; set; }
+        public decimal? DiscountValue { get; set; }
+        public string? CategoryName {  get; set; }
+        public string? BreadCrumb { get; set; }
+        public Int16? Stock { get; set; }
 
+    }
+
+    public partial class MemberPassword
+    {
+        public Int32 UserID { get; set; }
+        public string OldPassword {  get; set; }
     }
 
     public partial class NewProduct
@@ -101,5 +156,137 @@ namespace appify.models
         public bool IsNew { get; set; }
 
 
+    }
+
+    public partial class ProductMasterCategories
+    {
+        public long CategoryID { get; set; }
+        public string Category { get; set; }
+    }
+
+    public partial class ParentCategories
+    {
+        public long UserID { get; set; }
+        public long ParentCatID { get; set; }
+        public string? CategoryName { get; set; }
+        public bool IsDefault { get; set; }
+        public bool IsActive { get; set; }
+    }
+
+    #region FeaturedCategories (OBSOLETE)
+
+
+    //public partial class FeaturedCategories
+    //{
+    //    public long CategoryID { get; set; }
+    //    public string Category { get; set; }
+    //    public long ParentID { get; set; }
+    //    public bool IsEnabled { get; set; }
+    //    public short HierarchyLevel { get; set; }
+    //}
+
+    #endregion
+    public partial class FeaturedCategories 
+    {
+        public long VendorID { get; set; }
+        public long ParentID { get; set; }
+        public long CategoryID { get; set; }
+        public string? CategoryBreadCrumb { get; set; }
+        public short SeqNo { get; set; }
+
+    }
+
+    public partial class StockByPriceID
+    {
+        public short Stock { get; set; }
+        public long PriceID {  get; set; }
+    }
+    public partial class ProductCategories
+    {
+        public long CategoryID { get; set; }
+        public string Category { get; set; }
+        public long ParentID { get; set; }
+        //public bool IsActive { get; set; }
+        public string FullCategory { get; set; }
+        //public long MainID { get; set; }
+    }
+
+    public partial class ProductCategoryName
+    {
+        public long ParentID { get; set; }
+        public string BreadCrumb { get; set; }
+    }
+    public partial class HomePageProductByCategory
+    {
+        public HomePageProductByCategory()
+        {
+            categories = new List<ProductMasterCategories>();
+            products = new List<MemberProduct>();
+            //productdetails = new List<ProductMaster>();
+        }
+
+        public List<ProductMasterCategories>? categories { get; set; }
+        public List<MemberProduct>? products { get; set; }
+
+        //public List<ProductMaster>? productdetails { get; set; }
+        public partial class ProductMasterByVendor
+        {
+            public Int64 ProductID { get; set; }
+
+            public Int64 VendorID { get; set; }
+
+            public string ProductName { get; set; }
+
+            public Int32? Category { get; set; }
+
+            public string? Size { get; set; }
+
+            public string? Color { get; set; }
+
+            public string CategoryName { get; set; }
+
+            public bool IsActive { get; set; }
+
+            public Int32? StockQty { get; set; }
+
+            public string HSNCode { get; set; }
+
+            public string? ImageName { get; set; }
+
+            public decimal? Price { get; set; }
+
+        }
+    }
+    public partial class ProductsByFeaturedCat
+    {
+        public Int64 VendorID { get; set; }
+        public Int32? ProductCount { get; set; }
+    }
+
+    public partial class ProductsByFeaturedCatPageView
+    {
+        public Int64 VendorID { get; set; }
+        public string BreadCrumb { get; set; }
+        public Int32? PageNo { get; set; }
+        public Int32? Rows { get; set; }
+    }
+    public partial class ProductSearch
+    {
+        public Int64 VendorID { get; set; }
+        public string? ProductName { get; set; }
+        public Int64? CategoryID { get; set; }
+        public Int32? PageNo { get; set; }
+        public Int32? Rows { get; set; }
+        public Int32? PriceFrom { get; set; }
+        public Int32? PriceTo { get; set; }
+        public Int32? StockFrom { get; set; }
+        public Int32? StockTo { get; set; }
+        public Int32? ProductCount { get; set; }
+    }
+
+    public class ProductListResponse
+    {
+        public List<MemberProduct> Products { get; set; }
+        public int TotalCount { get; set; }
     }
 }

@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -59,18 +61,24 @@ namespace appify.DataAccess
         public MemberKYC Get(long memberID)
         {
             MemberKYC item = new MemberKYC();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERKYC, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERKYC, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberKYC> ListAll()
         {
             List<MemberKYC> item = new List<MemberKYC>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERKYC);
-            item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERKYC);
+                item = DataTableHelper.ConvertDataTable<MemberKYC>(ds.Tables[0]);
+            }
             return item;
         }
 
@@ -96,11 +104,13 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@BankAccountNo", item.BankAccountNo);
                         cmd.Parameters.AddWithValue("@IFSC", item.IFSC);
                         cmd.Parameters.AddWithValue("@BankAccountType", item.BankAccountType);
+                        cmd.Parameters.AddWithValue("@BeneficiaryName", item.BeneficiaryName);
                         cmd.Parameters.AddWithValue("@ChequeImage", item.ChequeImage);
                         cmd.Parameters.AddWithValue("@PANImage", item.PANImage);
                         cmd.Parameters.AddWithValue("@GSTImage", item.GSTImage);
                         cmd.Parameters.AddWithValue("@AadharImage1", item.AadharImage);
                         cmd.Parameters.AddWithValue("@AadharImage2", item.AadharImage2);
+                        cmd.Parameters.AddWithValue("@DigitalSignatureImage", item.DigitalSignatureImage);
                         cmd.Parameters.AddWithValue("@KVICNo", item.KVICNo);
                         cmd.Parameters.AddWithValue("@Address", item.Address);
                         cmd.Parameters.AddWithValue("@AddressImage", item.AddressImage);

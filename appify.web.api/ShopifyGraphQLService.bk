@@ -1,0 +1,361 @@
+﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Google.Apis.Http;
+using appify.models;
+using appify.Business.Contract;
+
+namespace appify.web.api
+{
+    public class ShopifyGraphQLService : IDisposable
+    {
+        private readonly HttpClient httpClient;
+        private readonly string storeUrl; //= "https://dsgclothes.myshopify.com";
+        private readonly string accessToken; //= "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";
+        private readonly string apiVersion;// = "2024-01";//"2023-10";
+        private readonly IShopifyBusiness shopifyBusiness;
+        private readonly long VendorID;
+        private readonly short ReferenceID;
+        public ShopifyGraphQLService(IShopifyBusiness shopifyBusiness, long vendorID, short referenceID=0)
+        {
+            httpClient = new HttpClient();
+            this.shopifyBusiness = shopifyBusiness;
+            VendorID = vendorID;
+            var shopifyConfig = this.shopifyBusiness.GetShopifyConfigByVendor(vendorID);
+            storeUrl = shopifyConfig.StoreURL;
+            accessToken = shopifyConfig.AccessToken;
+            apiVersion = shopifyConfig.APIVersion;
+            ReferenceID = referenceID;
+        }
+
+        private async Task<string> PostGraphQLRequestAsync(string query)
+        {
+            try
+            {
+                var requestBody = System.Text.Json.JsonSerializer.Serialize(new { query });
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{storeUrl}");
+                request.Headers.Add("X-Shopify-Access-Token", accessToken);
+                request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+
+                var response = await httpClient.SendAsync(request);
+
+                response.EnsureSuccessStatusCode();
+
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+                return jsonResponse;
+            }
+            catch (Exception ex)
+            {
+                // Log Exception
+                throw new ApplicationException($"GraphQL request failed: {ex.Message}", ex);
+            }
+        }
+        public async Task<JObject> QueryAsync(string query, object variables = null)
+        {
+            string apiUrl = $"{storeUrl}";
+
+            var payload = new
+            {
+                query,
+                variables
+            };
+            string jsonPayload = JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            httpClient.DefaultRequestHeaders.Clear();
+            httpClient.DefaultRequestHeaders.Add("X-Shopify-Access-Token", accessToken);
+
+            using (HttpResponseMessage response = await httpClient.PostAsync(apiUrl, content))
+            {
+                response.EnsureSuccessStatusCode();
+                string result = await response.Content.ReadAsStringAsync();
+                return JObject.Parse(result);
+            }
+        }
+
+        public async Task<bool> FetchAllProductsAsync()
+        {
+            string cursor = null;
+            bool result = false;
+            bool hasNextPage = true;
+            int page = 1;
+            JArray jsonList = new JArray();
+            while (hasNextPage)
+            {
+                Console.WriteLine($"Page: {page}");
+                var query = $@"
+                query {{
+                    products(first: 50{(cursor != null ? $", after: \"{cursor}\"" : "")}) {{
+                        edges {{
+                            cursor
+                            node {{
+                                id
+                                title
+                                descriptionHtml
+                                handle
+                                status
+                                vendor
+                                productType
+                                tags
+                                createdAt
+                                updatedAt
+                                publishedAt
+                                legacyResourceId
+                                totalInventory
+                                variants(first: 100) {{
+                                    edges {{
+                                        node {{
+                                            id
+                                            title
+                                            sku
+                                            price
+                                            position
+                                            barcode
+                                            weight
+                                            weightUnit
+                                            inventoryQuantity
+                                            createdAt
+                                            updatedAt
+                                        }}
+                                    }}
+                                }}
+                                images(first: 10) {{
+                                    edges {{
+                                        node {{
+                                            id
+                                            altText
+                                            width
+                                            height
+                                            url
+                                        }}
+                                    }}
+                                }}
+                            }}
+                        }}
+                        pageInfo {{
+                            hasNextPage
+                            endCursor
+                        }}
+                    }}
+                }}";
+
+                var response = await QueryAsync(query);
+
+                hasNextPage = response["data"]["products"]["pageInfo"]["hasNextPage"].Value<bool>();
+                cursor = response["data"]["products"]["pageInfo"]["endCursor"].Value<string>();
+                Shopify shopifyProduct = new Shopify();
+                var products = response["data"]["products"]["edges"];
+                foreach (var product in products)
+                {
+                    //jsonList.Add(product["node"]);
+                    //var fullnode = jsonList.ToString();
+                    var productNode = product["node"];
+                    shopifyProduct.ReferenceID = ReferenceID;
+                    shopifyProduct.ProductID = productNode["id"]?.Value<string>() ?? "";
+                    shopifyProduct.Title = productNode["title"]?.Value<string>() ?? "";
+                    shopifyProduct.Description = productNode["descriptionHtml"]?.Value<string>() ?? "";
+                    shopifyProduct.Handle = productNode["handle"]?.Value<string>() ?? "";
+                    shopifyProduct.Status = productNode["status"]?.Value<string>() ?? "";
+                    shopifyProduct.Vendor = productNode["vendor"]?.Value<string>() ?? "";
+                    shopifyProduct.VendorID = VendorID;
+                    shopifyProduct.ProductType = productNode["productType"]?.Value<string>() ?? "";
+                    shopifyProduct.CreatedAt = productNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.UpdatedAt = productNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.PublishedAt = productNode["publishedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    shopifyProduct.LegacyResourceId = productNode["legacyResourceId"]?.Value<string>() ?? "";
+                    shopifyProduct.TotalInventory = productNode["totalInventory"]?.Value<short?>() ?? 0;
+
+                    var variants = productNode["variants"]["edges"];
+                    foreach (var variant2 in variants)
+                    {
+                        var variantNode = variant2["node"];
+                        ShopifyProductVariant variant = new ShopifyProductVariant
+                        {
+                            ReferenceID = ReferenceID,
+                            VariantID = variantNode["id"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Title = variantNode["title"]?.Value<string>() ?? "",
+                            SKU = variantNode["sku"]?.Value<string>() ?? "",
+                            Price = variantNode["price"]?.Value<decimal?>() ?? 0,
+                            Position = variantNode["position"]?.Value<short?>() ?? 0,
+                            Barcode = variantNode["barcode"]?.Value<string>() ?? "",
+                            Weight = variantNode["weight"]?.Value<short?>() ?? 0,
+                            WeightUnit = variantNode["weightUnit"]?.Value<string>() ?? "",
+                            InventoryQuantity = variantNode["inventoryQuantity"]?.Value<short?>() ?? 0,
+                            CreatedAt = variantNode["createdAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
+                            UpdatedAt = variantNode["updatedAt"]?.Value<DateTime>() ?? Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"))
+                        };
+
+                        shopifyProduct.variants.Add(variant);
+                    }
+
+                    var images = productNode["images"]["edges"];
+                    foreach (var image2 in images)
+                    {
+                        var imageNode = image2["node"];
+                        ShopifyProductVariantImage image = new ShopifyProductVariantImage
+                        {
+                            ReferenceID= ReferenceID,
+                            ImageID = imageNode["id"]?.Value<string>() ?? "",
+                            ALT = imageNode["altText"]?.Value<string>() ?? "",
+                            ProductID = shopifyProduct.ProductID,
+                            Width = imageNode["width"]?.Value<short?>() ?? 0,
+                            Height = imageNode["height"]?.Value<short?>() ?? 0,
+                            SRC = imageNode["url"]?.Value<string>() ?? ""
+                        };
+                        shopifyProduct.images.Add(image);
+                    }
+
+                    result = shopifyBusiness.SaveShopifyProduct(shopifyProduct);
+                }
+                Console.WriteLine($"Has Next Page: {hasNextPage}, Cursor: {cursor}");
+
+                page++;
+                //if (page > 1) break; //Added break to stop after 3 pages.
+            }
+            return result;
+        }
+
+        // Fetch Single Product
+        public async Task<string> GetSingleProductAsync(string productId)
+        {
+            try
+            {
+                var query = $@"
+            query {{
+              product(id: ""{productId}"") {{
+                id
+                title
+                descriptionHtml
+                vendor
+                variants(first: 100) {{
+                    edges {{
+                        node {{
+                            id
+                            title
+                            price
+                            sku
+                        }}
+                    }}
+                }}
+                images(first: 10) {{
+                    edges {{
+                        node {{
+                            src
+                            altText
+                        }}
+                    }}
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(query);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to get product: {ex.Message}", ex);
+            }
+        }
+
+        // Create New Product
+        public async Task<string> CreateProductAsync(string title, string description, string vendor)
+        {
+            try
+            {
+                var mutation = $@"
+            mutation {{
+              productCreate(input: {{
+                title: ""{title}"",
+                descriptionHtml: ""{description}"",
+                vendor: ""{vendor}""
+              }}) {{
+                product {{
+                  id
+                  title
+                }}
+                userErrors {{
+                  field
+                  message
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(mutation);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to create product: {ex.Message}", ex);
+            }
+        }
+
+        // Update Existing Product
+        public async Task<string> UpdateProductAsync(string productId, string title)
+        {
+            try
+            {
+                var mutation = $@"
+            mutation {{
+              productUpdate(input: {{
+                id: ""{productId}"",
+                title: ""{title}""
+              }}) {{
+                product {{
+                  id
+                  title
+                }}
+                userErrors {{
+                  field
+                  message
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(mutation);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to update product: {ex.Message}", ex);
+            }
+        }
+
+        // Delete Product
+        public async Task<string> DeleteProductAsync(string productId)
+        {
+            try
+            {
+                var mutation = $@"
+            mutation {{
+              productDelete(input: {{
+                id: ""{productId}""
+              }}) {{
+                deletedProductId
+                userErrors {{
+                  field
+                  message
+                }}
+              }}
+            }}";
+
+                return await PostGraphQLRequestAsync(mutation);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to delete product: {ex.Message}", ex);
+            }
+        }
+
+        public void Dispose()
+        {
+            //if (_fcmNotificationSetting != null && _fcmNotificationSetting is IDisposable canDispose)
+            //{
+            //    canDispose.Dispose();
+            //}
+
+            GC.SuppressFinalize(this);
+            //throw new NotImplementedException();
+        }
+    }
+}

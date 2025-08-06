@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -64,18 +66,36 @@ namespace appify.DataAccess
         public List<OrderDetail> List(Int64 orderID)
         {
             List<OrderDetail> items = new List<OrderDetail>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTORDERDETAIL, orderID);
-            items = DataTableHelper.ConvertDataTable<OrderDetail>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERDETAIL, orderID);
+                items = DataTableHelper.ConvertDataTable<OrderDetail>(ds.Tables[0]);
+            }
+            return items;
+        }
 
+        public List<OrderDetailNew> ListNew(Int64 orderID)
+        {
+            List<OrderDetailNew> items = new List<OrderDetailNew>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTORDERDETAIL, orderID);
+                items = DataTableHelper.ConvertDataTable<OrderDetailNew>(ds.Tables[0]);
+            }
             return items;
         }
 
         public List<OrderDetailDelivery> GetOrderItemForDelivery(Int64 orderID) {
 
             List<OrderDetailDelivery> items = new List<OrderDetailDelivery>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.ORDERDELIVERYDETAILS, orderID);
-            items = DataTableHelper.ConvertDataTable<OrderDetailDelivery>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.ORDERDELIVERYDETAILS, orderID);
+                items = DataTableHelper.ConvertDataTable<OrderDetailDelivery>(ds.Tables[0]);
+            }
             return items;
 
         }

@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -60,18 +62,24 @@ namespace appify.DataAccess
         public MemberContact Get(long memberID, string mobileNo)
         {
             MemberContact item = new MemberContact();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERCONTACT, memberID, mobileNo);
-            item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERCONTACT, memberID, mobileNo);
+                item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<MemberContact> List(long memberID)
         {
             List<MemberContact> item = new List<MemberContact>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTMEMBERCONTACT,memberID);
-            item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]);
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTMEMBERCONTACT, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberContact>(ds.Tables[0]);
+            }
             return item;
         }
         public bool BulkSave(List<MemberContact> items)

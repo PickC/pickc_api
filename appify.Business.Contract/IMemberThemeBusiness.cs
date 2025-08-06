@@ -9,10 +9,10 @@ namespace appify.Business.Contract
 {
     public interface IMemberThemeBusiness
     {
-        public MemberTheme Save(MemberTheme item);
-        public bool Delete(long memberID, long themeID);
+        public MemberThemeHeader Save(MemberThemeHeader item);
+        public bool Delete(long memberID, long templateID, long themeID);
 
-        public MemberTheme Get(long memberID, long themeID);
+        public MemberTheme Get(long memberID);
 
         public List<MemberTheme> ListAll();
     }

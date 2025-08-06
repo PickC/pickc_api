@@ -15,78 +15,97 @@ namespace appify.Business
 {
     public partial class NotificationBusiness : INotificationBusiness
     {
-        ///private INotificationRepository repository;
         ///private readonly IWebHostEnvironment _webHostEnvironment;
-        public NotificationBusiness() { 
-            //this.repository = repository;
+
+        private INotificationRepository repository;
+        public NotificationBusiness(INotificationRepository repository) { 
+            this.repository = repository;
         }
 
         public object Server { get; private set; }
 
-        public Notifications SendEmail(Notifications notifications)
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID)
         {
-            /// return this.repository.SendEmail(notifications);
-            /// 
-            try
-            {
-                string path = notifications.EmailTemplateURL;
+            return repository.GetNotificationByVendor(VendorID);
+        }
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID)
+        {
+            return repository.GetNotificationByUser(CustomerID);
+        }
 
-                string fromMail = NotificationConfig.GMAIL_ID_FROM;
-                string fromPassword = NotificationConfig.GMAIL_PASSWORD_FROM;
+        public List<PushNotificationMessage> GetNotificationByVendor(long VendorID, short PageNo, short Rows)
+        {
+            return repository.GetNotificationByVendor(VendorID, PageNo, Rows);
+        }
+        public List<PushNotificationMessage> GetNotificationByUser(long CustomerID, short PageNo, short Rows)
+        {
+            return repository.GetNotificationByUser(CustomerID, PageNo, Rows);
+        }
 
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress(fromMail);
-                message.Subject = notifications.EmailSubject;
-                message.To.Add(new MailAddress(notifications.ToEmail));
-                if (notifications.ToEmailCC != null && notifications.ToEmailCC!="")
-                {
-                    message.CC.Add(notifications.ToEmailCC);
-                }
-                if (notifications.ToEmailBCC != null && notifications.ToEmailBCC!="")
-                {
-                    message.Bcc.Add(notifications.ToEmailBCC);
-                }
-                //string Body = System.IO.File.ReadAllText(path);
-                //string filepath = Server.MapPath('temp.html');
-                string mailbody = string.Empty;
-                using (StreamReader reader = new StreamReader(path))
-                {
-                    mailbody = reader.ReadToEnd();
-                }
+        public NotificationTemplate GetNotificationTemplate(long TemplateID)
+        {
+            return repository.GetNotificationTemplate(TemplateID);
+        }
+        public SMSNotificationTemplate GetSMSNotificationTemplate(long TemplateID)
+        {
+            return repository.GetSMSNotificationTemplate(TemplateID);
+        }
+        public WhatsAppTemplate GetWhatsAppNotificationTemplate(long TemplateID)
+        {
+            return repository.GetWhatsAppNotificationTemplate(TemplateID);
+        }
+        public bool IsReadNotification(long NotificationID)
+        {
+            return repository.IsReadNotification(NotificationID);
+        }
+        public bool addNotificationMessage(PushNotificationMessage pushNotification)
+        {
+            return repository.addNotificationMessage(pushNotification);
+        }
 
-                mailbody = mailbody.Replace("{{Name}}", notifications.EmailTemplae_ReplaceName);
-                message.Body = mailbody;
-                message.IsBodyHtml = true;
-                message.SubjectEncoding = Encoding.UTF8;
-                message.BodyEncoding = Encoding.UTF8;
-
-                var smtpClient = new SmtpClient(NotificationConfig.SMTPCLIENT)
-                {
-                    Port = NotificationConfig.PORT,
-                    Credentials = new NetworkCredential(fromMail, fromPassword),
-                    EnableSsl = true,
-                };
-
-                smtpClient.EnableSsl = true;
-
-
-                //var alternativeView = new AlternateView(Body, new System.Net.Mime.ContentType("text/html"));
-                //string? emailBody = alternativeView.ToString();
-                //emailBody = emailBody.Replace("{{Product}}", "Appify");
-                //alternativeView = emailBody;
-                //message.AlternateViews.Add(alternativeView);
-
-
-                smtpClient.SendMailAsync(message);
-
-                ///smtpClient.Send(message);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return notifications;
+        public string unReadCountNotification(long UserID)
+        {
+            return repository.unReadCountNotification(UserID);
+        }
+        public VendorDetails GetVendorDetails(long VendorID, long OrderID)
+        {
+            return repository.GetVendorDetails(VendorID, OrderID);
+        }
+        public EmailNotificationTemplate GetEmailNotificationTemplate(long TemplateID)
+        {
+            return repository.GetEmailNotificationTemplate(TemplateID);
+        }
+        public List<EmailNotificationHeader> GetMemberDetails(long MemberID, long OrderID)
+        {
+            return repository.GetMemberDetails(MemberID, OrderID);
+        }
+        public SMSSystemConfigSetting GetSMSSystemConfig()
+        {
+            return repository.GetSMSSystemConfig();
+        }
+        public List<SMSConfig> GetSMSConfig()
+        {
+            return repository.GetSMSConfig();
+        }
+        public List<EmailConfig> GetEmailConfig()
+        {
+            return repository.GetEmailConfig();
+        }
+        public List<EmailConfig> GetAlertHeader()
+        {
+            return repository.GetAlertHeader();
+        }
+        public bool UpdateSMSAlert(bool smsalert, bool smsalertemail)
+        {
+            return repository.UpdateSMSAlert(smsalert, smsalertemail);
+        }
+        public List<EmailUserHeader> GetUserDetails(string EmailID)
+        {
+            return repository.GetUserDetails(EmailID);
+        }
+        public List<EmailUserHeader> GetUserDetailsForActivation(string EmailID)
+        {
+            return repository.GetUserDetails(EmailID,false);
         }
     }
 }

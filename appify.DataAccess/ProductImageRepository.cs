@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using appify.utility;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace appify.DataAccess
 {
@@ -16,7 +18,7 @@ namespace appify.DataAccess
     {
         private IConfiguration configuration;
         private string appify_connectionstring;
-
+        public const string SAVEBULKIMPORTEDPRODUCTIMAGE = "[Operation].[usp_ProductImageBulkSave]";
         public ProductImageRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -61,21 +63,77 @@ namespace appify.DataAccess
             return result;
         }
 
+        public bool AddProductBulkImage(ProductImage productimage)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SAVEBULKIMPORTEDPRODUCTIMAGE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+
+                        cmd.Parameters.AddWithValue("@ImageID", productimage.ImageID);
+                        cmd.Parameters.AddWithValue("@ProductID", productimage.ProductID);
+                        cmd.Parameters.AddWithValue("@ImageName", productimage.ImageName);
+                        cmd.Parameters.AddWithValue("@ContentType", productimage.ContentType);
+
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
         public ProductImage GetProductImage(long imageID, long productID)
         {
             ProductImage item = new ProductImage();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTPRODUCTIMAGE, imageID, productID);
-            item = DataTableHelper.ConvertDataTable<ProductImage>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTPRODUCTIMAGE, imageID, productID);
+                item = DataTableHelper.ConvertDataTable<ProductImage>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
         public List<ProductImage> GetProductImages(long productID)
         {
             List<ProductImage> items = new List<ProductImage>();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.LISTPRODUCTIMAGE, productID);
-            items = DataTableHelper.ConvertDataTable<ProductImage>(ds.Tables[0]);
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTIMAGE, productID);
+                items = DataTableHelper.ConvertDataTable<ProductImage>(ds.Tables[0]);
+            }
+            return items;
+        }
 
+        public List<ProductImageNew> GetProductImagesNew(long productID)
+        {
+            List<ProductImageNew> items = new List<ProductImageNew>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.LISTPRODUCTIMAGENEW, productID);
+                items = DataTableHelper.ConvertDataTable<ProductImageNew>(ds.Tables[0]);
+            }
             return items;
         }
 

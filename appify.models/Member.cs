@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace appify.models
+﻿namespace appify.models
 {
     public partial class Member
     {
@@ -47,16 +41,15 @@ namespace appify.models
         public string? ProfilePhoto { get; set; }
 
         public string? Token { get; set; }
+        public Int16 PlatformType { get; set; }
 
         public Int64? ParentID { get; set; }
 
         public bool? IsRegisteredByMobile { get; set; }
-
         public bool? IsOnlinePaymentEnabled { get; set; }
         public bool? IsEnterprise { get; set; }
         public bool? IsEcommerce { get; set; }
-
-
+        public bool? IsWelcomeEmail { get; set; }
 
     }
 
@@ -92,30 +85,6 @@ namespace appify.models
         public bool IsActive { get; set; }
     }
 
-
-    public class MemberAppSetting  
-    {
-        
-		// Public Members 
-
-		public Int64 UserID { get; set; }
-
-        public string AppName { get; set; }
-        public string? AppName1 { get; set; }
-        public string? AppName2 { get; set; }
-
-        public string? Description { get; set; }
-
-        public string? Logo { get; set; }
-
-        public string? PlayStoreID { get; set; }
-
-        public string? AppStoreID { get; set; }
-        public string? AppIcon { get; set; }
-
-
-    }
-
     public partial class MemberDashboard {
 
         
@@ -137,8 +106,14 @@ namespace appify.models
         }
 
     }
-
-
+    public partial class MemberDashboardLite
+    {
+        public long VendorID { get; set; }
+        public decimal TotalRevenue { get; set; }
+        public Int32 PendingOrder { get; set; }
+        public Int32 CompletedOrder { get; set; }
+        public Int32 ActiveOrder {  get; set; }
+    }
     public partial class MemberKYC {
 
         public Int64 MemberID { get; set; }
@@ -149,9 +124,11 @@ namespace appify.models
         public string? BankAccountNo { get; set; }
         public string? IFSC { get; set; }
         public short? BankAccountType { get; set; }
+        public string? BeneficiaryName { get; set; }
         public string? ChequeImage { get; set; }
         public string? PANImage { get; set; }
         public string? GSTImage { get; set; }
+        public string? DigitalSignatureImage { get; set; }
         public string? AadharImage { get; set; }
         public string? AadharImage2 { get; set; }
         public string? KVICNo { get; set; }
@@ -189,5 +166,30 @@ namespace appify.models
         public DateTime EndDate { get; set; }
         public bool IsCancel { get; set; }
     }
+    public partial class MemberSMSSetting
+    {
+        public Int64 VendorID { get; set; }
+        public bool IsFirebase { get; set; }
+    }
 
+    public partial class MemberAppLinks
+    {
+        public string? appStoreLink { get; set; }
+        public string? playstoreLink { get; set; }
+    }
+    public partial class  CheckOTPSent
+    {
+        public Int64 RefID { get; set; }
+
+        public string MobileNo { get; set; }
+
+        public DateTime SentOn { get; set; }
+    }
+    public partial class RegisterOTP
+    {
+        public string MobileNo { get; set; }
+        public bool IsSent { get; set; }
+        public bool IsResent { get; set; }
+        public DateTime SentOn { get; set; }
+    }
 }

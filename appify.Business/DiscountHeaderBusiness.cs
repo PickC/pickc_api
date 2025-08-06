@@ -20,15 +20,35 @@ namespace appify.Business
             this.repository = repository;
             this.repositoryDetail = repositoryDetail;
         }
+        public List<OrderDiscount> GetDiscountByVendor(Int64 VendorID)
+        {
+            return repository.GetDiscountByVendor(VendorID);
+        }
+        public List<OrderDiscount> GetDiscountListbyVendorRows(long vendorID, int pageNo, int rows)
+        {
+            return repository.GetDiscountListbyVendorRows(vendorID, pageNo, rows);
+        }
         public DiscountHeader Get(long DiscountID)
         {
 
             return repository.Get(DiscountID);
         }
-
-        public List<DiscountHeader> GetAll(long DiscountID)
+        public OrderDiscount GetDiscount(Int64 DiscountID)
         {
-           return repository.GetAll(DiscountID);
+            return repository.GetDiscount(DiscountID); 
+        }
+
+        public List<OrderDiscountDetail> GetOrderDiscountByVendor(Int64 VendorID)
+        {
+            return repository.GetOrderDiscountByVendor (VendorID);
+        }
+        public Int64 GetDiscountCount(Int64 VendorID)
+        {
+            return repository.GetDiscountCount(VendorID);
+        }
+        public List<DiscountHeader> GetAll()
+        {
+           return repository.GetAll();
         }
 
         public List<ProductDiscount> ListByVendor(long vendorID)
@@ -37,32 +57,40 @@ namespace appify.Business
             return repository.ListByVendor(vendorID);
         }
 
-        public List<ProductDiscount> ListByProduct(long productID) { 
+        public List<ProductDiscountList> ListByProduct(long productID) { 
             return repository.ListByProduct(productID);
         }
 
 
 
-        public bool Remove(long DiscountID, long ModifiedBy)
+        public bool Remove(long DiscountID, long ProductID)
         {
-            return repository.Remove(DiscountID, ModifiedBy);
+            return repository.Remove(DiscountID, ProductID);
         }
 
         public DiscountHeader Save(DiscountHeader item)
         {
             DiscountHeader returnItem = repository.Save(item);
 
-            if (item.DiscountDetails?.Any()==true)
-            {
+            //if (item.DiscountDetails?.Any()==true)
+            //{
                 
-                foreach (var dt in item.DiscountDetails)
-                {
-                    dt.DiscountID = returnItem.DiscountID;
-                    var result = repositoryDetail.Save(dt);
-                }
-            }
+            //    foreach (var dt in item.DiscountDetails)
+            //    {
+            //        dt.DiscountID = returnItem.DiscountID;
+            //        var result = repositoryDetail.Save(dt);
+            //    }
+            //}
 
             return returnItem;
+        }
+        public OrderDiscount DiscountSave(OrderDiscount item)
+        {
+            return repository.DiscountSave(item);
+        }
+        public bool DiscountRemove(Int64 DiscountID)
+        {
+            return repository.DiscountRemove(DiscountID);
         }
     }
 }

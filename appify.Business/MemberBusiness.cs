@@ -24,14 +24,27 @@ namespace appify.Business
 
         public Member IsMemberExist(string emailID, string mobileNo, short memberType, Int64 parentID)
         {
-            return repository.IsMemberExist(emailID, mobileNo,memberType,parentID);
+            return repository.IsMemberExist(emailID, mobileNo, memberType, parentID);
         }
 
+        public Member IsCustomerExist(string emailID, string mobileNo, short memberType, Int64 parentID) => repository.IsCustomerExist(emailID,mobileNo, memberType, parentID);
+
+        public CheckOTPSent GetOTPSent(string mobileNo)
+        {
+            return repository.GetOTPSent(mobileNo);
+        }
         public Member RegisterMember(Member member)
         {
             return repository.RegisterMember(member);
         }
-
+        public bool RegisterMobileOTP(RegisterOTP item)
+        {
+            return repository.RegisterMobileOTP(item);
+        }
+        public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail)
+        {
+            return repository.UpdateWelcomeEmail(userID,IsWelcomeEmail);
+        }
         public bool RemoveMember(long userID)
         {
             return repository.RemoveMember(userID);
@@ -49,6 +62,10 @@ namespace appify.Business
         }
 
 
+        public bool CheckMemberDeliveryStatus(long userID) {
+            return repository.CheckMemberDeliveryStatus(userID);
+        }
+
         public Member MemberLogIn(string emailID, string mobileNo, string password, Int64 parentID) { 
             return repository.MemberLogIn(emailID,mobileNo,password,parentID);
         }
@@ -56,9 +73,9 @@ namespace appify.Business
             return repository.MemberLogOut(userID);
         }
 
-        public object MemberDashboard(long userID)
+        public MemberDashboardLite MemberDashboard(long userID, DateTime dateFrom, DateTime dateTo)
         {
-            throw new NotImplementedException();
+            return repository.MemberDashboard(userID, dateFrom, dateTo);
         }
 
         public List<Member> GetAllVendors(int pageNo, int rows)
@@ -73,7 +90,10 @@ namespace appify.Business
         public Int32 MemberOrderCount(long userID) { 
             return repository.MemberOrderCount(userID);
         }
-
+        public Int32 VendorOrderCount(long userID)
+        {
+            return repository.VendorOrderCount(userID);
+        }
         public MemberBanner memberBannerAdd(MemberBanner memberBanner)
         {
             return repository.memberBannerAdd(memberBanner);
@@ -96,6 +116,14 @@ namespace appify.Business
         public List<MemberBanner> memberBannerListByVendor(long VendorID)
         {
             return repository.memberBannerListByVendor(VendorID);
+        }
+        public MemberSMSSetting memberSMSSettingGet(long VendorID)
+        {
+            return repository.memberSMSSettingGet(VendorID);
+        }
+        public MemberAppLinks getAppLinks(long VendorID)
+        {
+            return repository.getAppLinks(VendorID);
         }
     }
 }

@@ -1,14 +1,16 @@
-﻿using appify.DataAccess.Contract;
+﻿/*
+ * Company: AppifyRetail.
+ * Author: Gurjeet
+ * Version: 1.1
+ * Date: 2024-09-01
+ * Description:
+*/
+using appify.DataAccess.Contract;
 using appify.models;
 using appify.utility;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace appify.DataAccess
 {
@@ -25,9 +27,12 @@ namespace appify.DataAccess
         public MemberReturnPolicy GetItem(long memberID)
         {
             MemberReturnPolicy item = new MemberReturnPolicy();
-            DataSet ds = SqlHelper.ExecuteDataset(appify_connectionstring, dbroutine.DBStoredProc.SELECTMEMBERRETURNPOLICY, memberID);
-            item = DataTableHelper.ConvertDataTable<MemberReturnPolicy>(ds.Tables[0]).FirstOrDefault();
-
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.SELECTMEMBERRETURNPOLICY, memberID);
+                item = DataTableHelper.ConvertDataTable<MemberReturnPolicy>(ds.Tables[0]).FirstOrDefault();
+            }
             return item;
         }
 
@@ -84,6 +89,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@MaxReturnDays", item.MaxReturnDays);
                         cmd.Parameters.AddWithValue("@IsProductDamaged", item.IsProductDamaged);
                         cmd.Parameters.AddWithValue("@IsWrongSize", item.IsWrongSize);
+                        cmd.Parameters.AddWithValue("@InCompatible", item.InCompatible);
                         cmd.Parameters.AddWithValue("@IsDeliveryDelay", item.IsDeliveryDelay);
                         cmd.Parameters.AddWithValue("@IsQualityIssue", item.IsQualityIssue);
                         cmd.Parameters.AddWithValue("@IsDifferentProduct", item.IsDifferentProduct);
