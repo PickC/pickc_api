@@ -13,6 +13,7 @@ namespace appify.Business.Contract
 
         public List<MemberProduct> ProductList(long vendorID);
         public List<MemberProduct> ProductListNew(long vendorID);
+        public List<MemberProduct> ProductListIsNewArrival(ParamProductsByArrival itemData);
         public ProductListResponse ProductListPageView(ProductSearch itemData);
         public MemberAllDetail GetMemberAllDetails(long userID);
         public HomePageProductByCategory GetProductListByVAUA(long userID);

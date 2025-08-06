@@ -41,6 +41,10 @@ namespace appify.Business
         {
             return repository.RegisterMobileOTP(item);
         }
+        public bool CheckMemberDeliveryStatus(long userID)
+        {
+            return repository.CheckMemberDeliveryStatus(userID);
+        }
         public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail)
         {
             return repository.UpdateWelcomeEmail(userID,IsWelcomeEmail);
