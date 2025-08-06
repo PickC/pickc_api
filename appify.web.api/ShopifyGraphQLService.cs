@@ -199,7 +199,12 @@ namespace appify.web.api
                     shopifyProduct.CategoryID = "";
                     shopifyProduct.Category = "";
                     shopifyProduct.BreadCrumb = "";
-                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1, shopifyProduct.CategoryID, shopifyProduct.Category, shopifyProduct.BreadCrumb);
+                    shopifyProduct.SyncStatus = "Pending";
+                    DateTime utcNow = DateTime.UtcNow;
+                    TimeZoneInfo indiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+                    DateTime currentDateTimeInIST = TimeZoneInfo.ConvertTimeFromUtc(utcNow, indiaTimeZone);
+                    shopifyProduct.SyncDate = currentDateTimeInIST;
+                    shopifyProductMaster.Rows.Add(shopifyProduct.ReferenceID, shopifyProduct.ProductID, shopifyProduct.VendorID, shopifyProduct.Vendor, shopifyProduct.Title, shopifyProduct.Description, shopifyProduct.Handle, shopifyProduct.Status, shopifyProduct.ProductType, shopifyProduct.CreatedAt, shopifyProduct.UpdatedAt, shopifyProduct.PublishedAt, shopifyProduct.LegacyResourceId, shopifyProduct.TotalInventory,1, shopifyProduct.CategoryID, shopifyProduct.Category, shopifyProduct.BreadCrumb, shopifyProduct.SyncStatus, shopifyProduct.SyncDate);
 
                     var variants = productNode["variants"]["edges"];
                     foreach (var variant2 in variants)
@@ -317,6 +322,8 @@ namespace appify.web.api
                 shopifyProductMaster.Columns.Add("CategoryID", typeof(string));
                 shopifyProductMaster.Columns.Add("Category", typeof(string));
                 shopifyProductMaster.Columns.Add("BreadCrumb", typeof(string));
+                shopifyProductMaster.Columns.Add("SyncStatus",typeof(string));
+                shopifyProductMaster.Columns.Add("SyncDate", typeof(DateTime));
 
                 shopifyProductVariant.Columns.Add("ReferenceID", typeof(short));
                 shopifyProductVariant.Columns.Add("VariantID", typeof(string));
@@ -449,7 +456,7 @@ namespace appify.web.api
             }
         }
 
-        public async Task<string> UpdateShopifyProductAsync(ProductUpdateRequest productData)
+        public async Task<string> UpdateShopifyProductAsync(ProductUpdateRequest productData) ///// In Use for updating products
         {
             try
             {
@@ -503,7 +510,7 @@ namespace appify.web.api
                 return $"Error: {ex.Message}";
             }
         }
-        public async Task<string> UpdateProductVariantAsync(ProductVariant variant)
+        public async Task<string> UpdateProductVariantAsync(ProductVariant variant)///// In Use for updating products
         {
             var query = $@"
             mutation {{
@@ -538,7 +545,7 @@ namespace appify.web.api
         }
 
         // Update Existing Product Inventory
-        public async Task<bool> UpdateShopifyInventoryAsync(string inventoryItemId, int quantityPurchased)
+        public async Task<bool> UpdateShopifyInventoryAsync(string inventoryItemId, int quantityPurchased)///// In Use for updating products
         {
             try
             {
@@ -654,7 +661,7 @@ namespace appify.web.api
         }
 
         // Delete Product
-        public async Task<string> DeleteProductAsync(string productId)
+        public async Task<string> DeleteProductAsync(string productId) ///// In Use for Deleting products
         {
             string result = "";
             try
@@ -684,7 +691,7 @@ namespace appify.web.api
             return result;
         }
 
-        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, string productId)
+        public async Task<string?> UploadImageToShopifyAsync(IFormFile file, string productId) ////In Use for uploading image
         {
 
             if (file == null || file.Length == 0)
@@ -737,7 +744,7 @@ namespace appify.web.api
             }
         }
 
-        public async Task<string> DeleteProductImageAsync(string productId, string imageId)
+        public async Task<string> DeleteProductImageAsync(string productId, string imageId) ///// In Use for deleting images
         {
             string result = "";
             try
@@ -768,7 +775,7 @@ namespace appify.web.api
             return result;
         }
 
-        public async Task<bool> ShopifyProductCreateAsync(string body)
+        public async Task<bool> ShopifyProductCreateAsync(string body) //// In Use for Webhook
         {
             bool result = false;
             JArray jsonList = new JArray();
@@ -882,7 +889,7 @@ namespace appify.web.api
             return result;
         }
 
-        public async Task<bool> ShopifyProductUpdateAsync(string body)
+        public async Task<bool> ShopifyProductUpdateAsync(string body) ///// In use for Webhook
         {
             bool result = false;
             JArray jsonList = new JArray();
@@ -1003,7 +1010,7 @@ namespace appify.web.api
             return result;
         }
 
-        public async Task<bool> ShopifyProductDeleteAsync(string body, long VendorID)
+        public async Task<bool> ShopifyProductDeleteAsync(string body, long VendorID) ///// In Use of Webhook
         {
             bool result = false;
             string ProductID = "";

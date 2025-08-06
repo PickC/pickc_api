@@ -135,7 +135,7 @@ namespace appify.models
         public string? CategoryName {  get; set; }
         public string? BreadCrumb { get; set; }
         public Int16? Stock { get; set; }
-
+        public string? Source {  get; set; }
     }
 
     public partial class MemberPassword
