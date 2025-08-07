@@ -26,6 +26,8 @@ namespace appify.models
         public string CategoryID { get; set; }
         public string Category { get; set; }
         public string BreadCrumb { get; set; }
+        public string SyncStatus { get; set; }
+        public DateTime? SyncDate {  get; set; }
     }
     public partial class ShopifyProductVariant
     {

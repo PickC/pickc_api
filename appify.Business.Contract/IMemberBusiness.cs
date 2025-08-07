@@ -9,7 +9,7 @@ namespace appify.Business.Contract
         public List<Member> GetAllVendors(int pageNo,int rows);
 
         public Member GetMember(long userID);
-
+        public bool CheckMemberDeliveryStatus(long userID);
         public Member RegisterMember(Member member);
         public bool RegisterMobileOTP(RegisterOTP item);
         public bool UpdateWelcomeEmail(long userID,bool IsWelcomeEmail);

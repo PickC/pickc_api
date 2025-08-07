@@ -745,5 +745,60 @@ namespace appify.web.api.Controllers
 
             return Ok(rm);
         }
+
+        /// <summary>
+        /// Get The Shopify Product SyncHistory
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "vendorID": 2391
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHOPIFY PRODUCT HAS BEEN SUCCESSFULLY FETCHED SYNCED HISTORY</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("ShopifySyncHistory")]
+        [MapToApiVersion("1.0")]
+        public async Task<IActionResult> ShopifySyncHistory([Required] ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+
+                var result = true;//await shopifyGraphQLService.DeleteProductAsync(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY DELETED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS HAVE BEEN SUCCESSFULLY DELETED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("SHOPIFY PRODUCTS ASYNC - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHOPIFY DELETE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
     }
 }

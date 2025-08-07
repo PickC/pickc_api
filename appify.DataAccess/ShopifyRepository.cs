@@ -273,6 +273,8 @@ namespace appify.DataAccess
                         bulkProductMaster.ColumnMappings.Add("CategoryID", "CategoryID");
                         bulkProductMaster.ColumnMappings.Add("Category", "Category");
                         bulkProductMaster.ColumnMappings.Add("BreadCrumb", "BreadCrumb");
+                        bulkProductMaster.ColumnMappings.Add("SyncStatus", "SyncStatus");
+                        bulkProductMaster.ColumnMappings.Add("SyncDate", "SyncDate");
                         bulkProductMaster.BatchSize = 1000;
                         bulkProductMaster.BulkCopyTimeout = 120; // in seco
                         bulkProductMaster.WriteToServer(shopifyProductMaster);

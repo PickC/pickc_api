@@ -135,7 +135,7 @@ namespace appify.models
         public string? CategoryName {  get; set; }
         public string? BreadCrumb { get; set; }
         public Int16? Stock { get; set; }
-
+        public string? Source {  get; set; }
     }
 
     public partial class MemberPassword
@@ -288,5 +288,13 @@ namespace appify.models
     {
         public List<MemberProduct> Products { get; set; }
         public int TotalCount { get; set; }
+    }
+    public class ParamProductsByArrival
+    {
+        public Int64 VendorID { get; set; }
+        public bool IsNewArrival { get; set; }
+        public bool IsDiscount { get; set; }
+        public short PageNo { get; set; }
+        public short Rows { get; set; }
     }
 }
