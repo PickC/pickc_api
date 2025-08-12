@@ -148,19 +148,6 @@ namespace appify.DataAccess
 
             return result;
         }
-
-        public bool CheckMemberDeliveryStatus(long userID)
-        {
-
-            bool result = false;
-            using (SqlConnection con = new SqlConnection(appify_connectionstring))
-            {
-                con.Open();
-                DataSet ds = SqlHelper.ExecuteDataset(con, dbroutine.DBStoredProc.MEMBERDELIVERYSTATUS, userID);
-                result = Convert.ToBoolean(ds.Tables[0].Rows[0][0].ToString());
-            }
-            return result;
-        }
         public List<Member> GetAllVendors(int pageNo, int rows)
         {
             List<Member> members = new List<Member>();

@@ -31,7 +31,6 @@ namespace appify.dbroutine
         public const string MEMBERDELIVERYSTATUS = "[Operation].[usp_MemberDeliveryStatus]";
         public const string MEMBERDASHBOARD = "[Operation].[usp_VendorDashboard]";
         public const string UPDATEWELCOMEEMAIL = "[Operation].[usp_MemberUpdateWelcomeEmail]";
-        public const string MEMBERDELIVERYSTATUS = "[Operation].[usp_MemberDeliveryStatus]";
         // Vendor Customer Details //
 
         public const string PAGEVIEWCUSTOMERBYMEMBER = "[Operation].[usp_CustomerPageView]";
