@@ -66,6 +66,10 @@ namespace appify.Business
         }
 
 
+        public bool CheckMemberDeliveryStatus(long userID) {
+            return repository.CheckMemberDeliveryStatus(userID);
+        }
+
         public Member MemberLogIn(string emailID, string mobileNo, string password, Int64 parentID) { 
             return repository.MemberLogIn(emailID,mobileNo,password,parentID);
         }
