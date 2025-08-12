@@ -19,6 +19,8 @@ namespace appify.models
         public Int16? ContentType { get; set; }
 
         public DateTime? CreatedOn { get; set; }
+        public string? ShopifyImageID { get; set; }
+        public string? ShopifyProductID { get; set; }
 
     }
 
