@@ -26,6 +26,11 @@ namespace appify.DataAccess
         public const string UPDATEVARIANTSIMAGESBYPRODUCT = "[Operation].[usp_ShopifyVariantsImagesUpdate]";
         public const string GETPRODUCTSBYVENDOR = "[Operation].[usp_ShopifyProductSelect]";
         public const string UPDATESHOPIFYPRODUCTIMAGEPRICE = "[Operation].[usp_ShopifyProductMasterUpdatePriceImage]";
+        public const string SHOPIFYSYNCHISTORY = "[Operation].[ShopifySyncHistory]";
+        public const string ISSHOPIFYPRODUCT = "[Operation].[usp_IsShopifyProduct]";
+        public const string SHOPIFYPRODUCTUPDATETOSTORE = "[Operation].[usp_ShopifyProductUpdateToStore]";
+        public const string SHOPIFYPRODUCTVARIANTUPDATETOSTORE = "[Operation].[usp_ShopifyProductVariantUpdateToStore]";
+
         public ShopifyRepository(IConfiguration config) {
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
@@ -405,6 +410,60 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+
+        public ShopifySyncHistoryResponse GetShopifySyncHistory(long VendorID)
+        {
+            ShopifySyncHistoryResponse item = new ShopifySyncHistoryResponse();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SHOPIFYSYNCHISTORY, VendorID);
+                item.Products = DataTableHelper.ConvertDataTable<ShopifySyncHistory>(ds.Tables[0]);
+                item.LastSync = ds.Tables[1].Rows.Count > 0 ? Convert.ToDateTime(ds.Tables[1].Rows[0][0]) : DateTime.Now;
+            }
+            return item;
+        }
+        public ProductUpdateRequest ShopifyGetProductDetails(long ProductID)
+        {
+            ProductUpdateRequest item = new ProductUpdateRequest();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SHOPIFYPRODUCTUPDATETOSTORE, ProductID);
+                item = DataTableHelper.ConvertDataTable<ProductUpdateRequest>(ds.Tables[0]).FirstOrDefault();
+            }
+            return item;
+        }
+
+        public List<ProductVariant> ShopifyGetProductVariantDetails(long ProductID)
+        {
+            List<ProductVariant> item = new List<ProductVariant>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SHOPIFYPRODUCTVARIANTUPDATETOSTORE, ProductID);
+                item = DataTableHelper.ConvertDataTable<ProductVariant>(ds.Tables[0]);
+            }
+            return item;
+        }
+        public bool IsShopifyProduct(long ProductID)
+        {
+            try
+            {
+                bool item = false;
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, ISSHOPIFYPRODUCT, ProductID);
+                    item = Convert.ToBoolean(ds.Tables[0].Rows[0][0]);
+                }
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

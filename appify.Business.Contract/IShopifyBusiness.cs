@@ -19,5 +19,9 @@ namespace appify.Business.Contract
         public bool BulkInsertShopifyProducts(DataTable shopifyProductMaster, DataTable shopifyProductVariant, DataTable shopifyProductImage);
         public bool SaveShopifyProductToAppify(long VendorID);
         public List<ShopifyProductID> GetShopifyProductIDByVendor(long VendorID);
+        public ShopifySyncHistoryResponse GetShopifySyncHistory(long VendorID);
+        public ProductUpdateRequest ShopifyProductUpdateToStore(long ProductID);
+        public bool IsShopifyProduct(long ProductID);
+
     }
 }
