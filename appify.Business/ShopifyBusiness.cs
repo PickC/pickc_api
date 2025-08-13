@@ -88,6 +88,25 @@ namespace appify.Business
         {
             return repository.GetShopifyProductIDByVendor(VendorID);
         }
+        public ShopifySyncHistoryResponse GetShopifySyncHistory(long VendorID)
+        {
+            return repository.GetShopifySyncHistory(VendorID);
+        }
+        public ProductUpdateRequest ShopifyProductUpdateToStore(long ProductID)
+        {
+            ProductUpdateRequest items = new ProductUpdateRequest();
+            items = repository.ShopifyGetProductDetails(ProductID);
+            if(items!=null)
+            {
+                items.Variants = repository.ShopifyGetProductVariantDetails(ProductID);
+            }
+
+            return items;
+        }
+        public bool IsShopifyProduct(long ProductID)
+        {
+            return repository.IsShopifyProduct(ProductID);
+        }
 
     }
 }

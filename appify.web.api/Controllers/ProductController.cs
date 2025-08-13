@@ -6,6 +6,7 @@
  * Description:
 */
 using appify.audit.service;
+using appify.Business;
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
@@ -40,7 +41,7 @@ namespace appify.web.api.Controllers
         private readonly IMemberCategoryParametersBusiness parametersBusiness;
         private readonly IAuditService auditService;
         private readonly IWebHostEnvironment env;
-        
+        private readonly IShopifyBusiness shopifyBusiness;
         private ResponseMessage rm;
         public ProductController(IConfiguration configuration, 
                                  IProductBusiness iResultData, 
@@ -49,7 +50,7 @@ namespace appify.web.api.Controllers
                                  IEventLogBusiness eventLogBusiness,
                                  IMemberCategoryParametersBusiness parametersBusiness,
                                  IWebHostEnvironment env,
-                                 IAuditService auditService)
+                                 IAuditService auditService, IShopifyBusiness shopifyBusiness)
         {
             this.configuration = configuration;
             this.productBusiness = iResultData;
@@ -59,6 +60,7 @@ namespace appify.web.api.Controllers
             this.parametersBusiness = parametersBusiness;
             this.env = env;
             this.auditService = auditService;
+            this.shopifyBusiness = shopifyBusiness;
         }
 
         /// <summary>
@@ -225,8 +227,20 @@ namespace appify.web.api.Controllers
                         }
 
                         rm.data = product;
-                        //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                        //this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, StatusName.ok));
+                        var isShopifyProduct = shopifyBusiness.IsShopifyProduct(product.ProductID);
+                        if(isShopifyProduct)
+                        {
+                            var getShopifyProductJSON = shopifyBusiness.ShopifyProductUpdateToStore(product.ProductID);
+                            if (getShopifyProductJSON != null)
+                            {
+                                ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, product.VendorID);
+                                var result = await shopifyGraphQLService.UpdateShopifyProductAsync(getShopifyProductJSON);
+                                if (result != null)
+                                {
+                                    await Common.UpdateEventLogsNew("PRODUCT SAVED SUCCESSFULLY ON SHOPIFY STORE", reqHeader, controllerURL, product, rm.data, rm.message, this.eventLogBusiness);
+                                }
+                            }
+                        }
                         await Common.UpdateEventLogsNew("PRODUCT SAVED SUCCESSFULLY", reqHeader, controllerURL, product, rm.data, rm.message, this.eventLogBusiness);
 
                         await auditService.LogAsync(EntityType.Product, product.ProductID, eventType, product.VendorID.ToString(), AppName, sourceIPAddress, productMaster);

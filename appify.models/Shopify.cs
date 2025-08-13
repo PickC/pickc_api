@@ -95,4 +95,53 @@ namespace appify.models
     {
         public string ProductID { get; set; }
     }
+    public partial class ShopifySyncHistory
+    {
+        public string Source { get; set; }
+        public DateTime? SyncUpdate { get; set; }
+        public string ProductImage { get; set; }
+        public string ProductName { get; set; }
+        public string Status { get; set; }
+    }
+    public partial class ShopifySyncHistoryResponse
+    {
+        public List<ShopifySyncHistory> Products { get; set; }
+        public DateTime? LastSync {  get; set; }
+    }
+
+    public class ShopifyProductUpdate
+    {
+        public string ProductId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Vendor { get; set; }
+        public string ProductType { get; set; }
+        public string Status { get; set; } // "ACTIVE" or "DRAFT"
+
+    }
+
+    public class ProductUpdateRequest
+    {
+        public string ProductId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Vendor { get; set; }
+        public string ProductType { get; set; }
+        public string Status { get; set; } // "ACTIVE" or "DRAFT"
+        public List<ProductVariant> Variants { get; set; }
+        //public List<ProductImage> Images { get; set; }
+    }
+
+    public class ProductVariant
+    {
+        public string VariantId { get; set; }
+        public string Sku { get; set; }
+        public decimal Price { get; set; }
+        public int Inventory { get; set; }
+        public string InventoryItemID { get; set; }
+        public int QuantityPurchased { get; set; }
+        public decimal Weight { get; set; }
+        public string WeightUnit { get; set; } // e.g., "KILOGRAMS"
+    }
+
 }

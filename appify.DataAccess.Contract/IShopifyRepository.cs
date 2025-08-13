@@ -21,5 +21,9 @@ namespace appify.DataAccess.Contract
         public bool SaveShopifyProductToAppify(long VendorID);
         public List<ShopifyProductID> GetShopifyProductIDByVendor(long VendorID);
         public bool UpdateProductImagePrice(string ProductID);
+        public ShopifySyncHistoryResponse GetShopifySyncHistory(long VendorID);
+        public ProductUpdateRequest ShopifyGetProductDetails(long ProductID);
+        public List<ProductVariant> ShopifyGetProductVariantDetails(long ProductID);
+        public bool IsShopifyProduct(long ProductID);
     }
 }

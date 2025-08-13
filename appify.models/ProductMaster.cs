@@ -51,6 +51,7 @@ namespace appify.models
 
         public bool? IsNew { get; set; }
         public string? Source { get; set; }
+        public string? ShopifyProductID { get; set; }
     }
 
 
@@ -90,7 +91,7 @@ namespace appify.models
         public string HSNCode { get; set; }
         public string SKU { get; set; }
         public bool? IsNew { get; set; }
-
+        public string? ShopifyProductID { get; set; }
         public List<ProductPriceNew>? prices { get; set; }
         public List<ProductImageNew>? images { get; set; }
 
