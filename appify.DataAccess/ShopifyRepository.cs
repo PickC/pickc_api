@@ -31,6 +31,10 @@ namespace appify.DataAccess
         public const string SHOPIFYPRODUCTUPDATETOSTORE = "[Operation].[usp_ShopifyProductUpdateToStore]";
         public const string SHOPIFYPRODUCTVARIANTUPDATETOSTORE = "[Operation].[usp_ShopifyProductVariantUpdateToStore]";
 
+        public const string SHOPIFYSETTINGSAVE = "[Operation].[usp_ShopifySettingSave]";
+        public const string SHOPIFYSETTINGET = "[Operation].[usp_ShopifySettingSelect]";
+        public const string SHOPIFYSETTINGLIST = "[Operation].[usp_ShopifySettingList]";
+        public const string SHOPIFYSETTINGDELETE = "[Operation].[usp_ShopifySettingDelete]";
         public ShopifyRepository(IConfiguration config) {
             this.configuration = config;
             this.appify_connectionstring = config["ConnectionStrings:appify.connectionstring"].ToString();
@@ -464,6 +468,113 @@ namespace appify.DataAccess
             {
                 throw;
             }
+        }
+
+        public ShopifySetting ShopifySettingGet(long VendorID)
+        {
+            ShopifySetting item = new ShopifySetting();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SHOPIFYSETTINGET, VendorID);
+                item = DataTableHelper.ConvertDataTable<ShopifySetting>(ds.Tables[0]).FirstOrDefault();
+            }
+            return item;
+        }
+        public List<ShopifySetting> ShopifySettingList()
+        {
+            List<ShopifySetting> item = new List<ShopifySetting>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SHOPIFYSETTINGLIST);
+                item = DataTableHelper.ConvertDataTable<ShopifySetting>(ds.Tables[0]);
+            }
+            return item;
+        }
+
+        public bool ShopifySettingRemove(long SID, long VendorID)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SHOPIFYSETTINGDELETE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@SID", SID);
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+
+        public ShopifySetting ShopifySettingSave(ShopifySetting item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(SHOPIFYSETTINGSAVE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@SID", item.SID);
+                        cmd.Parameters.AddWithValue("@VendorID", item.VendorID);
+                        cmd.Parameters.AddWithValue("@StoreID", item.StoreID);
+                        cmd.Parameters.AddWithValue("@StoreName", item.StoreName);
+                        cmd.Parameters.AddWithValue("@StoreUrl", item.StoreUrl);
+                        cmd.Parameters.AddWithValue("@AccessToken", item.AccessToken);
+                        cmd.Parameters.AddWithValue("@ApiVersion", item.ApiVersion);
+                        cmd.Parameters.AddWithValue("@ApiKey", item.ApiKey);
+                        cmd.Parameters.AddWithValue("@SecretKey", item.SecretKey);
+                        cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
+
+
+                        //Add the output parameter to the command object
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewSID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        item.SID = Convert.ToInt16(outPutParameter.Value);
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return item;
         }
     }
 }

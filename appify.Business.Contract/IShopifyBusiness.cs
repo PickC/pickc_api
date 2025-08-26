@@ -22,6 +22,9 @@ namespace appify.Business.Contract
         public ShopifySyncHistoryResponse GetShopifySyncHistory(long VendorID);
         public ProductUpdateRequest ShopifyProductUpdateToStore(long ProductID);
         public bool IsShopifyProduct(long ProductID);
-
+        public ShopifySetting ShopifySettingGet(long VendorID);
+        public List<ShopifySetting> ShopifySettingList();
+        public bool ShopifySettingRemove(long SID, long VendorID);
+        public ShopifySetting ShopifySettingSave(ShopifySetting item);
     }
 }

@@ -25,5 +25,9 @@ namespace appify.DataAccess.Contract
         public ProductUpdateRequest ShopifyGetProductDetails(long ProductID);
         public List<ProductVariant> ShopifyGetProductVariantDetails(long ProductID);
         public bool IsShopifyProduct(long ProductID);
+        public ShopifySetting ShopifySettingGet(long VendorID);
+        public List<ShopifySetting> ShopifySettingList();
+        public bool ShopifySettingRemove(long SID, long VendorID);
+        public ShopifySetting ShopifySettingSave(ShopifySetting item);
     }
 }

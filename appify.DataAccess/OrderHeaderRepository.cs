@@ -17,6 +17,7 @@ namespace appify.DataAccess
         private IConfiguration configuration;
         private string appify_connectionstring;
         public const string SELECTORDERUPSTATUS = "[Operation].[usp_OrdeStatusSelect]";
+        public const string SELECTVENDORSERVICES = "[Operation].[usp_VendorServicesSelect]";
         public OrderHeaderRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -619,6 +620,17 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+        public VendorEnabledServices GetVendorServices(long orderID)
+        {
+            VendorEnabledServices items = new VendorEnabledServices();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, SELECTVENDORSERVICES, orderID);
+                items = DataTableHelper.ConvertDataTable<VendorEnabledServices>(ds.Tables[0]).FirstOrDefault();
+            }
+            return items;
         }
     }
 }

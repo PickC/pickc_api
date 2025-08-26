@@ -41,7 +41,6 @@ namespace appify.DataAccess.Contract
         public List<EmailConfig> GetAlertHeader();
         public bool StockUpdate(long orderID, short OrderStatus);
         public OrderData? GetOrderDataForAuditLog(long orderID);
-
-
+        public VendorEnabledServices GetVendorServices(long orderID);
     }
 }

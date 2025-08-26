@@ -144,4 +144,20 @@ namespace appify.models
         public string WeightUnit { get; set; } // e.g., "KILOGRAMS"
     }
 
+    public partial class ShopifySetting
+    {
+        public Int32 SID { get; set; }
+        public Int64 VendorID { get; set; }
+        public Int64 StoreID { get; set; }
+        public string StoreName { get; set; }
+        public string StoreUrl { get; set; }
+        public string AccessToken { get; set; }
+        public string ApiVersion { get; set; }
+        public string ApiKey { get; set; }
+        public string SecretKey { get; set; }
+        public short CreatedBy { get; set; }
+        public short ModifiedBy { get; set; }
+        public bool IsActive { get; set; }
+    }
+
 }

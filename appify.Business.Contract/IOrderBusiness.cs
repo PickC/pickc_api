@@ -47,6 +47,6 @@ namespace appify.Business.Contract
         public bool StockUpdate(long orderID, short OrderStatus);
 
         public OrderData? GetOrderDataForAuditLog(long orderID);
-
+        public VendorEnabledServices GetVendorServices(long orderID);
     }
 }
