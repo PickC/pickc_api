@@ -114,6 +114,8 @@ namespace appify.models
         public bool? AppDetails { get; set; }
         public bool? KYC { get; set; }
         public bool? Subscription {  get; set; }
+        public bool? IsDelhiveryOn { get; set; }
+        public bool? IsRazorPayOn { get; set; }
     }
     public partial class MemberProduct
     {

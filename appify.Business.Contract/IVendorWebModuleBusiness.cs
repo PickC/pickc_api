@@ -19,5 +19,11 @@ namespace appify.Business.Contract
         public string CheckUserMobileNo(string mobileNo);
         public bool UpdateInvitationSend(string mobileNo);
         public short CheckInvitationSend(string mobileNo);
+        public VendorServiceCredentials VendorServiceCredentialsSave(VendorServiceCredentials item);
+        public bool VendorServiceCredentialsRemove(long ServiceID, long VendorID);
+        public List<VendorServiceCredentials> VendorServiceCredentialsList();
+        public List<VendorServiceCredentials> VendorServiceCredentialsGet(long VendorID);
+        public VendorServices VendorServicesSave(VendorServices item);
+        public VendorServices VendorServicesGet(long VendorID);
     }
 }
