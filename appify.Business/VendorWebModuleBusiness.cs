@@ -12,8 +12,9 @@ namespace appify.Business
     public class VendorWebModuleBusiness : IVendorWebModuleBusiness
     {
         private IVendorWebModuleRepository repository;
-        public VendorWebModuleBusiness(IVendorWebModuleRepository repository) { 
-        this.repository = repository;
+        public VendorWebModuleBusiness(IVendorWebModuleRepository repository)
+        {
+            this.repository = repository;
         }
         public MemberUser SaveVendorUser(MemberUser item)
         {
@@ -54,6 +55,30 @@ namespace appify.Business
         public short CheckInvitationSend(string mobileNo)
         {
             return repository.CheckInvitationSend(mobileNo);
+        }
+        public VendorServiceCredentials VendorServiceCredentialsSave(VendorServiceCredentials item)
+        {
+            return repository.VendorServiceCredentialsSave(item);
+        }
+        public bool VendorServiceCredentialsRemove(long ServiceID, long VendorID)
+        {
+            return repository.VendorServiceCredentialsRemove(ServiceID, VendorID);
+        }
+        public List<VendorServiceCredentials> VendorServiceCredentialsList()
+        {
+            return repository.VendorServiceCredentialsList();
+        }
+        public List<VendorServiceCredentials> VendorServiceCredentialsGet(long VendorID)
+        {
+            return repository.VendorServiceCredentialsGet(VendorID);
+        }
+        public VendorServices VendorServicesSave(VendorServices item)
+        {
+            return repository.VendorServicesSave(item);
+        }
+        public VendorServices VendorServicesGet(long VendorID)
+        {
+            return repository.VendorServicesGet(VendorID);
         }
     }
 }

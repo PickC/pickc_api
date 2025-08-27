@@ -319,6 +319,9 @@ namespace appify.Business
         }
 
         public OrderData? GetOrderDataForAuditLog(long orderID) => orderRepository.GetOrderDataForAuditLog(orderID);
-
+        public VendorEnabledServices GetVendorServices(long orderID)
+        {
+            return orderRepository.GetVendorServices(orderID);
+        }
     }
 }

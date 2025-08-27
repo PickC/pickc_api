@@ -1735,5 +1735,361 @@ namespace appify.web.api.Controllers
             }
         }
 
+        /// <summary>
+        /// Add/Update The Vendor Service Credentials
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "serviceID": 0,
+        ///       "vendorID": 1060,
+        ///       "serviceCategory": "DELIVERYCHANNEL",
+        ///       "serviceValue": 3921,
+        ///       "keyID": "developer.google@appi-fy.ai",
+        ///       "secretKey": "App1fpr",
+        ///       "token": "",
+        ///       "isEnabled": true,
+        ///       "createdBy": 1000,
+        ///       "modifiedBy": 0,
+        ///       "isActive": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY SAVED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServiceCredentialsSave")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServiceCredentialsSave(VendorServiceCredentials itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServiceCredentialsSave(itemData);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY SAVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Remove The Vendor Service Credentials
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "serviceID": 103,
+        ///       "vendorID": 1060
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY REMOVED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServiceCredentialsRemove")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServiceCredentialsRemove(ParamService itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServiceCredentialsRemove(itemData.ServiceID, itemData.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY REMOVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY REMOVED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// List of All The Vendors Service Credentials
+        /// </summary>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServiceCredentialsList")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServiceCredentialsList()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServiceCredentialsList();
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// GET List of The Vendor Service Credentials by VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "vendorID": 1060
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServiceCredentialsGet")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServiceCredentialsGet(ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServiceCredentialsGet(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+        /// <summary>
+        /// Add/Update The Vendor Services
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "serviceID": 0,
+        ///       "vendorID": 1060,
+        ///       "onlinePayment": true,
+        ///       "razorPay": true,
+        ///       "eazeBuzz": true,
+        ///       "shiprocket": true,
+        ///       "delhivery": true,
+        ///       "cod": true,
+        ///       "shopify": true,
+        ///       "facebook": true,
+        ///       "instagram": true,
+        ///       "bulkUpload": true,
+        ///       "sms": true,
+        ///       "email": true,
+        ///       "pushNotification": true,
+        ///       "inApp": true,
+        ///       "whatsApp" : true,
+        ///       "isActive": true,
+        ///       "createdBy": 1000,
+        ///       "modifiedBy": 1000
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY SAVED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServicesSave")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServicesSave(VendorServices itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServicesSave(itemData);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE HAS BEEN SUCCESSFULLY SAVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// GET List of The Vendor Service by VendorID
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "vendorID": 1060
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("VendorServicesGet")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> VendorServicesGet(ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = vendorWebModuleBusiness.VendorServicesGet(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE CREDENTIALS HAS BEEN SUCCESSFULLY FETCHED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("VENDOR SERVICE - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("VENDOR SERVICE - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
     }
 }

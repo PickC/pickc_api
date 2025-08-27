@@ -672,5 +672,24 @@ namespace appify.models
         public string? FilterBy {  get; set; }
         public string? Search {  get; set; }
     }
-
+    public partial class VendorEnabledServices
+    {
+        //public long ServiceID { set; get; }
+        public long VendorID { set; get; }
+        public bool OnlinePayment { set; get; }
+        //public bool RazorPay { set; get; }
+        //public bool EazeBuzz { set; get; }
+        //public bool Shiprocket { set; get; }
+        //public bool Delhivery { set; get; }
+        public bool COD { set; get; }
+        public bool Shopify { set; get; }
+        public bool Facebook { set; get; }
+        public bool Instagram { set; get; }
+        public bool BulkUpload { set; get; }
+        public bool SMS { set; get; }
+        public bool Email { set; get; }
+        public bool PushNotification { set; get; }
+        public bool InApp { set; get; }
+        public bool WhatsApp { set; get; }
+    }
 }

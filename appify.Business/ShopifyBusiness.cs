@@ -108,5 +108,21 @@ namespace appify.Business
             return repository.IsShopifyProduct(ProductID);
         }
 
+        public ShopifySetting ShopifySettingGet(long VendorID)
+        {
+            return repository.ShopifySettingGet(VendorID);
+        }
+        public List<ShopifySetting> ShopifySettingList()
+        {
+            return repository.ShopifySettingList();
+        }
+        public bool ShopifySettingRemove(long SID, long VendorID)
+        {
+            return repository.ShopifySettingRemove(SID, VendorID);
+        }
+        public ShopifySetting ShopifySettingSave(ShopifySetting item)
+        {
+            return repository.ShopifySettingSave(item);
+        }
     }
 }

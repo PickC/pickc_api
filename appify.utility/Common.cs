@@ -82,6 +82,8 @@ namespace appify.utility
         public static readonly string DeleteShopifyProduct = "/admin/api/2023-10/graphql.json";
         public static readonly string UploadImageToShopify = "/admin/api/2024-04/products/{productId}/images.json";
         public static readonly string DeleteShopifyProductImage = "/admin/api/2024-04/products/{productId}/images/{imageId}.json";
+
+        public static readonly string CreateCatalog = "owned_product_catalogs";
         public static EventLogs UpdateEventLogs(string eventType, HttpRequest request, string url, Object? inputData, Object? outputData,
                                                 string? eventLogStatus)
         {

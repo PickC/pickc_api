@@ -35,6 +35,7 @@ using Twilio.TwiML.Messaging;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
 using Org.BouncyCastle.Ocsp;
+using Microsoft.AspNetCore.Authorization;
 
 namespace appify.web.api.Controllers
 {
@@ -49,11 +50,13 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private ResponseMessage rm;
         private readonly IShopifyBusiness shopifyBusiness;
-        public ShopifyController(IConfiguration configuration, IEventLogBusiness eventLogBusiness, IShopifyBusiness shopifyBusiness)
+        private readonly IWebHostEnvironment env;
+        public ShopifyController(IConfiguration configuration, IEventLogBusiness eventLogBusiness, IShopifyBusiness shopifyBusiness, IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.eventLogBusiness = eventLogBusiness;
             this.shopifyBusiness = shopifyBusiness;
+            this.env = env;
         }
 
         /// <summary>
@@ -76,6 +79,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("GetAllProductsAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task <IActionResult> GetAllProductsAsync(ParamVendorRef item)
         {
             var reqHeader = Request;
@@ -83,6 +87,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID, item.ReferenceID);
                 if(shopifyGraphQLService.IsFound==false)
                 {
@@ -177,6 +182,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateProductAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> UpdateProductAsync(long VendorID, ProductUpdateRequest productData)
         {
             /*
@@ -188,6 +194,7 @@ namespace appify.web.api.Controllers
              * 
              */
             var reqHeader = Request;
+            TokenValidator.IsValidToken(Request, configuration, env);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -252,6 +259,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UpdateProductInvantoryAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> UpdateProductInvantoryAsync(ParamShopifyInventory item)
         {
             /*
@@ -263,6 +271,7 @@ namespace appify.web.api.Controllers
              * 
              */
             var reqHeader = Request;
+            TokenValidator.IsValidToken(Request, configuration, env);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -320,6 +329,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("UploadProductImageAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> UploadProductImageAsync([Required][FromForm] ParamVendorUploadImg item)
         {
             /*
@@ -330,6 +340,7 @@ namespace appify.web.api.Controllers
 
              */
             var reqHeader = Request;
+            TokenValidator.IsValidToken(Request, configuration, env);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -417,6 +428,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductImageAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> DeleteProductImageAsync(ParamVendorDeleteImg item)
         {
             /*
@@ -427,6 +439,7 @@ namespace appify.web.api.Controllers
 
              */
             var reqHeader = Request;
+            TokenValidator.IsValidToken(Request, configuration, env);
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
             try
             {
@@ -490,6 +503,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("DeleteProductAsync")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> DeleteProductAsync([Required] ParamVendorProduct item)
         {
             var reqHeader = Request;
@@ -497,6 +511,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
 
                 ShopifyGraphQLService shopifyGraphQLService = new ShopifyGraphQLService(this.shopifyBusiness, item.VendorID);
                 var result = await shopifyGraphQLService.DeleteProductAsync(item.ProductID);
@@ -762,6 +777,7 @@ namespace appify.web.api.Controllers
         /// <response code="500">ResponseMessage with Error Description</response> 
         [HttpPost, Route("ShopifySyncHistory")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> ShopifySyncHistory([Required] ParamVendor item)
         {
             var reqHeader = Request;
@@ -769,7 +785,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
-
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = shopifyBusiness.GetShopifySyncHistory(item.VendorID);
                 if (result != null)
                 {
@@ -803,6 +819,7 @@ namespace appify.web.api.Controllers
 
         [HttpPost, Route("ShopifyProductUpdateToStore")]
         [MapToApiVersion("1.0")]
+        [Authorize]
         public async Task<IActionResult> ShopifyProductUpdateToStore([Required] long ProductID)
         {
             var reqHeader = Request;
@@ -810,6 +827,7 @@ namespace appify.web.api.Controllers
             try
             {
                 rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
                 var result = shopifyBusiness.IsShopifyProduct(ProductID);
                 var result2 = shopifyBusiness.ShopifyProductUpdateToStore(ProductID);
                 if (result != null)
@@ -838,6 +856,235 @@ namespace appify.web.api.Controllers
                 rm.data = null;
 
                 await Common.UpdateEventLogsNew("SHOPIFY DELETE PRODUCT - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Add/Update The Shopify Setting
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "sid": 0,
+        ///       "vendorID": 5001,
+        ///       "storeID": 12,
+        ///       "storeName": "Clothes",
+        ///       "storeUrl": "https://d9nnfq-s0.myshopify.com",
+        ///       "accessToken": "token",
+        ///       "apiVersion": "2025",
+        ///       "apiKey": "key",
+        ///       "secretKey": "secretkey",
+        ///       "createdBy": 1000,
+        ///       "modifiedBy": 0,
+        ///       "isActive": true
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHOPIFY SETTING HAS BEEN SUCCESSFULLY SAVED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("ShopifySettingSave")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> ShopifySettingSave(ShopifySetting itemData)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = shopifyBusiness.ShopifySettingSave(itemData);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY SETTING HAS BEEN SUCCESSFULLY SAVED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING HAS BEEN SUCCESSFULLY SAVED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHOPIFY SETTING - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// List of The Shopify Settings
+        /// </summary>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("ShopifySettingList")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> ShopifySettingList()
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = shopifyBusiness.ShopifySettingList();
+
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHOPIFY SETTING - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Get The Shopify Settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "vendorID": 1060
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("ShopifySettingGet")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> ShopifySettingGet([Required] ParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = shopifyBusiness.ShopifySettingGet(item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHOPIFY SETTING - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+
+        /// <summary>
+        /// Remove The Shopify Settings
+        /// </summary>
+        /// <remarks>
+        /// Sample request JSON :
+        /// 
+        ///     {
+        ///       "sid": 102,
+        ///       "vendorID": 239100
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">SHOPIFY SETTING HAS BEEN SUCCESSFULLY FETCHED</response>
+        /// <response code="500">ResponseMessage with Error Description</response> 
+        [HttpPost, Route("ShopifySettingRemove")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> ShopifySettingRemove([Required] SettingParamVendor item)
+        {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = shopifyBusiness.ShopifySettingRemove(item.SID,item.VendorID);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "SHOPIFY SETTING HAS BEEN SUCCESSFULLY DELETED!";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING HAS BEEN SUCCESSFULLY DELETED", reqHeader, controllerURL, null, result, StatusName.ok, this.eventLogBusiness);
+                }
+                else
+                {
+                    rm.statusCode = StatusCodes.ERROR;
+                    rm.message = "NO CONTENT";
+                    rm.name = StatusName.invalid;
+                    rm.data = StatusCodes.ERROR;
+                    await Common.UpdateEventLogsNew("SHOPIFY SETTING - NO CONTENT", reqHeader, controllerURL, null, result, rm.message, this.eventLogBusiness);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = null;
+
+                await Common.UpdateEventLogsNew("SHOPIFY SETTING - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
         }

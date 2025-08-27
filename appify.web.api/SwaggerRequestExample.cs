@@ -346,6 +346,11 @@ namespace appify.web.api
     {
         public Int64 VendorID { get; set; }
     }
+    public class SettingParamVendor
+    {
+        public Int64 SID { get; set; }
+        public Int64 VendorID { get; set; }
+    }
     public class ParamShopifyInventory : ParamVendor
     {
         public string InventoryItemID { get; set; }

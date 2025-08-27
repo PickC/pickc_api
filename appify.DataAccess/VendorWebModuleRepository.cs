@@ -28,6 +28,17 @@ namespace appify.DataAccess
         public const string CHECKISINVITATIONSEND = "[Operation].[usp_CheckUserInvitationSend]";
         public const string UPDATEISINVITATIONSEND = "[Operation].[usp_UpdateInvitationSend]";
         public const string UPDATEISRESETPASSWORD = "[Operation].[usp_UserIsResetPasswordUpdate]";
+
+        public const string VENDORSERVICECREDENTIALSSAVE = "[Operation].[usp_VendorServiceCredentialsSave]";
+        public const string VENDORSERVICECREDENTIALSREMOVE = "[Operation].[usp_VendorServiceCredentialsDelete]";
+        public const string VENDORSERVICECREDENTIALSLIST = "[Operation].[usp_VendorServiceCredentialsList]";
+        public const string VENDORSERVICECREDENTIALSGET = "[Operation].[usp_VendorServiceCredentialsGet]";
+
+        public const string VENDORSERVICESSAVE = "[Operation].[usp_VendorServicesSave]";
+        public const string VENDORSERVICEREMOVE = "[Operation].[usp_VendorServiceCredentialsDelete]";
+        public const string VENDORSERVICELIST = "[Operation].[usp_VendorServiceCredentialsList]";
+        public const string VENDORSERVICESGET = "[Operation].[usp_VendorServicesGet]";
+
         public VendorWebModuleRepository(IConfiguration config)
         {
             this.configuration = config;
@@ -305,6 +316,186 @@ namespace appify.DataAccess
             }
 
             return result;
+        }
+        public VendorServiceCredentials VendorServiceCredentialsSave(VendorServiceCredentials item)
+        {
+            var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(VENDORSERVICECREDENTIALSSAVE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@ServiceID", item.ServiceID);
+                        cmd.Parameters.AddWithValue("@VendorID", item.@VendorID);
+                        cmd.Parameters.AddWithValue("@ServiceCategory", item.ServiceCategory);
+                        cmd.Parameters.AddWithValue("@ServiceValue", item.ServiceValue);
+                        cmd.Parameters.AddWithValue("@KeyID", item.KeyID);
+                        cmd.Parameters.AddWithValue("@SecretKey", item.SecretKey);
+                        cmd.Parameters.AddWithValue("@Token", item.Token);
+                        cmd.Parameters.AddWithValue("@IsEnabled", item.IsEnabled);
+                        cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+                        cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewServiceID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+
+                        item.ServiceID = Convert.ToInt16(outPutParameter.Value);
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return item;
+        }
+        public bool VendorServiceCredentialsRemove(long ServiceID, long VendorID)
+        {
+            var result = false;
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(VENDORSERVICECREDENTIALSREMOVE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+                        cmd.Parameters.AddWithValue("@ServiceID", ServiceID);
+                        cmd.Parameters.AddWithValue("@VendorID", VendorID);
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        con.Close();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
+        public List<VendorServiceCredentials> VendorServiceCredentialsList()
+        {
+            List<VendorServiceCredentials> items = new List<VendorServiceCredentials>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, VENDORSERVICECREDENTIALSLIST);
+                items = DataTableHelper.ConvertDataTable<VendorServiceCredentials>(ds.Tables[0]);
+            }
+            return items;
+        }
+        public List<VendorServiceCredentials> VendorServiceCredentialsGet(long VendorID)
+        {
+            List<VendorServiceCredentials> items = new List<VendorServiceCredentials>();
+            using (SqlConnection con = new SqlConnection(appify_connectionstring))
+            {
+                con.Open();
+                DataSet ds = SqlHelper.ExecuteDataset(con, VENDORSERVICECREDENTIALSGET, VendorID);
+                items = DataTableHelper.ConvertDataTable<VendorServiceCredentials>(ds.Tables[0]);
+            }
+            return items;
+        }
+        public VendorServices VendorServicesSave(VendorServices item)
+        {
+                    var result = false;
+            //DataTable dt = DataTableHelper.CreateDataTableFromObj(item);
+            try
+            {
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    using (SqlCommand cmd = new SqlCommand(VENDORSERVICESSAVE))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Connection = con;
+
+                        cmd.Parameters.AddWithValue("@ServiceID", item.ServiceID);
+                        cmd.Parameters.AddWithValue("@VendorID", item.@VendorID);
+                        cmd.Parameters.AddWithValue("@OnlinePayment", item.OnlinePayment);
+                        cmd.Parameters.AddWithValue("@RazorPay", item.RazorPay);
+                        cmd.Parameters.AddWithValue("@EazeBuzz", item.EazeBuzz);
+                        cmd.Parameters.AddWithValue("@Shiprocket", item.Shiprocket);
+                        cmd.Parameters.AddWithValue("@Delhivery", item.Delhivery);
+                        cmd.Parameters.AddWithValue("@COD", item.COD);
+                        cmd.Parameters.AddWithValue("@Shopify", item.Shopify);
+                        cmd.Parameters.AddWithValue("@Facebook", item.Facebook);
+                        cmd.Parameters.AddWithValue("@Instagram", item.Instagram);
+
+                        cmd.Parameters.AddWithValue("@BulkUpload", item.BulkUpload);
+                        cmd.Parameters.AddWithValue("@SMS", item.SMS);
+                        cmd.Parameters.AddWithValue("@Email", item.Email);
+                        cmd.Parameters.AddWithValue("@PushNotification", item.PushNotification);
+                        cmd.Parameters.AddWithValue("@InApp", item.InApp);
+                        cmd.Parameters.AddWithValue("@WhatsApp", item.WhatsApp);
+                        
+                        cmd.Parameters.AddWithValue("@IsActive", item.IsActive);
+                        cmd.Parameters.AddWithValue("@CreatedBy", item.CreatedBy);
+                        cmd.Parameters.AddWithValue("@ModifiedBy", item.ModifiedBy);
+
+                        SqlParameter outPutParameter = new SqlParameter();
+                        outPutParameter.ParameterName = "@NewServiceID";
+                        outPutParameter.SqlDbType = System.Data.SqlDbType.BigInt;
+                        outPutParameter.Direction = System.Data.ParameterDirection.Output;
+                        cmd.Parameters.Add(outPutParameter);
+
+
+                        con.Open();
+                        result = Convert.ToBoolean(cmd.ExecuteNonQuery());
+
+                        item.ServiceID = Convert.ToInt64(outPutParameter.Value);
+                        con.Close();
+                    }
+
+}
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return item;
+        }
+        public VendorServices VendorServicesGet(long VendorID)
+        {
+            try
+            {
+                VendorServices item = new VendorServices();
+                using (SqlConnection con = new SqlConnection(appify_connectionstring))
+                {
+                    con.Open();
+                    DataSet ds = SqlHelper.ExecuteDataset(con, VENDORSERVICESGET, VendorID);
+                    item = DataTableHelper.ConvertDataTable<VendorServices>(ds.Tables[0]).FirstOrDefault();
+                }
+                return item;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
