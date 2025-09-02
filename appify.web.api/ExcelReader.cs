@@ -25,6 +25,7 @@ using Azure.Storage.Blobs.Models;
 using System.IO;
 using NPOI.HPSF;
 using CsvHelper;
+using Microsoft.AspNetCore.StaticFiles;
 namespace appify.web.api
 {
     public class ExcelReader
@@ -567,6 +568,92 @@ namespace appify.web.api
             }
         }
 
+        public byte[] GenerateCatalogProductsExcelFile()
+        {
+            var memoryStream = new MemoryStream();
+            try
+            {
+                using (memoryStream)
+                {
+                    IWorkbook workBook = new XSSFWorkbook();
+                    ISheet sheet = workBook.CreateSheet("catalog_products");
+                    
+                    IRow headerRow = sheet.CreateRow(0);
+                    string[] headers = { "id", "title", "description", "availability" , "condition", "price", "link", "image_link", "brand", "google_product_category", "fb_product_category", "quantity_to_sell_on_facebook", "sale_price", "sale_price_effective_date", "item_group_id" , "gender", "color", "size", "age_group", "material", "pattern", "shipping", "shipping_weight", "gtin", "video[0].url", "video[0].tag[0]", "product_tags[0]", "product_tags[1]", "style[0]" };
+                    for(int i=0;i<headers.Length;i++)
+                    {
+                        headerRow.CreateCell(i).SetCellValue(headers[i]);
+                    }
+                    
+                    int rowIndex = 1;
+                    foreach(var product in products)
+                    {
+                        IRow row = sheet.CreateRow(rowIndex++);
+                        row.CreateCell(0).SetCellValue(product.ItemNo.ToString());
+                        row.CreateCell(1).SetCellValue(product.ProductName ?? string.Empty);
+                        row.CreateCell(2).SetCellValue(product.ProductDescription ?? string.Empty);
+                        row.CreateCell(3).SetCellValue("in stock");
+                        row.CreateCell(4).SetCellValue("new");
+                        row.CreateCell(5).SetCellValue(product.Price + " INR");
+                        row.CreateCell(6).SetCellValue("https://www.appify.in/product/" + product.ItemNo.ToString());
+                        row.CreateCell(7).SetCellValue(product.Image1 ?? string.Empty);
+                        row.CreateCell(8).SetCellValue(product.BrandName ?? string.Empty);
+                        row.CreateCell(9).SetCellValue(product.CategoryID ?? string.Empty);
+                        row.CreateCell(10).SetCellValue(product.Category ?? string.Empty);
+                        row.CreateCell(11).SetCellValue(product.Stock ?? string.Empty);
+                        row.CreateCell(12).SetCellValue(string.Empty);
+                        row.CreateCell(13).SetCellValue(string.Empty);
+                        row.CreateCell(14).SetCellValue(string.Empty);
+                        row.CreateCell(15).SetCellValue(string.Empty);
+                        row.CreateCell(16).SetCellValue(product.Color ?? string.Empty);
+                        row.CreateCell(17).SetCellValue(product.Size ?? string.Empty);
+                        row.CreateCell(18).SetCellValue(string.Empty);
+                        row.CreateCell(19).SetCellValue(string.Empty);
+                        row.CreateCell(20).SetCellValue(string.Empty);
+                        row.CreateCell(21).SetCellValue(string.Empty);
+                        row.CreateCell(22).SetCellValue(string.Empty);
+                        row.CreateCell(23).SetCellValue(string.Empty);
+                        row.CreateCell(24).SetCellValue(string.Empty);
+                        row.CreateCell(25).SetCellValue(string.Empty);
+                        row.CreateCell(26).SetCellValue(string.Empty);
+                    }
+                    for(int i = 0;i<headers.Length;i++)
+                    {
+                        sheet.AutoSizeColumn(i);
+                    }
+                    workBook.Write(memoryStream);
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return memoryStream.ToArray();
+        }
+        public string UploadCatalogProductsExcelToBlobStorage(byte[] FileContent, string fileName, long VendorID)
+        {
+            BlobClient blobClient;
+            try
+            {
+                var fileStream = new MemoryStream(FileContent);
+                var connectionString = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:StorageConnectionString").Value;
+                var containerName = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Azure:ContainerName").Value;
+                var blobServiceClient = new BlobServiceClient(connectionString);
+                var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+                containerClient.CreateIfNotExists(PublicAccessType.Blob);
+                //string blobName = $"{"Catalogs_Products".TrimEnd('/')}/{fileName}";
+                string blobPath = $"{VendorID}/Catalogs_Products/{DateTime.Now:yyyyMMdd}/{fileName}";
+                blobClient = containerClient.GetBlobClient(blobPath);
+                blobClient.Upload(fileStream, overwrite: true);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return blobClient.Uri.ToString();
+        }
 
     }
 
