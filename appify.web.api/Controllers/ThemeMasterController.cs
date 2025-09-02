@@ -466,7 +466,7 @@ namespace appify.web.api.Controllers
     ///       "themeID": 0,
     ///       "themeName": "Red",
     ///       "themeColor": "#FF0000",
-    ///       "darkThemeColor": "",
+    ///       "darkThemeColor": "#000000",
     ///       "templateID": 1000,
     ///       "themeJSON": "{\"scaffoldBgColor\":\"rgba(10,10,10)\",\"primaryColor\":\"\",\"primaryLightColor\":\"\",\"textColor\":\"\",\"subtextColor\":\"\",///\    "inputTextcolor\":\"\",\"iconColor\":\"\",\"deleteColor\":\"\",\"inputTextBoxBorderColor\":\"\",\"backgroundBoxColor\":\"\",\"borderColor\":\"\",///\   "primaryGradient\":{\"begin\":\"center\",\"end\":\"top\",\"colors\":[\"#ffff\",\"#000\"],\"stops\":[0.512,0.121]}}",
     ///       "themePagesJSON": "{\"lightPages\":[{\"title\":\"Home Page\",\"description\":\"Minimalist\",\"image\":\"https://image1.png\"},{\"title\":\"Search P     age/\",//\"description\":\"Minimalist\",\"image\":\"https://image1.png\"}]}",

@@ -231,6 +231,7 @@ namespace appify.DataAccess
                         cmd.Parameters.AddWithValue("@ThemeID", item.ThemeID);
                         cmd.Parameters.AddWithValue("@ThemeName", item.ThemeName);
                         cmd.Parameters.AddWithValue("@ThemeColor", item.ThemeColor);
+                        cmd.Parameters.AddWithValue("@DarkThemeColor", item.DarkThemeColor);
                         cmd.Parameters.AddWithValue("@TemplateID", item.TemplateID);
                         cmd.Parameters.AddWithValue("@ThemeJSON", item.ThemeJSON);
                         cmd.Parameters.AddWithValue("@ThemePagesJSON", item.ThemePagesJSON);

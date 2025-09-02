@@ -1,4 +1,5 @@
-﻿using System;
+﻿using appify.models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace appify.Business.Contract
 {
     public interface IFacebookBusiness
     {
+        public List<MetaProduct> ProductListMeta(long VendorID, short SourceID);
     }
 }
