@@ -283,7 +283,7 @@ namespace appify.web.api
             return responseObj;
         }
 
-        public async Task<string> UpdateProductAsync(string productId, string catalogId, string retailerId, string name, string description, string price, string currency = "USD")
+        public async Task<string> UpdateProductAsync(string productId, string catalogId, string retailerId, string name, string description, string price, string currency = "USD") //// Not in used
         {
             string responseObj = "";
             try
