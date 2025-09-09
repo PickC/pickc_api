@@ -2148,8 +2148,7 @@ namespace appify.web.api.Controllers
                     rm.message = "FETCH APP SETTINGS";
                     rm.name = StatusName.ok;
                     rm.data = item;
-                    //// Passing EventType, HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH LIST APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, item, item, StatusName.ok));
+                    await Common.UpdateEventLogsNew("FETCH LIST APP SETTINGS SUCCESSFULLY", reqHeader, controllerURL, item, item, StatusName.ok, this.eventLogBusiness);
                 }
                 else
                 {
@@ -2157,8 +2156,7 @@ namespace appify.web.api.Controllers
                     rm.message = "NO CONTENT";
                     rm.name = StatusName.invalid;
                     rm.data = item;
-                    //// Passing HttpRequest, Controller Url, InputJSon, OutJson, Status
-                    this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP LIST SETTINGS - NO CONTENT", reqHeader, controllerURL, item, null, rm.message));
+                    await Common.UpdateEventLogsNew("FETCH APP LIST SETTINGS - NO CONTENT", reqHeader, controllerURL, item, item, rm.message, this.eventLogBusiness);
                 }
 
             }
@@ -2169,7 +2167,7 @@ namespace appify.web.api.Controllers
                 rm.message = ex.Message.ToString();
                 rm.name = StatusName.invalid;
                 rm.data = ex.Message.ToString();
-                this.eventLogBusiness.eventLogAdd(Common.UpdateEventLogs("FETCH APP CICD LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message));
+                await Common.UpdateEventLogsNew("FETCH APP CICD LIST SETTINGS - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
             }
             return Ok(rm);
 
