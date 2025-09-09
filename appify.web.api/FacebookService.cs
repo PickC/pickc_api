@@ -1,4 +1,6 @@
-﻿using appify.models;
+﻿using appify.Business;
+using appify.Business.Contract;
+using appify.models;
 using appify.utility;
 using Azure.Core;
 using System.Security.Policy;
@@ -11,16 +13,18 @@ namespace appify.web.api
     {
         private readonly HttpClient httpClient;
         private readonly string Url;
-        private readonly string accessToken; //= "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";
-        private readonly string apiVersion;// = "2024-01";//"2023-10";
-        private static string businessId = "743286941807169";
-        private static string catalogId = "713758285029769"; // Catalog ID if you already have one
-        public FacebookService(string apiKey)
+        private readonly string accessToken;
+        private readonly string apiVersion;
+        //private static string businessId = "743286941807169";
+        //private static string catalogId = "713758285029769"; // Catalog ID if you already have one
+        public FacebookService(string businessID, long vendorID, IFacebookBusiness facebookBusiness)
         {
             httpClient = new HttpClient();
-            Url = "https://graph.facebook.com";
-            accessToken = "EAAhHakaglF0BPbDVrOZCZBOJcBCnaZAFDGpuVmeEZC01jaRRbaDAqm9lJooJjwZAVqF9K1ESgVDsbOsIiuJZCmswsJ9wM49PmRA5m7Tn3Lpn2XNldWGKmuitrEZA7LLqWjgnnqgAkEaFWSxgVYBf0fs9cTQOZBYZBTdAQ3NYRCCbmNxBKzexdmD5My5Vq5cmlnZCvNxhzHQHZAG2KUEsWZCPwj38AXEV6ABRsl7EkuUNapVY";
-            apiVersion = "v23.0";
+            //apiVersion = "v23.0";
+            MetaApiConfig metaApiConfig = facebookBusiness.GetMetaApiConfig(businessID, vendorID);
+            Url = metaApiConfig.APIUrl;
+            apiVersion = metaApiConfig.APIVersion;
+            accessToken = metaApiConfig.AccessToken;
         }
         //public async Task<string> CreateCatalogAsync(string businessID, string catalogName)
         //{
@@ -53,18 +57,19 @@ namespace appify.web.api
         //    return responseObj;
         //}
 
-        public string CreateCatalog(string businessID, string catalogName)
+        public MetaCatalog CreateCatalog(MetaCatalog itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
+            MetaCatalog metaCalalog = new MetaCatalog();
             try
             {
                 using (var client = new HttpClient())
                 {
-                    string url = $"{Url}/{apiVersion}/{businessID}/{Common.CreateCatalog}";
+                    string url = $"{Url}/{apiVersion}/{itemData.BusinessID}/{Common.CreateCatalog}";
 
                     var payload = new
                     {
-                        name = catalogName,
+                        name = itemData.CatalogName,
                         vertical = "commerce",
                         access_token = accessToken
                     };
@@ -79,58 +84,79 @@ namespace appify.web.api
                     if (response.IsSuccessStatusCode)
                     {
                         responseObj = result;
+
+                        metaCalalog.MTCID = itemData.MTCID;
+                        metaCalalog.CatalogID = JsonDocument.Parse(result).RootElement.GetProperty("id").GetString();
+                        metaCalalog.VendorID = itemData.VendorID;
+                        metaCalalog.BusinessID = itemData.BusinessID;
+                        metaCalalog.CatalogName = itemData.CatalogName;
+                        metaCalalog.CreatedBy = itemData.CreatedBy;
+                        metaCalalog.ModifiedBy = itemData.ModifiedBy;
+                        metaCalalog.IsActive = itemData.IsActive;
+                        metaCalalog = facebookBusiness.CreateaProductCatalog(metaCalalog);
                     }
                 }
             }
             catch (Exception ex)
             {
-                return $"Unexpected Error: {ex.Message}";
+                Console.WriteLine ($"Unexpected Error: {ex.Message}");
             }
-            return responseObj;
+            return metaCalalog;
         }
 
-        public async Task<string> EditCatalogAsync(string catalogID, string newCatalogName)
+        public MetaCatalog EditCatalogAsync(MetaCatalog itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
+            MetaCatalog metaCalalog = new MetaCatalog();
             try
             {
                 using (var client = new HttpClient())
                 {
-                    string url = $"{Url}/{apiVersion}/{catalogID}";
+                    string url = $"{Url}/{apiVersion}/{itemData.CatalogID}";
                     var payload = new
                     {
-                        name = newCatalogName,
+                        name = itemData.CatalogName,
                         access_token = accessToken
                     };
                     var json = System.Text.Json.JsonSerializer.Serialize(payload);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(url, content);
-                    var result = await response.Content.ReadAsStringAsync();
+                    var response = client.PostAsync(url, content).GetAwaiter().GetResult();
+                    var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     if (response.IsSuccessStatusCode)
                     {
                         responseObj = result;
+                        metaCalalog.MTCID = itemData.MTCID;
+                        metaCalalog.CatalogID = itemData.CatalogID;
+                        metaCalalog.VendorID = itemData.VendorID;
+                        metaCalalog.BusinessID = itemData.BusinessID;
+                        metaCalalog.CatalogName = itemData.CatalogName;
+                        metaCalalog.CreatedBy = itemData.CreatedBy;
+                        metaCalalog.ModifiedBy = itemData.ModifiedBy;
+                        metaCalalog.IsActive = itemData.IsActive;
+                        facebookBusiness.CreateaProductCatalog(metaCalalog);
                     }
                 }
                 
             }
             catch (Exception ex)
             {
-                return $"Unexpected Error: {ex.Message}";
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
             }
-            return responseObj;
+            return metaCalalog;
         }
-        public async Task<string> DeleteCatalogAsync(string catalogID)
+        public async Task<string> DeleteCatalogAsync(MetaCatalogDelete itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
             try
             {
                 using (var client = new HttpClient()) {
-                    string url = $"{Url}/{apiVersion}/{catalogID}?access_token={accessToken}";
+                    string url = $"{Url}/{apiVersion}/{itemData.CatalogID}?access_token={accessToken}";
                     var response = await client.DeleteAsync(url);
                     var result = await response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
                         responseObj = result;
+                        facebookBusiness.DeleteProductCatalog(itemData);
                     }
                 }
             }
@@ -141,7 +167,7 @@ namespace appify.web.api
             return responseObj;
         }
 
-        public async Task<string> GetCatalogsListAsync(string businessID)
+        public async Task<string> GetCatalogsListAsync(string businessID) ///// NOT IN USED
         {
             try
             {
@@ -167,7 +193,7 @@ namespace appify.web.api
             }
         }
 
-    public async Task CreateSingleProductAsync(string catalogID)
+    public async Task CreateSingleProductAsync(string catalogID) //// NOT IN USED
         {
             string url = $"https://graph.facebook.com/v21.0/{catalogID}/products";
 
@@ -192,9 +218,10 @@ namespace appify.web.api
             Console.WriteLine("Upload Product Response: " + result);
         }
 
-        public string CreateProduct(MetaProduct itemData)
+        public MetaCatalogProduct CreateProduct(MetaProduct itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
+            MetaCatalogProduct metaCatalogProduct = new MetaCatalogProduct();
             try
             {
                 using (var client = new HttpClient())
@@ -209,7 +236,7 @@ namespace appify.web.api
                         url = itemData.Url,
                         image_url = itemData.ImageUrl,
                         brand = itemData.Brand,
-                        price = (itemData.Price*100),               // e.g. "999.00 INR"
+                        price = (int)(itemData.Price*100),               // e.g. "999.00 INR"
                         currency = itemData.Currency,         // e.g. "INR"
                         availability = itemData.Availability, // "in stock" | "out of stock" | "preorder"
                         access_token = accessToken
@@ -224,6 +251,15 @@ namespace appify.web.api
                     if (response.IsSuccessStatusCode)
                     {
                         responseObj = result;
+                        metaCatalogProduct.MTPID = itemData.MTPID;
+                        metaCatalogProduct.ProductID = JsonDocument.Parse(result).RootElement.GetProperty("id").GetString();
+                        metaCatalogProduct.VendorID = itemData.VendorID;
+                        metaCatalogProduct.CatalogID = itemData.CatalogID;
+                        metaCatalogProduct.RetailerID = itemData.RetailerID;
+                        metaCatalogProduct.CreatedBy = itemData.CreatedBy;
+                        metaCatalogProduct.ModifiedBy = itemData.ModifiedBy;
+                        metaCatalogProduct.IsActive = itemData.IsActive;
+                        metaCatalogProduct = facebookBusiness.CreateaProductToCatalog(metaCatalogProduct);
                     }
                     else
                     {
@@ -233,19 +269,20 @@ namespace appify.web.api
             }
             catch (Exception ex)
             {
-                return $"Unexpected Error: {ex.Message}";
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
             }
-            return responseObj;
+            return metaCatalogProduct;
         }
-        public string UpdateProduct(string productItemID, MetaProduct itemData)
+        public MetaCatalogProduct UpdateProduct(MetaProduct itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
+            MetaCatalogProduct metaCatalogProduct = new MetaCatalogProduct();
             try
             {
                 using (var client = new HttpClient())
                 {
                     //string requestUrl = $"{Url}/{apiVersion}/{itemData.CatalogID}/products/{itemData.RetailerID}";
-                    string requestUrl = $"{Url}/{apiVersion}/{productItemID}";
+                    string requestUrl = $"{Url}/{apiVersion}/{itemData.ProductID}";
                     var payload = new
                     {
                         retailer_id = itemData.RetailerID,   // Unique ID in your system
@@ -254,7 +291,7 @@ namespace appify.web.api
                         url = itemData.Url,
                         image_url = itemData.ImageUrl,
                         brand = itemData.Brand,
-                        price = (itemData.Price * 100),               // e.g. "999.00 INR"
+                        price = (int)(itemData.Price * 100),               // e.g. "999.00 INR"
                         currency = itemData.Currency,         // e.g. "INR"
                         availability = itemData.Availability, // "in stock" | "out of stock" | "preorder"
                         access_token = accessToken
@@ -269,6 +306,15 @@ namespace appify.web.api
                     if (response.IsSuccessStatusCode)
                     {
                         responseObj = result;
+                        metaCatalogProduct.MTPID = itemData.MTPID;
+                        metaCatalogProduct.ProductID = itemData.ProductID;
+                        metaCatalogProduct.VendorID = itemData.VendorID;
+                        metaCatalogProduct.CatalogID = itemData.CatalogID;
+                        metaCatalogProduct.RetailerID = itemData.RetailerID;
+                        metaCatalogProduct.CreatedBy = itemData.CreatedBy;
+                        metaCatalogProduct.ModifiedBy = itemData.ModifiedBy;
+                        metaCatalogProduct.IsActive = itemData.IsActive;
+                        metaCatalogProduct = facebookBusiness.CreateaProductToCatalog(metaCatalogProduct);
                     }
                     else
                     {
@@ -278,12 +324,12 @@ namespace appify.web.api
             }
             catch (Exception ex)
             {
-                return $"Unexpected Error: {ex.Message}";
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
             }
-            return responseObj;
+            return metaCatalogProduct;
         }
 
-        public async Task<string> UpdateProductAsync(string productId, string catalogId, string retailerId, string name, string description, string price, string currency = "USD") //// Not in used
+        public async Task<string> UpdateProductAsync(string productId, string catalogId, string retailerId, string name, string description, string price, string currency = "USD") //// NOT IN USED
         {
             string responseObj = "";
             try
@@ -323,21 +369,22 @@ namespace appify.web.api
             return responseObj;
         }
 
-        public string DeleteProductAsync(string productItemID)
+        public string DeleteProductAsync(MetaCatalogProuctDelete itemData, IFacebookBusiness facebookBusiness)
         {
             string responseObj = "";
             try
             {
                 using (var client = new HttpClient())
                 {
-                    string url = $"{Url}/{apiVersion}/{productItemID}?access_token={accessToken}";
+                    string url = $"{Url}/{apiVersion}/{itemData.ProductID}?access_token={accessToken}";
 
                     var response =  client.DeleteAsync(url).GetAwaiter().GetResult();
                     var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                     if (response.IsSuccessStatusCode)
                     {
-                        responseObj = result; // Usually returns {"success": true}
+                        responseObj = result;
+                        facebookBusiness.DeleteCatalogProduct(itemData);
                     }
                     else
                     {
@@ -381,17 +428,19 @@ namespace appify.web.api
             }
         }
 
-        public string BulkUploadAllProductsToCatalog(List<MetaProduct> itemsData)
+        public List<MetaCatalogProduct> BulkUploadAllProductsToCatalog(List<MetaProduct> itemsData, string CatalogID, IFacebookBusiness facebookBusiness)
         {
             var results = new List<string>();
-
+            MetaCatalogProduct metaCatalogProduct;
+            List<MetaCatalogProduct> metaProduct = new List<MetaCatalogProduct>();
             try
             {
                 using (var client = new HttpClient())
                 {
                     foreach (var item in itemsData)
                     {
-                        string requestUrl = $"{Url}/{apiVersion}/{catalogId}/products";
+                        metaCatalogProduct = new MetaCatalogProduct();
+                        string requestUrl = $"{Url}/{apiVersion}/{CatalogID}/products";
 
                         var payload = new
                         {
@@ -414,7 +463,19 @@ namespace appify.web.api
                         var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                         if (response.IsSuccessStatusCode)
+                        {
                             results.Add($"SUCCESS: {result}");
+                            metaCatalogProduct.MTPID = item.MTPID;
+                            metaCatalogProduct.ProductID = JsonDocument.Parse(result).RootElement.GetProperty("id").GetString();
+                            metaCatalogProduct.VendorID = item.VendorID;
+                            metaCatalogProduct.CatalogID = CatalogID;
+                            metaCatalogProduct.RetailerID = item.RetailerID;
+                            metaCatalogProduct.CreatedBy = Convert.ToInt16(item.VendorID);
+                            metaCatalogProduct.ModifiedBy = item.ModifiedBy;
+                            metaCatalogProduct.IsActive = item.IsActive;
+                            metaProduct.Add(facebookBusiness.CreateaProductToCatalog(metaCatalogProduct));
+                        }
+                        
                         else
                             results.Add($"FAILED: {result}");
                     }
@@ -422,10 +483,11 @@ namespace appify.web.api
             }
             catch (Exception ex)
             {
-                return $"Unexpected Error: {ex.Message}";
+                Console.WriteLine($"Unexpected Error: {ex.Message}");
             }
 
-            return string.Join("\n", results);
+            //return string.Join("\n", results);
+            return metaProduct;
         }
 
         //public string BulkUploadAllProductsToCatalog(List<MetaProduct> itemsData)
@@ -473,13 +535,13 @@ namespace appify.web.api
         //    }
         //    return responseObj;
         //}
-        public async Task<string> DeleteAllProductsFromCatalogAsync(string catalogId)
+        public async Task<string> DeleteAllProductsFromCatalogAsync(long VendorID, string CatalogID, IFacebookBusiness facebookBusiness)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    string listUrl = $"{Url}/{apiVersion}/{catalogId}/products?access_token={accessToken}";
+                    string listUrl = $"{Url}/{apiVersion}/{CatalogID}/products?access_token={accessToken}";
                     var response = await client.GetAsync(listUrl);
                     var result = await response.Content.ReadAsStringAsync();
 
@@ -506,7 +568,7 @@ namespace appify.web.api
                             }
                         }
                     }
-
+                    facebookBusiness.DeleteALLCatalogProducts(VendorID, CatalogID);
                     return failedDeletions.Count == 0
                         ? "All products deleted successfully."
                         : $"Some products failed to delete: {string.Join(", ", failedDeletions)}";
@@ -518,7 +580,7 @@ namespace appify.web.api
             }
         }
 
-        public string BulkUploadProductFeed(string feedName, string feedUrl)
+        public string BulkUploadProductFeed(string feedName, string feedUrl, string catalogId)
         {
             string responseObj = "";
             try
