@@ -88,15 +88,32 @@ namespace appify.web.api
         };
 
             // Find column indexes
+            //for (int i = 0; i < headerRow.LastCellNum; i++)
+            //{
+            //    var cellValue = headerRow.GetCell(i)?.ToString()?.Trim();
+            //    if (cellValue != null && columnMap.ContainsKey(cellValue))
+            //    {
+            //        columnMap[cellValue] = i;
+            //    }
+            //}
+
             for (int i = 0; i < headerRow.LastCellNum; i++)
             {
                 var cellValue = headerRow.GetCell(i)?.ToString()?.Trim();
-                if (cellValue != null && columnMap.ContainsKey(cellValue))
+                if (!string.IsNullOrEmpty(cellValue))
                 {
-                    columnMap[cellValue] = i;
+                    string normalizedHeader = NormalizeHeader(cellValue);
+
+                    foreach (var key in columnMap.Keys.ToList())
+                    {
+                        if (NormalizeHeader(key) == normalizedHeader)
+                        {
+                            columnMap[key] = i;
+                            break;
+                        }
+                    }
                 }
             }
-
 
             // Read data rows
             for (int rowIdx = 1; rowIdx <= sheet.LastRowNum; rowIdx++)
@@ -112,32 +129,6 @@ namespace appify.web.api
                     var cellValue = GetCellValue(row, columnMap["Product Name"]);
                     if (cellValue != null && !string.IsNullOrEmpty(cellValue.ToString()))
                     {
-
-                        //var product = new BulkImportedProduct
-                        //{
-                        //    VendorID = vendorID,
-                        //    ItemNo = GetCellValue(row, columnMap["SL No."]).ToString().Length>0? Convert.ToInt16(GetCellValue(row, columnMap["SL No."]).ToString()) :Convert.ToInt16(0),
-                        //    ProductName = GetCellValue(row, columnMap["Product Name"]),
-                        //    BrandName = GetCellValue(row, columnMap["Brand Name"]),
-                        //    HSNCode = GetCellValue(row, columnMap["HSN Code"]),
-                        //    Color = GetCellValue(row, columnMap["Color"]),
-                        //    ProductDescription = GetCellValue(row, columnMap["Product Description"]),
-                        //    CategoryID = GetCellValue(row, columnMap["Category ID"]),
-                        //    Category = GetCellValue(row, columnMap["Category"]),
-                        //    Dimension = GetCellValue(row, columnMap["Dimension"]),
-                        //    Size = GetCellValue(row, columnMap["Size"]),
-                        //    Price = GetCellValue(row, columnMap["Price"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Price"]).ToString()) : Convert.ToInt16(0),
-                        //    Stock = GetCellValue(row, columnMap["Stock"]).ToString().Length > 0 ? Convert.ToInt16(GetCellValue(row, columnMap["Stock"]).ToString()) : Convert.ToInt16(0),
-                        //    Weight = GetCellValue(row, columnMap["Weight"]),
-                        //    Image1 = GetCellValue(row, columnMap["Image1"]),
-                        //    Image2 = GetCellValue(row, columnMap["Image2"]),
-                        //    Image3 = GetCellValue(row, columnMap["Image3"]),
-                        //    Image4 = GetCellValue(row, columnMap["Image4"]),
-                        //    Image5 = GetCellValue(row, columnMap["Image5"]),
-
-
-
-                        //};
 
                         var product = new BulkImportedProduct();
 
@@ -210,7 +201,11 @@ namespace appify.web.api
 
             return products;
         }
-
+        // Utility to normalize column headers (remove spaces, dots, make lowercase)
+        private string NormalizeHeader(string header)
+        {
+            return header?.Trim().Replace(" ", "").Replace(".", "").ToLower();
+        }
         private string GetCellValue(IRow row, int colIndex)
         {
             return colIndex >= 0 ? row.GetCell(colIndex)?.ToString()?.Trim() : null;
