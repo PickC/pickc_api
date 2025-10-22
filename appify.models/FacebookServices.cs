@@ -138,4 +138,9 @@ namespace appify.models
         public short ModifiedBy { get; set; }
         public bool IsActive { get; set; }
     }
+    public partial class InstagramAccount
+    {
+        public string CatalogID { get; set; }
+        public string InstagramID { get; set; }
+    }
 }

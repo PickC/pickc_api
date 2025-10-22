@@ -1021,70 +1021,126 @@ namespace appify.web.api.Controllers
         return Ok(rm);
     }
 
-    //[HttpPost]
-    //[Route("SendPurchaseEvent2")]
-    //[MapToApiVersion("1.0")]
-    //public async Task<IActionResult> ReceiveEvent([FromBody] EventRequest req)
-    //{
-    //    HttpClient httpClient= new HttpClient();
-    //    string pixelId = "24209911681952804";
-    //    string accessToken = "EAAKgNLTO7VMBPawT1FsUEoF01u8w3gYRsgLERBxHMFJyupPmBFZC6fiZA3CMioXU5KY0KaG3WgXxmGeHYZAzOx5fBQqJvqtzkKkM4DevZBY73ZCX45Rhm2ZBfvnofTPyzMjKu9ojZCgPUOZCL9QjIhrbGTPDoOCj48SrkhrvgvauGZAH4GlVWjOrgrbNryAJnfJFjlQZDZD";
-    //    try
-    //    {
-    //        var eventId = req.EventId ?? Guid.NewGuid().ToString();
-    //        var eventTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    /// <summary>
+    /// Assign Instagram Account to Catalog
+    /// </summary>
+    /// <remarks>
+    /// Sample Request JSON:
+    /// 
+    /// 
+    /// Sample Response JSON:
+    /// 
+    /// </remarks>
+    /// <returns>Response Message Object</returns>
+    /// <response code="200">INSTAGRAM ACCOUNT HAS BEEN SUCCESSFULLY ASSINED!</response>
+    /// <response code="500">ResponseMessage with Error Description</response>
 
-    //        // Build user_data with hashed fields where possible
-    //        var userData = new Dictionary<string, object>();
-    //        if (!string.IsNullOrEmpty(req.Email)) userData["em"] = new[] { HashSha256(req.Email) };
-    //        if (!string.IsNullOrEmpty(req.Phone)) userData["ph"] = new[] { HashSha256(req.Phone) };
-    //        if (!string.IsNullOrEmpty(req.Fbp)) userData["fbp"] = req.Fbp;
-    //        if (!string.IsNullOrEmpty(req.Fbc)) userData["fbc"] = req.Fbc;
+    [HttpPost, Route("")]
+    [MapToApiVersion("1.0")]
+    [Authorize]
+    public async Task<IActionResult> AssignInstagramToCatalogAsync([Required] InstagramAccount itemData)
+    {
+            var reqHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            try
+            {
+                rm = new ResponseMessage();
+                FacebookService fs = new FacebookService("743286941807169", 1060, facebookBusiness);
+                //var rr = fs.GetInstagramBusinessAccountIdAsync(); 
+                //var result = fs.AttachCatalogToFacebookPageAsync("707880625751881","1049018633973735");
+                var result = fs.AssignCatalogToPageAsync("1850104765568669", "707880625751881");
+                //var result = fs.AssignInstagramToCatalogAsync2(itemData, facebookBusiness);
+                if (result != null)
+                {
+                    rm.statusCode = StatusCodes.OK;
+                    rm.message = "INSTAGRAM ACCOUNT HAS BEEN SUCCESSFULLY ASSINED";
+                    rm.name = StatusName.ok;
+                    rm.data = result;
+                }
 
-    //        // Add client IP and UA if present (from server)
-    //        userData["client_ip_address"] = HttpContext.Connection.RemoteIpAddress?.ToString();
-    //        userData["client_user_agent"] = Request.Headers["User-Agent"].ToString();
+            }
+            catch (Exception ex)
+            {
 
-    //        var evt = new
-    //        {
-    //            event_name = req.EventName,
-    //            event_time = eventTime,
-    //            event_id = eventId,
-    //            action_source = "website",
-    //            user_data = userData,
-    //            custom_data = new
-    //            {
-    //                content_ids = req.ContentIds,
-    //                contents = req.Contents,
-    //                currency = req.Currency ?? "USD",
-    //                value = req.Value
-    //            }
-    //        };
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+                await Common.UpdateEventLogsNew("INSTAGRAM ACCOUNT ASSINED - ERROR", reqHeader, controllerURL, null, null, rm.message, this.eventLogBusiness);
+            }
+            return Ok(rm);
+        }
+        private static List<T> getVal<T>()
+        {
+            List<T> list = new List<T>();
+            IList<T> list2 = new List<T>();
+            //list.Where
+            return list;
+        }
+        //[HttpPost]
+        //[Route("SendPurchaseEvent2")]
+        //[MapToApiVersion("1.0")]
+        //public async Task<IActionResult> ReceiveEvent([FromBody] EventRequest req)
+        //{
+        //    HttpClient httpClient= new HttpClient();
+        //    string pixelId = "24209911681952804";
+        //    string accessToken = "EAAKgNLTO7VMBPawT1FsUEoF01u8w3gYRsgLERBxHMFJyupPmBFZC6fiZA3CMioXU5KY0KaG3WgXxmGeHYZAzOx5fBQqJvqtzkKkM4DevZBY73ZCX45Rhm2ZBfvnofTPyzMjKu9ojZCgPUOZCL9QjIhrbGTPDoOCj48SrkhrvgvauGZAH4GlVWjOrgrbNryAJnfJFjlQZDZD";
+        //    try
+        //    {
+        //        var eventId = req.EventId ?? Guid.NewGuid().ToString();
+        //        var eventTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-    //        var payload = new { data = new[] { evt } };
-    //        var json = System.Text.Json.JsonSerializer.Serialize(payload);
-    //        var url = $"https://graph.facebook.com/v14.0/{pixelId}/events?access_token={accessToken}";
+        //        // Build user_data with hashed fields where possible
+        //        var userData = new Dictionary<string, object>();
+        //        if (!string.IsNullOrEmpty(req.Email)) userData["em"] = new[] { HashSha256(req.Email) };
+        //        if (!string.IsNullOrEmpty(req.Phone)) userData["ph"] = new[] { HashSha256(req.Phone) };
+        //        if (!string.IsNullOrEmpty(req.Fbp)) userData["fbp"] = req.Fbp;
+        //        if (!string.IsNullOrEmpty(req.Fbc)) userData["fbc"] = req.Fbc;
 
-    //        var response = await httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
-    //        var respText = await response.Content.ReadAsStringAsync();
+        //        // Add client IP and UA if present (from server)
+        //        userData["client_ip_address"] = HttpContext.Connection.RemoteIpAddress?.ToString();
+        //        userData["client_user_agent"] = Request.Headers["User-Agent"].ToString();
 
-    //        if (!response.IsSuccessStatusCode)
-    //        {
-    //            // log for retry later
-    //            // save to DB or queue
-    //            return StatusCode((int)response.StatusCode, respText);
-    //        }
+        //        var evt = new
+        //        {
+        //            event_name = req.EventName,
+        //            event_time = eventTime,
+        //            event_id = eventId,
+        //            action_source = "website",
+        //            user_data = userData,
+        //            custom_data = new
+        //            {
+        //                content_ids = req.ContentIds,
+        //                contents = req.Contents,
+        //                currency = req.Currency ?? "USD",
+        //                value = req.Value
+        //            }
+        //        };
 
-    //        return Ok(respText);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        // log exception
-    //        return StatusCode(500, ex.Message);
-    //    }
-    //}
+        //        var payload = new { data = new[] { evt } };
+        //        var json = System.Text.Json.JsonSerializer.Serialize(payload);
+        //        var url = $"https://graph.facebook.com/v14.0/{pixelId}/events?access_token={accessToken}";
 
-    private static string HashSha256(string input)
+        //        var response = await httpClient.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+        //        var respText = await response.Content.ReadAsStringAsync();
+
+        //        if (!response.IsSuccessStatusCode)
+        //        {
+        //            // log for retry later
+        //            // save to DB or queue
+        //            return StatusCode((int)response.StatusCode, respText);
+        //        }
+
+        //        return Ok(respText);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // log exception
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
+
+        private static string HashSha256(string input)
     {
         using var sha = System.Security.Cryptography.SHA256.Create();
         var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(input.Trim().ToLower()));

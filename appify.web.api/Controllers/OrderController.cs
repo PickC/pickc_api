@@ -526,13 +526,8 @@ namespace appify.web.api.Controllers
         [Authorize]
         public IActionResult PrintInvoice(Int64 orderID)
         {
-            ////OrderPlace_PushNotification_Email(3152, "COD");
-
-            //EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.SuccessfulSignupVendor), 1927, 0, this.notificationBusiness);
-
             var reqHeader = Request;
             string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
-            //dynamic data = jsonData;
             try
             {
                 rm = new ResponseMessage();
@@ -676,7 +671,7 @@ namespace appify.web.api.Controllers
                 rm.data = statusData.OrderID.ToString();
                 OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(statusData.OrderID);
                 var OrderStatus = orderBusiness.GetOrderStatus(statusData.OrderID);
-                //VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(OrderID);
+                VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(statusData.OrderID);
                     //if (orderUpdateDetail.IsWhatsApp == true)
                     //{
                     //    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
@@ -690,7 +685,10 @@ namespace appify.web.api.Controllers
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                       EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
                                     if (orderUpdateDetail.IsEmailOpps == true)
                                     {
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
@@ -698,40 +696,67 @@ namespace appify.web.api.Controllers
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if (vendorServices.SMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                if (vendorServices.InApp == true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                }
 
                                 if(orderUpdateDetail.IsWhatsApp==true)
                                 {
-                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    if (vendorServices.WhatsApp == true)
+                                    {
+                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    }
                                 }
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.SMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                if (vendorServices.InApp == true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                }
 
                                 if (orderUpdateDetail.IsWhatsApp == true)
                                 {
-                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    if (vendorServices.WhatsApp == true)
+                                    {
+                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    }
                                 }
                             }
                             await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Cancelled By Customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, statusData);
@@ -742,7 +767,11 @@ namespace appify.web.api.Controllers
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
+
                                     if (orderUpdateDetail.IsEmailOpps == true)
                                     {
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
@@ -750,31 +779,53 @@ namespace appify.web.api.Controllers
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                if(vendorServices.InApp==true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                }
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationVendorCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.SMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                if (vendorServices.InApp == true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                }
 
                                 if (orderUpdateDetail.IsWhatsApp == true)
                                 {
-                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    if (vendorServices.WhatsApp == true)
+                                    {
+                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderDeclinedByVendor), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    }
+
                                 }
                             }
                             await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Declined By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, statusData);
@@ -785,7 +836,11 @@ namespace appify.web.api.Controllers
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
+
                                     if (orderUpdateDetail.IsEmailOpps == true)
                                     {
                                         EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationOpps), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
@@ -793,35 +848,62 @@ namespace appify.web.api.Controllers
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if (vendorServices.SMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
+
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                if(vendorServices.InApp==true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                }
+
                             }
                             if (orderUpdateDetail.MemberID != 0)
                             {
                                 if (orderUpdateDetail.IsEmail == true)
                                 {
-                                    EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    if (vendorServices.Email == true)
+                                    {
+                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderConfirmationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsSMS == true)
                                 {
-                                    SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.SMS == true)
+                                    {
+                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.IsPush == true)
                                 {
-                                    PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.PushNotification == true)
+                                    {
+                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 //// In App Notification
-                                InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                if (vendorServices.InApp == true)
+                                {
+                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                }
 
                                 if (orderUpdateDetail.IsWhatsApp == true)
                                 {
-                                    WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    if (vendorServices.WhatsApp == true)
+                                    {
+                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                    }
                                 }
                             }
                             await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Confirmed By Vendor", orderUpdateDetail.VendorID.ToString(), AppName, sourceIPAddress, statusData);
@@ -2313,7 +2395,7 @@ namespace appify.web.api.Controllers
                 this.orderBusiness.StockUpdate(OrderID, 114);
                 //// Order Placed By Customer COD & Online
                 OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(OrderID);
-                //VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(OrderID);
+                VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(OrderID);
                 if (orderUpdateDetail.SkipNo != orderUpdateDetail.VendorMobileNo && orderUpdateDetail.SkipNo != orderUpdateDetail.MemberMobileNo)
                 {
                     MemberID = orderUpdateDetail.MemberID;
@@ -2322,10 +2404,10 @@ namespace appify.web.api.Controllers
                     {
                         if (orderUpdateDetail.IsEmail == true)
                         {
-                            //if(vendorServices.Email== true)
-                            //{
+                            if(vendorServices.Email== true)
+                            {
                                 EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                           // }
+                            }
 
                             if (orderUpdateDetail.IsEmailOpps == true)
                             {
@@ -2334,30 +2416,30 @@ namespace appify.web.api.Controllers
                         }
                         if (orderUpdateDetail.IsSMS == true)
                         {
-                            //if(vendorServices.SMS == true)
-                            //{
+                            if(vendorServices.SMS == true)
+                            {
                                 SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                           // }
+                            }
                         }
                         if (orderUpdateDetail.IsPush == true)
                         {
-                            //if(vendorServices.PushNotification==true)
-                            //{
+                            if(vendorServices.PushNotification==true)
+                            {
                                 PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                            //}
+                            }
                         }
                         //// In App Notification.
-                        //if(vendorServices.InApp==true)
-                        //{
+                        if(vendorServices.InApp==true)
+                        {
                             InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
-                       // }
+                        }
 
                         if (orderUpdateDetail.IsWhatsApp == true)
                         {
-                            //if (vendorServices.WhatsApp==true)
-                            //{
+                            if (vendorServices.WhatsApp==true)
+                            {
                                 WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
-                            //}
+                            }
 
                         }
                     }
@@ -2365,36 +2447,36 @@ namespace appify.web.api.Controllers
                     {
                         if (orderUpdateDetail.IsEmail == true)
                         {
-                            //if (vendorServices.Email == true)
-                            //{
+                            if (vendorServices.Email == true)
+                            {
                                 EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
-                            //}
+                            }
                         }
                         if (orderUpdateDetail.IsSMS == true)
                         {
-                            //if (vendorServices.SMS == true)
-                            //{
+                            if (vendorServices.SMS == true)
+                            {
                                 SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            //}
+                            }
                         }
                         if (orderUpdateDetail.IsPush == true)
                         {
-                            //if (vendorServices.PushNotification == true)
-                            //{
+                            if (vendorServices.PushNotification == true)
+                            {
                                 PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                            //}
+                            }
                         }
                         //// In App Notification.
-                        //if (vendorServices.InApp == true)
-                        //{
+                        if (vendorServices.InApp == true)
+                        {
                             InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-                        //}
+                        }
                         if (orderUpdateDetail.IsWhatsApp == true)
                         {
-                            //if (vendorServices.WhatsApp == true)
-                            //{
+                            if (vendorServices.WhatsApp == true)
+                            {
                                 WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderPlacementCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
-                           // }
+                            }
                         }
                     }
                 }
@@ -2820,6 +2902,7 @@ namespace appify.web.api.Controllers
                         ->  37  Delivery Delayed
                         */
                         OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
+                        VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(result);
 
                         if (orderUpdateDetail.SkipNo != orderUpdateDetail.VendorMobileNo && orderUpdateDetail.SkipNo != orderUpdateDetail.MemberMobileNo)
                         {
@@ -2830,44 +2913,76 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }  
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if(vendorServices.InApp==true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
                                     }
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
+                                            
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
+                                            
                                     }
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
@@ -2878,36 +2993,59 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
-
+                                    if(vendorServices.InApp==true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        } 
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been successfully shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
@@ -2917,35 +3055,64 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if(vendorServices.InApp==true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
+                                            
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
+                                            
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                    
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order is in transit", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
@@ -2966,7 +3133,11 @@ namespace appify.web.api.Controllers
                                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                     }*/
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                        
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
@@ -2983,7 +3154,11 @@ namespace appify.web.api.Controllers
                                         PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
                                     }*/
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DelayedShipmentNotification), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                    
                                 }
                             }
                             if (orderTrackingUpdate.OrderStatus == 5) //// Cancelled by Customer
@@ -2992,44 +3167,74 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }   
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        } 
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if(vendorServices.InApp==true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }  
                                     }
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        } 
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
                                     }
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order has been cancelled by customer", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
@@ -3156,6 +3361,7 @@ namespace appify.web.api.Controllers
                         rm.name = StatusName.ok;
                         rm.data = requestObj;
                         OrderUpdateDetail orderUpdateDetail = orderBusiness.GetOrderUpdateDetail(result);
+                        VendorEnabledServices vendorServices = orderBusiness.GetVendorServices(orderUpdateDetail.OrderID);
                         if (orderUpdateDetail.SkipNo != orderUpdateDetail.VendorMobileNo && orderUpdateDetail.SkipNo != orderUpdateDetail.MemberMobileNo)
                         {
                             OrderID = orderUpdateDetail.OrderID;
@@ -3166,44 +3372,74 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomerVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        } 
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        } 
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    if(vendorServices.InApp==true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), 0, orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<Vendor/Shop>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        } 
                                     }
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        } 
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.OrderCancellationCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
                                     }
                                 }
 
@@ -3215,44 +3451,76 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }    
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
                                     }
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderDeliveredCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
+
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
+
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
 
                                     if (orderUpdateDetail.IsWhatsApp == true)
                                     {
-                                        WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        if (vendorServices.WhatsApp == true)
+                                        {
+                                            WhatsAppNotification.SendWhatsAppNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryConfirmation), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "", this.notificationBusiness);
+                                        }
                                     }
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Delivered", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
@@ -3263,35 +3531,62 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedVendor), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }   
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
+                                            
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+
                                 }
                                 if (orderUpdateDetail.MemberID != 0)
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderShippedCustomer), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }  
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.ShippingDeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
+                                        
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "Order Has Been Successfully Shipped", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }
@@ -3301,18 +3596,30 @@ namespace appify.web.api.Controllers
                                 {
                                     if (orderUpdateDetail.IsEmail == true)
                                     {
-                                        EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        if (vendorServices.Email == true)
+                                        {
+                                            EmailNotification.SendEmailNotification(Convert.ToInt64(NotificationTemplateType.OrderOutForDelivery), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsSMS == true)
                                     {
-                                        SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.SMS == true)
+                                        {
+                                            SMSNotification.SendSMSNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     if (orderUpdateDetail.IsPush == true)
                                     {
-                                        PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        if (vendorServices.PushNotification == true)
+                                        {
+                                            PushNotification.SendNotificationMessage(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                        }
                                     }
                                     //// In App Notification
-                                    InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    if (vendorServices.InApp == true)
+                                    {
+                                        InAppNotification.SendInAppNotification(Convert.ToInt64(PushNotificationTemplateType.DeliveryUpdates), orderUpdateDetail.VendorID, orderUpdateDetail.MemberID, orderUpdateDetail.OrderID, "<first_name>", this.notificationBusiness);
+                                    }
                                 }
                                 await auditService.LogAsync(EntityType.Order, orderUpdateDetail.OrderID, "The delivery person is out for delivery", orderUpdateDetail.MemberID.ToString(), AppName, sourceIPAddress, requestObj);
                             }

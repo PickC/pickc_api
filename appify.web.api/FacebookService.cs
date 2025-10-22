@@ -2,7 +2,9 @@
 using appify.Business.Contract;
 using appify.models;
 using appify.utility;
+using Asp.Versioning;
 using Azure.Core;
+using Newtonsoft.Json;
 using System.Security.Policy;
 using System.Text;
 using System.Text.Json;
@@ -24,7 +26,7 @@ namespace appify.web.api
             MetaApiConfig metaApiConfig = facebookBusiness.GetMetaApiConfig(businessID, vendorID);
             Url = metaApiConfig.APIUrl;
             apiVersion = metaApiConfig.APIVersion;
-            accessToken = metaApiConfig.AccessToken;
+            accessToken = "EAAhHakaglF0BPTW1HRxcESJfb5AXIh9paEPaZBBJWXADqEmhU03GmotvRGkUeoPGYqHyeS1POM3zhmto1CZBHnaT533bb61ZC6cIEHZBFx9wEXS3K7Ix3i3ZCHvmYjZB1DIQFwWt0cLqafWtdZCpaZAK22cemvovDNnqmYSuGf4xadulQVZCm8Ob9UZCZBds8nAphZAYNwZDZD";//metaApiConfig.AccessToken;
         }
         //public async Task<string> CreateCatalogAsync(string businessID, string catalogName)
         //{
@@ -167,15 +169,16 @@ namespace appify.web.api
             return responseObj;
         }
 
-        public async Task<string> GetCatalogsListAsync(string businessID) ///// NOT IN USED
+        public string GetCatalogsListAsync(string businessID) ///// NOT IN USED
         {
+            /////////var rr = fs.GetCatalogsListAsync("743286941807169"); Now working to fetch catalogs
             try
             {
                 using (var client = new HttpClient())
                 {
                     string url = $"{Url}/{apiVersion}/{businessID}/owned_product_catalogs?access_token={accessToken}";
-                    var response = await client.GetAsync(url);
-                    var result = await response.Content.ReadAsStringAsync();
+                    var response =  client.GetAsync(url).GetAwaiter().GetResult();
+                    var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                     if (response.IsSuccessStatusCode)
                     {
                         return result;
@@ -456,7 +459,7 @@ namespace appify.web.api
                             access_token = accessToken
                         };
 
-                        var json = JsonSerializer.Serialize(payload);
+                        var json = System.Text.Json.JsonSerializer.Serialize(payload);
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                         var response = client.PostAsync(requestUrl, content).GetAwaiter().GetResult();
@@ -694,6 +697,164 @@ namespace appify.web.api
             }
         }
 
+
+        public string GetInstagramBusinessAccountIdAsync()
+        {
+            try
+            {
+                // Step 1: Get Pages available to the token
+                var pagesUrl = $"https://graph.facebook.com/v23.0/me/accounts?access_token={accessToken}";
+                var pagesResponse = httpClient.GetAsync(pagesUrl).GetAwaiter().GetResult();
+                var pagesJson = pagesResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                if (!pagesResponse.IsSuccessStatusCode)
+                    throw new Exception($"Failed to fetch pages: {pagesJson}");
+
+                using var pagesDoc = JsonDocument.Parse(pagesJson);
+                foreach (var page in pagesDoc.RootElement.GetProperty("data").EnumerateArray())
+                {
+                    var pageId = page.GetProperty("id").GetString();
+
+                    // Step 2: Check if page has an Instagram Business Account
+                    var igUrl = $"https://graph.facebook.com/v23.0/{pageId}?fields=instagram_business_account&access_token={accessToken}";
+                    var igResponse = httpClient.GetAsync(igUrl).GetAwaiter().GetResult();
+                    var igJson = igResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                    if (!igResponse.IsSuccessStatusCode)
+                        continue;
+
+                    using var igDoc = JsonDocument.Parse(igJson);
+                    if (igDoc.RootElement.TryGetProperty("instagram_business_account", out var igAcc))
+                    {
+                        var igId = igAcc.GetProperty("id").GetString();
+                        return $"IG ID: {igId}, Page ID: {pageId}";
+                    }
+                }
+
+                return "No Instagram Business Account found linked to your pages.";
+            }
+            catch (Exception ex)
+            {
+                return $"Error: {ex.Message}";
+            }
+        }
+        public string AssignInstagramToCatalogAsync2(InstagramAccount itemData, IFacebookBusiness facebookBusiness)
+        {
+            try
+            {
+                // Step 1: Get connected Facebook Page ID from IG Business Account
+                var pageLookupUrl = $"https://graph.facebook.com/{apiVersion}/{itemData.InstagramID}?fields=connected_page&access_token={accessToken}";
+                var pageResponse =  httpClient.GetAsync(pageLookupUrl).GetAwaiter().GetResult();
+                var pageResult =  pageResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                if (!pageResponse.IsSuccessStatusCode)
+                    throw new Exception($"Error fetching connected page: {pageResult}");
+
+                using var doc = JsonDocument.Parse(pageResult);
+                if (!doc.RootElement.TryGetProperty("connected_page", out var pageElement))
+                    throw new Exception("No connected Facebook Page found for this Instagram Business Account.");
+
+                string pageId = pageElement.GetProperty("id").GetString();
+
+                // Step 2: Assign Page ID to Catalog
+                var assignUrl = $"https://graph.facebook.com/{apiVersion}/{itemData.CatalogID}/assigned_users";
+
+                var payload = new
+                {
+                    user = pageId,
+                    role = "CATALOG_MANAGE",
+                    access_token = accessToken
+                };
+
+                var content = new StringContent(System.Text.Json.JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+                var response =  httpClient.PostAsync(assignUrl, content).GetAwaiter().GetResult();
+                var result =  response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Error assigning catalog to page: {result}");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return $"Unexpected Error: {ex.Message}";
+            }
+        }
+
+        public string AssignCatalogToPageAsync(string catalogId, string pageId)
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    string assignUrl = $"https://graph.facebook.com/{apiVersion}/{catalogId}/assigned_pages?access_token={accessToken}";
+
+                    var requestBody = new
+                    {
+                        page_id = pageId
+                    };
+
+                    var jsonPayload = JsonConvert.SerializeObject(requestBody);
+                    var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+                    var response = httpClient.PostAsync(assignUrl, content).GetAwaiter().GetResult();
+                    var result = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                    if (!response.IsSuccessStatusCode)
+                        throw new Exception($"Error assigning catalog to page: {result}");
+
+                    return result; // should return { "success": true }
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Unexpected Error: {ex.Message}";
+            }
+        }
+
+        public string AttachCatalogToFacebookPageAsync(string pageId, string catalogId)
+        {
+            // Define the API endpoint to attach the product catalog to the Facebook Page.
+            var requestUrl = $"{Url}/{apiVersion}/{pageId}/owned_product_catalogs?access_token={accessToken}";
+
+            // The request body needs to specify the product catalog ID.
+            var requestBody = new
+            {
+                product_catalog_id = catalogId
+            };
+            var jsonPayload = JsonConvert.SerializeObject(requestBody);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = httpClient.PostAsync(requestUrl, content).GetAwaiter().GetResult(); ;
+
+                // Throw an exception if the response status code indicates an error.
+                response.EnsureSuccessStatusCode();
+
+                // Read the response content to check for success.
+                string responseBody = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var result = JsonConvert.DeserializeObject<dynamic>(responseBody);
+
+                if (result.success != null && result.success == true)
+                {
+                    return $"Successfully attached catalog ID {catalogId} to Facebook Page ID {pageId}.";
+                }
+                else
+                {
+                    return "Failed to attach catalog. The API returned an error.";
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Handle HTTP-specific errors, such as network issues or bad status codes.
+                return $"Request failed: {ex.Message}";
+            }
+            catch (Exception ex)
+            {
+                // Handle any other unexpected errors.
+                return $"An unexpected error occurred: {ex.Message}";
+            }
+        }
         public void Dispose()
         {
             GC.SuppressFinalize(this);
