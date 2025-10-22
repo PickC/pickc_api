@@ -53,14 +53,14 @@
 
     }
 
-    public partial class MemberReturnPolicy 
+    public partial class MemberReturnPolicy
     {
         // Constructor 
         public MemberReturnPolicy() { }
 
-		// Public Members 
+        // Public Members 
 
-		public Int64 MemberID { get; set; }
+        public Int64 MemberID { get; set; }
 
         public Int16 MaxReturnDays { get; set; }
 
@@ -85,21 +85,23 @@
         public bool IsActive { get; set; }
     }
 
-    public partial class MemberDashboard {
+    public partial class MemberDashboard
+    {
 
-        
+
         public long DeliveredOrders { get; set; }
         public long TotalRevenue { get; set; }
         public long PendingOrders { get; set; }
         public int TotalProducts { get; set; }
         public int AdTotalInstalls { get; set; }
-        public int AdTotalSpends { get; set;}
+        public int AdTotalSpends { get; set; }
 
         public int AdTotalConversions { get; set; }
         public int AdROAS { get; set; }
 
         public List<DashboardProducts>? Products { get; set; }
-        public class DashboardProducts {
+        public class DashboardProducts
+        {
 
             public string? ProductName { get; set; }
             public int TotalOrders { get; set; }
@@ -112,9 +114,10 @@
         public decimal TotalRevenue { get; set; }
         public Int32 PendingOrder { get; set; }
         public Int32 CompletedOrder { get; set; }
-        public Int32 ActiveOrder {  get; set; }
+        public Int32 ActiveOrder { get; set; }
     }
-    public partial class MemberKYC {
+    public partial class MemberKYC
+    {
 
         public Int64 MemberID { get; set; }
         public string? PAN { get; set; }
@@ -177,7 +180,7 @@
         public string? appStoreLink { get; set; }
         public string? playstoreLink { get; set; }
     }
-    public partial class  CheckOTPSent
+    public partial class CheckOTPSent
     {
         public Int64 RefID { get; set; }
 
@@ -191,5 +194,43 @@
         public bool IsSent { get; set; }
         public bool IsResent { get; set; }
         public DateTime SentOn { get; set; }
+    }
+    public partial class MemberOnBoarding
+    {
+        public Int64 UserID { get; set; }
+        public string EmailID { get; set; }
+        public string BusinessName { get; set; }
+        public string MobileNo { get; set; }
+        public Int16 MemberType { get; set; }
+        public string Password { get; set; }
+        public bool IsGDA { get; set; }
+        public bool IsADA { get; set; }
+    }
+
+    public partial class MemberProfile
+    {
+        public Int64 UserID { get; set; }
+        public Int32 BusinessType { get; set; }
+        public string PanNo { get; set; }
+        public string GstNo { get; set; }
+        public string RegistrationNo { get; set; }
+        public Int32 AnnulTurnOver { get; set; }
+        public string BusinessAddress { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string PinCode { get; set; }
+        public bool IsSameAddress { get; set; }
+        public string WareHouseAddress { get; set; }
+        public string WareHouseCity { get; set; }
+        public string WareHouseState { get; set; }
+        public string WareHousePinCode { get; set; }
+        public string BankName { get; set; }
+        public string AccountNo { get; set; }
+        public string IFSCCode { get; set; }
+        public string AccountHolderName { get; set; }
+        public string SignatoryFullName{ get; set; }
+        public string SignatoryEmailID { get; set; }
+        public string SignatoryMobileNo { get; set; }
+
     }
 }

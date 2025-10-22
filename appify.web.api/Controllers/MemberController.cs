@@ -4026,10 +4026,122 @@ namespace appify.web.api.Controllers
 
         #endregion
 
+        #region Member-OnBoarding
+
+        /// <summary>
+        /// Member On Boarding
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON :
+        /// 
+        ///     {
+        ///       "userID": 0,
+        ///       "emailID": "jondoe@gmail.com",
+        ///       "businessName": "DSClothes",
+        ///       "mobileNo": "9999999999",
+        ///       "memberType": 1000,
+        ///       "password": "123456",
+        ///       "isGDA": true,
+        ///       "isADA": false
+        ///     }
+        ///
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER ONBOARDING SAVED SUCCESSFULLY.</response>
+        /// <response code="500">ResponseMessage with Error Description</response>
+
+        [HttpPost, Route("onboarding")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public async Task<IActionResult> MemberOnBoarding(MemberOnBoarding itemData)
+        {
+            var requstHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            var rm = new ResponseMessage();
+            try
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "MEMBER ONBOARDING SAVED SUCCESSFULLY.";
+                rm.name = StatusName.ok;
+                rm.data = itemData;
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = itemData;
+            }
+            return Ok(rm);
+        }
 
 
+        /// <summary>
+        /// Add/Update Member's Profile Details
+        /// </summary>
+        /// <remarks>
+        /// Sample Request JSON :
+        /// 
+        ///     {
+        ///       "userID": 2001,
+        ///       "businessType": 1005,
+        ///       "panNo": "DAJPC4150P",
+        ///       "gstNo": "27AABCT2727Q1Z9 ",
+        ///       "registrationNo": "24AAACC1206D1ZM",
+        ///       "annulTurnOver": 1001,
+        ///       "businessAddress": "Hitec City, Madhapur",
+        ///       "city": "Hyderabad",
+        ///       "state": "Telangana",
+        ///       "pinCode": "500081",
+        ///       "isSameAddress": false,
+        ///       "wareHouseAddress": "Ashoka Road, Plot 7, Jantar Mantar",
+        ///       "wareHouseCity": "New Delhi",
+        ///       "wareHouseState": "Delhi",
+        ///       "wareHousePinCode": "110001",
+        ///       "bankName": "ICICI",
+        ///       "accountNo": "8640086400",
+        ///       "ifscCode": "ICIC7452",
+        ///       "accountHolderName": "JON DOE",
+        ///       "signatoryFullName": "JON DOE",
+        ///       "signatoryEmailID": "johndoe@gmail.com",
+        ///       "signatoryMobileNo": "9999999999"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="itemData"></param>
+        /// <returns>ResponseMessage Object</returns>
+        /// <response code="200">MEMBER PROFILE DETAILS SAVED SUCCESSFULLY.</response>
+        /// <response code="500">ResponseMessage with Error Description</response>
+
+        [HttpPost, Route("profile/complete")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public IActionResult MemberProfileDetails(MemberProfile itemData)
+        {
+            var requstHeader = Request;
+            string controllerURL = new Uri(HttpContext.Request.GetDisplayUrl()).AbsoluteUri;
+            var rm = new ResponseMessage();
+            try
+            {
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "MEMBER PROFILE DETAILS SAVED SUCCESSFULLY.";
+                rm.name = StatusName.ok;
+                rm.data = itemData;
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = itemData;
+            }
+            return Ok(rm);
+        }
 
 
+        #endregion
 
     }
 }
