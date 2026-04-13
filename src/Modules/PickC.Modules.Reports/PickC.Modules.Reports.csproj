@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\PickC.SharedKernel\PickC.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\Shared\PickC.Infrastructure\PickC.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2024.*" />
+    <PackageReference Include="ClosedXML" Version="0.102.*" />
+    <PackageReference Include="MailKit" Version="4.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.0-*" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="pickc_logo.png" />
+  </ItemGroup>
+</Project>

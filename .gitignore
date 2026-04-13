@@ -1,0 +1,23 @@
+# Build output
+bin/
+obj/
+publish_out/
+publish_out64/
+
+# IDE
+.vs/
+*.user
+.vscode/
+
+# Logs
+logs/
+
+# Secrets & credentials
+firebase-credentials.json
+
+# NuGet
+*.nupkg
+.nuget/
+
+# Test results
+TestResults/
