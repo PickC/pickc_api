@@ -11,7 +11,7 @@ public interface IBookingService
     Task<BookingDto> GetByBookingNoAsync(string bookingNo, CancellationToken ct = default);
     Task<List<BookingDto>> GetByCustomerAsync(string customerId, CancellationToken ct = default);
     Task<List<BookingDto>> GetByDriverAsync(string driverId, CancellationToken ct = default);
-    Task<bool> SaveAsync(BookingSaveDto dto, CancellationToken ct = default);
+    Task<string> SaveAsync(BookingSaveDto dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(string bookingNo, CancellationToken ct = default);
     Task<bool> ConfirmAsync(BookingConfirmDto dto, CancellationToken ct = default);
     Task<bool> CancelByCustomerAsync(BookingCancelDto dto, CancellationToken ct = default);
@@ -57,7 +57,7 @@ public class BookingService : IBookingService
         return bookings.Select(MapToDto).ToList();
     }
 
-    public async Task<bool> SaveAsync(BookingSaveDto dto, CancellationToken ct = default)
+    public async Task<string> SaveAsync(BookingSaveDto dto, CancellationToken ct = default)
     {
         var booking = new Domain.Entities.Booking
         {

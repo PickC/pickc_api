@@ -48,8 +48,10 @@ public class BookingController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Save([FromBody] BookingSaveDto dto, CancellationToken ct)
     {
-        var result = await _service.SaveAsync(dto, ct);
-        return result ? Ok(new { message = "Booking saved successfully" }) : BadRequest();
+        var bookingNo = await _service.SaveAsync(dto, ct);
+        return string.IsNullOrEmpty(bookingNo)
+            ? BadRequest()
+            : Ok(new { message = "Booking saved successfully", bookingNo });
     }
 
     [HttpDelete("{bookingNo}")]

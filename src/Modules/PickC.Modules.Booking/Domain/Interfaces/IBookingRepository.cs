@@ -8,7 +8,7 @@ public interface IBookingRepository
     Task<Domain.Entities.Booking?> GetByBookingNoAsync(string bookingNo, CancellationToken ct = default);
     Task<List<Domain.Entities.Booking>> GetByCustomerAsync(string customerId, CancellationToken ct = default);
     Task<List<Domain.Entities.Booking>> GetByDriverAsync(string driverId, CancellationToken ct = default);
-    Task<bool> SaveAsync(Domain.Entities.Booking booking, CancellationToken ct = default);
+    Task<string> SaveAsync(Domain.Entities.Booking booking, CancellationToken ct = default);
     Task<bool> DeleteAsync(string bookingNo, CancellationToken ct = default);
     Task<bool> ConfirmAsync(string bookingNo, string driverId, string vehicleNo, CancellationToken ct = default);
     Task<bool> CancelByCustomerAsync(string bookingNo, string cancelRemarks, CancellationToken ct = default);

@@ -1,8 +1,10 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PickC.Modules.Booking.Domain.Entities;
 using PickC.Modules.Booking.Domain.Interfaces;
 using PickC.Modules.Booking.Infrastructure.Data;
 using PickC.SharedKernel.Helpers;
+using System.Data;
 
 namespace PickC.Modules.Booking.Infrastructure.Repositories;
 
@@ -47,22 +49,48 @@ public class BookingRepository : IBookingRepository
             .ToListAsync(ct);
     }
 
-    public async Task<bool> SaveAsync(Domain.Entities.Booking booking, CancellationToken ct = default)
+    public async Task<string> SaveAsync(Domain.Entities.Booking booking, CancellationToken ct = default)
     {
-        var existing = await _context.Bookings
-            .FirstOrDefaultAsync(b => b.BookingNo == booking.BookingNo, ct);
+        var isNew = string.IsNullOrEmpty(booking.BookingNo) ||
+                    !await _context.Bookings.AnyAsync(b => b.BookingNo == booking.BookingNo, ct);
 
-        if (existing is null)
+        if (isNew)
         {
+            // Cancel all unconfirmed, non-cancelled bookings for this customer (mirrors SP logic)
+            await _context.Bookings
+                .Where(b => b.CustomerID == booking.CustomerID && !b.IsConfirm && !b.IsCancel)
+                .ExecuteUpdateAsync(s => s.SetProperty(b => b.IsCancel, true), ct);
+
+            // Generate BookingNo via usp_GenerateDocumentNumber
+            var bookingNoParam = new SqlParameter
+            {
+                ParameterName = "@BookingNo",
+                SqlDbType = SqlDbType.NVarChar,
+                Size = 50,
+                Value = string.Empty,
+                Direction = ParameterDirection.InputOutput
+            };
+
+            await _context.Database.ExecuteSqlRawAsync(
+                "EXEC [Utility].[usp_GenerateDocumentNumber] @DocumentType, @Dt, @UserId, @BookingNo OUTPUT",
+                new SqlParameter("@DocumentType", "Booking"),
+                new SqlParameter("@Dt", DateTime.UtcNow),
+                new SqlParameter("@UserId", "ADMIN"),
+                bookingNoParam);
+
+            booking.BookingNo = bookingNoParam.Value?.ToString() ?? string.Empty;
             booking.BookingDate = IstClock.Now;
             _context.Bookings.Add(booking);
         }
         else
         {
-            _context.Entry(existing).CurrentValues.SetValues(booking);
+            var existing = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.BookingNo == booking.BookingNo, ct);
+            _context.Entry(existing!).CurrentValues.SetValues(booking);
         }
 
-        return await _context.SaveChangesAsync(ct) > 0;
+        await _context.SaveChangesAsync(ct);
+        return booking.BookingNo;
     }
 
     public async Task<bool> DeleteAsync(string bookingNo, CancellationToken ct = default)
