@@ -47,8 +47,8 @@ public class BookingService : IBookingService
 
     public async Task<List<BookingDto>> GetByCustomerAsync(string customerId, CancellationToken ct = default)
     {
-        var bookings = await _repository.GetByCustomerAsync(customerId, ct);
-        return bookings.Select(MapToDto).ToList();
+        var bookings = await _repository.GetByCustomerEnrichedAsync(customerId, ct);
+        return bookings.Select(MapEnrichedToDto).ToList();
     }
 
     public async Task<List<BookingDto>> GetByDriverAsync(string driverId, CancellationToken ct = default)
@@ -169,6 +169,47 @@ public class BookingService : IBookingService
                 (double)b.Latitude, (double)b.Longitude)
         }).ToList();
     }
+
+    private static BookingDto MapEnrichedToDto(Domain.Entities.BookingEnriched b) => new()
+    {
+        BookingNo = b.BookingNo,
+        BookingDate = b.BookingDate,
+        CustomerID = b.CustomerID,
+        RequiredDate = b.RequiredDate,
+        LocationFrom = b.LocationFrom,
+        LocationTo = b.LocationTo,
+        CargoDescription = b.CargoDescription,
+        VehicleType = b.VehicleType,
+        VehicleGroup = b.VehicleGroup,
+        CargoType = b.CargoType,
+        PayLoad = b.PayLoad,
+        LoadingUnLoading = b.LoadingUnLoading,
+        Remarks = b.Remarks,
+        Latitude = b.Latitude,
+        Longitude = b.Longitude,
+        ToLatitude = b.ToLatitude,
+        ToLongitude = b.ToLongitude,
+        ReceiverMobileNo = b.ReceiverMobileNo,
+        IsConfirm = b.IsConfirm,
+        ConfirmDate = b.ConfirmDate,
+        DriverID = b.DriverID,
+        VehicleNo = b.VehicleNo,
+        IsCancel = b.IsCancel,
+        CancelTime = b.CancelTime,
+        CancelRemarks = b.CancelRemarks,
+        IsCancelByDriver = b.IsCancelByDriver,
+        DriverCancelDateTime = b.DriverCancelDateTime,
+        IsComplete = b.IsComplete,
+        CompleteTime = b.CompleteTime,
+        IsReachPickUp = b.IsReachPickUp,
+        PickupReachDateTime = b.PickupReachDateTime,
+        IsReachDestination = b.IsReachDestination,
+        DestinationReachDateTime = b.DestinationReachDateTime,
+        Status = b.Status,
+        VehicleTypeName = b.VehicleTypeName,
+        VehicleTypeIcon = b.VehicleTypeIcon,
+        VehicleGroupName = b.VehicleGroupName
+    };
 
     private static BookingDto MapToDto(Domain.Entities.Booking b) => new()
     {

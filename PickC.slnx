@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PickC.Api/PickC.Api.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/">
+    <Project Path="src/Modules/PickC.Modules.Billing/PickC.Modules.Billing.csproj" />
+    <Project Path="src/Modules/PickC.Modules.Booking/PickC.Modules.Booking.csproj" />
+    <Project Path="src/Modules/PickC.Modules.Identity/PickC.Modules.Identity.csproj" />
+    <Project Path="src/Modules/PickC.Modules.Master/PickC.Modules.Master.csproj" />
+    <Project Path="src/Modules/PickC.Modules.Notification/PickC.Modules.Notification.csproj" />
+    <Project Path="src/Modules/PickC.Modules.Trip/PickC.Modules.Trip.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/PickC.Infrastructure/PickC.Infrastructure.csproj" />
+    <Project Path="src/Shared/PickC.SharedKernel/PickC.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PickC.IntegrationTests/PickC.IntegrationTests.csproj" />
+  </Folder>
+</Solution>

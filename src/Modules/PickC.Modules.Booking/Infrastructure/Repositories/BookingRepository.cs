@@ -40,6 +40,31 @@ public class BookingRepository : IBookingRepository
             .ToListAsync(ct);
     }
 
+    public async Task<List<Domain.Entities.BookingEnriched>> GetByCustomerEnrichedAsync(string customerId, CancellationToken ct = default)
+    {
+        return await _context.Database.SqlQueryRaw<Domain.Entities.BookingEnriched>(@"
+            SELECT
+                b.BookingNo, b.BookingDate, b.CustomerID, b.RequiredDate,
+                b.LocationFrom, b.LocationTo, b.CargoDescription,
+                b.VehicleType, b.VehicleGroup, b.CargoType, b.PayLoad, b.LoadingUnLoading,
+                b.Remarks, b.Latitude, b.Longitude, b.ToLatitude, b.ToLongitude,
+                b.ReceiverMobileNo, b.IsConfirm, b.ConfirmDate, b.DriverID, b.VehicleNo,
+                b.IsCancel, b.CancelTime, b.CancelRemarks, b.IsComplete, b.CompleteTime,
+                b.IsReachPickUp, b.PickupReachDateTime, b.IsReachDestination, b.DestinationReachDateTime,
+                b.IsCancelByDriver, b.DriverCancelDateTime, b.DriverCancelRemarks,
+                b.Status, b.OTP,
+                vt.LookupDescription AS VehicleTypeName,
+                vt.Image         AS VehicleTypeIcon,
+                vg.LookupDescription AS VehicleGroupName
+            FROM  [Operation].[Booking]  b
+            LEFT JOIN [Config].[LookUp] vt ON vt.LookupID = b.VehicleType
+            LEFT JOIN [Config].[LookUp] vg ON vg.LookupID = b.VehicleGroup
+            WHERE b.CustomerID = @customerId
+            ORDER BY b.BookingDate DESC",
+            new SqlParameter("@customerId", customerId))
+        .ToListAsync(ct);
+    }
+
     public async Task<List<Domain.Entities.Booking>> GetByDriverAsync(string driverId, CancellationToken ct = default)
     {
         return await _context.Bookings

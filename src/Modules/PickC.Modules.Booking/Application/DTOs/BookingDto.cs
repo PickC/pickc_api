@@ -36,6 +36,11 @@ public class BookingDto
     public bool IsReachDestination { get; set; }
     public DateTime? DestinationReachDateTime { get; set; }
     public int Status { get; set; }
+
+    // Lookup-resolved display fields
+    public string? VehicleTypeName { get; set; }
+    public string? VehicleTypeIcon { get; set; }
+    public string? VehicleGroupName { get; set; }
 }
 
 public class BookingSaveDto
