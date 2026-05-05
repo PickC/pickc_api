@@ -79,11 +79,11 @@ public class AvailableDriverDto
 {
     public string DriverID { get; set; } = string.Empty;
     public string DriverName { get; set; } = string.Empty;
-    public int VehicleGroupID { get; set; }
-    public string VehicleGroupName { get; set; } = string.Empty;
-    public int VehicleTypeID { get; set; }
-    public string VehicleTypeName { get; set; } = string.Empty;
-    public string VehicleNumber { get; set; } = string.Empty;
-    public decimal CurrentLatitude { get; set; }
-    public decimal CurrentLongitude { get; set; }
+    public int? VehicleGroupID { get; set; }
+    public string? VehicleGroupName { get; set; }
+    public int? VehicleTypeID { get; set; }
+    public string? VehicleTypeName { get; set; }
+    public string? VehicleNumber { get; set; }
+    public decimal? CurrentLatitude { get; set; }
+    public decimal? CurrentLongitude { get; set; }
 }
