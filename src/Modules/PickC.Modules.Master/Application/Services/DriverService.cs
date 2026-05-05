@@ -1,6 +1,9 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using PickC.Modules.Master.Application.DTOs;
 using PickC.Modules.Master.Domain.Entities;
 using PickC.Modules.Master.Domain.Interfaces;
+using PickC.Modules.Master.Infrastructure.Data;
 using PickC.SharedKernel.Exceptions;
 
 namespace PickC.Modules.Master.Application.Services;
@@ -13,15 +16,18 @@ public interface IDriverService
     Task<bool> SaveAsync(DriverSaveDto dto, CancellationToken ct = default);
     Task<bool> DeleteAsync(string driverId, CancellationToken ct = default);
     Task<bool> UpdatePasswordAsync(DriverUpdatePasswordDto dto, CancellationToken ct = default);
+    Task<List<AvailableDriverDto>> GetAvailableDriversAsync(int? vehicleGroupId, CancellationToken ct = default);
 }
 
 public class DriverService : IDriverService
 {
     private readonly IDriverRepository _repository;
+    private readonly MasterDbContext _context;
 
-    public DriverService(IDriverRepository repository)
+    public DriverService(IDriverRepository repository, MasterDbContext context)
     {
         _repository = repository;
+        _context = context;
     }
 
     public async Task<List<DriverDto>> GetAllAsync(CancellationToken ct = default)
@@ -131,6 +137,14 @@ public class DriverService : IDriverService
     public async Task<bool> UpdatePasswordAsync(DriverUpdatePasswordDto dto, CancellationToken ct = default)
     {
         return await _repository.UpdatePasswordAsync(dto.DriverID, dto.NewPassword, ct);
+    }
+
+    public async Task<List<AvailableDriverDto>> GetAvailableDriversAsync(int? vehicleGroupId, CancellationToken ct = default)
+    {
+        var param = new SqlParameter("@VehicleGroupID", (object?)vehicleGroupId ?? DBNull.Value);
+        return await _context.Database
+            .SqlQueryRaw<AvailableDriverDto>("EXEC [Master].[usp_AvailableDriversList] @VehicleGroupID", param)
+            .ToListAsync(ct);
     }
 
     private static DriverDto MapToDto(Driver d) => new()

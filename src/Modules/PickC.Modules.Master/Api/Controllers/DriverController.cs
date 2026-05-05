@@ -58,4 +58,11 @@ public class DriverController : ControllerBase
         var result = await _service.DeleteAsync(driverId, ct);
         return result ? Ok(new { message = "Driver deleted" }) : NotFound();
     }
+
+    [HttpGet("available")]
+    public async Task<IActionResult> GetAvailableDrivers([FromQuery] int? vehicleGroupId, CancellationToken ct)
+    {
+        var result = await _service.GetAvailableDriversAsync(vehicleGroupId, ct);
+        return Ok(result);
+    }
 }
