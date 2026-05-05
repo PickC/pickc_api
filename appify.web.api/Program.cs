@@ -100,6 +100,7 @@ builder.Services.AddSingleton<IBulkImportedProductRepository, BulkImportedProduc
 builder.Services.AddSingleton<IShopifyRepository, ShopifyRepository>();
 builder.Services.AddSingleton<IVendorWebModuleRepository,  VendorWebModuleRepository>();
 builder.Services.AddSingleton<IFacebookRepository, FacebookRepository>();
+builder.Services.AddSingleton<IDriverRepository, DriverRepository>();
 
 //Business services
 builder.Services.AddSingleton<IAddressBusiness, AddressBusiness>();//
@@ -140,6 +141,7 @@ builder.Services.AddSingleton<IBulkImportedProductBusiness, BulkImportedProductB
 builder.Services.AddSingleton<IShopifyBusiness, ShopifyBusiness>();
 builder.Services.AddSingleton<IVendorWebModuleBusiness, VendorWebModuleBusiness>();
 builder.Services.AddSingleton<IFacebookBusiness, FacebookBusiness>();
+builder.Services.AddSingleton<IDriverBusiness, DriverBusiness>();
 
 // 1. Register repositories first
 builder.Services.AddScoped<IOrderLogRepository, OrderLogRepository>();

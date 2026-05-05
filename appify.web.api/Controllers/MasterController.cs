@@ -19,16 +19,18 @@ namespace appify.web.api.Controllers
         private readonly IConfiguration configuration;
         private readonly ICategoryParameterBusiness categoryParameterBusiness;
         private readonly IParameterTypeBusiness parameterTypeBusiness;
+        private readonly IDriverBusiness driverBusiness;
         private readonly IWebHostEnvironment env;
 
         private ResponseMessage rm;
 
 
-        public MasterController(IConfiguration configuration, ICategoryParameterBusiness categoryParameterBusiness, IParameterTypeBusiness parameterTypeBusiness,IWebHostEnvironment env)
+        public MasterController(IConfiguration configuration, ICategoryParameterBusiness categoryParameterBusiness, IParameterTypeBusiness parameterTypeBusiness, IDriverBusiness driverBusiness, IWebHostEnvironment env)
         {
             this.configuration = configuration;
             this.categoryParameterBusiness = categoryParameterBusiness;
             this.parameterTypeBusiness = parameterTypeBusiness;
+            this.driverBusiness = driverBusiness;
             this.env = env;
         }
 
@@ -598,6 +600,73 @@ namespace appify.web.api.Controllers
             return Ok(rm);
         }
         */
+
+        #endregion
+
+
+        #region Available Drivers
+
+        /// <summary>
+        /// Get all on-duty available drivers with current GPS location and vehicle details
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     GET /api/master/drivers/available
+        ///     GET /api/master/drivers/available?vehicleGroupId=1000
+        ///
+        /// Sample response JSON:
+        ///
+        ///     {
+        ///       "statusCode": 200,
+        ///       "name": "SUCCESS_OK",
+        ///       "message": "AVAILABLE DRIVERS FETCHED SUCCESSFULLY",
+        ///       "data": [
+        ///         {
+        ///           "driverId": "D001",
+        ///           "driverName": "Ravi Kumar",
+        ///           "vehicleGroupId": 1000,
+        ///           "vehicleGroupName": "Mini",
+        ///           "vehicleTypeId": 1300,
+        ///           "vehicleTypeName": "Open",
+        ///           "vehicleNumber": "TS09EA1234",
+        ///           "currentLatitude": 17.385044,
+        ///           "currentLongitude": 78.486671
+        ///         }
+        ///       ]
+        ///     }
+        ///
+        /// </remarks>
+        /// <param name="vehicleGroupId">Optional: 1000=Mini, 1001=Small, 1002=Medium, 1003=Large</param>
+        /// <returns>List of available drivers with GPS and vehicle details</returns>
+        /// <response code="200">Returns available drivers (empty array if none available)</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Server error</response>
+        [HttpGet, Route("drivers/available")]
+        [MapToApiVersion("1.0")]
+        [Authorize]
+        public IActionResult GetAvailableDrivers([FromQuery] int? vehicleGroupId = null)
+        {
+            try
+            {
+                rm = new ResponseMessage();
+                TokenValidator.IsValidToken(Request, configuration, env);
+                var result = this.driverBusiness.GetAvailableDrivers(vehicleGroupId);
+                rm.statusCode = StatusCodes.OK;
+                rm.message = "AVAILABLE DRIVERS FETCHED SUCCESSFULLY";
+                rm.name = StatusName.ok;
+                rm.data = result;
+            }
+            catch (Exception ex)
+            {
+                rm.statusCode = StatusCodes.ERROR;
+                rm.message = ex.Message.ToString();
+                rm.name = StatusName.invalid;
+                rm.data = ex.Message.ToString();
+            }
+
+            return Ok(rm);
+        }
 
         #endregion
 

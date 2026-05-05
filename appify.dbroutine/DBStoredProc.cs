@@ -483,6 +483,11 @@ namespace appify.dbroutine
 
 
         /// <summary>
+        /// Driver
+        /// </summary>
+        public const string LISTAVAILABLEDRIVERS = "[Master].[usp_AvailableDriversList]";
+
+        /// <summary>
         /// Category Parameter
         /// </summary>
         public const string SELECTCATEGORYPARAMETER = "[Master].[usp_CategoryParameterSelect]";
