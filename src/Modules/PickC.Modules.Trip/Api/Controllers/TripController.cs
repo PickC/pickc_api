@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PickC.Modules.Trip.Application.DTOs;
 using PickC.Modules.Trip.Application.Services;
+using PickC.SharedKernel.Notifications;
 
 namespace PickC.Modules.Trip.Api.Controllers;
 
@@ -11,10 +12,12 @@ namespace PickC.Modules.Trip.Api.Controllers;
 public class TripController : ControllerBase
 {
     private readonly ITripService _service;
+    private readonly IBookingNotifier _notifier;
 
-    public TripController(ITripService service)
+    public TripController(ITripService service, IBookingNotifier notifier)
     {
         _service = service;
+        _notifier = notifier;
     }
 
     [HttpGet]
@@ -72,7 +75,10 @@ public class TripController : ControllerBase
     public async Task<IActionResult> EndTrip([FromBody] TripEndDto dto, CancellationToken ct)
     {
         var result = await _service.EndTripAsync(dto, ct);
-        return result ? Ok(new { message = "Trip ended successfully" }) : BadRequest(new { message = "Trip cannot be ended" });
+        if (!result) return BadRequest(new { message = "Trip cannot be ended" });
+
+        await _notifier.NotifyTripEndedToCustomerAsync(dto.TripID, ct);
+        return Ok(new { message = "Trip ended successfully" });
     }
 
     [HttpPatch("distance")]

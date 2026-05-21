@@ -13,6 +13,8 @@ using PickC.Modules.Billing;
 using PickC.Modules.Notification;
 using PickC.Modules.Reports;
 using PickC.Api.Hubs;
+using PickC.Api.Services;
+using PickC.SharedKernel.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -134,6 +136,9 @@ builder.Services.AddReportsModule(builder.Configuration);
 // SignalR
 builder.Services.AddSignalR();
 
+// Booking Notifier (SignalR + FCM)
+builder.Services.AddScoped<IBookingNotifier, BookingNotifier>();
+
 // Health Checks
 builder.Services.AddHealthChecks();
 
@@ -160,6 +165,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 app.MapHub<TripHub>("/hubs/trip");
+app.MapHub<BookingHub>("/hubs/booking");
 
 app.Run();
 
