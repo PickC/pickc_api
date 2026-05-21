@@ -32,6 +32,8 @@ public class DriverConfiguration : IEntityTypeConfiguration<Driver>
         builder.Property(d => d.ModelNo).HasMaxLength(20).IsUnicode(false);
         builder.Property(d => d.DeviceRemarks).HasMaxLength(1000).IsUnicode(false);
         builder.Property(d => d.VehicleRCNo).HasMaxLength(50);
+        builder.Property(d => d.VehicleType);
+        builder.Property(d => d.VehicleGroup);
 
         builder.HasMany(d => d.Addresses)
             .WithOne()

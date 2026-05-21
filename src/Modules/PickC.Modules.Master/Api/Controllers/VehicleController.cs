@@ -57,4 +57,33 @@ public class VehicleController : ControllerBase
         await _context.SaveChangesAsync(ct);
         return Ok(new { message = "Vehicle saved" });
     }
+
+    [HttpGet("onduty")]
+    public async Task<IActionResult> GetOnDutyVehicles(CancellationToken ct)
+    {
+        const string sql = @"
+            SELECT
+                da.VehicleNo,
+                da.DriverID,
+                d.DriverName,
+                v.VehicleGroup,
+                vg.LookupDescription AS VehicleGroupName,
+                v.VehicleType,
+                vt.LookupDescription AS VehicleTypeName,
+                da.CurrentLat AS CurrentLatitude,
+                da.CurrentLong AS CurrentLongitude,
+                da.DutyOnDate
+            FROM [Operation].[DriverActivity] da
+            INNER JOIN [Master].[Driver] d ON da.DriverID = d.DriverID
+            INNER JOIN [Master].[Vehicle] v ON da.VehicleNo = v.VehicleNo
+            LEFT JOIN [Config].[Lookup] vg ON v.VehicleGroup = vg.LookupID
+            LEFT JOIN [Config].[Lookup] vt ON v.VehicleType = vt.LookupID
+            WHERE da.IsOnDuty = 1 AND da.IsLogIn = 1";
+
+        var result = await _context.Database
+            .SqlQueryRaw<OnDutyVehicleDto>(sql)
+            .ToListAsync(ct);
+
+        return Ok(result);
+    }
 }

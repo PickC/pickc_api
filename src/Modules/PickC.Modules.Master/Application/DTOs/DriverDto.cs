@@ -8,6 +8,10 @@ public class DriverDto
     public string MobileNo { get; set; } = string.Empty;
     public string? PhoneNo { get; set; }
     public string LicenseNo { get; set; } = string.Empty;
+    public short VehicleType { get; set; }
+    public string? VehicleTypeName { get; set; }
+    public short VehicleGroup { get; set; }
+    public string? VehicleGroupName { get; set; }
     public bool Status { get; set; }
     public string? OperatorID { get; set; }
     public bool IsVerified { get; set; }
@@ -48,6 +52,8 @@ public class DriverSaveDto
     public string? Nationality { get; set; }
     public string? OperatorID { get; set; }
     public string? VehicleRCNo { get; set; }
+    public short VehicleType { get; set; }
+    public short VehicleGroup { get; set; }
 }
 
 public class DriverUpdatePasswordDto

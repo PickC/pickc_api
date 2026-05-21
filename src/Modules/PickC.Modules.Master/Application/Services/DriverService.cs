@@ -33,13 +33,16 @@ public class DriverService : IDriverService
     public async Task<List<DriverDto>> GetAllAsync(CancellationToken ct = default)
     {
         var drivers = await _repository.GetAllAsync(ct);
-        return drivers.Select(MapToDto).ToList();
+        var lookups = await GetVehicleLookups(ct);
+        return drivers.Select(d => MapToDto(d, lookups)).ToList();
     }
 
     public async Task<DriverDetailDto> GetByIdAsync(string driverId, CancellationToken ct = default)
     {
         var driver = await _repository.GetByIdAsync(driverId, ct)
             ?? throw new NotFoundException("Driver", driverId);
+
+        var lookups = await GetVehicleLookups(ct);
 
         return new DriverDetailDto
         {
@@ -49,6 +52,10 @@ public class DriverService : IDriverService
             MobileNo = driver.MobileNo,
             PhoneNo = driver.PhoneNo,
             LicenseNo = driver.LicenseNo,
+            VehicleType = driver.VehicleType,
+            VehicleTypeName = lookups.GetValueOrDefault(driver.VehicleType),
+            VehicleGroup = driver.VehicleGroup,
+            VehicleGroupName = lookups.GetValueOrDefault(driver.VehicleGroup),
             Status = driver.Status,
             OperatorID = driver.OperatorID,
             IsVerified = driver.IsVerified,
@@ -100,7 +107,8 @@ public class DriverService : IDriverService
     public async Task<List<DriverDto>> GetByNameAsync(string name, CancellationToken ct = default)
     {
         var drivers = await _repository.GetByNameAsync(name, ct);
-        return drivers.Select(MapToDto).ToList();
+        var lookups = await GetVehicleLookups(ct);
+        return drivers.Select(d => MapToDto(d, lookups)).ToList();
     }
 
     public async Task<bool> SaveAsync(DriverSaveDto dto, CancellationToken ct = default)
@@ -123,7 +131,9 @@ public class DriverService : IDriverService
             LicenseNo = dto.LicenseNo,
             Nationality = dto.Nationality,
             OperatorID = dto.OperatorID,
-            VehicleRCNo = dto.VehicleRCNo
+            VehicleRCNo = dto.VehicleRCNo,
+            VehicleType = dto.VehicleType,
+            VehicleGroup = dto.VehicleGroup
         };
 
         return await _repository.SaveAsync(driver, ct);
@@ -147,7 +157,7 @@ public class DriverService : IDriverService
             .ToListAsync(ct);
     }
 
-    private static DriverDto MapToDto(Driver d) => new()
+    private static DriverDto MapToDto(Driver d, Dictionary<short, string> lookups) => new()
     {
         DriverID = d.DriverID,
         DriverName = d.DriverName,
@@ -155,8 +165,20 @@ public class DriverService : IDriverService
         MobileNo = d.MobileNo,
         PhoneNo = d.PhoneNo,
         LicenseNo = d.LicenseNo,
+        VehicleType = d.VehicleType,
+        VehicleTypeName = lookups.GetValueOrDefault(d.VehicleType),
+        VehicleGroup = d.VehicleGroup,
+        VehicleGroupName = lookups.GetValueOrDefault(d.VehicleGroup),
         Status = d.Status,
         OperatorID = d.OperatorID,
         IsVerified = d.IsVerified
     };
+
+    private async Task<Dictionary<short, string>> GetVehicleLookups(CancellationToken ct)
+    {
+        return await _context.LookUps
+            .AsNoTracking()
+            .Where(l => l.LookupCategory == "VehicleType" || l.LookupCategory == "VehicleGroup")
+            .ToDictionaryAsync(l => l.LookupID, l => l.LookupDescription, ct);
+    }
 }

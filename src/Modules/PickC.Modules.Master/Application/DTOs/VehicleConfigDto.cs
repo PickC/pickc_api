@@ -25,6 +25,20 @@ public class VehicleManufacturerDto
     public decimal Capacity { get; set; }
 }
 
+public class OnDutyVehicleDto
+{
+    public string VehicleNo { get; set; } = string.Empty;
+    public string DriverID { get; set; } = string.Empty;
+    public string DriverName { get; set; } = string.Empty;
+    public short VehicleGroup { get; set; }
+    public string? VehicleGroupName { get; set; }
+    public short VehicleType { get; set; }
+    public string? VehicleTypeName { get; set; }
+    public decimal? CurrentLatitude { get; set; }
+    public decimal? CurrentLongitude { get; set; }
+    public DateTime? DutyOnDate { get; set; }
+}
+
 public class LookUpDto
 {
     public short LookupID { get; set; }

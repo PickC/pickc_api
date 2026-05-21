@@ -33,6 +33,8 @@ public class Driver
     public DateTime? DateofReturn { get; set; }
     public string? DeviceRemarks { get; set; }
     public string? VehicleRCNo { get; set; }
+    public short VehicleType { get; set; }
+    public short VehicleGroup { get; set; }
 
     // Navigation
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
